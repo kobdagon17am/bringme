@@ -37,21 +37,21 @@ class API1Controller extends Controller
     //     //     'password' => 'required|string|min:6|confirmed',
     //     // ]);
 
-    //     DB::beginTransaction();
-    //     try
-    //     {
+        // DB::beginTransaction();
+        // try
+        // {
 
-    //     $check_email = Customer::select('email')->where('email',$r->email)->first();
-    //     if($check_email){
-    //         return response()->json([
-    //             'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
-    //             'status' => 0,
-    //             'data' => '',
-    //         ]);
-    //     }else{
+        // $check_email = Customer::select('email')->where('email',$r->email)->first();
+        // if($check_email){
+        //     return response()->json([
+        //         'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+        //         'status' => 0,
+        //         'data' => '',
+        //     ]);
+        // }else{
 
-    //         $customer = new Customer();
-    //         $customer->firstname = $r->firstname;
+            // $customer = new Customer();
+            // $customer->firstname = $r->firstname;
     //         $customer->lastname = $r->lastname;
     //         $customer->age = $r->age;
     //         $customer->tel = $r->tel;
@@ -120,11 +120,11 @@ class API1Controller extends Controller
 
     //         DB::commit();
 
-    //         return response()->json([
-    //             'message' => 'ทำรายการสำเร็จ กรุณารอการยืนยันจากระบบเพื่อใช้งานผ่าน email',
-    //             'status' => 1,
-    //             'data' => $customer,
-    //         ]);
+            // return response()->json([
+            //     'message' => 'ทำรายการสำเร็จ กรุณารอการยืนยันจากระบบเพื่อใช้งานผ่าน email',
+            //     'status' => 1,
+            //     'data' => $customer,
+            // ]);
 
     //     }
 
@@ -192,6 +192,108 @@ class API1Controller extends Controller
         }
 
     }
+
+    public function api_customer_register(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+                $check_email = Customer::select('email')->where('email',$r->email)->first();
+                if($check_email){
+                    return response()->json([
+                        'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }else{
+                    $customer = new Customer();
+                    $customer->name = $r->name;
+                    $customer->email = $r->email;
+                    $customer->birthday = $r->birthday;
+                    $customer->tel = $r->tel;
+                    $customer->password = Hash::make($r->password);
+                    $customer->customer_type = 1;
+                    $customer->select_type = 1;
+                    $customer->status = 1;
+                    $customer->save();
+                }
+                DB::commit();
+                $customer = Customer::where('email',$r->email)->first();
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => $customer,
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
+    public function api_get_user(Request $r)
+    {
+        $user = Customer::where('id',$r->user_id)->first();
+        if($user){
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => $user,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบข้อมูลผู้ใช้',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_provinces(Request $r)
+    {
+        $data = DB::table('provinces')->orderBy('name_th')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => $data,
+            ]);
+    }
+
+    public function api_get_amphures(Request $r)
+    {
+        $data = DB::table('amphures')->where('province_id',$r->province_id)->orderBy('name_th')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => $data,
+            ]);
+    }
+
+    public function api_get_districts(Request $r)
+    {
+        $data = DB::table('districts')->where('province_id',$r->amphure_id)->orderBy('name_th')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => $data,
+            ]);
+    }
+
 
 
 
