@@ -10,6 +10,8 @@ use DB;
 use App\User;
 use File;
 use Hash;
+use App\Models\Store;
+use App\Models\Brands;
 
 class API1Controller extends Controller
 {
@@ -266,7 +268,7 @@ class API1Controller extends Controller
 
     public function api_get_provinces(Request $r)
     {
-        $data = DB::table('provinces')->orderBy('name_th')->get();
+        $data = DB::table('provinces')->where('business_location_id',1)->orderBy('name_th')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -286,7 +288,7 @@ class API1Controller extends Controller
 
     public function api_get_districts(Request $r)
     {
-        $data = DB::table('districts')->where('province_id',$r->amphure_id)->orderBy('name_th')->get();
+        $data = DB::table('districts')->where('amphure_id',$r->amphure_id)->orderBy('name_th')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -294,7 +296,153 @@ class API1Controller extends Controller
             ]);
     }
 
+    public function api_get_zipcode(Request $r)
+    {
+        $data = DB::table('districts')->where('id',$r->district_id)->first();
+        if($data){
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => $data->zip_code,
+            ]);
+        }
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => '',
+            ]);
+    }
 
+    public function api_register_store(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+                $check_email = Customer::select('email')->where('email',$r->email)->first();
+                if($check_email){
+                    return response()->json([
+                        'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }else{
+                    $customer = new Customer();
+                    $customer->name = $r->user_name;
+                    $customer->email = $r->email;
+                    $customer->birthday = $r->birthday;
+                    $customer->tel = $r->tel;
+                    $customer->password = Hash::make($r->password);
+                    $customer->customer_type = 2;
+                    $customer->select_type = 1;
+                    $customer->status = 1;
+                    //
+                    $customer->address = $r->birthday;
+                    $customer->province_id = $r->province_id;
+                    $customer->amphures_id = $r->amphures_id;
+                    $customer->district_id = $r->district_id;
+                    $customer->zipcode = $r->birthday;
+                    $customer->firstname = $r->name;
+                    // $customer->lat = $r->birthday;
+                    // $customer->long = $r->birthday;
+                    //
+                    $customer->save();
+
+                    $brands = Brands::where('name_th',$r->brands)->first();
+                    if(!$brands){
+                        $brand = new Brands();
+                        $brand->name_th = $r->brands;
+                        $brand->name_en = $r->brands;
+                        $brand->save();
+                    }
+
+                    $store = new Store();
+                    $store->customer_id = $customer->id;
+                    $store->brands_id = $brand->id;
+                    $store->category_id = $customer->category_id;
+                    $store->save();
+
+
+                }
+                DB::commit();
+                $customer = Customer::where('email',$r->email)->first();
+                $store = Store::where('id',$store->id)->first();
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'customer' => $customer,
+                        'store' => $store,
+                    ],
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
+    public function api_change_select_type(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+                $customer = Customer::where('id',$r->user_id)->first();
+                if($customer->select_type==1){
+                    if($customer->approve_store!=1){
+                        return response()->json([
+                            'message' =>  'กรุณารอการยืนยันจากระบบก่อนใช้งานร้านค้า',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+                    $customer->select_type = 2;
+                }else{
+                    $customer->select_type = 1;
+                }
+                $customer->save();
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => $customer,
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
 
 
 }

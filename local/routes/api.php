@@ -23,5 +23,7 @@ Route::post('api_get_user', 'API1Controller@api_get_user');
 Route::post('api_get_provinces', 'API1Controller@api_get_provinces');
 Route::post('api_get_amphures', 'API1Controller@api_get_amphures');
 Route::post('api_get_districts', 'API1Controller@api_get_districts');
-
+Route::post('api_get_zipcode', 'API1Controller@api_get_zipcode');
+Route::post('api_register_store', 'API1Controller@api_register_store');
+Route::post('api_change_select_type', 'API1Controller@api_change_select_type');
 
