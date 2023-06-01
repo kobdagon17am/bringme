@@ -12,6 +12,9 @@ use File;
 use Hash;
 use App\Models\Store;
 use App\Models\Brands;
+use App\Mail\SendMail;
+use Illuminate\Support\Facades\Mail;
+
 
 class API1Controller extends Controller
 {
@@ -442,6 +445,33 @@ class API1Controller extends Controller
                         'data' => '',
                     ]);
                 }
+    }
+
+    public function api_forget_password(Request $r){
+        DB::beginTransaction();
+        try
+        {
+            $resetLink = url('reset_password').'/'.base64_encode($r->input('email'));
+            Mail::to($r->input('email'))->send(new SendMail($resetLink));
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $fe)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
     }
 
 
