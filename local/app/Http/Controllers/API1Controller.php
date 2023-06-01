@@ -339,11 +339,11 @@ class API1Controller extends Controller
                     $customer->select_type = 1;
                     $customer->status = 1;
                     //
-                    $customer->address = $r->birthday;
+                    $customer->address = $r->address;
                     $customer->province_id = $r->province_id;
                     $customer->amphures_id = $r->amphures_id;
                     $customer->district_id = $r->district_id;
-                    $customer->zipcode = $r->birthday;
+                    $customer->zipcode = $r->zipcode;
                     $customer->firstname = $r->name;
                     // $customer->lat = $r->birthday;
                     // $customer->long = $r->birthday;
@@ -353,8 +353,8 @@ class API1Controller extends Controller
                     $brands = Brands::where('name_th',$r->brands)->first();
                     if(!$brands){
                         $brand = new Brands();
-                        $brand->name_th = $r->brands;
-                        $brand->name_en = $r->brands;
+                        $brand->name_th = $r->brands_th;
+                        $brand->name_en = $r->brands_en;
                         $brand->save();
                     }
 
