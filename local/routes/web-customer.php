@@ -14,3 +14,7 @@
 */
 
 
+
+Route::get('home', 'Customer/HomeController@index')->name('home');
+
+

@@ -21,12 +21,11 @@ Route::get('/config-cache', function () {
     return back();
   });
 
-Route::get('/', function () {
+Route::get('admin/', function () {
     return view('auth/login');
 });
 
-
 Auth::routes();
 
-Route::get('home', 'HomeController@index')->name('home');
-Route::get('employee', 'EmployeeController@index')->name('employee');
+Route::get('admin/home', 'Admin/HomeController@index')->name('admin/home');
+Route::get('admin/employee', 'Admin/EmployeeController@index')->name('admin/employee');
