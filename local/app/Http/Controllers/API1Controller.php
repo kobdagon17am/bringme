@@ -12,6 +12,7 @@ use File;
 use Hash;
 use App\Models\Store;
 use App\Models\Brands;
+use App\Models\Products;
 use App\Mail\SendMail;
 use Illuminate\Support\Facades\Mail;
 
@@ -453,6 +454,11 @@ class API1Controller extends Controller
         {
             $resetLink = url('reset_password').'/'.base64_encode($r->input('email'));
             Mail::to($r->input('email'))->send(new SendMail($resetLink));
+            return response()->json([
+                'message' =>  'Send mail successful.',
+                'status' => 'success',
+                'data' => '',
+            ]);
         }
         catch (\Exception $e) {
             DB::rollback();
@@ -474,5 +480,129 @@ class API1Controller extends Controller
         }
     }
 
+    public function api_reset_password(Request $r){
+        DB::beginTransaction();
+        try
+        {
+            if($r->password == $r->re_password){
+                $email = base64_decode($r->token);
+                $data['password'] = Hash::make($r->password);
+                User::where('email')->update($data);
+                return response()->json([
+                    'message' =>  'Reset Password Successful.',
+                    'status' => 'success',
+                    'data' => '',
+                ]);
+            }else{
+                return response()->json([
+                    'message' =>  'Reset Password Failed. Password is not Currect.',
+                    'status' => 'failed',
+                    'data' => '',
+                ]);
+            }
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $fe)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_flashsale(){
+        DB::beginTransaction();
+        try
+        {
+            $product_flashsale = Products::get();
+            if(!empty($product_flashsale)){
+                $data['flashsale'] = $product_flashsale;
+                return response()->json([
+                    'message' =>  'Reset Password Successful.',
+                    'status' => 'success',
+                    'data' => $data,
+                ]);
+            }else{
+                return response()->json([
+                    'message' =>  'Empty Product Promotion.',
+                    'status' => 'failed',
+                    'data' => '',
+                ]);
+            }
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $fe)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_new_address(Request $request){
+        DB::beginTransaction();
+        try
+        {
+            $data['name_address'] = $request->name_address;
+            $data['province_id'] = $request->province_id;
+            $data['amphure_id'] = $request->amphure_id;
+            $data['district_id'] = $request->district_id;
+            $data['zip_id'] = $request->zip_id;
+            $data['details_address'] = $request->details_address;
+            $data['Landmark_address'] = $request->Landmark_address;
+            $data['number_address'] = $request->number_address;
+            $data['coordinates_address'] = $request->coordinates_address;
+            $data['member_id'] = $request->member_id;
+            $data['address_lat'] = $request->address_lat;
+            $data['address_long'] = $request->address_long;
+            $data['created_at_address'] = date('Y-m-d H:i:s');
+            Address_order::insert($data)
+            return response()->json([
+                'message' =>  'Insert New Address Successful.',
+                'status' => 'success',
+                'data' => $data,
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $fe)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
 
 }

@@ -27,4 +27,7 @@ Route::post('api_get_zipcode', 'API1Controller@api_get_zipcode');
 Route::post('api_register_store', 'API1Controller@api_register_store');
 Route::post('api_change_select_type', 'API1Controller@api_change_select_type');
 Route::post('api_forget_password', 'API1Controller@api_forget_password');
+Route::post('api_reset_password', 'API1Controller@api_reset_password');
+Route::post('api_get_flashsale', 'API1Controller@api_get_flashsale');
+Route::post('api_new_address', 'API1Controller@api_new_address');
 
