@@ -29,5 +29,8 @@ Route::post('api_change_select_type', 'API1Controller@api_change_select_type');
 Route::post('api_forget_password', 'API1Controller@api_forget_password');
 Route::post('api_reset_password', 'API1Controller@api_reset_password');
 Route::post('api_get_flashsale', 'API1Controller@api_get_flashsale');
-Route::post('api_new_address', 'API1Controller@api_new_address');
+Route::post('api_customer_new_address', 'API1Controller@api_customer_new_address');
+Route::post('api_get_category', 'API1Controller@api_get_category');
+Route::post('api_get_brand', 'API1Controller@api_get_brand');
+Route::post('api_get_product_filter', 'API1Controller@api_get_product_filter');
 

@@ -13,9 +13,10 @@ use Hash;
 use App\Models\Store;
 use App\Models\Brands;
 use App\Models\Products;
+Use App\Models\Customer_address;
+Use App\Models\Category;
 use App\Mail\SendMail;
 use Illuminate\Support\Facades\Mail;
-
 
 class API1Controller extends Controller
 {
@@ -145,7 +146,7 @@ class API1Controller extends Controller
     //     'data' => '',
     // ]);
     // }
-    // catch(\FatalThrowableError $fe)
+    // catch(\FatalThrowableError $e)
     // {
     //     DB::rollback();
     //     return response()->json([
@@ -241,7 +242,7 @@ class API1Controller extends Controller
                     'data' => '',
                 ]);
                 }
-                catch(\FatalThrowableError $fe)
+                catch(\FatalThrowableError $e)
                 {
                     DB::rollback();
                     return response()->json([
@@ -389,7 +390,7 @@ class API1Controller extends Controller
                     'data' => '',
                 ]);
                 }
-                catch(\FatalThrowableError $fe)
+                catch(\FatalThrowableError $e)
                 {
                     DB::rollback();
                     return response()->json([
@@ -437,7 +438,7 @@ class API1Controller extends Controller
                     'data' => '',
                 ]);
                 }
-                catch(\FatalThrowableError $fe)
+                catch(\FatalThrowableError $e)
                 {
                     DB::rollback();
                     return response()->json([
@@ -469,7 +470,7 @@ class API1Controller extends Controller
                 'data' => '',
             ]);
         }
-        catch(\FatalThrowableError $fe)
+        catch(\FatalThrowableError $e)
         {
             DB::rollback();
             return response()->json([
@@ -510,7 +511,7 @@ class API1Controller extends Controller
                 'data' => '',
             ]);
         }
-        catch(\FatalThrowableError $fe)
+        catch(\FatalThrowableError $e)
         {
             DB::rollback();
             return response()->json([
@@ -550,7 +551,7 @@ class API1Controller extends Controller
                 'data' => '',
             ]);
         }
-        catch(\FatalThrowableError $fe)
+        catch(\FatalThrowableError $e)
         {
             DB::rollback();
             return response()->json([
@@ -561,28 +562,29 @@ class API1Controller extends Controller
         }
     }
 
-    public function api_new_address(Request $request){
+    public function api_customer_new_address(Request $request){
+        // dd($request->input());
         DB::beginTransaction();
         try
         {
-            $data['name_address'] = $request->name_address;
-            $data['province_id'] = $request->province_id;
-            $data['amphure_id'] = $request->amphure_id;
-            $data['district_id'] = $request->district_id;
-            $data['zip_id'] = $request->zip_id;
-            $data['details_address'] = $request->details_address;
-            $data['Landmark_address'] = $request->Landmark_address;
-            $data['number_address'] = $request->number_address;
-            $data['coordinates_address'] = $request->coordinates_address;
-            $data['member_id'] = $request->member_id;
-            $data['address_lat'] = $request->address_lat;
-            $data['address_long'] = $request->address_long;
-            $data['created_at_address'] = date('Y-m-d H:i:s');
-            Address_order::insert($data)
+            $customer_address = new Customer_address();
+            $customer_address->customer_id = $request->customer_id;
+            $customer_address->name = $request->name;
+            $customer_address->tel = $request->tel;
+            $customer_address->address_number = $request->address_number;
+            $customer_address->province_id = $request->province_id;
+            $customer_address->amphures_id = $request->amphures_id;
+            $customer_address->district_id = $request->district_id;
+            $customer_address->zipcode = $request->zipcode;
+            $customer_address->address_lat = $request->address_lat;
+            $customer_address->address_long = $request->address_long;
+            $customer_address->default_active = $request->default_active;
+            $customer_address->created_at = date('Y-m-d H:i:s');
+            $customer_address->save();
             return response()->json([
                 'message' =>  'Insert New Address Successful.',
                 'status' => 'success',
-                'data' => $data,
+                'data' => $customer_address,
             ]);
         }
         catch (\Exception $e) {
@@ -594,7 +596,107 @@ class API1Controller extends Controller
                 'data' => '',
             ]);
         }
-        catch(\FatalThrowableError $fe)
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_category(){
+        DB::beginTransaction();
+        try
+        {   
+            $category = Category::get();
+            return response()->json([
+                'message' =>  'Get Category Successful.',
+                'status' => 'success',
+                'data' => $category,
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_brand(){
+        DB::beginTransaction();
+        try
+        {   
+            $brand = Brands::get();
+            return response()->json([
+                'message' =>  'Get Brands Successful.',
+                'status' => 'success',
+                'data' => $brand,
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_product_filter(Request $request){
+        DB::beginTransaction();
+        try
+        {   
+            $raw_product = Products::where('qty','>',0);
+            if(!empty($request->category_id)){
+                $raw_product->where('category_id',$request->category_id);
+            }
+            if(!empty($request->brands_id)){
+                $raw_product->where('brands_id',$request->brands_id);
+            }
+            $product = $raw_product->get();
+            return response()->json([
+                'message' =>  'Filter Product Successful.',
+                'status' => 'success',
+                'data' => $product,
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
         {
             DB::rollback();
             return response()->json([
