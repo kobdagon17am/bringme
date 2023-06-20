@@ -13,8 +13,25 @@
 |
 */
 
+Route::get('/', function () {
+
+  // if(session('id')){
+  if(Auth::guard('c_user')->check()){
+    dd('success');
+    return redirect('profile');
+  }else{
+    return view('auth/logincustomer');
+  }
+});
+
+Route::get('logout', function () {
+    Auth::guard('c_user')->logout();
+    //Session::flush();
+    return redirect('login');
+  })->name('logout');
 
 
-Route::get('home', 'Customer/HomeController@index')->name('home');
+  ?>
+
 
 
