@@ -13,20 +13,16 @@
 |
 */
 
-Route::get('/c', function () {
-    $exitCode = Artisan::call('cache:clear');
-    $exitCode = Artisan::call('config:clear');
-    $exitCode = Artisan::call('view:clear');
-    // $exitCode = Artisan::call('config:cache');
-    return back();
-  });
+
+
+Auth::routes();
   Route::get('/', function () {
 
     // if(session('id')){
-    if(Auth()->check()){
+    if (Auth::guard('c_user')->check()) {
       return redirect('home');
     }else{
-      return view('Auth/login');
+      return view('Auth/logincustomer');
     }
   });
 
