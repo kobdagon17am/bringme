@@ -2,14 +2,14 @@
     <ul>
 
         <li>
-            <a href="index.php" class="side-menu">
+            <a href="{{route('home')}}" class="side-menu">
                 <div class="side-menu__icon"> <i data-lucide="inbox"></i> </div>
                 <div class="side-menu__title"> Dashboard </div>
             </a>
         </li>
 
         <li>
-            <a href="employee.php" class="side-menu">
+            <a href="{{route('employee')}}" class="side-menu">
                 <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
                 <div class="side-menu__title"> รายการพนักงาน </div>
             </a>
