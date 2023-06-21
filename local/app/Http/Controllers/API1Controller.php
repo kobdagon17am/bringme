@@ -15,6 +15,8 @@ use App\Models\Brands;
 use App\Models\Products;
 Use App\Models\Customer_address;
 Use App\Models\Category;
+Use App\Models\CustomerCartProduct;
+Use App\Models\CustomerCart;
 use App\Mail\SendMail;
 use Illuminate\Support\Facades\Mail;
 
@@ -610,7 +612,7 @@ class API1Controller extends Controller
     public function api_get_category(){
         DB::beginTransaction();
         try
-        {   
+        {
             $category = Category::get();
             return response()->json([
                 'message' =>  'Get Category Successful.',
@@ -641,7 +643,7 @@ class API1Controller extends Controller
     public function api_get_brand(){
         DB::beginTransaction();
         try
-        {   
+        {
             $brand = Brands::get();
             return response()->json([
                 'message' =>  'Get Brands Successful.',
@@ -672,7 +674,7 @@ class API1Controller extends Controller
     public function api_get_product_filter(Request $request){
         DB::beginTransaction();
         try
-        {   
+        {
             $raw_product = Products::where('qty','>',0);
             if(!empty($request->category_id)){
                 $raw_product->where('category_id',$request->category_id);
@@ -701,6 +703,156 @@ class API1Controller extends Controller
             DB::rollback();
             return response()->json([
                 'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_add_cart(Request $r){
+        DB::beginTransaction();
+        try
+        {
+            $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
+            if(!$cart){
+                $cart = new CustomerCart();
+            }
+            $cart->customer_id = $r->user_id;
+
+            $cart->delivery_type = 1;
+            // $cart->customer_address_id = $r->user_id;
+            $cart->total_price = 0;
+            $cart->shipping_price = 0;
+            $cart->grand_total = 0;
+            $cart->has_promotion = 0;
+            $cart->discount_price = 0;
+            $cart->action_date = date('Y-m-d');
+            $cart->save();
+
+            $product_datail = Products::where('id',$r->product_id)->first();
+            if( $product_datail){
+                $product = new CustomerCartProduct();
+                $product->customer_cart_id = $cart->id;
+                $product->customer_id = $r->user_id;
+                $product->products_id = $r->product_id;
+                $product->price = $product_datail->price;
+                $product->qty = $r->qty;
+                $product->save();
+
+                $product_cart = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->get();
+                $total_price = 0;
+                foreach($product_cart as $pro){
+                    $pro_detail = Products::where('id',$pro->products_id)->first();
+                    if($pro_detail){
+                        $total_price+= $pro_detail->price;
+                    }
+                }
+                $cart->total_price = $total_price;
+                $cart->grand_total = $total_price;
+                $cart->save();
+
+            }else{
+                return response()->json([
+                    'message' =>  'ไม่พบสินค้าที่เลือก',
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+
+            return response()->json([
+                'message' =>  'Successful.',
+                'status' => 'success',
+                'data' => [
+                    'cart' => $cart,
+                    'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_home_page(Request $r)
+    {
+            $product_good_sale = Products::where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_new = Products::where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_pro = Products::where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_recome = Products::where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'product_good_sale' => $product_good_sale,
+                    'product_new' => $product_new,
+                    'product_pro' => $product_pro,
+                    'product_recome' => $product_recome,
+                ],
+            ]);
+    }
+
+    public function api_get_product_detail(Request $r)
+    {
+        $product_detail = Products::where('id',$r->product_id)->first();
+        if($product_detail){
+            $store = Store::where('id',$product_detail->store_id)->first();
+            $customer = Customer::where('id',$store->customer_id)->first();
+
+            $product_good_sale = Products::where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_your_like = Products::where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'customer' => [$customer],
+                    'store' => [$store],
+                    'product_good_sale' => $product_good_sale,
+                    'product_your_like' => $product_your_like,
+                    'product_detail' => $product_detail,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' =>  'ไม่พบสินค้าที่เลือก',
                 'status' => 0,
                 'data' => '',
             ]);
