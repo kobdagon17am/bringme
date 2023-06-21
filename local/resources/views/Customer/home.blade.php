@@ -787,3 +787,9 @@
     </div>
 </div>
 @endsection
+
+@extends('layouts.Customer.app')
+
+@section('content')
+
+@endsection

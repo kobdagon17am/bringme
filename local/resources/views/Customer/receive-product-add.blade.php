@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html lang="th" class="light">
-<!-- BEGIN: Head -->
+@extends('layouts.Customer.app')
 
-<head>
-    <?php include 'dist/include/head.php' ?>
-</head>
-<!-- END: Head -->
-
-<body class="py-5 md:py-0">
-    <!-- BEGIN: Mobile Menu -->
-    <?php include 'dist/include/component/MobileMenu.php' ?>
-    <!-- END: Mobile Menu -->
-    <!-- BEGIN: Top Bar -->
-    <?php include 'dist/include/component/Topbar.php' ?>
-    <!-- END: Top Bar -->
-    <div class="flex overflow-hidden">
-        <!-- BEGIN: Side Menu -->
-        <?php include 'dist/include/component/SideNav.php' ?>
-        <!-- END: Side Menu -->
-        <!-- BEGIN: Content -->
-        <div class="content">
+@section('content')
+<div class="content">
             <!-- <div class="intro-y flex items-center mt-8">
                     <h2 class="text-lg font-medium mr-auto">
                         Form Layout
@@ -150,9 +132,4 @@
                 </div>
             </div>
         </div>
-        <!-- END: Content -->
-    </div>
-
-</body>
-
-</html>
+@endsection
