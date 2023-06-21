@@ -13,22 +13,20 @@
 */
 
 
-Route::get('admin/', function () {
+Route::get('admin', function () {
     return view('auth/loginadmin');
 });
 
-Route::get('/admin', function () {
+Route::get('admin', function () {
     if (Auth::guard('admin')->check()) {
         return redirect('admin/home');
     } else {
         return view('auth/loginadmin');
     }
-})->name('admin_home');
+})->name('admin');
 
-Route::post('admin_login', 'Customer/LoginController@admin_login')->name('admin_login');
+Route::post('admin_login', 'Customer\LoginController@admin_login')->name('admin_login');
 
-    Route::prefix('admin')->group(function () {
-    Route::get('home', 'Admin/HomeController@index')->name('home');
-    Route::get('employee', 'Admin/EmployeeController@index')->name('employee');
-});
+Route::get('admin/home', 'Admin\HomeController@index')->name('admin/home');
+Route::get('admin/employee', 'Admin\EmployeeController@index')->name('admin/employee');
 

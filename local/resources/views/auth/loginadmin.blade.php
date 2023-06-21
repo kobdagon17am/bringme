@@ -61,7 +61,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     </h2>
                     <div class="intro-x mt-2 text-slate-400 xl:hidden text-center">A few more clicks to sign in to
                         your account. Manage all your e-commerce accounts in one place</div>
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('admin_login') }}">
                         @csrf
                         <div class="intro-x mt-8">
                             <input type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }} intro-x login__input form-control py-3 px-4 block rounded-full" name="email" value="{{ old('email') }}" id="text" placeholder="email" aria-label="Email" aria-describedby="basic-addon1" required autofocus>
