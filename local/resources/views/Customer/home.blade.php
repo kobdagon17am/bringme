@@ -785,5 +785,5 @@
             </div>
         </div>
     </div>
-</div>y
+</div>
 @endsection

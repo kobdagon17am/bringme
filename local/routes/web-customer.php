@@ -33,6 +33,10 @@ Route::get('/c', function () {
   Route::get('home', 'Customer\HomeController@index')->name('home');
   Route::get('employee', 'Customer\EmployeeController@index')->name('employee');
 
+  Route::get('employee-add', function () {
+    return view('Customer/employee-add');
+  })->name('employee-add');
+
 
   ?>
 

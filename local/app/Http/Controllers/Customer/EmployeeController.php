@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Customer;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -24,6 +24,6 @@ class EmployeeController extends Controller
     public function index()
     {
 
-        return view('Admin/employee');
+        return view('Customer/employee');
     }
 }
