@@ -12,20 +12,21 @@
 |
 */
 
-Route::get('/config-cache', function () {
-    $exitCode = Artisan::call('cache:clear');
-    $exitCode = Artisan::call('config:clear');
-    $exitCode = Artisan::call('view:clear');
-    // $exitCode = Artisan::call('config:cache');
-
-    return back();
-  });
 
 Route::get('admin/', function () {
-    return view('auth/login');
+    return view('auth/loginadmin');
 });
 
-Auth::routes();
+Route::get('/admin', function () {
+    if (Auth::guard('admin')->check()) {
+        return redirect('admin/home');
+    } else {
+        return view('auth/loginadmin');
+    }
+})->name('admin_home');
 
-Route::get('admin/home', 'Admin/HomeController@index')->name('admin/home');
-Route::get('admin/employee', 'Admin/EmployeeController@index')->name('admin/employee');
+Route::prefix('admin')->group(function () {
+    Route::get('home', 'Admin/HomeController@index')->name('home');
+    Route::get('employee', 'Admin/EmployeeController@index')->name('employee');
+});
+
