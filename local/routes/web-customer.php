@@ -13,7 +13,7 @@
 |
 */
 
-Route::get('/config-cache', function () {
+Route::get('/c', function () {
     $exitCode = Artisan::call('cache:clear');
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('view:clear');
@@ -30,8 +30,8 @@ Route::get('/config-cache', function () {
     }
   });
 
-  Route::get('home', 'Customer/HomeController@index')->name('home');
-  Route::get('employee', 'Customer/EmployeeController@index')->name('employee');
+  Route::get('home', 'Customer\HomeController@index')->name('home');
+  Route::get('employee', 'Customer\EmployeeController@index')->name('employee');
 
 
   ?>
