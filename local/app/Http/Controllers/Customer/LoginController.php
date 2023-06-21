@@ -20,15 +20,14 @@ class LoginController extends Controller
 
   public function admin_login(Request $req)
   {
-    dd('ddd');
-
+    dd($req->all());
     $get_member = User::where('email', '=', $req->email)
       ->where('password', '=', md5($req->password))
       ->first();
       dd($get_member);
 
   if ($get_member) {
-      session()->forget('access_from_admin');
+    //   session()->forget('access_from_admin');
       Auth::guard('admin')->login($get_member);
 
       return redirect('admin');
