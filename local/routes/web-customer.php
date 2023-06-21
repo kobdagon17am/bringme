@@ -19,7 +19,7 @@ Auth::routes();
   Route::get('/', function () {
 
     // if(session('id')){
-    if (Auth::guard('c_user')->check()) {
+    if (Auth::guard('customer')->check()) {
       return redirect('home');
     }else{
       return view('Auth/logincustomer');
