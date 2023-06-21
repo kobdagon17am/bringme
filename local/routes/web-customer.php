@@ -26,6 +26,8 @@ Auth::routes();
     }
   });
 
+
+
   Route::get('home', 'Customer\HomeController@index')->name('home');
   Route::get('employee', 'Customer\EmployeeController@index')->name('employee');
 

@@ -25,6 +25,8 @@ Route::get('/admin', function () {
     }
 })->name('admin_home');
 
+Route::post('admin_login', 'Customer/LoginController@admin_login')->name('admin_login');
+
     Route::prefix('admin')->group(function () {
     Route::get('home', 'Admin/HomeController@index')->name('home');
     Route::get('employee', 'Admin/EmployeeController@index')->name('employee');
