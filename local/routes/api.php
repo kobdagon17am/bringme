@@ -33,4 +33,5 @@ Route::post('api_customer_new_address', 'API1Controller@api_customer_new_address
 Route::post('api_get_category', 'API1Controller@api_get_category');
 Route::post('api_get_brand', 'API1Controller@api_get_brand');
 Route::post('api_get_product_filter', 'API1Controller@api_get_product_filter');
-
+Route::post('api_add_cart', 'API1Controller@api_add_cart');
+Route::post('api_get_product_detail', 'API1Controller@api_get_product_detail');
