@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Auth;
 use Closure;
 use User;
 
@@ -16,7 +16,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (User::check() && User::user()->isAdmin()) {
+        if ( Auth::guard('admin')->check()) {
             return $next($request);
         } else {
             abort(403, 'Unauthorized action.');
