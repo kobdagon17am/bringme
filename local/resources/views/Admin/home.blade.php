@@ -1,15 +1,5 @@
 @extends('layouts.Admin.app')
 
-
-
-@section('title_manu')
-<nav aria-label="breadcrumb" class="-intro-x h-[45px] mr-auto">
-    <ol class="breadcrumb breadcrumb-light">
-        <li class="breadcrumb-item"><a href="#">Application</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-    </ol>
-</nav>
-@endsection
 @section('content')
 <div class="content">
     <div class="grid grid-cols-12 gap-6">
@@ -795,5 +785,11 @@
             </div>
         </div>
     </div>
-</div>y
+</div>
+@endsection
+
+@extends('layouts.Customer.app')
+
+@section('content')
+
 @endsection

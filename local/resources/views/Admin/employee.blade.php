@@ -1,12 +1,6 @@
+
 @extends('layouts.Admin.app')
-@section('title_manu')
-<nav aria-label="breadcrumb" class="-intro-x h-[45px] mr-auto">
-    <ol class="breadcrumb breadcrumb-light">
-        {{-- <li class="breadcrumb-item"><a href="#">Application</a></li> --}}
-        <li class="breadcrumb-item active" aria-current="page">รายงานพนักงาน</li>
-    </ol>
-</nav>
-@endsection
+
 @section('content')
 <div class="content">
     <h2 class="intro-y text-lg font-medium mt-10">
@@ -14,7 +8,7 @@
     </h2>
     <div class="grid grid-cols-12 gap-6 mt-5">
         <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
-            <a href="employee-add.php" class="btn btn-primary shadow-md mr-2">เพิ่มพนักงาน</a>
+            <a href="{{route('employee-add')}}" class="btn btn-primary shadow-md mr-2">เพิ่มพนักงาน</a>
             <div class="hidden md:block mx-auto text-slate-500">Showing 1 to 10 of 150 entries</div>
             <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
                 <div class="w-56 relative text-slate-500">

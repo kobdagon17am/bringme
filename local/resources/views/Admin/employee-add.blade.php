@@ -1,24 +1,8 @@
-<!DOCTYPE html>
-<html lang="th" class="light">
-<!-- BEGIN: Head -->
 
-<head>
-    <?php include 'dist/include/head.php' ?>
-</head>
-<!-- END: Head -->
+@extends('layouts.Admin.app')
 
-<body class="py-5 md:py-0">
-    <!-- BEGIN: Mobile Menu -->
-    <?php include 'dist/include/component/MobileMenu.php' ?>
-    <!-- END: Mobile Menu -->
-    <!-- BEGIN: Top Bar -->
-    <?php include 'dist/include/component/Topbar.php' ?>
-    <!-- END: Top Bar -->
-    <div class="flex overflow-hidden">
-        <!-- BEGIN: Side Menu -->
-        <?php include 'dist/include/component/SideNav.php' ?>
-        <!-- END: Side Menu -->
-        <!-- BEGIN: Content -->
+@section('content')
+
         <div class="content">
             <!-- <div class="intro-y flex items-center mt-8">
                     <h2 class="text-lg font-medium mr-auto">
@@ -86,7 +70,7 @@
                                                 <option value="3">ผู้ดูแลระบบ 3</option>
                                             </select>
                                         </div>
-                                        
+
                                         <div class="col-span-12">
                                             <div class="">
                                                 <label for="update-profile-form-5" class="form-label">ที่อยู่</label>
@@ -171,9 +155,5 @@
                 </div>
             </div>
         </div>
-        <!-- END: Content -->
-    </div>
 
-</body>
-
-</html>
+@endsection
