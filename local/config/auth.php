@@ -46,9 +46,9 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-        'c_user' => [
+        'customer' => [
             'driver' => 'session',
-            'provider' => 'c_users',
+            'provider' => 'customer',
         ],
         'admin' => [
             'driver' => 'session',
@@ -76,12 +76,12 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Customer::class,
+            'model' => App\Customer::class,
         ],
 
-        'c_users' => [
+        'customer' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Customer::class,
+            'model' => App\Customer::class,
         ],
 
         'admin' => [

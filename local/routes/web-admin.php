@@ -13,20 +13,139 @@
 */
 
 
-Route::get('admin/', function () {
+Route::get('admin', function () {
     return view('auth/loginadmin');
 });
 
-Route::get('/admin', function () {
+Route::get('admin', function () {
     if (Auth::guard('admin')->check()) {
         return redirect('admin/home');
     } else {
         return view('auth/loginadmin');
     }
-})->name('admin_home');
+})->name('admin');
 
-Route::prefix('admin')->group(function () {
-    Route::get('home', 'Admin/HomeController@index')->name('home');
-    Route::get('employee', 'Admin/EmployeeController@index')->name('employee');
-});
+Route::post('admin_login', 'Customer\LoginController@admin_login')->name('admin_login');
+
+Route::get('admin/home', 'Admin\HomeController@index')->name('admin/home');
+Route::get('admin/employee', 'Admin\EmployeeController@index')->name('admin/employee');
+
+Route::get('admin/employee-add', function () {
+    return view('Customer/employee-add');
+  })->name('admin/employee-add');
+
+  Route::get('admin/permission', function () {
+    return view('Customer/permission');
+  })->name('admin/permission');
+
+  Route::get('admin/users', function () {
+    return view('Customer/users');
+  })->name('admin/users');
+
+
+  Route::get('admin/stores', function () {
+    return view('Customer/stores');
+  })->name('admin/stores');
+
+  Route::get('admin/stores-waitapproved', function () {
+    return view('Customer/stores-waitapproved');
+  })->name('admin/stores-waitapproved');
+
+  Route::get('admin/products', function () {
+    return view('Customer/products');
+  })->name('admin/products');
+
+  Route::get('admin/products-waitapproved', function () {
+    return view('Customer/products-waitapproved');
+  })->name('admin/products-waitapproved');
+
+  Route::get('admin/transaction', function () {
+    return view('Customer/transaction');
+  })->name('admin/transaction');
+
+  Route::get('admin/refund', function () {
+    return view('Customer/refund');
+  })->name('admin/refund');
+
+  Route::get('admin/campaign', function () {
+    return view('Customer/campaign');
+  })->name('admin/campaign');
+
+  Route::get('admin/user-store', function () {
+    return view('Customer/user-store');
+  })->name('admin/user-store');
+
+  Route::get('admin/user-store-product-add', function () {
+    return view('Customer/user-store-product-add');
+  })->name('admin/user-store-product-add');
+
+  Route::get('admin/user-store-product-edit', function () {
+    return view('Customer/user-store-product-edit');
+  })->name('admin/user-store-product-edit');
+
+  Route::get('admin/orders', function () {
+    return view('Customer/orders');
+  })->name('admin/orders');
+
+  Route::get('admin/discount-code', function () {
+    return view('Customer/discount-code');
+  })->name('admin/discount-code');
+
+  Route::get('admin/promo-discount-product', function () {
+    return view('Customer/promo-discount-product');
+  })->name('admin/promo-discount-product');
+
+  Route::get('admin/promo-free-gift', function () {
+    return view('Customer/promo-free-gift');
+  })->name('admin/promo-free-gift');
+
+  Route::get('admin/promo-bundle-deal', function () {
+    return view('Customer/promo-bundle-deal');
+  })->name('admin/promo-bundle-deal');
+
+  Route::get('admin/promo-add-on', function () {
+    return view('Customer/promo-add-on');
+  })->name('admin/promo-add-on');
+
+  Route::get('admin/profile-edit', function () {
+    return view('Customer/profile-edit');
+  })->name('admin/profile-edit');
+
+  Route::get('admin/receive-product', function () {
+    return view('Customer/receive-product');
+  })->name('admin/receive-product');
+
+  Route::get('admin/order-detail', function () {
+    return view('Customer/order-detail');
+  })->name('admin/order-detail');
+
+  Route::get('admin/orders', function () {
+    return view('Customer/orders');
+  })->name('admin/orders');
+
+  Route::get('admin/orders', function () {
+    return view('Customer/orders');
+  })->name('admin/orders');
+
+  Route::get('admin/products-awaiting-delivery', function () {
+    return view('Customer/products-awaiting-delivery');
+  })->name('admin/products-awaiting-delivery');
+
+  Route::get('admin/create-bill-lading', function () {
+    return view('Customer/create-bill-lading');
+  })->name('admin/create-bill-lading');
+
+  Route::get('admin/bill-lading', function () {
+    return view('Customer/bill-lading');
+  })->name('admin/bill-lading');
+
+  Route::get('admin/check-stock', function () {
+    return view('Customer/check-stock');
+  })->name('admin/check-stock');
+
+
+
+
+
+
 

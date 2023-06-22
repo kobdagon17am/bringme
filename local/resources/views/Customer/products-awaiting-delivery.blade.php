@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html lang="th" class="light">
-<!-- BEGIN: Head -->
+@extends('layouts.Customer.app')
 
-<head>
-    <?php include 'dist/include/head.php' ?>
-</head>
-<!-- END: Head -->
-
-<body class="py-5 md:py-0">
-    <!-- BEGIN: Mobile Menu -->
-    <?php include 'dist/include/component/MobileMenu.php' ?>
-    <!-- END: Mobile Menu -->
-    <!-- BEGIN: Top Bar -->
-    <?php include 'dist/include/component/Topbar.php' ?>
-    <!-- END: Top Bar -->
-    <div class="flex overflow-hidden">
-        <!-- BEGIN: Side Menu -->
-        <?php include 'dist/include/component/SideNav.php' ?>
-        <!-- END: Side Menu -->
-        <!-- BEGIN: Content -->
-        <div class="content">
+@section('content')
+<div class="content">
             <h2 class="intro-y text-lg font-medium mt-10">
                 สินค้ารอจัดส่ง
             </h2>
@@ -311,9 +293,4 @@
             </div>
             <!-- END: Delete Confirmation Modal -->
         </div>
-        <!-- END: Content -->
-    </div>
-
-</body>
-
-</html>
+@endsection

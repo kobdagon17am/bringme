@@ -19,7 +19,7 @@
             <!-- BEGIN: JS Assets-->
             <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
             <script defer src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-            <script defer src="https://maps.googleapis.com/maps/api/js?key=["AIzaSyB_slfgl_6UYdxnnC5mXxyGL5651Ln55o8"]&libraries=places"></script>
+            <script defer src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
             <script defer src="{{asset('dist/js/ckeditor-classic.js')}}"></script>
             <script defer src="{{asset('dist/js/app.js')}}"></script>
             <!-- END: JS Assets-->

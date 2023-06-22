@@ -1,4 +1,4 @@
-@extends('layouts.Customer.app')
+@extends('layouts.Admin.app')
 
 @section('content')
 <div class="content">
@@ -785,5 +785,11 @@
             </div>
         </div>
     </div>
-</div>y
+</div>
+@endsection
+
+@extends('layouts.Customer.app')
+
+@section('content')
+
 @endsection
