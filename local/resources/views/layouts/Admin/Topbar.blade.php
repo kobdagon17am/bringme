@@ -7,13 +7,14 @@
                 </a>
                 <!-- END: Logo -->
                 <!-- BEGIN: Breadcrumb -->
-                {{-- <nav aria-label="breadcrumb" class="-intro-x h-[45px] mr-auto">
+                <nav aria-label="breadcrumb" class="-intro-x h-[45px] mr-auto">
                     <ol class="breadcrumb breadcrumb-light">
-                        <li class="breadcrumb-item"><a href="#">Application</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        @yield('title_manu')
+                        {{-- <li class="breadcrumb-item"><a href="#">Application</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li> --}}
                     </ol>
-                </nav> --}}
-                @yield('title_manu')
+                </nav>
+
                 <!-- END: Breadcrumb -->
                 <!-- BEGIN: Search -->
                 <div class="intro-x relative mr-3 sm:mr-6">
