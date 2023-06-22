@@ -3,28 +3,28 @@
 
         <li>
             <a href="{{route('admin/home')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-01.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-01.png')}}" alt=""></div>
                 <div class="side-menu__title"> Dashboard </div>
             </a>
         </li>
 
         <li>
             <a href="{{route('admin/employee')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-02.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-02.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการพนักงาน </div>
             </a>
         </li>
 
         <li>
             <a href="{{route('admin/permission')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-03.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-03.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการสิทธิ์การใช้งาน </div>
             </a>
         </li>
 
         <li>
             <a href="javascript:;" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-04.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-04.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     จัดการผู้ใช้
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
@@ -71,7 +71,7 @@
 
         <li>
             <a href="javascript:;" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-05.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-05.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     จัดการสินค้า
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
@@ -94,25 +94,25 @@
         </li>
         <li>
             <a href="{{route('admin/transaction')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-06.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-06.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการการสั่งซื้อ </div>
             </a>
         </li>
         <li>
             <a href="{{route('admin/refund')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-07.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-07.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการขอคืนเงิน </div>
             </a>
         </li>
         <li>
             <a href="{{route('admin/campaign')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-08.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-08.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการแคมเปญ </div>
             </a>
         </li>
         <li>
             <a href="#" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-09.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-09.png')}}" alt=""></div>
                 <div class="side-menu__title"> จัดการข้อมูลแสดงผลแอพพลิเคชั่น </div>
             </a>
         </li>
@@ -120,19 +120,19 @@
 
         <li class="mt-10">
             <a href="{{route('admin/user-store')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-10.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-10.png')}}" alt=""></div>
                 <div class="side-menu__title"> จัดการร้านค้า </div>
             </a>
         </li>
         <li>
             <a href="{{route('admin/orders')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-11.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-11.png')}}" alt=""></div>
                 <div class="side-menu__title"> คำสั่งซื้อ </div>
             </a>
         </li>
         <li>
             <a href="javascript:;" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-12.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-12.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     ส่งเสริมการขาย
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
@@ -203,7 +203,7 @@
         </li>
         <li>
             <a href="{{route('admin/profile-edit')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-13.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-13.png')}}" alt=""></div>
                 <div class="side-menu__title"> ตั้งค่าโปรไฟล์</div>
             </a>
         </li>
@@ -212,26 +212,26 @@
 
         <li class="mt-10">
             <a href="{{route('admin/receive-product')}}" class="side-menu">
-            <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-14.png" alt=""></div>
+            <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-14.png')}}" alt=""></div>
                 <div class="side-menu__title"> รับสินค้าเข้า</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin/orders')}}" class="side-menu">
-            <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-15.png" alt=""></div>
+            <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-15.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการการสั่งซื้อ</div>
             </a>
         </li>
         <li>
             <a href="{{route('admin/products-awaiting-delivery')}}" class="side-menu">
-            <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-16.png" alt=""></div>
+            <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-16.png')}}" alt=""></div>
                 <div class="side-menu__title"> สินค้ารอจัดส่ง</div>
             </a>
         </li>
 
         <li>
             <a href="javascript:;" class="side-menu">
-            <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-17.png" alt=""></div>
+            <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-17.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     ใบเบิก
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
@@ -256,7 +256,7 @@
 
         <li>
             <a href="{{route('admin/check-stock')}}" class="side-menu">
-            <div class="side-menu__icon"> <img class="w-20" src="dist/images/icons/BringMe_Web_Operate_ICON-18.png" alt=""></div>
+            <div class="side-menu__icon"> <img class="w-20" src="{{asset('admin_st/dist/images/icons/BringMe_Web_Operate_ICON-18.png')}}" alt=""></div>
                 <div class="side-menu__title"> ตรวจสอบสต็อก</div>
             </a>
         </li>
