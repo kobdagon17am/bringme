@@ -169,16 +169,16 @@ class API1Controller extends Controller
             if (Hash::check($r->password, $customer->password)) {
 
                 // $customer->token = $r->token;
-                $customer->save();
+                // $customer->save();
 
                 return response()->json([
-                    'message' => 'success',
-                    'status' => 1,
-                    'data' => $customer,
-                ]);
-            }else{
-                return response()->json([
-                    'message' => 'รหัสผ่านไม่ถูกต้อง',
+                        'message' => 'success',
+                        'status' => 1,
+                        'data' => $customer,
+                    ]);
+                }else{
+                    return response()->json([
+                        'message' => 'รหัสผ่านไม่ถูกต้อง',
                     'status' => 0,
                     'data' => '',
                 ]);
@@ -459,7 +459,7 @@ class API1Controller extends Controller
             Mail::to($r->input('email'))->send(new SendMail($resetLink));
             return response()->json([
                 'message' =>  'Send mail successful.',
-                'status' => 'success',
+                'status' => 1,
                 'data' => '',
             ]);
         }
@@ -493,7 +493,7 @@ class API1Controller extends Controller
                 User::where('email')->update($data);
                 return response()->json([
                     'message' =>  'Reset Password Successful.',
-                    'status' => 'success',
+                    'status' => 1,
                     'data' => '',
                 ]);
             }else{
@@ -533,7 +533,7 @@ class API1Controller extends Controller
                 $data['flashsale'] = $product_flashsale;
                 return response()->json([
                     'message' =>  'Reset Password Successful.',
-                    'status' => 'success',
+                    'status' => 1,
                     'data' => $data,
                 ]);
             }else{
@@ -583,9 +583,11 @@ class API1Controller extends Controller
             $customer_address->default_active = $request->default_active;
             $customer_address->created_at = date('Y-m-d H:i:s');
             $customer_address->save();
+            DB::commit();
+
             return response()->json([
                 'message' =>  'Insert New Address Successful.',
-                'status' => 'success',
+                'status' => 1,
                 'data' => $customer_address,
             ]);
         }
@@ -616,7 +618,7 @@ class API1Controller extends Controller
             $category = Category::get();
             return response()->json([
                 'message' =>  'Get Category Successful.',
-                'status' => 'success',
+                'status' => 1,
                 'data' => $category,
             ]);
         }
@@ -647,7 +649,7 @@ class API1Controller extends Controller
             $brand = Brands::get();
             return response()->json([
                 'message' =>  'Get Brands Successful.',
-                'status' => 'success',
+                'status' => 1,
                 'data' => $brand,
             ]);
         }
@@ -685,7 +687,7 @@ class API1Controller extends Controller
             $product = $raw_product->get();
             return response()->json([
                 'message' =>  'Filter Product Successful.',
-                'status' => 'success',
+                'status' => 1,
                 'data' => $product,
             ]);
         }
@@ -731,21 +733,33 @@ class API1Controller extends Controller
 
             $product_datail = Products::where('id',$r->product_id)->first();
             if( $product_datail){
-                $product = new CustomerCartProduct();
-                $product->customer_cart_id = $cart->id;
-                $product->customer_id = $r->user_id;
-                $product->products_id = $r->product_id;
-                $product->price = $product_datail->price;
-                $product->qty = $r->qty;
-                $product->save();
+                $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('products_id',$r->product_id)->first();
+                if($product){
+                    // $product->customer_cart_id = $cart->id;
+                    // $product->customer_id = $r->user_id;
+                    // $product->products_id = $r->product_id;
+                    $product->price = $product_datail->price;
+                    $product->qty = ($r->qty+$product->qty);
+                    $product->save();
+
+                }else{
+                    $product = new CustomerCartProduct();
+                    $product->customer_cart_id = $cart->id;
+                    $product->customer_id = $r->user_id;
+                    $product->products_id = $r->product_id;
+                    $product->price = $product_datail->price;
+                    $product->qty = $r->qty;
+                    $product->save();
+
+                }
 
                 $product_cart = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->get();
                 $total_price = 0;
                 foreach($product_cart as $pro){
-                    $pro_detail = Products::where('id',$pro->products_id)->first();
-                    if($pro_detail){
-                        $total_price+= $pro_detail->price;
-                    }
+                    // $pro_detail = Products::where('id',$pro->products_id)->first();
+                    // if($pro_detail){
+                        $total_price += ($pro->price*$pro->qty);
+                    // }
                 }
                 $cart->total_price = $total_price;
                 $cart->grand_total = $total_price;
@@ -759,9 +773,12 @@ class API1Controller extends Controller
                 ]);
             }
 
+
+            DB::commit();
+
             return response()->json([
-                'message' =>  'Successful.',
-                'status' => 'success',
+                'message' =>  'สำเร็จ',
+                'status' => 1,
                 'data' => [
                     'cart' => $cart,
                     'product_cart' => $product_cart,
@@ -857,6 +874,49 @@ class API1Controller extends Controller
                 'data' => '',
             ]);
         }
+    }
+
+    public function api_get_cart_wait(Request $r)
+    {
+        $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
+        $product_qty = 0;
+        if($cart){
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','products.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.products_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            foreach($products as $pro){
+                $product_qty+=$pro->qty;
+            }
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'product_qty' => $product_qty,
+                    'cart' => $cart,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+    }
+
+    public function api_get_address_list(Request $r)
+    {
+        $customer_address = Customer_address::where('customer_id',$r->user_id)->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'customer_address' => $customer_address,
+                ],
+            ]);
     }
 
 }
