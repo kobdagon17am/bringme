@@ -36,3 +36,5 @@ Route::post('api_get_product_filter', 'API1Controller@api_get_product_filter');
 Route::post('api_add_cart', 'API1Controller@api_add_cart');
 Route::post('api_get_product_detail', 'API1Controller@api_get_product_detail');
 Route::post('api_get_home_page', 'API1Controller@api_get_home_page');
+Route::post('api_get_cart_wait', 'API1Controller@api_get_cart_wait');
+Route::post('api_get_address_list', 'API1Controller@api_get_address_list');
