@@ -45,9 +45,16 @@ Route::get('admin/employee-add', function () {
   })->name('admin/users');
 
 
-  Route::get('admin/stores', function () {
-    return view('Admin/stores');
-  })->name('admin/stores');
+  Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
+
+  Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
+  Route::post('admin/stores_confirmation', 'Admin\StoresController@stores_confirmation')->name('admin/stores_confirmation');
+
+
+
+  Route::get('admin/stores-detail', function () {
+    return view('Admin/store-detail');
+  })->name('admin/store-detail');
 
   Route::get('admin/stores-waitapproved', function () {
     return view('Admin/stores-waitapproved');

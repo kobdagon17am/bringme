@@ -13,7 +13,7 @@
         <div class="flex flex-col lg:flex-row border-b border-slate-200/60 dark:border-darkmode-400 pb-5 -mx-5">
             <div class="flex flex-1 px-5 items-center justify-center lg:justify-start">
                 <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
-                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-14.jpg">
+                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{ asset('admin_st/dist/images/profile-14.jpg')}}">
                     <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-primary rounded-full p-2"> <i class="w-4 h-4 text-white" data-lucide="camera"></i> </div>
                 </div>
                 <div class="ml-5">
@@ -161,7 +161,7 @@
                                     <td class="w-auto">1</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -174,7 +174,7 @@
                                     <td class="w-auto">2</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -187,7 +187,7 @@
                                     <td class="w-auto">3</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -254,7 +254,7 @@
                                     <td class="w-auto">1</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -267,7 +267,7 @@
                                     <td class="w-auto">2</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -280,7 +280,7 @@
                                     <td class="w-auto">3</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -347,7 +347,7 @@
                                     <td class="w-auto">1</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -360,7 +360,7 @@
                                     <td class="w-auto">2</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -373,7 +373,7 @@
                                     <td class="w-auto">3</td>
                                     <td class="w-auto">
                                         <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="dist/images/preview-9.jpg" title="Uploaded at 20 August 2020">
+                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('admin_st/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
                                         </div>
                                     </td>
                                     <td>
@@ -444,7 +444,7 @@
                     <div class="box">
                         <div class="p-5">
                             <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-1.jpg">
+                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-1.jpg')}}">
                                 <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                     <a href="" class="block font-medium text-base">Nike Tanjun</a>
                                     <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
@@ -480,7 +480,7 @@
                     <div class="box">
                         <div class="p-5">
                             <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-2.jpg">
+                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-2.jpg')}}">
                                 <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                     <a href="" class="block font-medium text-base">Nike Tanjun</a>
                                     <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
@@ -516,7 +516,7 @@
                     <div class="box">
                         <div class="p-5">
                             <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-3.jpg">
+                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-3.jpg')}}">
                                 <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                     <a href="" class="block font-medium text-base">Nike Tanjun</a>
                                     <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
@@ -552,7 +552,7 @@
                     <div class="box">
                         <div class="p-5">
                             <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-4.jpg">
+                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-4.jpg')}}">
                                 <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                     <a href="" class="block font-medium text-base">Nike Tanjun</a>
                                     <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
@@ -677,7 +677,7 @@
                             <div class="w-52 mx-auto xl:mr-0 xl:ml-6">
                                 <div class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                                     <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/profile-1.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/profile-1.jpg')}}">
                                         <div title="Remove this profile photo?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                     </div>
                                     <div class="mx-auto cursor-pointer relative mt-5">
@@ -797,7 +797,7 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
+                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/preview-11.jpg')}}">
                                             <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
@@ -813,7 +813,7 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
+                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/preview-11.jpg')}}">
                                             <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
@@ -829,7 +829,7 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
+                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/preview-11.jpg')}}">
                                             <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
@@ -872,7 +872,7 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
+                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/preview-11.jpg')}}">
                                                 <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
@@ -888,7 +888,7 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
+                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/preview-11.jpg')}}">
                                                 <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
@@ -904,7 +904,7 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
+                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('admin_st/dist/images/preview-11.jpg')}}">
                                                 <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
