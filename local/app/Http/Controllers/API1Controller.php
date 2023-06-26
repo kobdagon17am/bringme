@@ -569,6 +569,11 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
         {
+            if($request->default_active=='Y'){
+                $customer_address = DB::table('customer_address')->where('customer_id',$request->customer_id)->update([
+                    'default_active' => 'N'
+                ]);
+            }
             $customer_address = new Customer_address();
             $customer_address->customer_id = $request->customer_id;
             $customer_address->name = $request->name;
@@ -722,7 +727,14 @@ class API1Controller extends Controller
             $cart->customer_id = $r->user_id;
 
             $cart->delivery_type = 1;
-            // $cart->customer_address_id = $r->user_id;
+            $customer_address = Customer_address::
+            select('customer_address.id')
+            ->where('customer_address.customer_id',$r->user_id)
+            ->where('customer_address.default_active','Y')
+            ->first();
+            if($customer_address){
+                $cart->customer_address_id = $customer_address->id;
+            }
             $cart->total_price = 0;
             $cart->shipping_price = 0;
             $cart->grand_total = 0;
@@ -739,8 +751,19 @@ class API1Controller extends Controller
                     // $product->customer_id = $r->user_id;
                     // $product->products_id = $r->product_id;
                     $product->price = $product_datail->price;
-                    $product->qty = ($r->qty+$product->qty);
+                    if($r->type=='new'){
+                        $product->total_price = ($product_datail->price*$r->qty);
+                        $product->qty = $r->qty;
+                    }else{
+                        $product->total_price = ($product_datail->price*($r->qty+$product->qty));
+                        $product->qty = ($r->qty+$product->qty);
+                    }
+
                     $product->save();
+
+                    if($r->qty == 0){
+                        CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('products_id',$r->product_id)->delete();
+                    }
 
                 }else{
                     $product = new CustomerCartProduct();
@@ -748,6 +771,7 @@ class API1Controller extends Controller
                     $product->customer_id = $r->user_id;
                     $product->products_id = $r->product_id;
                     $product->price = $product_datail->price;
+                    $product->total_price = ($product_datail->price*$r->qty);
                     $product->qty = $r->qty;
                     $product->save();
 
@@ -758,7 +782,7 @@ class API1Controller extends Controller
                 foreach($product_cart as $pro){
                     // $pro_detail = Products::where('id',$pro->products_id)->first();
                     // if($pro_detail){
-                        $total_price += ($pro->price*$pro->qty);
+                        $total_price += $pro->total_price;
                     // }
                 }
                 $cart->total_price = $total_price;
@@ -827,6 +851,18 @@ class API1Controller extends Controller
             ->orderBy('updated_at','desc')
             ->get();
 
+            $address = 'ยังไม่ระบุสถานที่จัดส่ง';
+            if($r->user_id!=0){
+                $customer_address = Customer_address::
+                select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+                ->join('districts','districts.id','customer_address.district_id')
+                ->join('amphures','amphures.id','customer_address.amphures_id')
+                ->join('provinces','provinces.id','customer_address.province_id')
+                ->where('customer_id',$r->user_id)->where('default_active','Y')->first();
+                $address = $customer_address->address_number.' '.$customer_address->districts_name.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
+
+            }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -835,6 +871,7 @@ class API1Controller extends Controller
                     'product_new' => $product_new,
                     'product_pro' => $product_pro,
                     'product_recome' => $product_recome,
+                    'address' => $address,
                 ],
             ]);
     }
@@ -888,6 +925,17 @@ class API1Controller extends Controller
             foreach($products as $pro){
                 $product_qty+=$pro->qty;
             }
+
+            $customer_address = Customer_address::
+            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            ->join('districts','districts.id','customer_address.district_id')
+            ->join('amphures','amphures.id','customer_address.amphures_id')
+            ->join('provinces','provinces.id','customer_address.province_id')
+            ->where('customer_address.id',$cart->customer_address_id)->first();
+            if(!$customer_address){
+                $customer_address = '';
+            }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -895,6 +943,7 @@ class API1Controller extends Controller
                     'products' => $products,
                     'product_qty' => $product_qty,
                     'cart' => $cart,
+                    'customer_address' => $customer_address,
                 ],
             ]);
         }else{
@@ -909,12 +958,122 @@ class API1Controller extends Controller
 
     public function api_get_address_list(Request $r)
     {
-        $customer_address = Customer_address::where('customer_id',$r->user_id)->get();
+        $customer_address = Customer_address::
+        select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+        ->join('districts','districts.id','customer_address.district_id')
+        ->join('amphures','amphures.id','customer_address.amphures_id')
+        ->join('provinces','provinces.id','customer_address.province_id')
+        ->where('customer_id',$r->user_id)->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => [
                     'customer_address' => $customer_address,
+                ],
+            ]);
+    }
+
+    public function api_select_customer_address(Request $r)
+    {
+        $customer_address = DB::table('customer_address')->where('customer_id',$r->user_id)->update([
+            'default_active' => 'N'
+        ]);
+        $customer_address = DB::table('customer_address')->where('customer_id',$r->user_id)->where('id',$r->address_id)->update([
+            'default_active' => 'Y'
+        ]);
+        $customer_address = DB::table('customer_address')->where('customer_id',$r->user_id)->where('id',$r->address_id)->first();
+
+        CustomerCart::where('customer_id',$r->user_id)->where('status',0)->update([
+            'customer_address_id' => $r->address_id,
+        ]);
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'customer_address' => $customer_address,
+                ],
+            ]);
+    }
+
+    public function api_purchase_cart(Request $r){
+        DB::beginTransaction();
+        try
+        {
+            $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->where('id',$r->cart_id)->first();
+            if($cart){
+                $cart->action_date = date('Y-m-d');
+                $cart->pay_type = $r->pay_type;
+                if($r->pay_type==2){
+                    $cart->status = 1;
+                }else{
+                    $cart->status = 2;
+                }
+                $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
+                $cart->save();
+            }else{
+                return response()->json([
+                    'message' =>  'ไม่พบข้อมูลสินค้า',
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart' => $cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_order_list(Request $r)
+    {
+        $carts = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->orderBy('id','desc')->get();
+        $arr_cart = [];
+        // dd($carts);
+        foreach($carts as $key=> $c){
+            $products = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','products.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.products_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            $arr_cart[$key] = [];
+            foreach($products as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart[$key],$p);
+            }
+        }
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart' => $arr_cart,
+                    // 'product_qty' => $product_qty,
+                    // 'cart' => $cart,
+                    // 'customer_address' => $customer_address,
                 ],
             ]);
     }

@@ -38,3 +38,6 @@ Route::post('api_get_product_detail', 'API1Controller@api_get_product_detail');
 Route::post('api_get_home_page', 'API1Controller@api_get_home_page');
 Route::post('api_get_cart_wait', 'API1Controller@api_get_cart_wait');
 Route::post('api_get_address_list', 'API1Controller@api_get_address_list');
+Route::post('api_select_customer_address', 'API1Controller@api_select_customer_address');
+Route::post('api_purchase_cart', 'API1Controller@api_purchase_cart');
+Route::post('api_get_order_list', 'API1Controller@api_get_order_list');
