@@ -40,6 +40,7 @@ class StoresController extends Controller
           try {
             DB::BeginTransaction();
             $get_unit = DB::table('customer')
+              ->where('id',$rs->id)
               ->update($dataPrepare);
             DB::commit();
             return redirect('admin/stores_confirmation')->withSuccess('ปรับสถานะสำเร็จ');
