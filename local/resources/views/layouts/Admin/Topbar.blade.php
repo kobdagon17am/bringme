@@ -2,7 +2,7 @@
             <div class="h-full flex items-center">
                 <!-- BEGIN: Logo -->
                 <a href="{{route('admin/home')}}" class="logo -intro-x hidden md:flex xl:w-[180px] block">
-                    <img alt="Midone - HTML Admin Template" class="logo__image w-9/12" src="{{asset('dist/images/logo-bringMe.png')}}">
+                    <img alt="Midone - HTML Admin Template" class="logo__image w-9/12" src="{{asset('admin_st/dist/images/logo-bringMe.png')}}">
                     <!-- <span class="logo__text text-white text-lg ml-3"> Bringme </span>  -->
                 </a>
                 <!-- END: Logo -->
@@ -44,28 +44,28 @@
                             <div class="mb-5">
                                 <a href="" class="flex items-center mt-2">
                                     <div class="w-8 h-8 image-fit">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-2.jpg">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-2.jpg')}}">
                                     </div>
                                     <div class="ml-3">Al Pacino</div>
                                     <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">alpacino@left4code.com</div>
                                 </a>
                                 <a href="" class="flex items-center mt-2">
                                     <div class="w-8 h-8 image-fit">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-8.jpg">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-8.jpg')}}">
                                     </div>
                                     <div class="ml-3">Leonardo DiCaprio</div>
                                     <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">leonardodicaprio@left4code.com</div>
                                 </a>
                                 <a href="" class="flex items-center mt-2">
                                     <div class="w-8 h-8 image-fit">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-4.jpg">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-4.jpg')}}">
                                     </div>
                                     <div class="ml-3">Robert De Niro</div>
                                     <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">robertdeniro@left4code.com</div>
                                 </a>
                                 <a href="" class="flex items-center mt-2">
                                     <div class="w-8 h-8 image-fit">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-9.jpg">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-9.jpg')}}">
                                     </div>
                                     <div class="ml-3">Johnny Depp</div>
                                     <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">johnnydepp@left4code.com</div>
@@ -74,28 +74,28 @@
                             <div class="search-result__content__title">Products</div>
                             <a href="" class="flex items-center mt-2">
                                 <div class="w-8 h-8 image-fit">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/preview-5.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/preview-5.jpg')}}">
                                 </div>
                                 <div class="ml-3">Samsung Q90 QLED TV</div>
                                 <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">Electronic</div>
                             </a>
                             <a href="" class="flex items-center mt-2">
                                 <div class="w-8 h-8 image-fit">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/preview-9.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/preview-9.jpg')}}">
                                 </div>
                                 <div class="ml-3">Sony A7 III</div>
                                 <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">Photography</div>
                             </a>
                             <a href="" class="flex items-center mt-2">
                                 <div class="w-8 h-8 image-fit">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/preview-3.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/preview-3.jpg')}}">
                                 </div>
                                 <div class="ml-3">Nike Tanjun</div>
                                 <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">Sport &amp; Outdoor</div>
                             </a>
                             <a href="" class="flex items-center mt-2">
                                 <div class="w-8 h-8 image-fit">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/preview-10.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/preview-10.jpg')}}">
                                 </div>
                                 <div class="ml-3">Nike Tanjun</div>
                                 <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">Sport &amp; Outdoor</div>
@@ -112,7 +112,7 @@
                             <div class="notification-content__title">แจ้งเตือน</div>
                             <div class="cursor-pointer relative flex items-center ">
                                 <div class="w-12 h-12 flex-none image-fit mr-1">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-2.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-2.jpg')}}">
                                     <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="ml-2 overflow-hidden">
@@ -125,7 +125,7 @@
                             </div>
                             <div class="cursor-pointer relative flex items-center mt-5">
                                 <div class="w-12 h-12 flex-none image-fit mr-1">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-8.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-8.jpg')}}">
                                     <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="ml-2 overflow-hidden">
@@ -138,7 +138,7 @@
                             </div>
                             <div class="cursor-pointer relative flex items-center mt-5">
                                 <div class="w-12 h-12 flex-none image-fit mr-1">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-4.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-4.jpg')}}">
                                     <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="ml-2 overflow-hidden">
@@ -151,7 +151,7 @@
                             </div>
                             <div class="cursor-pointer relative flex items-center mt-5">
                                 <div class="w-12 h-12 flex-none image-fit mr-1">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-9.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-9.jpg')}}">
                                     <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="ml-2 overflow-hidden">
@@ -164,7 +164,7 @@
                             </div>
                             <div class="cursor-pointer relative flex items-center mt-5">
                                 <div class="w-12 h-12 flex-none image-fit mr-1">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-3.jpg">
+                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{asset('admin_st/dist/images/profile-3.jpg')}}">
                                     <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="ml-2 overflow-hidden">
@@ -182,7 +182,7 @@
                 <!-- BEGIN: Account Menu -->
                 <div class="intro-x dropdown w-8 h-8">
                     <div class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in scale-110" role="button" aria-expanded="false" data-tw-toggle="dropdown">
-                        <img alt="Midone - HTML Admin Template" src="{{asset('dist/images/profile-4.jpg')}}">
+                        <img alt="Midone - HTML Admin Template" src="{{asset('admin_st/dist/images/profile-4.jpg')}}">
                     </div>
                     <div class="dropdown-menu w-56">
                         <ul class="dropdown-content bg-primary/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white">

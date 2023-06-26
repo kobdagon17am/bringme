@@ -1,150 +1,159 @@
 @extends('layouts.Admin.app')
 
 @section('content')
-<div class="content">
-    <h2 class="intro-y text-lg font-medium mt-10">
-        ข้อมูลร้านค้า
-    </h2>
-    <div class="grid grid-cols-12 gap-6 mt-5">
-        <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
-            <div class="hidden md:block mx-auto text-slate-500">Showing 1 to 10 of 150 entries</div>
-            <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
-                <div class="w-56 relative text-slate-500">
-                    <input type="text" class="form-control w-56 box pr-10" placeholder="ค้นหา...">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="search" class="lucide lucide-search w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </div>
+    <div class="content">
+        <h2 class="intro-y text-lg font-medium mt-10">
+            รายการร้านค้ายังไม่อนุมัติ
+        </h2>
+        <div class="grid grid-cols-12 gap-6 mt-5">
+
+            <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+
+
+
+                <table class="table table-report -mt-2">
+                    <thead>
+                        <tr>
+                            <th class="whitespace-nowrap">รูปภาพ</th>
+                            <th class="whitespace-nowrap">ชื่อร้านค้า</th>
+                            <th class="text-center whitespace-nowrap">ชื่อเจ้าของร้าน</th>
+                            <th class="text-center whitespace-nowrap">สถานะ</th>
+                            <th class="text-center whitespace-nowrap"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+
+                        $customer = DB::table('customer')
+                            ->where('customer_type', 2)
+                            ->where('approve_store', 0)
+
+                            ->get();
+
+                        ?>
+
+                        @foreach ($customer as $value)
+                            <tr class="intro-x">
+                                <td class="w-40">
+                                    <div class="flex">
+                                        <div class="w-10 h-10 image-fit zoom-in">
+                                            <img alt="Midone - HTML Admin Template" class=" rounded-full"
+                                                src="{{ asset('admin_st/dist/images/preview-9.jpg') }}">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="" class="font-medium whitespace-nowrap">{{ $value->name }}</a>
+                                </td>
+                                <td class="text-center">
+                                    <?php
+                                    $name_full = $value->firstname . ' ' . $value->lat;
+                                    ?>
+                                    {{ $name_full }}</td>
+                                <td class="w-40">
+                                    <?php
+                                    if ($value->approve_store == 1) {
+                                        $htmml = '<div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>';
+                                    } elseif ($value->approve_store == 2) {
+                                        $htmml = '<div class="flex items-center justify-center text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Not Active </div>';
+                                    } else {
+                                        $htmml = '<div class="flex items-center justify-center text-warning"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติ </div>';
+                                    }
+                                    ?>
+                                    {{-- <a href="#!"  onclick="confirmation_customer({{ $value->id }})">{!! $htmml !!}</a> --}}
+
+                                <a  href="javascript:;" data-tw-toggle="modal" data-tw-target="#header-footer-modal-preview_{{$value->id}}">{!! $htmml !!}</a>
+
+                                <td class="table-report__action w-56">
+                                    <div class="flex justify-center items-center">
+                                        <a class="flex items-center mr-3" href="{{ route('admin/store-detail') }}"><i
+                                                data-lucide="eye" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
+                                    </div>
+                                </td>
+
+
+
+                                <div id="header-footer-modal-preview_{{$value->id}}" class="modal" tabindex="-1" aria-hidden="true">
+                                    <form method="POST" action="{{ route('admin/stores_confirmation') }}" >
+                                                        @csrf
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- BEGIN: Modal Header -->
+                                            <div class="modal-header">
+                                                <h2 class="font-medium text-base mr-auto">อนุมัติร้านค้า</h2>
+
+                                            </div> <!-- END: Modal Header -->
+                                            <!-- BEGIN: Modal Body -->
+                                            <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                                                <div class="col-span-12 sm:col-span-12"> <label for="modal-form-1" class="form-label">ชื่อร้านค้า</label>
+                                                    <input id="modal-form-1" type="text" class="form-control" value="{{ $value->name }}" disabled>
+                                                </div>
+                                                <div class="col-span-12 sm:col-span-12"> <label for="modal-form-2" class="form-label">ชื่อเจ้าของร้าน</label>
+                                                    <input id="modal-form-2" type="text" class="form-control" value="{{$name_full}}" disabled>
+                                                </div>
+                                                <input type="hidden" name="id" value="{{$value->id}}">
+                                                <div class="col-span-12 sm:col-span-6"> <label for="modal-form-6" class="form-label">สถานะการลงทะเบัยน</label>
+                                                    <select id="modal-form-6" class="form-select" name="status">
+                                                        <option value="1">อนุมัติ</option>
+                                                        <option value="2">ไม่อนุมัติ</option>
+
+                                                    </select> </div>
+
+                                                <div class="col-span-12 sm:col-span-12"> <label for="modal-form-5" class="form-label">รายละเอียด
+                                                </label> <textarea id="modal-form-5" type="text" class="form-control" name="note"> </textarea></div>
+
+                                            </div> <!-- END: Modal Body -->
+                                            <!-- BEGIN: Modal Footer -->
+                                            <div class="modal-footer"> <button type="button" data-tw-dismiss="modal"
+                                                    class="btn btn-outline-secondary w-20 mr-1">ยกเลิก</button>
+                                                    <button type="submit"
+                                                    class="btn btn-primary w-20">ยืนยัน</button> </div> <!-- END: Modal Footer -->
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div> <!-- END: Modal Content -->
+                            </tr>
+                        @endforeach
+
+
+                    </tbody>
+                </table>
             </div>
+            <!-- END: Data List -->
+            <!-- BEGIN: Pagination -->
+
+            <!-- END: Pagination -->
         </div>
-        <!-- BEGIN: Data List -->
-        <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
-            <table class="table table-report -mt-2">
-                <thead>
-                    <tr>
-                        <th class="whitespace-nowrap">รูปภาพ</th>
-                        <th class="whitespace-nowrap">ชื่อร้านค้า</th>
-                        <th class="text-center whitespace-nowrap">ชื่อเจ้าของร้าน</th>
-                        <th class="text-center whitespace-nowrap">สถานะ</th>
-                        <th class="text-center whitespace-nowrap"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="intro-x">
-                        <td class="w-40">
-                            <div class="flex">
-                                <div class="w-10 h-10 image-fit zoom-in">
-                                    <img alt="Midone - HTML Admin Template" class=" rounded-full" src="dist/images/preview-9.jpg">
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <a href="" class="font-medium whitespace-nowrap">The Codfather</a>
-                        </td>
-                        <td class="text-center">จอมขวัญ พิชิตชัย</td>
-                        <td class="w-40">
-                            <div class="flex items-center justify-center text-warning"> รออนุมัติ </div>
-                        </td>
-                        <td class="table-report__action w-56">
-                            <div class="flex justify-center items-center">
-                                <a class="flex items-center mr-3" href="store-register-detail.php"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="intro-x">
-                        <td class="w-40">
-                            <div class="flex">
-                                <div class="w-10 h-10 image-fit zoom-in">
-                                    <img alt="Midone - HTML Admin Template" class=" rounded-full" src="dist/images/preview-12.jpg">
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <a href="" class="font-medium whitespace-nowrap">Bean Me Up</a>
-                        </td>
-                        <td class="text-center">ภาณุพล สายสำอาง</td>
-                        <td class="w-40">
-                            <div class="flex items-center justify-center text-warning"> รออนุมัติ </div>
-                        </td>
-                        <td class="table-report__action w-56">
-                            <div class="flex justify-center items-center">
-                                <a class="flex items-center mr-3" href="store-register-detail.php"> <i data-lucide="eye" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- END: Data List -->
-        <!-- BEGIN: Pagination -->
-        <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
-            <nav class="w-full sm:w-auto sm:mr-auto">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="chevrons-left" class="lucide lucide-chevrons-left w-4 h-4" data-lucide="chevrons-left">
-                                <polyline points="11 17 6 12 11 7"></polyline>
-                                <polyline points="18 17 13 12 18 7"></polyline>
-                            </svg> </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="chevron-left" class="lucide lucide-chevron-left w-4 h-4" data-lucide="chevron-left">
-                                <polyline points="15 18 9 12 15 6"></polyline>
-                            </svg> </a>
-                    </li>
-                    <li class="page-item"> <a class="page-link" href="#">...</a> </li>
-                    <li class="page-item"> <a class="page-link" href="#">1</a> </li>
-                    <li class="page-item active"> <a class="page-link" href="#">2</a> </li>
-                    <li class="page-item"> <a class="page-link" href="#">3</a> </li>
-                    <li class="page-item"> <a class="page-link" href="#">...</a> </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="chevron-right" class="lucide lucide-chevron-right w-4 h-4" data-lucide="chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg> </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="chevrons-right" class="lucide lucide-chevrons-right w-4 h-4" data-lucide="chevrons-right">
-                                <polyline points="13 17 18 12 13 7"></polyline>
-                                <polyline points="6 17 11 12 6 7"></polyline>
-                            </svg> </a>
-                    </li>
-                </ul>
-            </nav>
-            <select class="w-20 form-select box mt-3 sm:mt-0">
-                <option>10</option>
-                <option>25</option>
-                <option>35</option>
-                <option>50</option>
-            </select>
-        </div>
-        <!-- END: Pagination -->
+
     </div>
-    <!-- BEGIN: Delete Confirmation Modal -->
-    <div id="delete-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body p-0">
-                    <div class="p-5 text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="x-circle" data-lucide="x-circle" class="lucide lucide-x-circle w-16 h-16 text-danger mx-auto mt-3">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                        </svg>
-                        <div class="text-3xl mt-5">Are you sure?</div>
-                        <div class="text-slate-500 mt-2">
-                            Do you really want to delete these records?
-                            <br>
-                            This process cannot be undone.
-                        </div>
-                    </div>
-                    <div class="px-5 pb-8 text-center">
-                        <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-                        <button type="button" class="btn btn-danger w-24">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END: Delete Confirmation Modal -->
-</div>
+
+
+
 @endsection
+@section('js')
+    <script type="text/javascript">
+        function confirmation_customer(id) {
+            $("#header-footer-modal-preview").show();
+
+            // $.ajax({
+            //         url: '',
+            //         type: 'GET',
+            //         data: {
+            //             id
+            //         }
+            //     })
+            //     .done(function(data) {
+
+            //         $("#-modal").modal();
+            //         $("#id").val(data['data']['id']);
+
+            //         $("#unit_name").val(data['data']['product_unit_th']);
+            //         $("#unit_en_name").val(data['data']['product_unit_en']);
+            //         $("#unit_status").val(data['data']['status']);
+
+            //     })
+            //     .fail(function() {
+            //         console.log("error");
+            //     })
+        }
+    @endsection

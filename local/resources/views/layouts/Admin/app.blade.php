@@ -20,10 +20,12 @@
 
             <!-- BEGIN: JS Assets-->
             <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+
             <script defer src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
             <script defer src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
             <script defer src="{{asset('admin_st/dist/js/ckeditor-classic.js')}}"></script>
             <script defer src="{{asset('admin_st/dist/js/app.js')}}"></script>
+
             <!-- END: JS Assets-->
             @yield('css')
         </head>
@@ -47,7 +49,27 @@
 
             <!-- END: Content -->
         </div>
+
+        <script>
+            $(document).ready(function() {
+                $('a').removeClass('side-menu--active')
+                $('ul').removeClass('side-menu__sub-open')
+                $('a').each(function() {
+                    let url = window.location.href;
+                    let a = $(this).attr('href')
+                    if (a == url) {
+                        $(this).addClass('side-menu--active')
+                        $(this).parent().parent().addClass('side-menu__sub-open')
+                    }
+                });
+
+            });
+        </script>
+          <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+         @include('layouts.Admin.flash-message')
         @yield('js')
+
+
     </body>
 </html>
 
