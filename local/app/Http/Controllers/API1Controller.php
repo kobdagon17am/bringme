@@ -833,23 +833,25 @@ class API1Controller extends Controller
     {
             $product_good_sale = Products::where('approve_status',1)
             ->where('display_status',1)
-            ->orderBy('updated_at','desc')
-            ->get();
+            ->orderBy('sale_number','desc')
+            ->inRandomOrder()->get();
 
             $product_new = Products::where('approve_status',1)
             ->where('display_status',1)
-            ->orderBy('updated_at','desc')
-            ->get();
+            // ->orderBy('updated_at','desc')
+            ->inRandomOrder()->get();
 
             $product_pro = Products::where('approve_status',1)
             ->where('display_status',1)
             ->orderBy('updated_at','desc')
-            ->get();
+            ->where('id',0)
+            ->inRandomOrder()->get();
 
             $product_recome = Products::where('approve_status',1)
             ->where('display_status',1)
             ->orderBy('updated_at','desc')
-            ->get();
+            // ->where('id',0)
+            ->inRandomOrder()->get();
 
             $address = 'ยังไม่ระบุสถานที่จัดส่ง';
             if($r->user_id!=0){
@@ -859,7 +861,9 @@ class API1Controller extends Controller
                 ->join('amphures','amphures.id','customer_address.amphures_id')
                 ->join('provinces','provinces.id','customer_address.province_id')
                 ->where('customer_id',$r->user_id)->where('default_active','Y')->first();
-                $address = $customer_address->address_number.' '.$customer_address->districts_name.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
+                if($customer_address){
+                    $address = $customer_address->address_number.' '.$customer_address->districts_name.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
+                }
 
             }
 
@@ -884,8 +888,9 @@ class API1Controller extends Controller
             $customer = Customer::where('id',$store->customer_id)->first();
 
             $product_good_sale = Products::where('approve_status',1)
+            ->where('store_id',$product_detail->store_id)
             ->where('display_status',1)
-            ->orderBy('updated_at','desc')
+            ->orderBy('sale_number','desc')
             ->get();
 
             $product_your_like = Products::where('approve_status',1)
@@ -1011,6 +1016,17 @@ class API1Controller extends Controller
                 }
                 $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
                 $cart->save();
+
+                $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
+                ->where('customer_cart_product.customer_cart_id',$r->cart_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+                foreach($arr_pro as $p){
+                    $product = DB::table('products')->where('id',$p->products_id)->first();
+                    if($product){
+                        DB::table('products')->where('id',$product->id)->update([
+                            'sale_number' => $product->sale_number + $p->qty,
+                        ]);
+                    }
+                }
             }else{
                 return response()->json([
                     'message' =>  'ไม่พบข้อมูลสินค้า',
