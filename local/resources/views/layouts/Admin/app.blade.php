@@ -17,7 +17,7 @@
 
             <link rel="stylesheet" href="{{asset('admin_st/dist/css/app.css')}}" />
 
-            <script src="{{asset('admin_st/dist/js/app.js')}}" defer></script>
+            {{-- <script src="{{asset('admin_st/dist/js/app.js')}}" defer></script> --}}
             <link href='https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css' rel='stylesheet'>
             <!-- END: CSS Assets-->
 
