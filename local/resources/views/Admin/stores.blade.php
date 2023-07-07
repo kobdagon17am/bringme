@@ -1,5 +1,5 @@
 @extends('layouts.Admin.app')
-<link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+
 
 @section('content')
 <div class="content">
@@ -95,9 +95,7 @@
 </div>
 @endsection
 @section('js')
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/jquery.dataTables.js" type="text/javascript"></script>
-<script src="js/jquery.js" type="text/javascript"></script>
+
 <script type="text/javascript">
 
 $(function() {
