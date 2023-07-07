@@ -1,6 +1,6 @@
 @extends('layouts.Admin.app')
-<link href='https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css' rel='stylesheet'>
-<link href='https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css' rel='stylesheet'>
+<link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+
 @section('content')
 <div class="content">
     <h2 class="intro-y text-lg font-medium mt-10">
@@ -21,9 +21,7 @@
                 </div>
                 </div>
 
-
-
-         {{-- <table class="table table-report -mt-2">
+         {{--<table class="table table-report -mt-2" id="ex">
                 <thead>
                     <tr>
                         <th class="whitespace-nowrap">รูปภาพ</th>
@@ -97,7 +95,9 @@
 </div>
 @endsection
 @section('js')
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/jquery.dataTables.js" type="text/javascript"></script>
+<script src="js/jquery.js" type="text/javascript"></script>
 <script type="text/javascript">
 
 $(function() {
