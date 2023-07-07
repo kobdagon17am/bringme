@@ -17,13 +17,12 @@
 
             <link rel="stylesheet" href="{{asset('admin_st/dist/css/app.css')}}" />
 
-            {{-- <script src="{{asset('admin_st/dist/js/app.js')}}" defer></script> --}}
+            <script defer src="{{asset('admin_st/dist/js/app.js')}}"></script>
             <link href='https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css' rel='stylesheet'>
 
             <!-- END: CSS Assets-->
 
             <!-- BEGIN: JS Assets-->
-
 
             <script defer src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
             <script defer src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
