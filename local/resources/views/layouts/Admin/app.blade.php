@@ -16,15 +16,21 @@
             <!-- BEGIN: CSS Assets-->
 
             <link rel="stylesheet" href="{{asset('admin_st/dist/css/app.css')}}" />
+
+            <script src="{{asset('admin_st/dist/js/app.js')}}" defer></script>
             <!-- END: CSS Assets-->
 
             <!-- BEGIN: JS Assets-->
-            <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+            <script  src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
-            <script defer src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-            <script defer src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
-            <script defer src="{{asset('admin_st/dist/js/ckeditor-classic.js')}}"></script>
-            <script defer src="{{asset('admin_st/dist/js/app.js')}}"></script>
+
+
+
+            <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
+            <script src="{{asset('admin_st/dist/js/ckeditor-classic.js')}}"></script>
+
 
             <!-- END: JS Assets-->
             @yield('css')
@@ -33,16 +39,16 @@
     <!-- END: Head -->
     <body class="py-5 md:py-0">
         <!-- BEGIN: Mobile Menu -->
-        @include('layouts.Admin.MobileMenu');
+        @include('layouts.Admin.MobileMenu')
         <!-- END: Mobile Menu -->
         <!-- BEGIN: Top Bar -->
 
-        @include('layouts.Admin.Topbar');
+        @include('layouts.Admin.Topbar')
         <!-- END: Top Bar -->
         <div class="flex overflow-hidden">
             <!-- BEGIN: Side Menu -->
 
-            @include('layouts.Admin.SideNav');
+            @include('layouts.Admin.SideNav')
             <!-- END: Side Menu -->
             <!-- BEGIN: Content -->
             @yield('content')

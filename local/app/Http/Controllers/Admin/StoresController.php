@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
-
 class StoresController extends Controller
 {
     /**
@@ -58,6 +57,7 @@ class StoresController extends Controller
 
     public function stores_datable(Request $request)
     {
+
 
         $customer = DB::table('customer')
         // ->where('status','=','success')

@@ -1,5 +1,6 @@
 @extends('layouts.Admin.app')
-
+<link href='https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css' rel='stylesheet'>
+<link href='https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css' rel='stylesheet'>
 @section('content')
 <div class="content">
     <h2 class="intro-y text-lg font-medium mt-10">
@@ -9,9 +10,20 @@
 
         <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
 
+            <div class="overflow-x-auto">
+                <div class="table-responsive">
+                    <table id="workL" class="table table-striped table-hover dt-responsive display nowrap"
+                        cellspacing="0">
 
 
-         <table class="table table-report -mt-2">
+                    </table>
+
+                </div>
+                </div>
+
+
+
+         {{-- <table class="table table-report -mt-2">
                 <thead>
                     <tr>
                         <th class="whitespace-nowrap">รูปภาพ</th>
@@ -75,7 +87,7 @@
 
                 </tbody>
             </table>
-        </div>
+        </div> --}}
         <!-- END: Data List -->
         <!-- BEGIN: Pagination -->
 
@@ -87,52 +99,34 @@
 @section('js')
 
 <script type="text/javascript">
-        $(function() {
-            table_order = $('#ex').DataTable({
-                dom: 'Bfrtip',
-                buttons: ['excel'],
-                searching: false,
-                ordering: false,
-                lengthChange: false,
-                responsive: true,
-                paging: false,
+
+$(function() {
+            var oTable = $('#workL').DataTable({
                 processing: true,
                 serverSide: true,
-                "language": {
-                    "lengthMenu": "แสดง _MENU_ แถว",
-                    "zeroRecords": "ไม่พบข้อมูล",
-                    "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
-                    "search": "ค้นหา",
-                    "infoEmpty": "",
-                    "infoFiltered": "",
-                    "paginate": {
-                        "first": "หน้าแรก",
-                        "previous": "ย้อนกลับ",
-                        "next": "ถัดไป",
-                        "last": "หน้าสุดท้าย"
-                    },
-                    'processing': "กำลังโหลดข้อมูล",
-                },
+                searching: true,
                 ajax: {
-                    url: '{{ route('admin/stores_datable') }}',
-                    data: function(d) {
-                    d.user_name = $('#user_name').val();
-                    d.s_date = $('#s_date').val();
-                    d.e_date = $('#e_date').val();
-                    // d.position = $('#position').val();
-                    // d.type = $('#type').val();
-
-                    },
-                },
-
-
-                columns: [
-                    // {
-                    //     data: "id",
-                    //     title: "ลำดับ",
-                    //     className: "w-10 text-center",
+                    url: "{!! route('admin/stores_datable') !!}",
+                    // data: {
+                    //     _token: '{{ csrf_token() }}',
+                    //     dt_order_type: $('#dt_order_type').val(),
+                    //     dt_pay_type: $('#dt_pay_type').val(),
+                    //     s_date: $('#s_date').val(),
+                    //     e_date: $('#e_date').val(),
                     // },
-                    {
+                    data: function(d) {
+                        d.dt_order_type = $('#dt_order_type').val();
+                        d.dt_pay_type = $('#dt_pay_type').val();
+                        d.s_date = $('#s_date').val();
+                        d.e_date = $('#e_date').val();
+                        d._token = '{!! csrf_token() !!}';
+                    },
+                    method: 'POST',
+                },
+                // type: "POST",
+                columns: [
+
+                {
                         data: "img",
                         title: "รูปภาพ",
                         className: "w-10",
@@ -161,19 +155,113 @@
                         className: "w-10",
 
                     },
-
-
-
                 ],
-
-
-
+                // order: [
+                //     [1, 'DESC']
+                // ]
             });
+
             $('#search-form').on('click', function(e) {
-            table_order.draw();
-            e.preventDefault();
-        });
+                oTable.draw();
+                e.preventDefault();
+            });
 
         });
+
+
+
+        // $(function() {
+
+        //     new DataTable('#workL');
+        //     table_order = $('#workL').DataTable({
+        //         // dom: 'Bfrtip',
+        //         // buttons: ['excel'],
+        //         searching: false,
+        //         ordering: false,
+        //         lengthChange: false,
+        //         responsive: true,
+        //         paging: false,
+        //         processing: true,
+        //         serverSide: true,
+        //         "language": {
+        //             "lengthMenu": "แสดง _MENU_ แถว",
+        //             "zeroRecords": "ไม่พบข้อมูล",
+        //             "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
+        //             "search": "ค้นหา",
+        //             "infoEmpty": "",
+        //             "infoFiltered": "",
+        //             "paginate": {
+        //                 "first": "หน้าแรก",
+        //                 "previous": "ย้อนกลับ",
+        //                 "next": "ถัดไป",
+        //                 "last": "หน้าสุดท้าย"
+        //             },
+        //             'processing': "กำลังโหลดข้อมูล",
+        //         },
+        //         ajax: {
+        //             url: '{{ route('admin/stores_datable') }}',
+        //             data: function(d) {
+        //             // d.user_name = $('#user_name').val();
+        //             // d.s_date = $('#s_date').val();
+        //             // d.e_date = $('#e_date').val();
+        //             // d.position = $('#position').val();
+        //             // d.type = $('#type').val();
+
+        //             },
+        //         },
+
+
+        //         columns: [
+        //             // {
+        //             //     data: "id",
+        //             //     title: "ลำดับ",
+        //             //     className: "w-10 text-center",
+        //             // },
+        //             {
+        //                 data: "img",
+        //                 title: "รูปภาพ",
+        //                 className: "w-10",
+        //             },
+        //             {
+        //                 data: "name",
+        //                 title: "ชื่อร้านค้า",
+        //                 className: "w-10",
+        //             },
+
+        //             {
+        //                 data: "name_full",
+        //                 title: "ชื่อเจ้าของร้าน",
+        //                 className: "w-10",
+        //             },
+
+        //             {
+        //                 data: "status",
+        //                 title: "สถานะ",
+        //                 className: "w-10",
+        //             },
+
+        //             {
+        //                 data: "action",
+        //                 title: "action",
+        //                 className: "w-10",
+
+        //             },
+
+
+
+        //         ],
+
+
+
+        //     });
+        //     $('#search-form').on('click', function(e) {
+        //     table_order.draw();
+        //     e.preventDefault();
+        // });
+
+        // });
     </script>
+
+
+
     @endsection

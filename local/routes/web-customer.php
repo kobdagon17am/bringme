@@ -22,10 +22,10 @@ Auth::routes();
     if (Auth::guard('customer')->check()) {
       return redirect('home');
     }else{
-      return view('Auth/logincustomer');
+
+      return view('auth/logincustomer');
     }
   });
-
 
 
   Route::get('home', 'Customer\HomeController@index')->name('home');
