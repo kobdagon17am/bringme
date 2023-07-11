@@ -33,15 +33,15 @@ Route::get('admin/home', 'Admin\HomeController@index')->name('admin/home');
 Route::get('admin/employee', 'Admin\EmployeeController@index')->name('admin/employee');
 
 Route::get('admin/employee-add', function () {
-    return view('Admin/employee-add');
+    return view('backend/employee-add');
   })->name('admin/employee-add');
 
   Route::get('admin/permission', function () {
-    return view('Admin/permission');
+    return view('backend/permission');
   })->name('admin/permission');
 
   Route::get('admin/users', function () {
-    return view('Admin/users');
+    return view('backend/users');
   })->name('admin/users');
 
 
@@ -53,103 +53,103 @@ Route::get('admin/employee-add', function () {
 
 
   Route::get('admin/stores-detail', function () {
-    return view('Admin/store-detail');
+    return view('backend/store-detail');
   })->name('admin/store-detail');
 
   Route::get('admin/stores-waitapproved', function () {
-    return view('Admin/stores-waitapproved');
+    return view('backend/stores-waitapproved');
   })->name('admin/stores-waitapproved');
 
   Route::get('admin/products', function () {
-    return view('Admin/products');
+    return view('backend/products');
   })->name('admin/products');
 
   Route::get('admin/products-waitapproved', function () {
-    return view('Admin/products-waitapproved');
+    return view('backend/products-waitapproved');
   })->name('admin/products-waitapproved');
 
   Route::get('admin/transaction', function () {
-    return view('Admin/transaction');
+    return view('backend/transaction');
   })->name('admin/transaction');
 
   Route::get('admin/refund', function () {
-    return view('Admin/refund');
+    return view('backend/refund');
   })->name('admin/refund');
 
   Route::get('admin/campaign', function () {
-    return view('Admin/campaign');
+    return view('backend/campaign');
   })->name('admin/campaign');
 
   Route::get('admin/user-store', function () {
-    return view('Admin/user-store');
+    return view('backend/user-store');
   })->name('admin/user-store');
 
   Route::get('admin/user-store-product-add', function () {
-    return view('Admin/user-store-product-add');
+    return view('backend/user-store-product-add');
   })->name('admin/user-store-product-add');
 
   Route::get('admin/user-store-product-edit', function () {
-    return view('Admin/user-store-product-edit');
+    return view('backend/user-store-product-edit');
   })->name('admin/user-store-product-edit');
 
   Route::get('admin/orders', function () {
-    return view('Admin/orders');
+    return view('backend/orders');
   })->name('admin/orders');
 
   Route::get('admin/discount-code', function () {
-    return view('Admin/discount-code');
+    return view('backend/discount-code');
   })->name('admin/discount-code');
 
   Route::get('admin/promo-discount-product', function () {
-    return view('Admin/promo-discount-product');
+    return view('backend/promo-discount-product');
   })->name('admin/promo-discount-product');
 
   Route::get('admin/promo-free-gift', function () {
-    return view('Admin/promo-free-gift');
+    return view('backend/promo-free-gift');
   })->name('admin/promo-free-gift');
 
   Route::get('admin/promo-bundle-deal', function () {
-    return view('Admin/promo-bundle-deal');
+    return view('backend/promo-bundle-deal');
   })->name('admin/promo-bundle-deal');
 
   Route::get('admin/promo-add-on', function () {
-    return view('Admin/promo-add-on');
+    return view('backend/promo-add-on');
   })->name('admin/promo-add-on');
 
   Route::get('admin/profile-edit', function () {
-    return view('Admin/profile-edit');
+    return view('backend/profile-edit');
   })->name('admin/profile-edit');
 
   Route::get('admin/receive-product', function () {
-    return view('Admin/receive-product');
+    return view('backend/receive-product');
   })->name('admin/receive-product');
 
   Route::get('admin/order-detail', function () {
-    return view('Admin/order-detail');
+    return view('backend/order-detail');
   })->name('admin/order-detail');
 
   Route::get('admin/orders', function () {
-    return view('Admin/orders');
+    return view('backend/orders');
   })->name('admin/orders');
 
   Route::get('admin/orders', function () {
-    return view('Admin/orders');
+    return view('backend/orders');
   })->name('admin/orders');
 
   Route::get('admin/products-awaiting-delivery', function () {
-    return view('Admin/products-awaiting-delivery');
+    return view('backend/products-awaiting-delivery');
   })->name('admin/products-awaiting-delivery');
 
   Route::get('admin/create-bill-lading', function () {
-    return view('Admin/create-bill-lading');
+    return view('backend/create-bill-lading');
   })->name('admin/create-bill-lading');
 
   Route::get('admin/bill-lading', function () {
-    return view('Admin/bill-lading');
+    return view('backend/bill-lading');
   })->name('admin/bill-lading');
 
   Route::get('admin/check-stock', function () {
-    return view('Admin/check-stock');
+    return view('backend/check-stock');
   })->name('admin/check-stock');
 
 
