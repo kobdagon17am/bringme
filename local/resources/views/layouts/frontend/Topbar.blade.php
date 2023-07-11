@@ -2,7 +2,7 @@
             <div class="h-full flex items-center">
                 <!-- BEGIN: Logo -->
                 <a href="{{route('home')}}" class="logo -intro-x hidden md:flex xl:w-[180px] block">
-                    <img alt="Midone - HTML Admin Template" class="logo__image w-9/12" src="dist/images/logo-bringMe.png">
+                    <img alt="Midone - HTML Admin Template" class="logo__image w-9/12" src="backend/dist/images/logo-bringMe.png">
                     <!-- <span class="logo__text text-white text-lg ml-3"> Bringme </span>  -->
                 </a>
                 <!-- END: Logo -->

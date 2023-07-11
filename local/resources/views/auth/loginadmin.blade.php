@@ -31,7 +31,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN: Login Info -->
             <!-- <div class="hidden xl:flex flex-col min-h-screen">
                 <a href="" class="-intro-x flex items-center pt-5">
-                    <img alt="Midone - HTML Admin Template" class="" src="{{asset('dist/images/logo-bringMe.png')}}">
+                    <img alt="Midone - HTML Admin Template" class="" src="{{asset('backend/dist/images/logo-bringMe.png')}}">
                     {{-- <span class="text-white text-lg ml-3"> AppBringme </span> --}}
                 </a>
                 <div class="my-auto">

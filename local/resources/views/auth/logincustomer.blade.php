@@ -13,14 +13,14 @@ License: You must have a valid license purchased only from themeforest(the above
 
 <head>
     <meta charset="utf-8">
-    <link href="{{asset('dist/images/logo-bringMe.png')}}" rel="shortcut icon">
+    <link href="{{asset('backend/dist/images/logo-bringMe.png')}}" rel="shortcut icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="appbefriends">
     <meta name="keywords" content="appbefriends">
     <meta name="author" content="LEFT4CODE">
     <title>AppBringme</title>
     <!-- BEGIN: CSS Assets-->
-    <link rel="stylesheet" href="{{ asset('dist/css/app.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend/dist/css/app.css') }}" />
     <!-- END: CSS Assets-->
 </head>
 <!-- END: Head -->
@@ -31,7 +31,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN: Login Info -->
             <!-- <div class="hidden xl:flex flex-col min-h-screen">
                 <a href="" class="-intro-x flex items-center pt-5">
-                    <img alt="Midone - HTML Admin Template" class="" src="{{asset('dist/images/logo-bringMe.png')}}">
+                    <img alt="Midone - HTML Admin Template" class="" src="{{asset('backend/dist/images/logo-bringMe.png')}}">
                     {{-- <span class="text-white text-lg ml-3"> AppBringme </span> --}}
                 </a>
                 <div class="my-auto">
@@ -48,7 +48,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </div> -->
 
             <div class="hidden xl:flex flex-col min-h-screen">
-                <img alt="Midone - HTML Admin Template" class="w-11/12 xl:w-9/12 xl:h-screen" src="{{ asset('dist/images/BringMe_Web_Seller_BG_LOGIN.png') }}">
+                <img alt="Midone - HTML Admin Template" class="w-11/12 xl:w-9/12 xl:h-screen" src="{{ asset('backend/dist/images/BringMe_Web_Seller_BG_LOGIN.png') }}">
             </div>
             <!-- END: Login Info -->
             <!-- BEGIN: Login Form -->
@@ -109,7 +109,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- END: Dark Mode Switcher-->
 
     <!-- BEGIN: JS Assets-->
-    <script src="{{ asset('dist/js/app.js') }}"></script>
+    <script src="{{ asset('backend/dist/js/app.js') }}"></script>
     <!-- END: JS Assets-->
 </body>
 
@@ -124,22 +124,22 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <head>
         <meta charset="utf-8">
-        <link href=""{{asset('dist/images/logo.svg')}}" rel="shortcut icon">
+        <link href=""{{asset('backend/dist/images/logo.svg')}}" rel="shortcut icon">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Enigma admin is super flexible, powerful, clean & modern responsive tailwind admin template with unlimited possibilities.">
 <meta name="keywords" content="admin template, Enigma Admin Template, dashboard template, flat admin template, responsive admin template, web app">
 <meta name="author" content="LEFT4CODE">
 <title>Bringme Login</title>
 <!-- BEGIN: CSS Assets-->
-<link rel="stylesheet" href="{{asset('dist/css/app.css')}}" />
+<link rel="stylesheet" href="{{asset('backend/dist/css/app.css')}}" />
 <!-- END: CSS Assets-->
 
 <!-- BEGIN: JS Assets-->
 <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
 <script defer src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 <script defer src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
-<script defer src="{{asset('dist/js/ckeditor-classic.js')}}"></script>
-<script defer src="{{asset('dist/js/app.js')}}"></script>
+<script defer src="{{asset('backend/dist/js/ckeditor-classic.js')}}"></script>
+<script defer src="{{asset('backend/dist/js/app.js')}}"></script>
 <!-- END: JS Assets-->
 </head>
 <!-- END: Head -->
@@ -150,7 +150,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN: Login Info -->
             <div class="hidden xl:flex flex-col min-h-screen">
                 <a href="" class="-intro-x flex items-center pt-5">
-                    <img alt="Midone - HTML Admin Template" class="" src="{{asset('dist/images/logo-bringMe.png')}}">
+                    <img alt="Midone - HTML Admin Template" class="" src="{{asset('backend/dist/images/logo-bringMe.png')}}">
                     <!-- <span class="text-white text-lg ml-3"> Bringme </span> -->
                 </a>
                 <div class="my-auto">
