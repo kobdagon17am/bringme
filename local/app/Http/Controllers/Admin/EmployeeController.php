@@ -23,6 +23,6 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return view('Admin/employee');
+        return view('backend/employee');
     }
 }

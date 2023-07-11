@@ -25,6 +25,6 @@ class HomeController extends Controller
     {
 
 
-        return view('Admin/home');
+        return view('backend/home');
     }
 }

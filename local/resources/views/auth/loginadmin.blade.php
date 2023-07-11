@@ -13,14 +13,14 @@ License: You must have a valid license purchased only from themeforest(the above
 
 <head>
     <meta charset="utf-8">
-    <link href="{{asset('admin_st/dist/images/logo-bringMe.png')}}" rel="shortcut icon">
+    <link href="{{asset('backend/dist/images/logo-bringMe.png')}}" rel="shortcut icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="appbefriends">
     <meta name="keywords" content="appbefriends">
     <meta name="author" content="LEFT4CODE">
     <title>AppBringme</title>
     <!-- BEGIN: CSS Assets-->
-    <link rel="stylesheet" href="{{ asset('admin_st/dist/css/app.css') }}" />
+    <link rel="stylesheet" href="{{ asset('backend/dist/css/app.css') }}" />
     <!-- END: CSS Assets-->
 </head>
 <!-- END: Head -->
@@ -36,7 +36,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 </a>
                 <div class="my-auto">
                     <img alt="Midone - HTML Admin Template" class="-intro-x w-1/2 -mt-16"
-                        src="{{ asset('admin_st/dist/images/illustration.svg') }}">
+                        src="{{ asset('backend/dist/images/illustration.svg') }}">
                     <div class="-intro-x text-white font-medium text-4xl leading-tight mt-10">
                         A few more clicks to
                         <br>
@@ -48,7 +48,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </div> -->
 
             <div class="hidden xl:flex flex-col min-h-screen">
-                <img alt="Midone - HTML Admin Template" class="w-11/12 xl:w-9/12 xl:h-screen" src="{{ asset('admin_st/dist/images/BringMe_Web_Operate_BG_LOGIN.png') }}">
+                <img alt="Midone - HTML Admin Template" class="w-11/12 xl:w-9/12 xl:h-screen" src="{{ asset('backend/dist/images/BringMe_Web_Operate_BG_LOGIN.png') }}">
             </div>
             <!-- END: Login Info -->
             <!-- BEGIN: Login Form -->
@@ -109,7 +109,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- END: Dark Mode Switcher-->
 
     <!-- BEGIN: JS Assets-->
-    <script src="{{ asset('admin_st/dist/js/app.js') }}"></script>
+    <script src="{{ asset('backend/dist/js/app.js') }}"></script>
     <!-- END: JS Assets-->
 </body>
 

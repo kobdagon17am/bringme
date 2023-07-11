@@ -24,7 +24,7 @@ class StoresController extends Controller
      */
     public function index()
     {
-        return view('Admin/stores');
+        return view('backend/stores');
     }
 
     public function stores_confirmation(Request $rs)
@@ -50,7 +50,7 @@ class StoresController extends Controller
           }
 
 
-        return view('Admin/stores-waitapproved');
+        return view('backend/stores-waitapproved');
     }
 
 
