@@ -41,3 +41,6 @@ Route::post('api_get_address_list', 'API1Controller@api_get_address_list');
 Route::post('api_select_customer_address', 'API1Controller@api_select_customer_address');
 Route::post('api_purchase_cart', 'API1Controller@api_purchase_cart');
 Route::post('api_get_order_list', 'API1Controller@api_get_order_list');
+Route::post('api_get_product_list', 'API1Controller@api_get_product_list');
+Route::post('api_get_store', 'API1Controller@api_get_store');
+Route::post('api_product_store', 'API1Controller@api_product_store');

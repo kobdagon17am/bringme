@@ -1094,4 +1094,138 @@ class API1Controller extends Controller
             ]);
     }
 
+    public function api_get_product_list(Request $r)
+    {
+        $customer = Customer::where('id',$r->user_id)->first();
+        if($customer){
+            $store = Store::where('customer_id',$r->user_id)->first();
+            $product_last = Products::where('store_id',$store->id)
+            ->where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_all = Products::where('store_id',$store->id)
+            ->where('approve_status',1)
+            ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_wait = Products::where('store_id',$store->id)
+            ->where('approve_status','!=',1)
+            // ->where('display_status',1)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            $product_not_show = Products::where('store_id',$store->id)
+            // ->where('approve_status',0)
+            ->where('display_status',2)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'customer' => $customer,
+                    'store' => $store,
+                    'product_last' => $product_last,
+                    'product_all' => $product_all,
+                    'product_wait' => $product_wait,
+                    'product_not_show' => $product_not_show,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบข้อมูผู้ใช้',
+            ]);
+        }
+    }
+
+    public function api_get_store(Request $r)
+    {
+        $customer = Customer::where('id',$r->user_id)->first();
+        if($customer){
+            $store = Store::where('customer_id',$r->user_id)->first();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'customer' => $customer,
+                    'store' => $store,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบข้อมูผู้ใช้',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+    }
+
+    public function api_product_store(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+
+                $store = Store::where('customer_id',$r->user_id)->first();
+                $r->production_date = date('Y-m-d', strtotime($r->production_date));
+                $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+// dd($store);
+                $products = new Products();
+                $products->name_th = $r->name_th;
+                $products->name_en = $r->name_en;
+                $products->name_th = $r->name_th;
+                $products->detail_th = $r->name_th;
+                $products->detail_en = $r->detail_en;
+                $products->category_id = $store->category_id;
+                $products->brands_id = $store->brands_id;
+                $products->shelf_lift = $r->shelf_lift;
+                $products->storage_method_id = $store->storage_method_id;
+                $products->store_id = $store->id;
+                $products->price = $r->price;
+                $products->qty = $r->qty;
+                $products->stock_cut_off = $r->stock_cut_off;
+                $products->production_date = $r->production_date;
+                $products->shipping_date = $r->shipping_date;
+                $products->save();
+
+                $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
+                $products->products_code = 'BM'.$products_code.'B';
+                $products->barcode = $products->id.date('YmdHis');
+
+                $products->save();
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => $products,
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
 }
