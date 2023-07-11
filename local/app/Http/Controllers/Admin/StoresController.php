@@ -27,31 +27,6 @@ class StoresController extends Controller
         return view('backend/stores');
     }
 
-    public function stores_confirmation(Request $rs)
-    {
-
-
-        $dataPrepare = [
-            'approve_store' => $rs->status,
-
-          ];
-
-          try {
-            DB::BeginTransaction();
-            $get_unit = DB::table('customer')
-              ->where('id',$rs->id)
-              ->update($dataPrepare);
-            DB::commit();
-            return redirect('admin/stores_confirmation')->withSuccess('ปรับสถานะสำเร็จ');
-          } catch (Exception $e) {
-            DB::rollback();
-            return redirect('admin/stores_confirmation')->withError('ปรับสถานะสำเร็จ');
-
-          }
-
-
-        return view('backend/stores-waitapproved');
-    }
 
 
 
@@ -73,8 +48,14 @@ class StoresController extends Controller
 
 
             ->addColumn('img', function ($row) {
-                // return date('Y/m/d H:i:s', strtotime($row->created_at));
-                return('');
+                $img = '<div class="flex">
+                <div class="w-10 h-10 image-fit zoom-in">
+                    <img alt="Midone - HTML Admin Template" class=" rounded-full"
+                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                </div>
+            </div>';
+
+                return $img;
             })
 
             ->addColumn('name_full', function ($row) {
@@ -84,25 +65,29 @@ class StoresController extends Controller
 
             ->addColumn('status', function ($row) {
                 if($row->approve_store == 1){
-                $htmml = '<div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>' ;
+                $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>' ;
 
                 }elseif($row->approve_store == 2){
-                $htmml =  '<div class="flex items-center justify-center text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Not Active </div>';
+
+                $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Not Active </div>';
 
                 }else{
-                    $htmml =  '<div class="flex items-center justify-center text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Paning </div>';;
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Paning </div>';;
 
                 }
                  return $htmml;
              })
 
              ->addColumn('action', function ($row) {
-                $name_full = '<a class="flex items-center mr-3" href="store-detail.php"><i data-lucide="eye" class="w-4 h-4 mr-1"></i> รายละเอียด </a>';
-                 return $name_full;
+                $url = route('admin/stores-detail');
+                $html = '
+                <a class="flex mr-3" href="'.$url.'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a
+                 ';
+                 return $html;
              })
 
 
-            ->rawColumns(['status', 'action'])
+            ->rawColumns(['img','status', 'action'])
             ->make(true);
     }
 

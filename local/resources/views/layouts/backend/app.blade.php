@@ -18,7 +18,7 @@
             <link rel="stylesheet" href="{{asset('backend/dist/css/app.css')}}" />
            <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
 
-            <link href='https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css' rel='stylesheet'>
+            <link href='//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css' rel='stylesheet'>
 
             <!-- END: CSS Assets-->
 
@@ -57,7 +57,7 @@
          <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+        <script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 <!--
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
          <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>

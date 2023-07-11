@@ -32,6 +32,33 @@ Route::post('admin_login', 'Customer\LoginController@admin_login')->name('admin_
 Route::get('admin/home', 'Admin\HomeController@index')->name('admin/home');
 Route::get('admin/employee', 'Admin\EmployeeController@index')->name('admin/employee');
 
+Route::get('admin/admin_datable', 'Admin\EmployeeController@admin_datable')->name('admin/admin_datable');
+
+Route::post('admin/employee_add', 'Admin\EmployeeController@employee_add')->name('admin/employee_add');
+
+Route::get('admin/products', 'Admin\ProductsController@index')->name('admin/products');
+Route::get('admin/products_datable', 'Admin\ProductsController@products_datable')->name('admin/products_datable');
+
+Route::get('admin/products-waitapproved', 'Admin\ProductsController@products_waitapproved')->name('admin/products-waitapproved');
+Route::get('admin/products_waitapproved_datable', 'Admin\ProductsController@products_waitapproved_datable')->name('admin/products_waitapproved_datable');
+
+Route::get('admin/products-waitapproved-detail/{id}', 'Admin\ProductsController@products_waitapproved_detail')->name('admin/products-waitapproved-detail');
+
+Route::post('admin/product_confirmation}', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
+
+
+
+
+Route::get('admin/product-edit', function () {
+    return view('backend/product-edit');
+  })->name('admin/product-edit');
+
+
+Route::get('admin/employee-edit', function () {
+    return view('backend/employee-edit');
+  })->name('admin/employee-edit');
+
+
 Route::get('admin/employee-add', function () {
     return view('backend/employee-add');
   })->name('admin/employee-add');
@@ -48,25 +75,27 @@ Route::get('admin/employee-add', function () {
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
 
   Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
-  Route::post('admin/stores_confirmation', 'Admin\StoresController@stores_confirmation')->name('admin/stores_confirmation');
+  Route::post('admin/stores_confirmation', 'Admin\StoresWaitapprovedController@stores_confirmation')->name('admin/stores_confirmation');
+
+  Route::get('admin/stores_waitapproved_datable', 'Admin\StoresWaitapprovedController@stores_waitapproved_datable')->name('admin/stores_waitapproved_datable');
 
 
 
   Route::get('admin/stores-detail', function () {
     return view('backend/store-detail');
-  })->name('admin/store-detail');
+  })->name('admin/stores-detail');
 
   Route::get('admin/stores-waitapproved', function () {
     return view('backend/stores-waitapproved');
   })->name('admin/stores-waitapproved');
 
-  Route::get('admin/products', function () {
-    return view('backend/products');
-  })->name('admin/products');
 
-  Route::get('admin/products-waitapproved', function () {
-    return view('backend/products-waitapproved');
-  })->name('admin/products-waitapproved');
+
+
+
+
+
+
 
   Route::get('admin/transaction', function () {
     return view('backend/transaction');
