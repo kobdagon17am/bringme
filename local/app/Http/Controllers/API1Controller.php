@@ -18,7 +18,13 @@ Use App\Models\Category;
 Use App\Models\CustomerCartProduct;
 Use App\Models\CustomerCart;
 use App\Mail\SendMail;
+Use App\Models\ProductsItem;
 use Illuminate\Support\Facades\Mail;
+Use App\Models\ProductsOptionHead;
+Use App\Models\ProductsOption1;
+Use App\Models\ProductsOption2;
+Use App\Models\ProductsOption2Items;
+Use App\Models\ProductsTransfer;
 
 class API1Controller extends Controller
 {
@@ -745,11 +751,11 @@ class API1Controller extends Controller
 
             $product_datail = Products::where('id',$r->product_id)->first();
             if( $product_datail){
-                $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('products_id',$r->product_id)->first();
+                $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
                 if($product){
                     // $product->customer_cart_id = $cart->id;
                     // $product->customer_id = $r->user_id;
-                    // $product->products_id = $r->product_id;
+                    // $product->product_id = $r->product_id;
                     $product->price = $product_datail->price;
                     if($r->type=='new'){
                         $product->total_price = ($product_datail->price*$r->qty);
@@ -762,14 +768,14 @@ class API1Controller extends Controller
                     $product->save();
 
                     if($r->qty == 0){
-                        CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('products_id',$r->product_id)->delete();
+                        CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->delete();
                     }
 
                 }else{
                     $product = new CustomerCartProduct();
                     $product->customer_cart_id = $cart->id;
                     $product->customer_id = $r->user_id;
-                    $product->products_id = $r->product_id;
+                    $product->product_id = $r->product_id;
                     $product->price = $product_datail->price;
                     $product->total_price = ($product_datail->price*$r->qty);
                     $product->qty = $r->qty;
@@ -780,7 +786,7 @@ class API1Controller extends Controller
                 $product_cart = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->get();
                 $total_price = 0;
                 foreach($product_cart as $pro){
-                    // $pro_detail = Products::where('id',$pro->products_id)->first();
+                    // $pro_detail = Products::where('id',$pro->product_id)->first();
                     // if($pro_detail){
                         $total_price += $pro->total_price;
                     // }
@@ -831,26 +837,55 @@ class API1Controller extends Controller
 
     public function api_get_home_page(Request $r)
     {
-            $product_good_sale = Products::where('approve_status',1)
-            ->where('display_status',1)
-            ->orderBy('sale_number','desc')
+            // $product_good_sale = Products::where('approve_status',1)
+            // ->where('display_status',1)
+            // ->orderBy('sale_number','desc')
+            // ->inRandomOrder()->get();
+
+            $product_good_sale = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->orderBy('products.sale_number','desc')
             ->inRandomOrder()->get();
 
-            $product_new = Products::where('approve_status',1)
-            ->where('display_status',1)
+            // $product_new = Products::where('approve_status',1)
+            // ->where('display_status',1)
+            // // ->orderBy('updated_at','desc')
+            // ->inRandomOrder()->get();
+
+            $product_new = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            // ->orderBy('products.sale_number','desc')
+            ->inRandomOrder()->get();
+
+            // $product_pro = Products::where('approve_status',1)
+            // ->where('display_status',1)
             // ->orderBy('updated_at','desc')
-            ->inRandomOrder()->get();
-
-            $product_pro = Products::where('approve_status',1)
-            ->where('display_status',1)
-            ->orderBy('updated_at','desc')
-            ->where('id',0)
-            ->inRandomOrder()->get();
-
-            $product_recome = Products::where('approve_status',1)
-            ->where('display_status',1)
-            ->orderBy('updated_at','desc')
             // ->where('id',0)
+            // ->inRandomOrder()->get();
+
+            $product_pro = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->where('products.id',0)
+            ->orderBy('products.updated_at','desc')
+            ->inRandomOrder()->get();
+
+            // $product_recome = Products::where('approve_status',1)
+            // ->where('display_status',1)
+            // ->orderBy('updated_at','desc')
+            // // ->where('id',0)
+            // ->inRandomOrder()->get();
+
+            $product_recome = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->orderBy('products.updated_at','desc')
             ->inRandomOrder()->get();
 
             $address = 'ยังไม่ระบุสถานที่จัดส่ง';
@@ -924,7 +959,7 @@ class API1Controller extends Controller
         $product_qty = 0;
         if($cart){
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','products.price as product_price','brands.name_th as brand_name')
-            ->join('products','products.id','customer_cart_product.products_id')
+            ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
             foreach($products as $pro){
@@ -1020,7 +1055,7 @@ class API1Controller extends Controller
                 $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
                 ->where('customer_cart_product.customer_cart_id',$r->cart_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
                 foreach($arr_pro as $p){
-                    $product = DB::table('products')->where('id',$p->products_id)->first();
+                    $product = DB::table('products')->where('id',$p->product_id)->first();
                     if($product){
                         DB::table('products')->where('id',$product->id)->update([
                             'sale_number' => $product->sale_number + $p->qty,
@@ -1072,7 +1107,7 @@ class API1Controller extends Controller
         // dd($carts);
         foreach($carts as $key=> $c){
             $products = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','products.price as product_price','brands.name_th as brand_name')
-            ->join('products','products.id','customer_cart_product.products_id')
+            ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
@@ -1099,22 +1134,26 @@ class API1Controller extends Controller
         $customer = Customer::where('id',$r->user_id)->first();
         if($customer){
             $store = Store::where('customer_id',$r->user_id)->first();
-            $product_last = Products::where('store_id',$store->id)
-            ->where('approve_status',1)
-            ->where('display_status',1)
-            ->orderBy('updated_at','desc')
+
+            $product_last = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products.store_id',$store->id)
+            ->where('products_item.transfer_status',3)
+            ->orderBy('products.updated_at','desc')
             ->get();
 
-            $product_all = Products::where('store_id',$store->id)
-            ->where('approve_status',1)
-            ->where('display_status',1)
-            ->orderBy('updated_at','desc')
+            $product_all = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products.store_id',$store->id)
+            ->where('products_item.transfer_status',3)
+            ->orderBy('products.updated_at','desc')
             ->get();
 
-            $product_wait = Products::where('store_id',$store->id)
-            ->where('approve_status','!=',1)
-            // ->where('display_status',1)
-            ->orderBy('updated_at','desc')
+            $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            ->join('products_item','products_item.product_id','products.id')
+            ->where('products.store_id',$store->id)
+            ->where('products_item.transfer_status','!=',3)
+            ->orderBy('products.updated_at','desc')
             ->get();
 
             $product_not_show = Products::where('store_id',$store->id)
@@ -1175,7 +1214,8 @@ class API1Controller extends Controller
                 $store = Store::where('customer_id',$r->user_id)->first();
                 $r->production_date = date('Y-m-d', strtotime($r->production_date));
                 $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
-// dd($store);
+
+                // เพิ่มสินค้าหลัก
                 $products = new Products();
                 $products->name_th = $r->name_th;
                 $products->name_en = $r->name_en;
@@ -1184,14 +1224,15 @@ class API1Controller extends Controller
                 $products->detail_en = $r->detail_en;
                 $products->category_id = $store->category_id;
                 $products->brands_id = $store->brands_id;
-                $products->shelf_lift = $r->shelf_lift;
-                $products->storage_method_id = $store->storage_method_id;
+                // $products->shelf_lift = $r->shelf_lift;
+                // $products->storage_method_id = $store->storage_method_id;
                 $products->store_id = $store->id;
-                $products->price = $r->price;
+                $products->customer_id = $r->user_id;
+                // $products->price = $r->price;
                 $products->qty = $r->qty;
-                $products->stock_cut_off = $r->stock_cut_off;
-                $products->production_date = $r->production_date;
-                $products->shipping_date = $r->shipping_date;
+                // $products->stock_cut_off = $r->stock_cut_off;
+                // $products->production_date = $r->production_date;
+                // $products->shipping_date = $r->shipping_date;
                 $products->save();
 
                 $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
@@ -1200,11 +1241,129 @@ class API1Controller extends Controller
 
                 $products->save();
 
+                // เพิ่ม item สินค้า
+                $products_item = new ProductsItem();
+                $products_item->product_id = $products->id;
+                $products_item->name_th = $r->name_th;
+                $products_item->name_en = $r->name_en;
+                $products_item->name_th = $r->name_th;
+                $products_item->detail_th = $r->name_th;
+                $products_item->detail_en = $r->detail_en;
+                $products_item->category_id = $store->category_id;
+                $products_item->brands_id = $store->brands_id;
+                $products_item->shelf_lift = $r->shelf_lift;
+                $products_item->storage_method_id = $store->storage_method_id;
+                $products_item->store_id = $store->id;
+                $products_item->price = $r->price;
+                $products_item->qty = $r->qty;
+                $products_item->stock_cut_off = $r->stock_cut_off;
+                $products_item->production_date = $r->production_date;
+                $products_item->shipping_date = $r->shipping_date;
+                $products_item->products_code = $products->products_code;
+                $products_item->barcode = $products->barcode;
+                $products_item->save();
+
+                $products_option_head1 = new ProductsOptionHead();
+                $products_option_head1->product_id = $products->id;
+                $products_option_head1->option_type = 1;
+                $products_option_head1->name_th = '';
+                $products_option_head1->name_en = '';
+                $products_option_head1->save();
+
+                $products_option_head2 = new ProductsOptionHead();
+                $products_option_head2->product_id = $products->id;
+                $products_option_head2->option_type = 2;
+                $products_option_head2->name_th = '';
+                $products_option_head2->name_en = '';
+                $products_option_head2->save();
+
+                $products_option_1 = new ProductsOption1();
+                $products_option_1->product_id = $products->id;
+                $products_option_1->name_th = '';
+                $products_option_1->name_en = '';
+                $products_option_1->save();
+
+                $products_option_2 = new ProductsOption2();
+                $products_option_2->product_id = $products->id;
+                $products_option_2->name_th = '';
+                $products_option_2->name_en = '';
+                $products_option_2->save();
+
+                $products_option_2_items = new ProductsOption2Items();
+                $products_option_2_items->product_id = $products->id;
+                $products_option_2_items->products_item_id = $products_item->id;
+                $products_option_2_items->option_1_id = $products_option_1->id;
+                $products_option_2_items->option_2_id = $products_option_2->id;
+                $products_option_2_items->price = $r->price;
+                $products_option_2_items->qty = $r->qty;
+                $products_option_2_items->name_th = '';
+                $products_option_2_items->name_en = '';
+                $products_option_2_items->save();
+
+                $products->min_price = $r->price;
+                $products->max_price = $r->price;
+                $products->save();
+
                 DB::commit();
                 return response()->json([
                     'message' => 'ทำรายการสำเร็จ',
                     'status' => 1,
                     'data' => $products,
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
+    public function api_products_transfer_store(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+                $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+                $products_item = ProductsItem::where('id',$r->products_item_id)->first();
+                if($products_item){
+                    $products_transfer = new ProductsTransfer();
+                    $products_transfer->product_id = $products_item->product_id;
+                    $products_transfer->products_item_id = $products_item->id;
+                    $products_transfer->transfer_type = 1;
+                    $products_transfer->shipping_date = $r->shipping_date;
+                    $products_transfer->tracking = $r->tracking;
+                    $products_transfer->save();
+
+                    $products_item->transfer_status = 2;
+                    $products_item->shipping_date = $r->shipping_date;
+                    $products_item->save();
+                }else{
+                    return response()->json([
+                        'message' =>  'ไม่พบข้อมูลสินค้า',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => $products_item,
                 ]);
 
                 }
