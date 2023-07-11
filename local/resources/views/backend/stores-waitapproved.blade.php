@@ -11,7 +11,8 @@
 
 
 
-                <table class="table table-report -mt-2">
+
+                <table class="table table-striped table-hover dt-responsive -mt-2" id="workL">
                     <thead>
                         <tr>
                             <th class="whitespace-nowrap">รูปภาพ</th>
@@ -21,103 +22,9 @@
                             <th class="text-center whitespace-nowrap"></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php
 
-                        $customer = DB::table('customer')
-                            ->where('customer_type', 2)
-                            ->where('approve_store', 0)
-
-                            ->get();
-
-                        ?>
-
-                        @foreach ($customer as $value)
-                            <tr class="intro-x">
-                                <td class="w-40">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                                                src="{{ asset('backend/dist/images/preview-9.jpg') }}">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="" class="font-medium whitespace-nowrap">{{ $value->name }}</a>
-                                </td>
-                                <td class="text-center">
-                                    <?php
-                                    $name_full = $value->firstname . ' ' . $value->lat;
-                                    ?>
-                                    {{ $name_full }}</td>
-                                <td class="w-40">
-                                    <?php
-                                    if ($value->approve_store == 1) {
-                                        $htmml = '<div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Active </div>';
-                                    } elseif ($value->approve_store == 2) {
-                                        $htmml = '<div class="flex items-center justify-center text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Not Active </div>';
-                                    } else {
-                                        $htmml = '<div class="flex items-center justify-center text-warning"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติ </div>';
-                                    }
-                                    ?>
-                                    {{-- <a href="#!"  onclick="confirmation_customer({{ $value->id }})">{!! $htmml !!}</a> --}}
-
-                                <a  href="javascript:;" data-tw-toggle="modal" data-tw-target="#header-footer-modal-preview_{{$value->id}}">{!! $htmml !!}</a>
-
-                                <td class="table-report__action w-56">
-                                    <div class="flex justify-center items-center">
-                                        <a class="flex items-center mr-3" href="{{ route('admin/store-detail') }}"><i
-                                                data-lucide="eye" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
-                                    </div>
-                                </td>
-
-
-
-                                <div id="header-footer-modal-preview_{{$value->id}}" class="modal" tabindex="-1" aria-hidden="true">
-                                    <form method="POST" action="{{ route('admin/stores_confirmation') }}" >
-                                                        @csrf
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <!-- BEGIN: Modal Header -->
-                                            <div class="modal-header">
-                                                <h2 class="font-medium text-base mr-auto">อนุมัติร้านค้า</h2>
-
-                                            </div> <!-- END: Modal Header -->
-                                            <!-- BEGIN: Modal Body -->
-                                            <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
-                                                <div class="col-span-12 sm:col-span-12"> <label for="modal-form-1" class="form-label">ชื่อร้านค้า</label>
-                                                    <input id="modal-form-1" type="text" class="form-control" value="{{ $value->name }}" disabled>
-                                                </div>
-                                                <div class="col-span-12 sm:col-span-12"> <label for="modal-form-2" class="form-label">ชื่อเจ้าของร้าน</label>
-                                                    <input id="modal-form-2" type="text" class="form-control" value="{{$name_full}}" disabled>
-                                                </div>
-                                                <input type="hidden" name="id" value="{{$value->id}}">
-                                                <div class="col-span-12 sm:col-span-6"> <label for="modal-form-6" class="form-label">สถานะการลงทะเบัยน</label>
-                                                    <select id="modal-form-6" class="form-select" name="status">
-                                                        <option value="1">อนุมัติ</option>
-                                                        <option value="2">ไม่อนุมัติ</option>
-
-                                                    </select> </div>
-
-                                                <div class="col-span-12 sm:col-span-12"> <label for="modal-form-5" class="form-label">รายละเอียด
-                                                </label> <textarea id="modal-form-5" type="text" class="form-control" name="note"> </textarea></div>
-
-                                            </div> <!-- END: Modal Body -->
-                                            <!-- BEGIN: Modal Footer -->
-                                            <div class="modal-footer"> <button type="button" data-tw-dismiss="modal"
-                                                    class="btn btn-outline-secondary w-20 mr-1">ยกเลิก</button>
-                                                    <button type="submit"
-                                                    class="btn btn-primary w-20">ยืนยัน</button> </div> <!-- END: Modal Footer -->
-                                        </div>
-                                    </div>
-                                    </form>
-                                </div> <!-- END: Modal Content -->
-                            </tr>
-                        @endforeach
-
-
-                    </tbody>
                 </table>
+
             </div>
             <!-- END: Data List -->
             <!-- BEGIN: Pagination -->
@@ -131,29 +38,102 @@
 
 @endsection
 @section('js')
-    <script type="text/javascript">
-        function confirmation_customer(id) {
-            $("#header-footer-modal-preview").show();
 
-            // $.ajax({
-            //         url: '',
-            //         type: 'GET',
-            //         data: {
-            //             id
-            //         }
-            //     })
-            //     .done(function(data) {
+<script type="text/javascript">
 
-            //         $("#-modal").modal();
-            //         $("#id").val(data['data']['id']);
+$(function() {
 
-            //         $("#unit_name").val(data['data']['product_unit_th']);
-            //         $("#unit_en_name").val(data['data']['product_unit_en']);
-            //         $("#unit_status").val(data['data']['status']);
 
-            //     })
-            //     .fail(function() {
-            //         console.log("error");
-            //     })
-        }
+    table_order = $('#workL').DataTable({
+        // dom: 'Bfrtip',
+        // buttons: ['excel'],
+        searching: true,
+        ordering: false,
+        lengthChange: false,
+        responsive: true,
+        paging: true,
+        pageLength: 100,
+        processing: true,
+        serverSide: true,
+        "language": {
+            "lengthMenu": "แสดง _MENU_ แถว",
+            "zeroRecords": "ไม่พบข้อมูล",
+            "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
+            "search": "ค้นหา",
+            "infoEmpty": "",
+            "infoFiltered": "",
+            "paginate": {
+                "first": "หน้าแรก",
+                "previous": "ย้อนกลับ",
+                "next": "ถัดไป",
+                "last": "หน้าสุดท้าย"
+            },
+            'processing': "กำลังโหลดข้อมูล",
+        },
+        ajax: {
+            url: '{{ route('admin/stores_waitapproved_datable') }}',
+            data: function(d) {
+            // d.user_name = $('#user_name').val();
+            // d.s_date = $('#s_date').val();
+            // d.e_date = $('#e_date').val();
+            // d.position = $('#position').val();
+            // d.type = $('#type').val();
+
+            },
+        },
+
+
+        columns: [
+            // {
+            //     data: "id",
+            //     title: "ลำดับ",
+            //     className: "w-10 text-center",
+            // },
+            {
+                data: "img",
+                // title: 'รูปภาพ',
+                className: "w-10 text-center",
+
+
+
+            },
+            {
+                data: "name",
+                //title: "ชื่อร้านค้า",
+                className: "w-10",
+            },
+
+            {
+                data: "name_full",
+                //title: "ชื่อเจ้าของร้าน",
+                className: "w-10",
+            },
+
+            {
+                data: "status",
+                title: "สถานะ",
+                className: "w-10 text-center",
+            },
+
+            {
+                data: "action",
+                // title: "action",
+                className: "w-5 ",
+
+            },
+
+
+
+        ],
+
+
+
+    });
+    $('#search-form').on('click', function(e) {
+    table_order.draw();
+    e.preventDefault();
+});
+
+});
+</script>
     @endsection

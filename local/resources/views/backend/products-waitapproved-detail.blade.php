@@ -23,31 +23,31 @@
                             <div class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                 <div class="grid grid-cols-10 gap-5 pl-4 pr-5">
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-12.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-13.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-13.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-4.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-4.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-15.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-15.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-6.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-6.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
@@ -521,9 +521,69 @@
                 </div>
 
                 <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-                    <a href="#" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ปฏิเสธ</a>
-                    <button type="button" class="btn py-3 btn-primary">อนุมัติ</button>
+                    <button href="button"  data-tw-toggle="modal" data-tw-target="#cancle-confirmation-modal" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ปฏิเสธ</ิ>
+                    <button type="button"  data-tw-toggle="modal" data-tw-target="#confirm-confirmation-modal" class="btn py-3 btn-primary">อนุมัติ</button>
                 </div>
+
+                <div id="cancle-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form method="POST" action="{{ route('admin/product_confirmation') }}" >
+                            @csrf
+                        <div class="modal-content">
+
+                            <div class="modal-body p-0">
+                                <div class="p-5 text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="x-circle" data-lucide="x-circle" class="lucide lucide-x-circle w-16 h-16 text-danger mx-auto mt-3">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                    </svg>
+                                    <input type="hidden" name="id" value="{{$id}}">
+                                    <div class="text-3xl mt-5">Are you sure?</div>
+                                    <div class="text-slate-500 mt-2">
+                                        ยืนยันการ ปฏิเสธ รายการ
+                                        {{-- <br>
+                                        This process cannot be undone. --}}
+                                    </div>
+                                </div>
+                                <div class="px-5 pb-8 text-center">
+                                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button>
+                                    <button type="submit" class="btn btn-danger w-24" name="type" value="cancel">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div id="confirm-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form method="POST" action="{{ route('admin/product_confirmation') }}" >
+                            @csrf
+                        <div class="modal-content">
+                            <div class="modal-body p-0">
+                                <div class="p-5 text-center">
+                                    <input type="hidden" name="id" value="{{$id}}">
+
+
+                                    <div class="text-3xl mt-5">Are you sure?</div>
+                                    <div class="text-slate-500 mt-2">
+                                         ยืนยันการอนุมัติรายการ
+                                    </div>
+                                </div>
+                                <div class="px-5 pb-8 text-center">
+                                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button>
+                                    <button  type="submit" class="btn btn-primary w-24" name="type" value="confirm">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+
+
+
             </div>
             <!-- END: Product Variant (Details) -->
 
