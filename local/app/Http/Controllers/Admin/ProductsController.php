@@ -77,7 +77,7 @@ class ProductsController extends Controller
     {
 
         if($rs->tranfer_status == 3){
-            dd($rs->transfer_id);
+            // dd($rs->transfer_id);
            $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_backen($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number);
 
            if($data['status'] == 0 ){
