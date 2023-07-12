@@ -41,7 +41,63 @@ class ProductsController extends Controller
             return redirect()->back()->withError('กรุณาเลือกร้านค้า');
 
         }
-        return view('backend/products-waitapproved-detail',compact('id'));
+
+        $data = DB::table('products_item')
+        ->select('products_item.*','customer.name as stor_name')
+
+            ->where('products_item.id', $id)
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->first();
+        return view('backend/products-waitapproved-detail',compact('data','id'));
+    }
+
+
+
+    public function product_edit($id='')
+    {
+
+        if(empty($id)){
+            return redirect()->back()->withError('กรุณาเลือกสินค้า');
+
+        }
+        $data = DB::table('products_item')
+        ->select('products_item.*','customer.name as stor_name')
+
+            ->where('products_item.id', $id)
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->first();
+
+        return view('backend/product-edit',compact('data'));
+    }
+
+
+    public function item_confirmation(Request $rs)
+    {
+        dd($rs->all());
+
+        if($rs->tranfer_status == 3){
+
+        }else{
+            try {
+                DB::BeginTransaction();
+                $dataPrepare = [
+                    'transfer_status' => $rs->tranfer_status,
+
+                ];
+                $products_item = DB::table('products_item')
+                    ->where('id', $rs->id)
+                    ->update($dataPrepare);
+                DB::commit();
+                return redirect('admin/products')->withSuccess('อัพเดทรายการสำเร็จ');
+            } catch (Exception $e) {
+                DB::rollback();
+                return redirect('admin/products')->withError('อัพเดทรายการไม่สำเร็จ');
+            }
+
+
+        }
+
+
     }
 
     public function product_confirmation(Request $rs)
@@ -153,19 +209,42 @@ class ProductsController extends Controller
             })
 
 
-            ->addColumn('display_status', function ($row) {
+            ->addColumn('approve_status', function ($row) {
 
-                if ($row->display_status == 1) {
-                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> เปิดการใช้งาน </div>';
-                } elseif ($row->display_status == 2) {
+                if ($row->approve_status == 1) {
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัต </div>';
+                } elseif ($row->approve_status == 2) {
 
-                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ปิดการใช้งาน </div>';
+                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
                 } else {
                     $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
                 }
                 return $htmml;
             })
 
+
+            ->addColumn('transfer_status', function ($row) {
+
+                if ($row->transfer_status == 0) {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
+                } elseif ($row->transfer_status == 1) {
+
+                    $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอจัดส่ง </div>';
+                }elseif ($row->transfer_status == 2) {
+
+                        $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอรับสินค้า </div>';
+                 } elseif ($row->transfer_status == 3){
+
+                        $htmml =  '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รับสินค้าแล้ว </div>';
+                 } elseif ($row->transfer_status == 9) {
+
+                        $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
+
+                }else {
+                    $htmml = '<div class="flex text-warning"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
+                }
+                return $htmml;
+            })
             ->addColumn('action', function ($row) {
 
 
@@ -177,7 +256,7 @@ class ProductsController extends Controller
             })
 
 
-            ->rawColumns(['product_name','display_status', 'action', 'img'])
+            ->rawColumns(['product_name','approve_status','transfer_status', 'action', 'img'])
             ->make(true);
     }
 
@@ -191,7 +270,7 @@ class ProductsController extends Controller
             // ->where('status','=','success')
             // ->where('customer_type', 2)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
-            ->where('products_item.approve_status', 1);
+            ->where('products_item.approve_status','!=', 0);
             // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
             // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
             // ->whereRaw(("case WHEN '{$request->s_date}' = '' and '{$request->e_date}' != ''  THEN  date(created_at) = '{$request->e_date}' else 1 END"));
@@ -239,15 +318,39 @@ class ProductsController extends Controller
             })
 
 
-            ->addColumn('display_status', function ($row) {
+            ->addColumn('approve_status', function ($row) {
 
-                if ($row->display_status == 1) {
-                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> เปิดการใช้งาน </div>';
-                } elseif ($row->display_status == 2) {
+                if ($row->approve_status == 1) {
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัต </div>';
+                } elseif ($row->approve_status == 2) {
 
-                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ปิดการใช้งาน </div>';
+                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
                 } else {
                     $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
+                }
+                return $htmml;
+            })
+
+
+            ->addColumn('transfer_status', function ($row) {
+
+                if ($row->transfer_status == 0) {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
+                } elseif ($row->transfer_status == 1) {
+
+                    $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอจัดส่ง </div>';
+                }elseif ($row->transfer_status == 2) {
+
+                        $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอรับสินค้า </div>';
+                 } elseif ($row->transfer_status == 3){
+
+                        $htmml =  '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รับสินค้าแล้ว </div>';
+                 } elseif ($row->transfer_status == 9) {
+
+                        $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
+
+                }else {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
                 }
                 return $htmml;
             })
@@ -255,14 +358,14 @@ class ProductsController extends Controller
             ->addColumn('action', function ($row) {
 
                 $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="'.route('admin/product-edit').'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข </a>
+                <a class="flex items-center mr-3" href="'.route('admin/product-edit',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข </a>
                <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
            </div>';
                 return $html;
             })
 
 
-            ->rawColumns(['product_name','display_status', 'action', 'img'])
+            ->rawColumns(['product_name','approve_status','transfer_status', 'action', 'img'])
             ->make(true);
     }
 
