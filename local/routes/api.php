@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+// API1Controller
 Route::post('api_customer_login', 'API1Controller@api_customer_login');
 Route::post('api_customer_register', 'API1Controller@api_customer_register');
 Route::post('api_get_user', 'API1Controller@api_get_user');
@@ -44,3 +45,6 @@ Route::post('api_get_order_list', 'API1Controller@api_get_order_list');
 Route::post('api_get_product_list', 'API1Controller@api_get_product_list');
 Route::post('api_get_store', 'API1Controller@api_get_store');
 Route::post('api_product_store', 'API1Controller@api_product_store');
+Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
+// API2Controller
+Route::post('api_products_transfer_approve', 'API2Controller@api_products_transfer_approve');
