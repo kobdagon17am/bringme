@@ -48,3 +48,7 @@ Route::post('api_product_store', 'API1Controller@api_product_store');
 Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
 // API2Controller
 Route::post('api_products_transfer_approve', 'API2Controller@api_products_transfer_approve');
+Route::post('api_get_picking_list', 'API2Controller@api_get_picking_list');
+Route::post('api_get_scan_list', 'API2Controller@api_get_scan_list');
+Route::post('api_get_cart_detail', 'API2Controller@api_get_cart_detail');
+Route::post('api_pick_update', 'API2Controller@api_pick_update');

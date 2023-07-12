@@ -1056,6 +1056,7 @@ class API1Controller extends Controller
         try
         {
             $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->where('id',$r->cart_id)->first();
+            $customer = Customer::select('name')->where('id',$r->user_id)->first();
             if($cart){
                 $cart->action_date = date('Y-m-d');
                 $cart->pay_type = $r->pay_type;
@@ -1065,6 +1066,9 @@ class API1Controller extends Controller
                     $cart->status = 2;
                 }
                 $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
+                $cart->shipping_date = date('Y-m-d');
+                $cart->period = 2;
+                $cart->customer_name = $customer->name;
                 $cart->save();
 
                 $arr_pro = CustomerCartProduct::select('customer_cart_product.*')

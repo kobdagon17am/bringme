@@ -297,4 +297,115 @@ class API2Controller extends  Controller
     }
 
 
+    public function api_get_picking_list(Request $r)
+    {
+        $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',0)->orderBy('shipping_date','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','asc')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart' => $cart,
+                    'cart_success' => $cart_success,
+                ],
+            ]);
+    }
+
+    public function api_get_scan_list(Request $r)
+    {
+        $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','asc')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart' => $cart,
+                    'cart_success' => $cart_success,
+                ],
+            ]);
+    }
+
+    public function api_get_cart_detail(Request $r)
+    {
+        $cart = CustomerCart::where('id',$r->cart_id)->first();
+        $product_qty = 0;
+        if($cart){
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
+            foreach($products as $pro){
+                $product_qty+=$pro->qty;
+            }
+
+            $customer_address = Customer_address::
+            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            ->join('districts','districts.id','customer_address.district_id')
+            ->join('amphures','amphures.id','customer_address.amphures_id')
+            ->join('provinces','provinces.id','customer_address.province_id')
+            ->where('customer_address.id',$cart->customer_address_id)->first();
+            if(!$customer_address){
+                $customer_address = '';
+            }
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'product_qty' => $product_qty,
+                    'cart' => $cart,
+                    'customer_address' => $customer_address,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+    }
+
+    public function api_pick_update(Request $r){
+        DB::beginTransaction();
+        try
+        {
+                $product_cart = CustomerCartProduct::where('id',$r->id)->first();
+                $product_cart->pick_qty = $product_cart->pick_qty+1;
+                $product_cart->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'cart' => $cart,
+                    // 'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+
 }
