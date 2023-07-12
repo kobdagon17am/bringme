@@ -5,6 +5,156 @@
     <div class="grid grid-cols-11 gap-x-6 mt-5 pb-20">
         <div class="intro-y col-span-11 ">
             <!-- BEGIN: Uplaod Product -->
+            <div class="intro-y box p-5 mt-5 mb-5">
+                <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
+                    <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
+                        อนุมัติการจัดส่งสินค้า
+                    </div>
+                    <form method="POST" action="{{ route('admin/item_confirmation') }}" id="item_confirmation" >
+                        @csrf
+                        <input type="hidden" name="item_id" value="{{$data->id}}">
+                        <input type="hidden" name="transfer_id" value="{{$data->transfer_id}}">
+
+                    <div class="mt-5">
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">วันที่รับเข้าสินค้า</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" value="{{date('Y-m-d')}}" class=" form-control w-56 block mx-auto" name="date_in_stock" data-single-mode="true">
+                            </div>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">วันหมดอายุ</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" value="{{date('Y-m-d')}}" class="form-control w-56 block mx-auto" name="lot_expired_date" data-single-mode="true">
+                            </div>
+
+                        </div>
+
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">หมายเลข Lot | ชื่อ Lot</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required>
+
+
+                        </div>
+
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">รายละเอียด</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full mt-3 xl:mt-0 flex-1">
+                                <textarea id="regular-form-1" type="text" class="form-control" name="note" placeholder="Note"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">สถานะการจัดส่ง</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="w-full mt-3 xl:mt-0 flex-1">
+                                <div class="flex flex-col sm:flex-row">
+                                    @if($data->transfer_status == 3)
+                                    <div class="form-check mr-2 mt-2 sm:mt-0">
+                                        <input id="radio-switch-6" class="form-check-input" value="3" type="radio" name="tranfer_status" value="horizontal-radio-daniel-craig" @if($data->transfer_status == 3)  checked @endif>
+                                        <label class="form-check-label" for="radio-switch-6">รับสินค้าแล้ว</label>
+                                    </div>
+                                    @elseif($data->transfer_status == 9)
+                                    <div class="form-check mr-2 mt-2 sm:mt-0">
+                                        <input id="radio-switch-6" class="form-check-input" value="9" type="radio" name="tranfer_status" value="horizontal-radio-daniel-craig" @if($data->transfer_status == 9)  checked @endif>
+                                        <label class="form-check-label" for="radio-switch-6">ไม่อนุมัติ</label>
+                                    </div>
+                                    @else
+                                    <div class="form-check mr-2">
+                                        <input id="radio-switch-4" class="form-check-input" value="0" type="radio" name="tranfer_status"
+                                         value="horizontal-radio-chris-evans" @if($data->transfer_status == 0)  checked @endif >
+                                        <label class="form-check-label" for="radio-switch-4">รออนุมัติจัดส่ง</label>
+                                    </div>
+                                    <div class="form-check mr-2 mt-2 sm:mt-0">
+                                        <input id="radio-switch-5" class="form-check-input" value="1" type="radio" name="tranfer_status" value="horizontal-radio-liam-neeson" @if($data->transfer_status == 1)  checked @endif>
+                                        <label class="form-check-label" for="radio-switch-5">รอจัดส่ง</label>
+                                    </div>
+                                    <div class="form-check mr-2 mt-2 sm:mt-0">
+                                        <input id="radio-switch-6" class="form-check-input" value="2" type="radio" name="tranfer_status" value="horizontal-radio-daniel-craig" @if($data->transfer_status == 2)  checked @endif>
+                                        <label class="form-check-label" for="radio-switch-6">รอรับสินค้า</label>
+                                    </div>
+
+                                    <div class="form-check mr-2 mt-2 sm:mt-0">
+                                        <input id="radio-switch-6" class="form-check-input" value="3" type="radio" name="tranfer_status" value="horizontal-radio-daniel-craig" @if($data->transfer_status == 3)  checked @endif>
+                                        <label class="form-check-label" for="radio-switch-6">รับสินค้าแล้ว</label>
+                                    </div>
+
+                                    <div class="form-check mr-2 mt-2 sm:mt-0">
+                                        <input id="radio-switch-6" class="form-check-input" value="9" type="radio" name="tranfer_status" value="horizontal-radio-daniel-craig" @if($data->transfer_status == 9)  checked @endif>
+                                        <label class="form-check-label" for="radio-switch-6">ไม่อนุมัติ</label>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+
+                            <button type="button"  data-tw-toggle="modal" data-tw-target="#confirm-confirmation-modal"  class="btn py-3 btn-primary">บันทึก</button>
+                        </div>
+
+                        <div id="confirm-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                        <div class="p-5 text-center">
+
+
+
+                                            <div class="text-3xl mt-5">Are you sure?</div>
+                                            <div class="text-slate-500 mt-2">
+                                                 ยืนยันการบันทึกข้อมูล
+                                            </div>
+                                        </div>
+                                        <div class="px-5 pb-8 text-center">
+                                            <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button>
+                                            <button  type="submit" class="btn btn-primary w-24" form="item_confirmation" name="type" value="confirm">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+
             <div class="intro-y box p-5">
                 <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                     <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
@@ -23,31 +173,31 @@
                             <div class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                 <div class="grid grid-cols-10 gap-5 pl-4 pr-5">
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-12.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-13.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-4.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-15.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
                                     </div>
                                     <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-6.jpg">
+                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
                                         <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </div>
@@ -133,6 +283,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+
+                            <button type="button" class="btn py-3 btn-primary">บันทึก</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -158,6 +313,11 @@
                                     <p>Content of the editor.</p>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+
+                            <button type="button" class="btn py-3 btn-primary">บันทึก</button>
                         </div>
                     </div>
                 </div>
@@ -823,10 +983,10 @@
                         </div>
                     </div> -->
             <!-- END: Weight & Shipping -->
-            <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+            {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
                 <a href="products.php" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ยกเลิก</a>
                 <button type="button" class="btn py-3 btn-primary">บันทึก</button>
-            </div>
+            </div> --}}
         </div>
         <!-- <div class="intro-y col-span-2 hidden 2xl:block">
                     <div class="pt-10 sticky top-0">
@@ -870,4 +1030,7 @@
                 </div> -->
     </div>
 </div>
+@endsection
+@section('js')
+
 @endsection

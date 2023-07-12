@@ -30,7 +30,7 @@ Use App\Models\StockLot;
 Use App\Models\StockShelf;
 Use App\Models\StockItems;
 
-class API2Controller extends Controller
+class API2Controller extends  Controller
 {
     /**
      * Create a new controller instance.
@@ -50,6 +50,8 @@ class API2Controller extends Controller
 
     public function api_products_transfer_approve(Request $r)
     {
+
+
         DB::beginTransaction();
         try
             {
@@ -165,6 +167,132 @@ class API2Controller extends Controller
                         'status' => 0,
                         'data' => '',
                     ]);
+                }
+    }
+
+    public static function api_products_transfer_approve_backen($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number)
+    {
+          // App\Http\Controllers\API2Controller::api_products_transfer_approve_backen($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number);
+
+
+        DB::beginTransaction();
+        try
+            {
+                $products_transfer = ProductsTransfer::where('id',$products_transfer_id)->first();
+
+                $products_item = ProductsItem::where('id',@$products_transfer->products_item_id)->first();
+                if($products_item){
+                    $stock = new Stock();
+                    $stock->product_id = $products_item->product_id;
+                    $stock->store_id = $products_item->store_id;
+                    $stock->customer_id = $products_item->customer_id;
+                    $stock->save();
+
+                    $stock_lot = new StockLot();
+                    $stock_lot->stock_id = $stock->id;
+                    $stock_lot->product_id = $products_item->product_id;
+                    $stock_lot->store_id = $products_item->store_id;
+                    $stock_lot->customer_id = $products_item->customer_id;
+
+                    $stock_lot->date_in_stock = $date_in_stock;
+                    $stock_lot->lot_expired_date = $lot_expired_date;
+                    $stock_lot->lot_number = $lot_number;
+
+                    $stock_lot->save();
+
+                    $stock_shelf = new StockShelf();
+                    $stock_shelf->stock_id = $stock->id;
+                    $stock_shelf->stock_lot_id = $stock_lot->id;
+                    $stock_shelf->product_id = $products_item->product_id;
+                    // $stock_shelf->store_id = $products_item->store_id;
+                    $stock_shelf->customer_id = $products_item->customer_id;
+                    $stock_shelf->name = 'Shelf 1';
+                    $stock_shelf->save();
+
+                    $products_option_2_items = ProductsOption2Items::where('products_item_id',$products_transfer->products_item_id)
+                    ->where('product_id',$products_item->product_id)->get();
+
+                    $products = Products::where('id',$products_item->product_id)->first();
+                    $qty = 0;
+                    foreach($products_option_2_items as $item){
+
+                        $products_option_1 = ProductsOption1::where('id',$item->option_1_id)->first();
+                        $products_option_2 = ProductsOption2::where('id',$item->option_2_id)->first();
+
+                        $stock_items = new StockItems();
+                        $stock_items->stock_id = $stock->id;
+                        $stock_items->stock_lot_id = $stock_lot->id;
+                        $stock_items->stock_shelt_id = $stock_shelf->id;
+                        $stock_items->product_id = $products_item->product_id;
+                        // $stock_items->store_id = $products_item->store_id;
+                        $stock_items->customer_id = $products_item->customer_id;
+
+                        $stock_items->products_option_2_items_id = $item->id;
+                        $stock_items->products_item_id = $products_transfer->products_item_id;
+                        if($products_option_1->name_th!=''){
+                            $stock_items->name = $products->name_th.' : '.$products_option_1->name_th.' '.$products_option_2->name_th;
+                        }else{
+                            $stock_items->name = $products->name_th;
+                        }
+
+                        $stock_items->qty = $item->qty;
+                        $stock_items->qty_booking = $item->qty;
+                        $stock_items->price = $item->price;
+                        $stock_items->save();
+                        $qty += $item->qty;
+                    }
+                    $products->qty = $products->qty+$qty;
+                    $products->approve_status = 1;
+                    $products->save();
+
+                    $stock_lot->qty = $qty;
+                    $stock_lot->qty_booking = $qty;
+                    $stock_lot->save();
+
+                    $products_item->approve_status = 1;
+                    $products_item->transfer_status = 3;
+                    $products_item->save();
+
+                    $products_transfer->approve_status = 1;
+                    $products_transfer->save();
+
+
+                }else{
+                    return $data=[
+                        'message' =>  'ไม่พบข้อมูลสินค้า',
+                        'status' => 0,
+                        'data' => '',
+                    ];
+                }
+
+                DB::commit();
+
+                return $data=[
+                    'message' =>  'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => '',
+                ];
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+
+
+                return $data=[
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ];
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return $data=[
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ];
                 }
     }
 

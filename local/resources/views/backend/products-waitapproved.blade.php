@@ -198,11 +198,17 @@
                     className: "w-10",
                 },
 
-                // {
-                //     data: "display_status",
-                //     title: "สถานะ",
-                //     className: "w-10 text-center",
-                // },
+                {
+                    data: "approve_status",
+                    title: "สถานะอนุมัติร้านค้า",
+                    className: "w-10 text-center",
+                },
+
+                {
+                    data: "transfer_status",
+                    title: "สถานะการจัดส่ง",
+                    className: "w-10 text-center",
+                },
 
                 {
                     data: "action",

@@ -521,8 +521,9 @@
                 </div>
 
                 <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-                    <button href="button"  data-tw-toggle="modal" data-tw-target="#cancle-confirmation-modal" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ปฏิเสธ</ิ>
-                    <button type="button"  data-tw-toggle="modal" data-tw-target="#confirm-confirmation-modal" class="btn py-3 btn-primary">อนุมัติ</button>
+                    <a href="{{route('admin/products-waitapproved')}}" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ย้อนกลับ</a>
+                    <button type="button"  data-tw-toggle="modal" data-tw-target="#cancle-confirmation-modal" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ปฏิเสธ</button>
+                    <button type="button"  data-tw-toggle="modal" data-tw-target="#confirm-confirmation-modal" class="btn py-3 btn-primary">อนุมัติการจัดส่ง</button>
                 </div>
 
                 <div id="cancle-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
@@ -569,7 +570,7 @@
 
                                     <div class="text-3xl mt-5">Are you sure?</div>
                                     <div class="text-slate-500 mt-2">
-                                         ยืนยันการอนุมัติรายการ
+                                         ยืนยันการอนุมัติการจัดส่ง
                                     </div>
                                 </div>
                                 <div class="px-5 pb-8 text-center">
