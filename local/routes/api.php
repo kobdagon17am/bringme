@@ -52,3 +52,4 @@ Route::post('api_get_picking_list', 'API2Controller@api_get_picking_list');
 Route::post('api_get_scan_list', 'API2Controller@api_get_scan_list');
 Route::post('api_get_cart_detail', 'API2Controller@api_get_cart_detail');
 Route::post('api_pick_update', 'API2Controller@api_pick_update');
+Route::post('api_pick_approve', 'API2Controller@api_pick_approve');
