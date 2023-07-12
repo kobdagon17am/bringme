@@ -1229,7 +1229,7 @@ class API1Controller extends Controller
                 $products->store_id = $store->id;
                 $products->customer_id = $r->user_id;
                 // $products->price = $r->price;
-                $products->qty = $r->qty;
+                $products->qty = 0;
                 // $products->stock_cut_off = $r->stock_cut_off;
                 // $products->production_date = $r->production_date;
                 // $products->shipping_date = $r->shipping_date;
@@ -1244,6 +1244,7 @@ class API1Controller extends Controller
                 // เพิ่ม item สินค้า
                 $products_item = new ProductsItem();
                 $products_item->product_id = $products->id;
+                $products_item->customer_id = $r->user_id;
                 $products_item->name_th = $r->name_th;
                 $products_item->name_en = $r->name_en;
                 $products_item->name_th = $r->name_th;
