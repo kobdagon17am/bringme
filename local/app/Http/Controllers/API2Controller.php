@@ -104,8 +104,12 @@ class API2Controller extends Controller
 
                         $stock_items->products_option_2_items_id = $item->id;
                         $stock_items->products_item_id = $products_transfer->products_item_id;
+                        if($products_option_1->name_th!=''){
+                            $stock_items->name = $products->name_th.' : '.$products_option_1->name_th.' '.$products_option_2->name_th;
+                        }else{
+                            $stock_items->name = $products->name_th;
+                        }
 
-                        $stock_items->name = $products->name_th.' : '.$products_option_1.' '.$products_option_2;
                         $stock_items->qty = $item->qty;
                         $stock_items->price = $item->price;
                         $stock_items->save();
