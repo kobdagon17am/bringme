@@ -759,8 +759,13 @@ class API1Controller extends Controller
                 $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
                 $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
                 ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
-                // if($stock_lot->qty < $r->qty){
-                // }
+                if(!$stock_lot){
+                    return response()->json([
+                        'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
                 $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
                 if($product){
                     // $product->customer_cart_id = $cart->id;
@@ -1071,6 +1076,22 @@ class API1Controller extends Controller
                             'sale_number' => $product->sale_number + $p->qty,
                         ]);
                     }
+
+                    $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                    ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                    if(!$stock_lot){
+                        return response()->json([
+                            'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+                    $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+                    $stock_lot->save();
+                    $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                    $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
+                    $stock_items->save();
+
                 }
             }else{
                 return response()->json([
@@ -1159,7 +1180,7 @@ class API1Controller extends Controller
             ->orderBy('products.updated_at','desc')
             ->get();
 
-            $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty')
             ->join('products_item','products_item.product_id','products.id')
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status','!=',3)
