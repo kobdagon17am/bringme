@@ -13,6 +13,8 @@
                     <form method="POST" action="{{ route('admin/item_confirmation') }}" id="item_confirmation" >
                         @csrf
                         <input type="hidden" name="item_id" value="{{$data->id}}">
+                        <input type="hidden" name="transfer_id" value="{{$data->transfer_id}}">
+
                     <div class="mt-5">
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
@@ -39,6 +41,21 @@
                             <div class="col-md-6">
                                 <input type="date" value="{{date('Y-m-d')}}" class="form-control w-56 block mx-auto" name="lot_expired_date" data-single-mode="true">
                             </div>
+
+                        </div>
+
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">หมายเลข Lot | ชื่อ Lot</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required>
+
 
                         </div>
 

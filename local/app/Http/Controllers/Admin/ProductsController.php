@@ -61,10 +61,11 @@ class ProductsController extends Controller
 
         }
         $data = DB::table('products_item')
-        ->select('products_item.*','customer.name as stor_name')
+        ->select('products_item.*','customer.name as stor_name','products_transfer.id as transfer_id')
 
             ->where('products_item.id', $id)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->first();
 
         return view('backend/product-edit',compact('data'));
@@ -73,9 +74,17 @@ class ProductsController extends Controller
 
     public function item_confirmation(Request $rs)
     {
-        dd($rs->all());
 
         if($rs->tranfer_status == 3){
+           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_backen($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number);
+
+           if($data['status'] == 0 ){
+            return redirect('admin/products')->withError($data['message']);
+           }
+
+           if($data['status'] == 1 ){
+            return redirect('admin/products')->withSuccess('อัพเดทรายการสำเร็จ');
+           }
 
         }else{
             try {
