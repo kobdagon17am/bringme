@@ -68,6 +68,7 @@ class ProductsController extends Controller
             ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->first();
 
+
         return view('backend/product-edit',compact('data'));
     }
 
@@ -76,6 +77,7 @@ class ProductsController extends Controller
     {
 
         if($rs->tranfer_status == 3){
+            dd($rs->transfer_id);
            $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_backen($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number);
 
            if($data['status'] == 0 ){
@@ -94,7 +96,7 @@ class ProductsController extends Controller
 
                 ];
                 $products_item = DB::table('products_item')
-                    ->where('id', $rs->id)
+                    ->where('id', $rs->item_id)
                     ->update($dataPrepare);
                 DB::commit();
                 return redirect('admin/products')->withSuccess('อัพเดทรายการสำเร็จ');
