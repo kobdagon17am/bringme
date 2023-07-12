@@ -583,6 +583,7 @@ class API1Controller extends Controller
                 $customer_address = DB::table('customer_address')->where('customer_id',$request->customer_id)->update([
                     'default_active' => 'N'
                 ]);
+
             }
             $customer_address = new Customer_address();
             $customer_address->customer_id = $request->customer_id;
@@ -756,7 +757,8 @@ class API1Controller extends Controller
             $product_datail = Products::where('id',$r->product_id)->first();
             if( $product_datail){
                 $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
-                $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty','>',0)->orderBy('lot_expired_date','asc')->first();
+                $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
                 // if($stock_lot->qty < $r->qty){
                 // }
                 $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
@@ -966,7 +968,7 @@ class API1Controller extends Controller
         $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
         $product_qty = 0;
         if($cart){
-            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','products.price as product_price','brands.name_th as brand_name')
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
@@ -1114,7 +1116,7 @@ class API1Controller extends Controller
         $arr_cart = [];
         // dd($carts);
         foreach($carts as $key=> $c){
-            $products = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','products.price as product_price','brands.name_th as brand_name')
+            $products = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')

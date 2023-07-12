@@ -111,6 +111,7 @@ class API2Controller extends Controller
                         }
 
                         $stock_items->qty = $item->qty;
+                        $stock_items->qty_booking = $item->qty;
                         $stock_items->price = $item->price;
                         $stock_items->save();
                         $qty += $item->qty;
@@ -120,6 +121,7 @@ class API2Controller extends Controller
                     $products->save();
 
                     $stock_lot->qty = $qty;
+                    $stock_lot->qty_booking = $qty;
                     $stock_lot->save();
 
                     $products_item->approve_status = 1;
