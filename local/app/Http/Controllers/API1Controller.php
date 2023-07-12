@@ -25,6 +25,10 @@ Use App\Models\ProductsOption1;
 Use App\Models\ProductsOption2;
 Use App\Models\ProductsOption2Items;
 Use App\Models\ProductsTransfer;
+Use App\Models\Stock;
+Use App\Models\StockLot;
+Use App\Models\StockShelf;
+Use App\Models\StockItems;
 
 class API1Controller extends Controller
 {
@@ -752,16 +756,20 @@ class API1Controller extends Controller
             $product_datail = Products::where('id',$r->product_id)->first();
             if( $product_datail){
                 $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+                $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty','>',0)->orderBy('lot_expired_date','asc')->first();
+                // if($stock_lot->qty < $r->qty){
+                // }
+                $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
                 if($product){
                     // $product->customer_cart_id = $cart->id;
                     // $product->customer_id = $r->user_id;
                     // $product->product_id = $r->product_id;
-                    $product->price = $product_datail->price;
+                    $product->price = $stock_items->price;
                     if($r->type=='new'){
-                        $product->total_price = ($product_datail->price*$r->qty);
+                        $product->total_price = ($stock_items->price*$r->qty);
                         $product->qty = $r->qty;
                     }else{
-                        $product->total_price = ($product_datail->price*($r->qty+$product->qty));
+                        $product->total_price = ($stock_items->price*($r->qty+$product->qty));
                         $product->qty = ($r->qty+$product->qty);
                     }
 
@@ -776,8 +784,8 @@ class API1Controller extends Controller
                     $product->customer_cart_id = $cart->id;
                     $product->customer_id = $r->user_id;
                     $product->product_id = $r->product_id;
-                    $product->price = $product_datail->price;
-                    $product->total_price = ($product_datail->price*$r->qty);
+                    $product->price = $stock_items->price;
+                    $product->total_price = ($stock_items->price*$r->qty);
                     $product->qty = $r->qty;
                     $product->save();
 

@@ -119,6 +119,9 @@ class API2Controller extends Controller
                     $products->approve_status = 1;
                     $products->save();
 
+                    $stock_lot->qty = $qty;
+                    $stock_lot->save();
+
                     $products_item->approve_status = 1;
                     $products_item->transfer_status = 3;
                     $products_item->save();
