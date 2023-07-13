@@ -49,14 +49,17 @@ Route::post('admin/item_confirmation}', 'Admin\ProductsController@item_confirmat
 
 Route::get('admin/product-edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product-edit');
 
+// Update : 13/07/2023
+Route::get('admin/employee-edit/{id}', 'Admin\EmployeeController@employee_edit')->name('admin/employee-edit');
+Route::post('admin/employee_update', 'Admin\EmployeeController@employee_update')->name('admin/employee_update');
 
 
 
 
 
-Route::get('admin/employee-edit', function () {
-    return view('backend/employee-edit');
-  })->name('admin/employee-edit');
+// Route::get('admin/employee-edit', function () {
+//     return view('backend/employee-edit');
+//   })->name('admin/employee-edit');
 
 
 Route::get('admin/employee-add', function () {
