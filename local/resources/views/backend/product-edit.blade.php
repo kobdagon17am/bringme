@@ -26,7 +26,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <input type="date" value="{{date('Y-m-d')}}" class=" form-control w-56 block mx-auto" name="date_in_stock" data-single-mode="true">
+                                <input type="date" value="{{date('Y-m-d' , strtotime($data->shipping_date))}}" class=" form-control w-56 block mx-auto" name="date_in_stock" data-single-mode="true">
                             </div>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <input type="date" value="{{date('Y-m-d')}}" class="form-control w-56 block mx-auto" name="lot_expired_date" data-single-mode="true">
+                                <input type="date" value="{{date('Y-m-d' , strtotime($data->production_date))}}" class="form-control w-56 block mx-auto" name="lot_expired_date" data-single-mode="true">
                             </div>
 
                         </div>
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
 
-                                <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required>
+                                <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required value="{{ $data->barcode }}">
 
 
                         </div>
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="w-full mt-3 xl:mt-0 flex-1">
-                                <textarea id="regular-form-1" type="text" class="form-control" name="note" placeholder="Note"></textarea>
+                                <textarea id="regular-form-1" type="text" class="form-control" name="note" placeholder="Note">{{ $data->detail_th }}</textarea>
                             </div>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -161,55 +161,42 @@
                         อัปโหลดสินค้า
                     </div>
                     <div class="mt-5">
-                        <div class="form-inline items-start flex-col xl:flex-row mt-10">
-                            <div class="form-label w-full xl:w-64 xl:!mr-10">
-                                <div class="text-left">
-                                    <div class="flex items-center">
-                                        <div class="font-medium">รูปสินค้า</div>
-                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                        <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="item_id" value="{{$data->id}}">    
+                            <div class="form-inline items-start flex-col xl:flex-row mt-10">
+                                <div class="form-label w-full xl:w-64 xl:!mr-10">
+                                    <div class="text-left">
+                                        <div class="flex items-center">
+                                            <div class="font-medium">รูปสินค้า</div>
+                                            <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
+                                    <div class="grid grid-cols-10 gap-5 pl-4 pr-5 gallery_place">
+                                        @if(!empty($gallery))
+                                            @foreach($gallery as $_gallery)
+                                                <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
+                                                    <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ (!empty($_gallery->name) ? asset('local/storage/app/uploads/gallery/'.$_gallery->product_id.'/'.$_gallery->name) : asset('backend/dist/images/preview-12.jpg') ) }}">
+                                                    <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
+                                                        <i data-lucide="x" class="w-4 h-4"></i>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <div class="px-4 pb-4 mt-5 flex items-center justify-center cursor-pointer relative">
+                                        <i data-lucide="image" class="w-4 h-4 mr-2"></i>
+                                        <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
+                                        <input id="horizontal-form-1" type="file" name="gallery_file[]" class="w-full h-full top-0 left-0 absolute opacity-0 image-input" multiple>
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
-                                <div class="grid grid-cols-10 gap-5 pl-4 pr-5">
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-12.jpg')}}">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="px-4 pb-4 mt-5 flex items-center justify-center cursor-pointer relative">
-                                    <i data-lucide="image" class="w-4 h-4 mr-2"></i>
-                                    <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                    <input id="horizontal-form-1" type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
-                                </div>
+                            <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+                                <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -285,7 +272,6 @@
                         </div>
 
                         <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-
                             <button type="button" class="btn py-3 btn-primary">บันทึก</button>
                         </div>
                     </div>
@@ -1032,5 +1018,48 @@
 </div>
 @endsection
 @section('js')
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.image-input').change(function(e) {
+            var files = e.target.files;
+            var galleryDiv = $('.gallery_place');
+            
+            // Remove existing preview images and divs
+            galleryDiv.empty();
+
+            // Loop through selected files
+            for (var i = 0; i < files.length; i++) {
+                (function(file, index) {
+                    var reader = new FileReader();
+                    
+                    // Closure to capture the file information
+                    reader.onload = function(e) {
+                        var div = $('<div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in gallery_number_'+index+'" ref="'+index+'">'
+                                    +'<img class="rounded-md" alt="Midone - HTML Admin Template" src="'+e.target.result+'">'
+                                    +'<div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_gallery" ref="'+index+'">'
+                                        +'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="x" data-lucide="x" class="lucide lucide-x w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+                                    +'</div>'
+                                    +'</div>');
+
+                        // Append the div to the gallery
+                        galleryDiv.append(div);
+                    };
+                    
+                    // Read the image file as a data URL
+                    reader.readAsDataURL(file);
+                })(files[i], i);
+            }
+        });
+
+        $('.remove_gallery').click(function(){
+            var ref = $(this).attr('ref');
+            $('.gallery_number_'+ref).remove();
+        });
+    });
+
+
+</script>
 
 @endsection

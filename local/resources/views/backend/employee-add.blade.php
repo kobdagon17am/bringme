@@ -15,19 +15,19 @@
                 <div class="col-span-12">
                     <!-- BEGIN: Display Information -->
                     <div class="intro-y box lg:mt-5">
-                        <form method="post" action="{{ route('admin/employee_add') }}">
+                        <form method="post" action="{{ route('admin/employee_add') }}" enctype="multipart/form-data">
                             @csrf
                         <div class="p-5">
                             <div class="flex xl:flex-row flex-col gap-6">
                                 <div class="w-52 mx-auto">
                                     <div class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                                         <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/profile-1.jpg')}}">
-                                            <div title="Remove this profile photo?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                            <img class="rounded-md profile_place" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/profile-1.jpg')}}">
+                                            <div title="Remove this profile photo?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_profile"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                         <div class="mx-auto cursor-pointer relative mt-5">
                                             <button type="button" class="btn btn-primary w-full">เปลี่ยนรูป</button>
-                                            <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                            <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 profile" name="profile">
                                         </div>
                                     </div>
                                 </div>
@@ -82,10 +82,8 @@
 
                                         <div class="col-span-12 2xl:col-span-6">
                                             <label class="form-label">ตำแหน่ง</label>
-                                            <select class="tom-select w-full">
-                                                <option value="1">ผู้ดูแลระบบ 1</option>
-                                                <option value="2">ผู้ดูแลระบบ 2</option>
-                                                <option value="3">ผู้ดูแลระบบ 3</option>
+                                            <select class="tom-select w-full" name="position">
+                                                <option value="1">ผู้ดูแลระบบ</option>
                                             </select>
                                         </div>
 
@@ -101,45 +99,29 @@
                                             <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                                 <div class="flex flex-wrap px-4">
                                                     <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('dist/images/preview-11.jpg')}}">
-                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                                        <img class="rounded-md id_card_file_place" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-11.jpg')}}">
+                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_id_card_file"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                                     </div>
                                                 </div>
                                                 <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                                     <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0" >
+                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 id_card_file" name="id_card_file">
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!-- <div class="col-span-1 md:col-span-12">
-                                            <label for="" class="form-label">สำเนาหน้าสมุดธนาคาร</label>
-                                            <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
-                                                <div class="flex flex-wrap px-4">
-                                                    <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="dist/images/preview-11.jpg">
-                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
-                                                    </div>
-                                                </div>
-                                                <div class="px-4 pb-4 flex items-center cursor-pointer relative">
-                                                    <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
-                                                </div>
-                                            </div>
-                                        </div> -->
 
                                         <div class="md:col-span-12">
                                             <label for="" class="form-label">สำเนาเอกสารสมัครงาน</label>
                                             <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                                 <div class="flex flex-wrap px-4">
-                                                    <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('dist/images/preview-11.jpg')}}">
-                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                                    <div class="h-5 relative image-fit mb-5 mr-5 cursor-pointer" style="width: 100% !important;">
+                                                        <label class="rounded-md register_file_place" alt="Midone - HTML Admin Template"></label>
+                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_register_file"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                                     </div>
                                                 </div>
                                                 <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                                     <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 register_file" name="register_file">
                                                 </div>
                                             </div>
                                         </div>
@@ -149,13 +131,13 @@
                                             <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                                 <div class="flex flex-wrap px-4">
                                                     <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{asset('dist/images/preview-11.jpg')}}">
-                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                                        <img class="rounded-md address_file_place" alt="Midone - HTML Admin Template" src="{{asset('backend/dist/images/preview-11.jpg')}}">
+                                                        <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_address_file"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                                     </div>
                                                 </div>
                                                 <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                                     <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                                    <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 address_file" name="address_file">
                                                 </div>
                                             </div>
                                         </div>
@@ -176,3 +158,130 @@
         </div>
 
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+      // Step 1: Select image from folder
+      $('.profile').change(function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          $('.profile_place').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      });
+
+      // Step 2: Replace default image with the selected image
+      $('.profile').change(function() {
+        const profilePlace = $('.profile_place');
+        const removeProfile = $('.remove_profile');
+
+        profilePlace.removeClass('rounded-md');
+        removeProfile.css('display', 'flex');
+      });
+
+      // Step 3: Replace default image with the default profile image
+      $('.remove_profile').click(function() {
+        const profilePlace = $('.profile_place');
+        const removeProfile = $('.remove_profile');
+
+        profilePlace.addClass('rounded-md');
+        profilePlace.attr('src', "{{asset('backend/dist/images/profile-1.jpg')}}");
+        removeProfile.css('display', 'none');
+      });
+
+      // Step 1: Select image from folder
+      $('.id_card_file').change(function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          $('.id_card_file_place').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      });
+
+      // Step 2: Replace default image with the selected image
+      $('.id_card_file').change(function() {
+        const id_card_filePlace = $('.id_card_file_place');
+        const removeid_card_file = $('.remove_id_card_file');
+
+        id_card_filePlace.removeClass('rounded-md');
+        removeid_card_file.css('display', 'flex');
+      });
+
+      // Step 3: Replace default image with the default id_card_file image
+      $('.remove_id_card_file').click(function() {
+        const id_card_filePlace = $('.id_card_file_place');
+        const removeid_card_file = $('.remove_id_card_file');
+
+        id_card_filePlace.addClass('rounded-md');
+        id_card_filePlace.attr('src', "{{asset('backend/dist/images/preview-11.jpg')}}");
+        removeProfile.css('display', 'none');
+      });
+
+      // Step 1: Select image from folder
+      $('.register_file').change(function(e) {
+        const file = e.target.files[0];
+        const fileName = file.name;
+        
+        $('.register_file_place').text(fileName);
+      });
+
+      // Step 2: Replace default label with the selected file name
+      $('.register_file').change(function() {
+        const removeRegisterFile = $('.remove_register_file');
+
+        removeRegisterFile.css('display', 'flex');
+      });
+
+      // Step 3: Replace default label with an empty string
+      $('.remove_register_file').click(function() {
+        const registerFilePlace = $('.register_file_place');
+        const removeRegisterFile = $('.remove_register_file');
+
+        registerFilePlace.text('');
+        removeRegisterFile.css('display', 'none');
+      });
+
+      // Step 1: Select image from folder
+      $('.address_file').change(function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          $('.address_file_place').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      });
+
+      // Step 2: Replace default image with the selected image
+      $('.address_file').change(function() {
+        const address_filePlace = $('.address_file_place');
+        const removeaddress_file = $('.remove_address_file');
+
+        address_filePlace.removeClass('rounded-md');
+        removeaddress_file.css('display', 'flex');
+      });
+
+      // Step 3: Replace default image with the default address_file image
+      $('.remove_address_file').click(function() {
+        const address_filePlace = $('.address_file_place');
+        const removeaddress_file = $('.remove_address_file');
+
+        address_filePlace.addClass('rounded-md');
+        address_filePlace.attr('src', "{{asset('backend/dist/images/preview-11.jpg')}}");
+        removeProfile.css('display', 'none');
+      });
+
+
+    });
+
+
+
+</script>

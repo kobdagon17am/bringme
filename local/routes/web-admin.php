@@ -46,17 +46,21 @@ Route::get('admin/products-waitapproved-detail/{id}', 'Admin\ProductsController@
 
 Route::post('admin/product_confirmation}', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
 Route::post('admin/item_confirmation}', 'Admin\ProductsController@item_confirmation')->name('admin/item_confirmation');
+Route::post('admin/item_gallery}', 'Admin\ProductsController@item_gallery')->name('admin/item_gallery');
 
 Route::get('admin/product-edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product-edit');
 
+// Update : 13/07/2023
+Route::get('admin/employee-edit/{id}', 'Admin\EmployeeController@employee_edit')->name('admin/employee-edit');
+Route::post('admin/employee_update', 'Admin\EmployeeController@employee_update')->name('admin/employee_update');
 
 
 
 
 
-Route::get('admin/employee-edit', function () {
-    return view('backend/employee-edit');
-  })->name('admin/employee-edit');
+// Route::get('admin/employee-edit', function () {
+//     return view('backend/employee-edit');
+//   })->name('admin/employee-edit');
 
 
 Route::get('admin/employee-add', function () {
