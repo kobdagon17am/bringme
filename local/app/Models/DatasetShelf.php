@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 // use App\Models\CustomerGallery;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StockShelf extends Model
+class DatasetShelf extends Model
 {
     // use SoftDeletes;
     protected $table = 'dataset_shelf';
