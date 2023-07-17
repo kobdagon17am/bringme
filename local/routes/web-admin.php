@@ -46,6 +46,7 @@ Route::get('admin/products-waitapproved-detail/{id}', 'Admin\ProductsController@
 
 Route::post('admin/product_confirmation}', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
 Route::post('admin/item_confirmation}', 'Admin\ProductsController@item_confirmation')->name('admin/item_confirmation');
+Route::post('admin/item_gallery}', 'Admin\ProductsController@item_gallery')->name('admin/item_gallery');
 
 Route::get('admin/product-edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product-edit');
 

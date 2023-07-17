@@ -60,16 +60,16 @@ class ProductsController extends Controller
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
 
         }
-        $data = DB::table('products_item')
+        $data['data'] = DB::table('products_item')
         ->select('products_item.*','customer.name as stor_name','products_transfer.id as transfer_id')
+        ->where('products_item.id', $id)
+        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->first();
 
-            ->where('products_item.id', $id)
-            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
-            ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
-            ->first();
+        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
 
-
-        return view('backend/product-edit',compact('data'));
+        return view('backend/product-edit',$data);
     }
 
 
@@ -126,10 +126,10 @@ class ProductsController extends Controller
                     ->where('id', $rs->id)
                     ->update($dataPrepare);
                 DB::commit();
-                return redirect('admin/products-waitapproved')->withSuccess('อนุมัตรายการสำเร็จ');
+                return redirect('admin/products-waitapproved')->withSuccess('อนุมัติรายการสำเร็จ');
             } catch (Exception $e) {
                 DB::rollback();
-                return redirect('admin/products-waitapproved')->withError('อนุมัตรายการไม่สำเร็จ');
+                return redirect('admin/products-waitapproved')->withError('อนุมัติรายการไม่สำเร็จ');
             }
 
         }elseif($rs->type == 'cancel'){
@@ -156,9 +156,10 @@ class ProductsController extends Controller
             return redirect('admin/products-waitapproved')->withError('ยกเลิกรายการไม่สำเร็จ');
 
         }
+    }
 
-
-
+    public function item_gallery(Request $request){
+        dd($request->file());
     }
 
 
@@ -223,7 +224,7 @@ class ProductsController extends Controller
             ->addColumn('approve_status', function ($row) {
 
                 if ($row->approve_status == 1) {
-                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัต </div>';
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
                 } elseif ($row->approve_status == 2) {
 
                     $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
@@ -332,7 +333,7 @@ class ProductsController extends Controller
             ->addColumn('approve_status', function ($row) {
 
                 if ($row->approve_status == 1) {
-                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัต </div>';
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
                 } elseif ($row->approve_status == 2) {
 
                     $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
