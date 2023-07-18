@@ -29,6 +29,9 @@ Use App\Models\Stock;
 Use App\Models\StockLot;
 Use App\Models\StockShelf;
 Use App\Models\StockItems;
+Use App\Models\ProductsGallery;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class API1Controller extends Controller
 {
@@ -1340,11 +1343,39 @@ class API1Controller extends Controller
                 $products->max_price = $r->price;
                 $products->save();
 
+                    $gal = explode('|',$r->images);
+                    foreach ($gal as $key => $img) {
+                        if($img!=''){
+                            $image_64 = $img;
+                            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                             // find substring fro replace here eg: data:image/png;base64,
+                            $image = str_replace($replace, '', $image_64);
+                            $image = str_replace(' ', '+', $image);
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->put('product/'.$products->customer_id.'/'.$products->id.'/' . $imageName, base64_decode($image));
+                            // Storage::delete('file_payment/' . $check->file_slip);
+
+                            $gal = new ProductsGallery();
+                            $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
+                            $gal->name = $imageName;
+                            $gal->product_id = $products->id;
+                            if($key==0){
+                                $gal->use_profile = 1;
+                            }else{
+                                $gal->use_profile = 0;
+                            }
+                            $gal->save();
+                            // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                        }
+
+                }
+
                 DB::commit();
                 return response()->json([
-                    'message' => 'ทำรายการสำเร็จ',
+                    'message' => 'บันทึกสำเร็จ กรุณารอการตรวจสอบ',
                     'status' => 1,
-                    'data' => $products,
+                    'data' => '',
                 ]);
 
                 }
