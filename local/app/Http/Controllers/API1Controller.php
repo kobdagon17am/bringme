@@ -860,8 +860,12 @@ class API1Controller extends Controller
             // ->orderBy('sale_number','desc')
             // ->inRandomOrder()->get();
 
-            $product_good_sale = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_good_sale = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
             ->orderBy('products.sale_number','desc')
@@ -872,8 +876,12 @@ class API1Controller extends Controller
             // // ->orderBy('updated_at','desc')
             // ->inRandomOrder()->get();
 
-            $product_new = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_new = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
             // ->orderBy('products.sale_number','desc')
@@ -885,8 +893,12 @@ class API1Controller extends Controller
             // ->where('id',0)
             // ->inRandomOrder()->get();
 
-            $product_pro = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_pro = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
             ->where('products.id',0)
@@ -899,8 +911,12 @@ class API1Controller extends Controller
             // // ->where('id',0)
             // ->inRandomOrder()->get();
 
-            $product_recome = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_recome = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
             ->orderBy('products.updated_at','desc')
@@ -917,8 +933,9 @@ class API1Controller extends Controller
                 if($customer_address){
                     $address = $customer_address->address_number.' '.$customer_address->districts_name.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
                 }
-
             }
+
+            $url_img = Storage::disk('public')->url('');
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -929,6 +946,7 @@ class API1Controller extends Controller
                     'product_pro' => $product_pro,
                     'product_recome' => $product_recome,
                     'address' => $address,
+                    'url_img' => $url_img,
                 ],
             ]);
     }
@@ -940,16 +958,33 @@ class API1Controller extends Controller
             $store = Store::where('id',$product_detail->store_id)->first();
             $customer = Customer::where('id',$store->customer_id)->first();
 
-            $product_good_sale = Products::where('approve_status',1)
-            ->where('store_id',$product_detail->store_id)
-            ->where('display_status',1)
-            ->orderBy('sale_number','desc')
+            $product_good_sale = Products::select(
+            'products.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products.approve_status',1)
+            ->where('products.store_id',$product_detail->store_id)
+            ->where('products.display_status',1)
+            ->orderBy('products.sale_number','desc')
             ->get();
 
-            $product_your_like = Products::where('approve_status',1)
-            ->where('display_status',1)
-            ->orderBy('updated_at','desc')
+            $product_your_like = Products::select(
+            'products.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products.approve_status',1)
+            ->where('products.display_status',1)
+            ->orderBy('products.updated_at','desc')
             ->get();
+
+            $product_gallery = ProductsGallery::where('product_id',$r->product_id)->orderBy('use_profile','desc')->get();
+            $url_img = Storage::disk('public')->url('');
+            $stock_lot = StockLot::select('lot_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->orderBy('lot_expired_date','asc')->first();
+
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -960,6 +995,9 @@ class API1Controller extends Controller
                     'product_good_sale' => $product_good_sale,
                     'product_your_like' => $product_your_like,
                     'product_detail' => $product_detail,
+                    'product_gallery' => $product_gallery,
+                    'url_img' => $url_img,
+                    'lot_expired_date' => date('d/m/Y', strtotime($stock_lot->lot_expired_date)),
                 ],
             ]);
         }else{
@@ -976,9 +1014,16 @@ class API1Controller extends Controller
         $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
         $product_qty = 0;
         if($cart){
-            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            )
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
             foreach($products as $pro){
                 $product_qty+=$pro->qty;
@@ -994,6 +1039,8 @@ class API1Controller extends Controller
                 $customer_address = '';
             }
 
+            $url_img = Storage::disk('public')->url('');
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1002,6 +1049,7 @@ class API1Controller extends Controller
                     'product_qty' => $product_qty,
                     'cart' => $cart,
                     'customer_address' => $customer_address,
+                    'url_img' => $url_img,
                 ],
             ]);
         }else{
@@ -1173,22 +1221,36 @@ class API1Controller extends Controller
         if($customer){
             $store = Store::where('customer_id',$r->user_id)->first();
 
-            $product_last = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_last = Products::select('products.*','products_item.transfer_status',
+            'products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            )
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status',3)
             ->orderBy('products.updated_at','desc')
             ->get();
 
-            $product_all = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id')
+            $product_all = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status',3)
             ->orderBy('products.updated_at','desc')
             ->get();
 
-            $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty')
+            $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status','!=',3)
             ->orderBy('products.updated_at','desc')
@@ -1200,6 +1262,8 @@ class API1Controller extends Controller
             ->orderBy('updated_at','desc')
             ->get();
 
+            $url_img = Storage::disk('public')->url('');
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1210,6 +1274,7 @@ class API1Controller extends Controller
                     'product_all' => $product_all,
                     'product_wait' => $product_wait,
                     'product_not_show' => $product_not_show,
+                    'url_img' => $url_img,
                 ],
             ]);
         }else{
@@ -1415,9 +1480,28 @@ class API1Controller extends Controller
                     $products_transfer->tracking = $r->tracking;
                     $products_transfer->save();
 
+                    if($r->img!=''){
+                        $image_64 = $r->img;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                         // find substring fro replace here eg: data:image/png;base64,
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $imageName, base64_decode($image));
+                        // Storage::delete('file_payment/' . $check->file_slip);
+
+                        $products_transfer->path_img = 'product/'.$products_item->customer_id.'/'.$products_item->id.'/';
+                        $products_transfer->img = $imageName;
+                        $products_transfer->save();
+
+                        // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                    }
+
                     $products_item->transfer_status = 2;
                     $products_item->shipping_date = $r->shipping_date;
                     $products_item->save();
+
                 }else{
                     return response()->json([
                         'message' =>  'ไม่พบข้อมูลสินค้า',
