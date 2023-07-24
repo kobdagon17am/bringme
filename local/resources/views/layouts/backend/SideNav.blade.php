@@ -2,47 +2,42 @@
     <ul>
 
         <li>
-            <a href="{{route('admin/home')}}" class="side-menu">
+            <a href="{{route('admin/home')}}" class="side-menu {{ (request()->is('admin/home')  ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-01.png')}}" alt=""></div>
                 <div class="side-menu__title"> Dashboard </div>
             </a>
         </li>
 
         <li>
-            <a href="{{route('admin/employee')}}" class="side-menu">
+            <a href="{{route('admin/employee')}}" class="side-menu {{ (request()->is('admin/employee')  ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-02.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการพนักงาน </div>
             </a>
         </li>
 
         <li>
-            <a href="{{route('admin/permission')}}" class="side-menu">
+            <a href="{{route('admin/permission')}}" class="side-menu {{ (request()->is('admin/permission')  ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-03.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการสิทธิ์การใช้งาน </div>
             </a>
         </li>
 
         <li>
-            <a href="javascript:;" class="side-menu">
+            <a href="javascript:;" class="side-menu {{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/stores-detail') || request()->is('admin/users')    ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-04.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     จัดการผู้ใช้
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                 </div>
             </a>
-            <ul class="">
+            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/users') || request()->is('admin/stores-detail')  ) ? 'side-menu__sub-open' : '' }}">
                 <li>
                     <a href="{{route('admin/users')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                         <div class="side-menu__title"> รายการลูกค้า </div>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="stores.php" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                        <div class="side-menu__title"> รายการร้านค้า </div>
-                    </a>
-                </li> -->
+
                 <li>
                     <a href="javascript:;" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
@@ -51,9 +46,9 @@
                             <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                         </div>
                     </a>
-                    <ul class="">
+                    <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/stores-detail')   ) ? 'side-menu__sub-open' : '' }}">
                         <li>
-                            <a href="{{route('admin/stores')}}" class="side-menu">
+                            <a href="{{route('admin/stores')}}" class="side-menu ">
                                 <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                 <div class="side-menu__title"> รายการร้านค้า </div>
                             </a>

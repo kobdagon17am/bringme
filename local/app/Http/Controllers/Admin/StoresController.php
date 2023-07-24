@@ -28,6 +28,19 @@ class StoresController extends Controller
     }
 
 
+    public function store_detail($id = '')
+    {
+        if($id){
+            return view('backend/store-detail',compact('id'));
+        }else{
+            return redirect('admin/stores')->withError(' Data Is Null');
+        }
+
+
+
+    }
+
+
 
 
     public function stores_datable(Request $request)
@@ -79,10 +92,10 @@ class StoresController extends Controller
              })
 
              ->addColumn('action', function ($row) {
-                $url = route('admin/stores-detail');
-                $html = '
-                <a class="flex mr-3" href="'.$url.'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a
-                 ';
+                $url = route('admin/store-detail',['id'=>$row->id]);
+
+
+                 $html = '<a  href="'.$url.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียด</font> </a>';
                  return $html;
              })
 

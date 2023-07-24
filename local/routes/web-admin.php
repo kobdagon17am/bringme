@@ -79,23 +79,24 @@ Route::get('admin/employee-add', function () {
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
 
   Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
-  Route::post('admin/stores_confirmation', 'Admin\StoresWaitapprovedController@stores_confirmation')->name('admin/stores_confirmation');
 
+  Route::get('admin/store-detail/{id}', 'Admin\StoresController@store_detail')->name('admin/store-detail');
+
+
+
+  Route::post('admin/stores_confirmation', 'Admin\StoresWaitapprovedController@stores_confirmation')->name('admin/stores_confirmation');
   Route::get('admin/stores_waitapproved_datable', 'Admin\StoresWaitapprovedController@stores_waitapproved_datable')->name('admin/stores_waitapproved_datable');
 
 
-
-  Route::get('admin/stores-detail', function () {
-    return view('backend/store-detail');
-  })->name('admin/stores-detail');
 
   Route::get('admin/stores-waitapproved', function () {
     return view('backend/stores-waitapproved');
   })->name('admin/stores-waitapproved');
 
 
-
-
+  Route::get('admin/store-register-detail', function () {
+    return view('backend/store-register-detail');
+  })->name('admin/store-register-detail');
 
 
 
