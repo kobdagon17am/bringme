@@ -32,6 +32,7 @@ Use App\Models\StockItems;
 Use App\Models\ProductsGallery;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+Use App\Models\CustomerCartProductCutStock;
 
 class API1Controller extends Controller
 {
@@ -1147,6 +1148,9 @@ class API1Controller extends Controller
                     $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
                     $stock_items->save();
 
+                    // $customer_cart_product = CustomerCartProduct::where('id',$p->id)->first();
+                    // $customer_cart_product->stock_item_id  = $stock_items->id;
+                    // $customer_cart_product->save();
                 }
             }else{
                 return response()->json([

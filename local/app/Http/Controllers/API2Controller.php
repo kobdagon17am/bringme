@@ -30,6 +30,9 @@ Use App\Models\StockLot;
 Use App\Models\StockShelf;
 Use App\Models\StockItems;
 Use App\Models\StockFloor;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+Use App\Models\CustomerCartProductCutStock;
 
 class API2Controller extends  Controller
 {
@@ -345,9 +348,14 @@ class API2Controller extends  Controller
         $cart = CustomerCart::where('id',$r->cart_id)->first();
         $product_qty = 0;
         if($cart){
-            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products.products_code', 'products.barcode',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
             foreach($products as $pro){
                 $product_qty+=$pro->qty;
@@ -363,6 +371,8 @@ class API2Controller extends  Controller
                 $customer_address = '';
             }
 
+            $url_img = Storage::disk('public')->url('');
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -371,6 +381,7 @@ class API2Controller extends  Controller
                     'product_qty' => $product_qty,
                     'cart' => $cart,
                     'customer_address' => $customer_address,
+                    'url_img' => $url_img,
                 ],
             ]);
         }else{
@@ -388,7 +399,121 @@ class API2Controller extends  Controller
         try
         {
                 $product_cart = CustomerCartProduct::where('id',$r->id)->first();
+                if(($product_cart->pick_qty+1) > $product_cart->qty){
+                    return response()->json([
+                        'message' =>  'คุณหยิบสินค้าเกินจำนวน',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
                 $product_cart->pick_qty = $product_cart->pick_qty+1;
+                $product_cart->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'cart' => $cart,
+                    // 'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_scan_update(Request $r){
+        DB::beginTransaction();
+        try
+        {
+                $product_cart = CustomerCartProduct::where('id',$r->id)->first();
+                $product = Products::select('barcode')->where('id',$product_cart->product_id)->first();
+                if($r->barcode != $product->barcode){
+                    return response()->json([
+                        'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+                if(($product_cart->scan_qty+1) > $product_cart->qty){
+                    return response()->json([
+                        'message' =>  'คุณหยิบสินค้าเกินจำนวน',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+                $product_cart->scan_qty = $product_cart->scan_qty+1;
+                $product_cart->save();
+
+            DB::commit();
+
+            if($product_cart->scan_qty == $product_cart->qty){
+                return response()->json([
+                    'message' =>  'สำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'qty_status' => 'full'
+                    ],
+                ]);
+            }else{
+                return response()->json([
+                    'message' =>  'สำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'qty_status' => 'wait'
+                    ],
+                ]);
+            }
+
+
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+
+    public function api_pick_delete(Request $r){
+        DB::beginTransaction();
+        try
+        {
+                $product_cart = CustomerCartProduct::where('id',$r->id)->first();
+                if($product_cart->pick_qty>0){
+                    $product_cart->pick_qty = $product_cart->pick_qty-1;
+                }
                 $product_cart->save();
 
             DB::commit();
@@ -426,8 +551,77 @@ class API2Controller extends  Controller
         DB::beginTransaction();
         try
         {
+                $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->get();
+                $fail = 0;
+                foreach($product_cart as $p){
+                    if($p->qty > $p->pick_qty){
+                        $fail++;
+                    }
+                }
+                if($fail > 0){
+                    return response()->json([
+                        'message' =>  'กรุณาหยิบสินค้าให้ครบถ้วนก่อนทำรายการ',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+
                 $cart = CustomerCart::where('id',$r->id)->first();
                 $cart->picking_status = 1;
+                $cart->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'cart' => $cart,
+                    // 'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_scan_approve(Request $r){
+        DB::beginTransaction();
+        try
+        {
+                $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->get();
+                $fail = 0;
+                foreach($product_cart as $p){
+                    if($p->qty > $p->scan_qty){
+                        $fail++;
+                    }
+                }
+                if($fail > 0){
+                    return response()->json([
+                        'message' =>  'กรุณาหยิบสินค้าให้ครบถ้วนก่อนทำรายการ',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+
+                $cart = CustomerCart::where('id',$r->id)->first();
+                $cart->scan_status = 1;
                 $cart->save();
 
             DB::commit();
