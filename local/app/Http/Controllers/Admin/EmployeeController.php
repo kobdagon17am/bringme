@@ -212,13 +212,14 @@ class EmployeeController extends Controller
             })
 
             ->addColumn('action', function ($row) {
-                $url = route('admin/stores-detail');
+
                 $้html = '
                 <div class="flex justify-center items-center">
                                 <a class="flex items-center mr-3" href="employee-edit/'.$row->id.'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i>  แก้ไข </a>
-                                <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"><i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>  ลบ </a>
+
                             </div>
                  ';
+                //<a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"><i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>  ลบ </a>
                 return $้html;
             })
 
@@ -304,7 +305,7 @@ class EmployeeController extends Controller
         }
 
         if (!$validator->fails()) {
-            
+
             $user['name'] =  $request->name;
             $user['phone'] = $request->phone;
             $user['id_card'] = $request->id_card;

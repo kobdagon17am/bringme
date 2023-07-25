@@ -39,6 +39,10 @@ Route::post('admin/employee_add', 'Admin\EmployeeController@employee_add')->name
 Route::get('admin/products', 'Admin\ProductsController@index')->name('admin/products');
 Route::get('admin/products_datable', 'Admin\ProductsController@products_datable')->name('admin/products_datable');
 
+
+Route::get('admin/products-pending-tranfer', 'Admin\ProductsController@products_pending_tranfer')->name('admin/products-pending-tranfer');
+Route::get('admin/products_pending_tranfer_datatable', 'Admin\ProductsController@products_pending_tranfer_datatable')->name('admin/products_pending_tranfer_datatable');
+
 Route::get('admin/products-waitapproved', 'Admin\ProductsController@products_waitapproved')->name('admin/products-waitapproved');
 Route::get('admin/products_waitapproved_datable', 'Admin\ProductsController@products_waitapproved_datable')->name('admin/products_waitapproved_datable');
 

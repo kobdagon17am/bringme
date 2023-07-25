@@ -29,6 +29,12 @@ class ProductsController extends Controller
         return view('backend/products');
     }
 
+
+    public function products_pending_tranfer()
+    {
+        return view('backend/products-pending-tranfer');
+    }
+
     public function products_waitapproved()
     {
         return view('backend/products-waitapproved');
@@ -282,7 +288,7 @@ class ProductsController extends Controller
             // ->where('status','=','success')
             // ->where('customer_type', 2)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
-            ->where('products_item.approve_status','!=', 0);
+            ->where('products_item.approve_status','=', 1);
             // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
             // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
             // ->whereRaw(("case WHEN '{$request->s_date}' = '' and '{$request->e_date}' != ''  THEN  date(created_at) = '{$request->e_date}' else 1 END"));
@@ -371,8 +377,113 @@ class ProductsController extends Controller
 
                 $html = ' <div class="flex justify-center items-center">
                 <a class="flex items-center mr-3" href="'.route('admin/product-edit',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข </a>
-               <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
+
            </div>';
+           // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
+                return $html;
+            })
+
+
+            ->rawColumns(['product_name','approve_status','transfer_status', 'action', 'img'])
+            ->make(true);
+    }
+
+
+    public function products_pending_tranfer_datatable(Request $request)
+    {
+
+
+
+        $products_transfer = DB::table('products_transfer')
+        ->select('products_item.*','customer.name as stor_name','products_transfer.approve_status as approve_status_transfer')
+        ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->where('products_transfer.approve_status','=',0);
+
+
+
+
+        $sQuery = Datatables::of($products_transfer);
+        return $sQuery
+
+
+            ->addColumn('img', function ($row) {
+
+                $img = '<div class="flex">
+                <div class="w-10 h-10 image-fit zoom-in">
+                    <img alt="Midone - HTML Admin Template" class=" rounded-full"
+                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                </div>
+            </div>';
+
+                return $img;
+            })
+
+
+            ->addColumn('product_name', function ($row) {
+
+                $name = '<div class="font-medium whitespace-nowrap">TH: '.$row->name_th.'</div>
+                <div class="font-medium whitespace-nowrap">EN: '.$row->name_en.'</div>';
+
+                return $name;
+            })
+
+            ->addColumn('stor_name', function ($row) {
+
+                $name = $row->stor_name;
+
+                return $name;
+            })
+
+
+            ->addColumn('qty', function ($row) {
+
+
+                return number_format($row->qty,2);
+            })
+
+
+            ->addColumn('approve_status', function ($row) {
+
+                if ($row->approve_status == 1) {
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
+                } elseif ($row->approve_status == 2) {
+
+                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
+                } else {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
+                }
+                return $htmml;
+            })
+
+
+            ->addColumn('transfer_status', function ($row) {
+
+                if ($row->approve_status_transfer == 0) {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอรับสินค้า </div>';
+                } elseif ($row->approve_status_transfer == 1) {
+
+                    $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รับสินค้าครบแล้ว </div>';
+                }elseif ($row->approve_status_transfer == 2) {
+
+                        $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รับสินค้าบางส่วน </div>';
+                 }  elseif ($row->approve_status_transfer == 3) {
+
+                        $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่รับสินค้า </div>';
+
+                }else {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
+                }
+                return $htmml;
+            })
+
+            ->addColumn('action', function ($row) {
+
+                $html = ' <div class="flex justify-center items-center">
+                <a class="flex items-center mr-3" href="'.route('admin/product-edit',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข </a>
+
+           </div>';
+           // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
             })
 

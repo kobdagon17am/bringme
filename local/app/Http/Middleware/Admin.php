@@ -19,7 +19,8 @@ class Admin
         if ( Auth::guard('admin')->check()) {
             return $next($request);
         } else {
-            abort(403, 'Unauthorized action.');
+            return redirect('admin');
+            //abort(403, 'Unauthorized action.');
         }
     }
 }

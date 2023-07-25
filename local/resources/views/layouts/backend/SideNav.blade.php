@@ -65,18 +65,25 @@
         </li>
 
         <li>
-            <a href="javascript:;" class="side-menu">
+            <a href="javascript:;" class="side-menu {{ (request()->is('admin/products') || request()->is('admin/products-waitapproved') || request()->is('admin/products-pending-tranfer')  ) ? 'side-menu--active' : '' }}"">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-05.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     จัดการสินค้า
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                 </div>
             </a>
-            <ul class="">
+            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/products') || request()->is('admin/roducts-waitapproved') || request()->is('admin/products-pending-tranfer')   ) ? 'side-menu__sub-open' : '' }}">
                 <li>
                     <a href="{{route('admin/products')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                        <div class="side-menu__title"> รายการสินค้า </div>
+                        <div class="side-menu__title"> รายการสินค้าที่อนุมัติ </div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{route('admin/products-pending-tranfer')}}" class="side-menu">
+                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__title"> รายการรอรับสินค้า </div>
                     </a>
                 </li>
                 <li>
