@@ -33,6 +33,7 @@ Use App\Models\StockFloor;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
+Use App\Models\CustomerCartTracking;
 
 class API2Controller extends  Controller
 {
@@ -343,6 +344,20 @@ class API2Controller extends  Controller
             ]);
     }
 
+    public function api_get_shipping_list(Request $r)
+    {
+        $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->where('transfer_status',1)->orderBy('shipping_date','asc')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart' => $cart,
+                    'cart_success' => $cart_success,
+                ],
+            ]);
+    }
+
     public function api_get_cart_detail(Request $r)
     {
         $cart = CustomerCart::where('id',$r->cart_id)->first();
@@ -390,6 +405,18 @@ class API2Controller extends  Controller
 
             $url_img = Storage::disk('public')->url('');
 
+            $tracking_no1 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',1)->first();
+            $tracking_no2 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',2)->first();
+            $tracking_no3 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',3)->first();
+            $tracking_no4 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',4)->first();
+            $tracking_no5 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',5)->first();
+
+            $tracking_no1 = ($tracking_no1)? $tracking_no1->tracking_no : '';
+            $tracking_no2 = ($tracking_no2)? $tracking_no2->tracking_no : '';
+            $tracking_no3 = ($tracking_no3)? $tracking_no3->tracking_no : '';
+            $tracking_no4 = ($tracking_no4)? $tracking_no4->tracking_no : '';
+            $tracking_no5 = ($tracking_no5)? $tracking_no5->tracking_no : '';
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -400,6 +427,11 @@ class API2Controller extends  Controller
                     'customer_address' => $customer_address,
                     'url_img' => $url_img,
                     'arr_lot' => $arr_lot,
+                    'tracking_no1' => $tracking_no1,
+                    'tracking_no2' => $tracking_no2,
+                    'tracking_no3' => $tracking_no3,
+                    'tracking_no4' => $tracking_no4,
+                    'tracking_no5' => $tracking_no5,
                 ],
             ]);
         }else{
@@ -706,6 +738,118 @@ class API2Controller extends  Controller
                 $cart = CustomerCart::where('id',$r->id)->first();
                 $cart->scan_status = 1;
                 $cart->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'cart' => $cart,
+                    // 'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_shipping_approve(Request $r){
+        DB::beginTransaction();
+        try
+        {
+
+                $cart = CustomerCart::where('id',$r->id)->first();
+                if($cart->picking_status == 1 && $cart->scan_status == 1){
+                    $cart->transfer_status = 1;
+                }
+                $cart->save();
+
+                if($r->tracking_no1 != ''){
+                    $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
+                    if(!$tracking_no1){
+                        $tracking_no1 = new CustomerCartTracking();
+                    }
+                    $tracking_no1->customer_cart_id = $cart->id;
+                    $tracking_no1->customer_id = $cart->customer_id;
+                    $tracking_no1->tracking_no = $r->tracking_no1;
+                    $tracking_no1->transfer_type = 1;
+                    $tracking_no1->cod = 0;
+                    $tracking_no1->no = 1;
+                    $tracking_no1->save();
+                }
+
+                if($r->tracking_no2 != ''){
+                    $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',2)->first();
+                    if(!$tracking_no2){
+                        $tracking_no2 = new CustomerCartTracking();
+                    }
+                    $tracking_no2->customer_cart_id = $cart->id;
+                    $tracking_no2->customer_id = $cart->customer_id;
+                    $tracking_no2->tracking_no = $r->tracking_no2;
+                    $tracking_no2->transfer_type = 1;
+                    $tracking_no2->cod = 0;
+                    $tracking_no2->no = 2;
+                    $tracking_no2->save();
+                }
+
+                if($r->tracking_no3 != ''){
+                    $tracking_no3 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',3)->first();
+                    if(!$tracking_no3){
+                        $tracking_no3 = new CustomerCartTracking();
+                    }
+                    $tracking_no3->customer_cart_id = $cart->id;
+                    $tracking_no3->customer_id = $cart->customer_id;
+                    $tracking_no3->tracking_no = $r->tracking_no3;
+                    $tracking_no3->transfer_type = 1;
+                    $tracking_no3->cod = 0;
+                    $tracking_no3->no = 3;
+                    $tracking_no3->save();
+                }
+
+                if($r->tracking_no4 != ''){
+                    $tracking_no4 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',4)->first();
+                    if(!$tracking_no4){
+                        $tracking_no4 = new CustomerCartTracking();
+                    }
+                    $tracking_no4->customer_cart_id = $cart->id;
+                    $tracking_no4->customer_id = $cart->customer_id;
+                    $tracking_no4->tracking_no = $r->tracking_no4;
+                    $tracking_no4->transfer_type = 1;
+                    $tracking_no4->cod = 0;
+                    $tracking_no4->no = 4;
+                    $track4g_no1->save();
+                }
+
+                if($r->tracking_no5 != ''){
+                    $tracking_no5 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',5)->first();
+                    if(!$tracking_no5){
+                        $tracking_no5 = new CustomerCartTracking();
+                    }
+                    $tracking_no5->customer_cart_id = $cart->id;
+                    $tracking_no5->customer_id = $cart->customer_id;
+                    $tracking_no5->tracking_no = $r->tracking_no5;
+                    $tracking_no5->transfer_type = 1;
+                    $tracking_no5->cod = 0;
+                    $tracking_no5->no = 5;
+                    $tracking_no1->save();
+                }
 
             DB::commit();
 
