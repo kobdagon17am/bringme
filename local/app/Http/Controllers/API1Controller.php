@@ -786,6 +786,45 @@ class API1Controller extends Controller
 
                     $product->save();
 
+                    // $qty_mis_total = $product->qty;
+                    // if($qty_mis_total>0){
+                    //     $stock_lot_arr = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                    //     ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+                    //     foreach($stock_lot_arr as $st_arr){
+                    //         if($qty_mis_total > 0){
+                    //             $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$st_arr->id)->first();
+
+                    //             $customer_cart_product_cut_stock = CustomerCartProductCutStock::select('id')->where('customer_cart_product_id',$product->id)->where('product_id',$r->product_id)->get();
+                    //             if(count($customer_cart_product_cut_stock) > 1){
+                    //                 CustomerCartProductCutStock::select('id')->where('customer_cart_product_id',$product->id)->where('product_id',$r->product_id)->delete();
+                    //                 $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
+                    //             }else{
+                    //                 $customer_cart_product_cut_stock = CustomerCartProductCutStock::where('customer_cart_product_id',$product->id)->where('product_id',$r->product_id)->first();
+                    //             }
+                    //             $customer_cart_product_cut_stock->customer_cart_product_id = $product->id;
+                    //             $customer_cart_product_cut_stock->customer_cart_id = $cart->id;
+                    //             $customer_cart_product_cut_stock->customer_id = $r->user_id;
+                    //             $customer_cart_product_cut_stock->product_id = $r->product_id;
+                    //             $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
+                    //             $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
+                    //             $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
+                    //             if($stock_items->qty<$qty_mis_total){
+                    //                 $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
+                    //             }else{
+                    //                 $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
+                    //             }
+
+                    //             $qty_mis_total = ($qty_mis_total-$stock_items->qty);
+                    //             if($qty_mis_total < 0){
+                    //                 $qty_mis_total = 0;
+                    //             }
+
+                    //             $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
+                    //             $customer_cart_product_cut_stock->save();
+                    //         }
+                    //     }
+                    // }
+
                     if($r->qty == 0){
                         CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->delete();
                     }
@@ -800,6 +839,38 @@ class API1Controller extends Controller
                     $product->qty = $r->qty;
                     $product->save();
 
+                    // $qty_mis_total = $r->qty;
+                    //     if($qty_mis_total>0){
+                    //         $stock_lot_arr = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                    //         ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+                    //         foreach($stock_lot_arr as $st_arr){
+                    //             if($qty_mis_total > 0){
+                    //                 $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$st_arr->id)->first();
+
+                    //                 $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
+                    //                 $customer_cart_product_cut_stock->customer_cart_product_id = $product->id;
+                    //                 $customer_cart_product_cut_stock->customer_cart_id = $cart->id;
+                    //                 $customer_cart_product_cut_stock->customer_id = $r->user_id;
+                    //                 $customer_cart_product_cut_stock->product_id = $r->product_id;
+                    //                 $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
+                    //                 $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
+                    //                 $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
+                    //                 if($stock_items->qty<$qty_mis_total){
+                    //                     $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
+                    //                 }else{
+                    //                     $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
+                    //                 }
+
+                    //                 $qty_mis_total = ($qty_mis_total-$stock_items->qty);
+                    //                 if($qty_mis_total < 0){
+                    //                     $qty_mis_total = 0;
+                    //                 }
+
+                    //                 $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
+                    //                 $customer_cart_product_cut_stock->save();
+                    //             }
+                    //         }
+                    //     }
                 }
 
                 $product_cart = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->get();
@@ -1142,15 +1213,53 @@ class API1Controller extends Controller
                             'data' => '',
                         ]);
                     }
-                    $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
-                    $stock_lot->save();
-                    $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                    $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
-                    $stock_items->save();
+                    // $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+                    // $stock_lot->save();
+                    // $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                    // $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
+                    // $stock_items->save();
 
-                    // $customer_cart_product = CustomerCartProduct::where('id',$p->id)->first();
-                    // $customer_cart_product->stock_item_id  = $stock_items->id;
-                    // $customer_cart_product->save();
+                    // จองสต็อก
+                    $qty_mis_total = $p->qty;
+                    if($qty_mis_total>0){
+                        $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                        ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+
+                        foreach($stock_lot_arr as $st_arr){
+                            if($qty_mis_total > 0){
+                                $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
+
+                                $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
+                                $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
+                                $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
+                                $customer_cart_product_cut_stock->customer_id = $p->customer_id;
+                                $customer_cart_product_cut_stock->product_id = $p->product_id;
+                                $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
+                                $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
+                                $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
+                                if($stock_items->qty<$qty_mis_total){
+                                    $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
+                                }else{
+                                    $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
+                                }
+                                $qty_mis_total = ($qty_mis_total-$stock_items->qty);
+                                if($qty_mis_total < 0){
+                                    $qty_mis_total = 0;
+                                }
+                                $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
+                                $customer_cart_product_cut_stock->save();
+
+                                // ตัดสต็อก booking
+                                $stock_lot_arr = StockLot::where('id',$st_arr->id)->first();
+                                $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+                                $stock_lot->save();
+
+                                $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                                $stock_items->qty_booking = $stock_items->qty_booking-$customer_cart_product_cut_stock->qty_has;
+                                $stock_items->save();
+                            }
+                        }
+                    }
                 }
             }else{
                 return response()->json([

@@ -357,8 +357,25 @@ class API2Controller extends  Controller
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
-            foreach($products as $pro){
+
+            $arr_lot = [];
+            foreach($products as $index => $pro){
                 $product_qty+=$pro->qty;
+
+                // ดึงตำแหน่งสินค้า
+                $customer_cart_product_cut_stock = CustomerCartProductCutStock::
+                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','stock_floor.floor','stock_items.name as stock_item_name')
+                ->join('stock_items','stock_items.id','customer_cart_product_cut_stock.stock_item_id')
+                ->join('stock_floor','stock_floor.id','stock_items.stock_floor_id')
+                ->join('stock_shelf','stock_shelf.id','stock_items.stock_shelt_id')
+                ->join('dataset_shelf','dataset_shelf.id','stock_shelf.shelf_id')
+                ->join('stock_lot','stock_lot.id','stock_shelf.stock_lot_id')
+                ->where('customer_cart_product_cut_stock.customer_cart_product_id',$pro->id)
+                ->get();
+
+                foreach($customer_cart_product_cut_stock as $key => $c){
+                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name;
+                }
             }
 
             $customer_address = Customer_address::
@@ -382,6 +399,7 @@ class API2Controller extends  Controller
                     'cart' => $cart,
                     'customer_address' => $customer_address,
                     'url_img' => $url_img,
+                    'arr_lot' => $arr_lot,
                 ],
             ]);
         }else{
@@ -547,6 +565,47 @@ class API2Controller extends  Controller
         }
     }
 
+    public function api_scan_delete(Request $r){
+        DB::beginTransaction();
+        try
+        {
+                $product_cart = CustomerCartProduct::where('id',$r->id)->first();
+                if($product_cart->scan_qty>0){
+                    $product_cart->scan_qty = $product_cart->scan_qty-1;
+                }
+                $product_cart->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'cart' => $cart,
+                    // 'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
     public function api_pick_approve(Request $r){
         DB::beginTransaction();
         try
@@ -614,11 +673,35 @@ class API2Controller extends  Controller
                 }
                 if($fail > 0){
                     return response()->json([
-                        'message' =>  'กรุณาหยิบสินค้าให้ครบถ้วนก่อนทำรายการ',
+                        'message' =>  'กรุณาสแกนสินค้าให้ครบถ้วนก่อนทำรายการ',
                         'status' => 0,
                         'data' => '',
                     ]);
                 }
+
+                foreach($product_cart as $p){
+
+                $customer_cart_product_cut_stock = CustomerCartProductCutStock::
+                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','stock_floor.floor','stock_items.name as stock_item_name')
+                ->join('stock_items','stock_items.id','customer_cart_product_cut_stock.stock_item_id')
+                ->join('stock_floor','stock_floor.id','stock_items.stock_floor_id')
+                ->join('stock_shelf','stock_shelf.id','stock_items.stock_shelt_id')
+                ->join('dataset_shelf','dataset_shelf.id','stock_shelf.shelf_id')
+                ->join('stock_lot','stock_lot.id','stock_shelf.stock_lot_id')
+                ->where('customer_cart_product_cut_stock.customer_cart_product_id',$p->id)
+                ->get();
+
+                foreach($customer_cart_product_cut_stock as $key => $c){
+                    // $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name;
+                    $stock_items = StockItems::where('id',$c->stock_item_id)->first();
+                    $stock_items->qty = ($stock_items->qty - $c->qty_has);
+                    $stock_items->save();
+
+                    $stock_lot = StockLot::where('id',$c->stock_lot_id)->first();
+                    $stock_lot->qty = ($stock_lot->qty - $c->qty_has);
+                    $stock_lot->save();
+                }
+            }
 
                 $cart = CustomerCart::where('id',$r->id)->first();
                 $cart->scan_status = 1;
