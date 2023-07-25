@@ -48,6 +48,12 @@ Route::get('admin/products_waitapproved_datable', 'Admin\ProductsController@prod
 
 Route::get('admin/products-waitapproved-detail/{id}', 'Admin\ProductsController@products_waitapproved_detail')->name('admin/products-waitapproved-detail');
 
+
+Route::get('admin/product-panding-tranfer-detail/{id}', 'Admin\ProductsController@product_panding_tranfer_detail')->name('admin/product-panding-tranfer-detail');
+
+
+
+
 Route::post('admin/product_confirmation}', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
 Route::post('admin/item_confirmation}', 'Admin\ProductsController@item_confirmation')->name('admin/item_confirmation');
 Route::post('admin/item_gallery}', 'Admin\ProductsController@item_gallery')->name('admin/item_gallery');
