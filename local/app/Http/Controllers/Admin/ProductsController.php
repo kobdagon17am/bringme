@@ -78,6 +78,25 @@ class ProductsController extends Controller
         return view('backend/product-edit',$data);
     }
 
+    public function product_panding_tranfer_detail($id='')
+    {
+        if(empty($id)){
+            return redirect()->back()->withError('กรุณาเลือกสินค้า');
+
+        }
+        $data['data'] = DB::table('products_item')
+        ->select('products_item.*','customer.name as stor_name','products_transfer.id as transfer_id')
+        ->where('products_item.id', $id)
+        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->first();
+
+        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+
+        return view('backend/product-panding-tranfer-detail',$data);
+    }
+
+
 
     public function item_confirmation(Request $rs)
     {
@@ -480,7 +499,7 @@ class ProductsController extends Controller
             ->addColumn('action', function ($row) {
 
                 $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="'.route('admin/product-edit',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข </a>
+                <a class="flex items-center mr-3" href="'.route('admin/product-panding-tranfer-detail',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> อนุมัติรายการ </a>
 
            </div>';
            // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
