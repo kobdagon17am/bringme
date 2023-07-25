@@ -54,5 +54,6 @@ Route::post('api_get_cart_detail', 'API2Controller@api_get_cart_detail');
 Route::post('api_pick_update', 'API2Controller@api_pick_update');
 Route::post('api_pick_approve', 'API2Controller@api_pick_approve');
 Route::post('api_pick_delete', 'API2Controller@api_pick_delete');
+Route::post('api_scan_delete', 'API2Controller@api_scan_delete');
 Route::post('api_scan_update', 'API2Controller@api_scan_update');
 Route::post('api_scan_approve', 'API2Controller@api_scan_approve');
