@@ -66,21 +66,24 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>   -->
 
-        <script>
+        {{-- <script>
             $(document).ready(function() {
                 $('a').removeClass('side-menu--active')
                 $('ul').removeClass('side-menu__sub-open')
                 $('a').each(function() {
                     let url = window.location.href;
                     let a = $(this).attr('href')
+
+
                     if (a == url) {
+                        console.log('sss');
                         $(this).addClass('side-menu--active')
                         $(this).parent().parent().addClass('side-menu__sub-open')
                     }
                 });
 
             });
-        </script>
+        </script> --}}
 
          @include('layouts.backend.flash-message')
         @yield('js')

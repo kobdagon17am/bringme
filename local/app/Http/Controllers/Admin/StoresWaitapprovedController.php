@@ -103,13 +103,12 @@ class StoresWaitapprovedController extends Controller
             })
 
             ->addColumn('action', function ($row) {
-                $url = route('admin/stores-detail');
-                $name_full = '
-                <a class="flex mr-3" href="' . $url . '"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a
-                 ';
-                return $name_full;
-            })
+                $url = route('admin/store-detail',['id'=>$row->id]);
 
+
+                 $html = '<a  href="'.$url.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียด</font> </a>';
+                 return $html;
+             })
 
             ->rawColumns(['status', 'action', 'img'])
             ->make(true);

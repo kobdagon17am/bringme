@@ -49,6 +49,71 @@
                 </div>
             </div>
         </div>
+
+        <div class="flex justify-end mt-4 gap-5">
+            <button type="button" data-tw-toggle="modal" data-tw-target="#cancle-confirmation-modal" class="btn btn-outline-danger w-20 ">ไม่อนุมัติ</button>
+            <button type="button" type="button" data-tw-toggle="modal" data-tw-target="#confirmation-modal" class="btn btn-primary w-20">อนุมัติ</button>
+        </div>
+
+        <div id="cancle-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ route('admin/stores_confirmation') }}" id="item_confirmation" >
+                    @csrf
+                    <input type="hidden" name="id" value="{{$id}}">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <div class="p-5 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="x-circle" data-lucide="x-circle" class="lucide lucide-x-circle w-16 h-16 text-danger mx-auto mt-3">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                            <div class="text-3xl mt-5">Are you sure?</div>
+                            <div class="text-slate-500 mt-2">
+                                Do you really want to Cancle these records?
+                                <br>
+                                This process cannot be undone.
+                            </div>
+                        </div>
+                        <div class="px-5 pb-8 text-center">
+                            <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">ย้อนกลับ</button>
+                            <button type="submit" name="status" value="2" class="btn btn-danger w-24">ยืนยัน</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div id="confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ route('admin/stores_confirmation') }}" id="item_confirmation" >
+                    @csrf
+                    <input type="hidden" name="id" value="{{$id}}">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <div class="p-5 text-center">
+                            <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
+                            <div class="text-3xl mt-5">Are you sure?</div>
+                            <div class="text-slate-500 mt-2">
+                                Do you really want to Confirmation these records?
+                                <br>
+                                This process cannot be undone.
+                            </div>
+                        </div>
+                        <div class="px-5 pb-8 text-center">
+                            <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">ย้อนกลับ</button>
+                            <button type="submit" name="status" value="1" class="btn btn-success w-24">ยืนยัน</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </form>
+        </div>
+        </div>
+
+
         <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center" role="tablist">
             <li id="dashboard-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4 active" data-tw-target="#dashboard" aria-controls="dashboard" aria-selected="true" role="tab"> แดชบอร์ด </a> </li>
             <li id="product-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4" data-tw-target="#product" aria-selected="false" role="tab"> สินค้าทั้งหมด </a> </li>
