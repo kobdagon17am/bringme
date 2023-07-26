@@ -80,6 +80,8 @@ class API2Controller extends  Controller
                     $stock_lot->lot_number = $r->lot_number;
                     $stock_lot->save();
 
+                    $shelf = DB::table('dataset_shelf')->where('id',$r->shelf_id)->first();
+
                     $stock_shelf = new StockShelf();
                     $stock_shelf->stock_id = $stock->id;
                     $stock_shelf->stock_lot_id = $stock_lot->id;
@@ -87,7 +89,7 @@ class API2Controller extends  Controller
                     $stock_shelf->shelf_id = $r->shelf_id;
                     // $stock_shelf->store_id = $products_item->store_id;
                     $stock_shelf->customer_id = $products_item->customer_id;
-                    $stock_shelf->name = 'Shelf 1';
+                    $stock_shelf->name = $shelf->name;
                     $stock_shelf->save();
 
                     $stock_floor = new StockFloor();
@@ -210,6 +212,9 @@ class API2Controller extends  Controller
                     $stock_lot->lot_number = $lot_number;
                     $stock_lot->save();
 
+                    $shelf = DB::table('dataset_shelf')->where('id',$shelf_id)->first();
+
+
                     $stock_shelf = new StockShelf();
                     $stock_shelf->stock_id = $stock->id;
                     $stock_shelf->stock_lot_id = $stock_lot->id;
@@ -217,7 +222,7 @@ class API2Controller extends  Controller
                     $stock_shelf->shelf_id = $shelf_id;
                     // $stock_shelf->store_id = $products_item->store_id;
                     $stock_shelf->customer_id = $products_item->customer_id;
-                    $stock_shelf->name = 'Shelf 1';
+                    $stock_shelf->name = $shelf->name;
 
 
                     $stock_shelf->save();
