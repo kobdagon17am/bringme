@@ -1301,14 +1301,19 @@ class API1Controller extends Controller
 
     public function api_get_order_list(Request $r)
     {
-        $carts = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->orderBy('id','desc')->get();
+        $carts = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',0)->orderBy('id','desc')->get();
+        $carts_shipping = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',1)->orderBy('id','desc')->get();
+        $carts_success = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
         $arr_cart = [];
-        // dd($carts);
+        $arr_cart_shipping = [];
+        $arr_cart_success = [];
+
         foreach($carts as $key=> $c){
             $products = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            // ->where('customer_cart.transfer_status',0)
             ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
             $arr_cart[$key] = [];
             foreach($products as $key2 => $p){
@@ -1316,14 +1321,45 @@ class API1Controller extends Controller
                 array_push($arr_cart[$key],$p);
             }
         }
+
+        foreach($carts_shipping as $key=> $c){
+            $products2 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->where('customer_cart.transfer_status',1)
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            $arr_cart_shipping[$key] = [];
+            foreach($products2 as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart_shipping[$key],$p);
+            }
+
+        }
+
+        foreach($carts_success as $key=> $c){
+
+            $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
+            ->where('customer_cart.transfer_status',2)
+            ->get();
+            $arr_cart_success[$key] = [];
+            foreach($products3 as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart_success[$key],$p);
+            }
+        }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => [
                     'cart' => $arr_cart,
-                    // 'product_qty' => $product_qty,
-                    // 'cart' => $cart,
-                    // 'customer_address' => $customer_address,
+                    'cart_shipping' => $arr_cart_shipping,
+                    'cart_success' => $arr_cart_success,
                 ],
             ]);
     }

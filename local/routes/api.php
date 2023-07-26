@@ -59,3 +59,4 @@ Route::post('api_scan_delete', 'API2Controller@api_scan_delete');
 Route::post('api_scan_update', 'API2Controller@api_scan_update');
 Route::post('api_scan_approve', 'API2Controller@api_scan_approve');
 Route::post('api_shipping_approve', 'API2Controller@api_shipping_approve');
+Route::post('api_cart_reciept', 'API2Controller@api_cart_reciept');

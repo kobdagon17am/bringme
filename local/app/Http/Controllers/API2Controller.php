@@ -882,4 +882,45 @@ class API2Controller extends  Controller
         }
     }
 
+    public function api_cart_reciept(Request $r){
+        DB::beginTransaction();
+        try
+        {
+                $cart = CustomerCart::where('id',$r->id)->first();
+                if($cart->picking_status == 1 && $cart->scan_status == 1 && $cart->transfer_status == 1){
+                    $cart->transfer_status = 2;
+                }
+                $cart->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' =>  'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'cart' => $cart,
+                    // 'product_cart' => $product_cart,
+                ],
+            ]);
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
 }
