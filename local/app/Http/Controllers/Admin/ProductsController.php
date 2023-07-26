@@ -73,6 +73,8 @@ class ProductsController extends Controller
         ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->first();
 
+
+
         $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
 
         return view('backend/product-edit',$data);
@@ -84,14 +86,19 @@ class ProductsController extends Controller
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
 
         }
-        $data['data'] = DB::table('products_item')
-        ->select('products_item.*','customer.name as stor_name','products_transfer.id as transfer_id')
-        ->where('products_item.id', $id)
+
+        $data['data'] = DB::table('products_transfer')
+        ->select('products_item.*','customer.name as stor_name','products_transfer.approve_status as approve_status_transfer'
+        ,'products_transfer.id as transfer_id','products_transfer.path_img','products_transfer.path_img','products_transfer.img')
+        ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
-        ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->where('products_transfer.id','=',$id)
         ->first();
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+
+        $data['gallery'] = DB::table('products_gallery')->where('product_id',@$data['data']->product_id)->get();
+
+        $data['shelf'] = DB::table('dataset_shelf')->get();
 
         return view('backend/product-panding-tranfer-detail',$data);
     }
@@ -103,14 +110,14 @@ class ProductsController extends Controller
 
         if($rs->tranfer_status == 3){
             // dd($rs->transfer_id);
-           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_backen($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number);
+           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number,$rs->shelf_id,$rs->floor);
 
            if($data['status'] == 0 ){
-            return redirect('admin/products')->withError($data['message']);
+            return redirect('admin/products-pending-tranfer')->withError($data['message']);
            }
 
            if($data['status'] == 1 ){
-            return redirect('admin/products')->withSuccess('อัพเดทรายการสำเร็จ');
+            return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
            }
 
         }else{
@@ -124,10 +131,10 @@ class ProductsController extends Controller
                     ->where('id', $rs->item_id)
                     ->update($dataPrepare);
                 DB::commit();
-                return redirect('admin/products')->withSuccess('อัพเดทรายการสำเร็จ');
+                return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
             } catch (Exception $e) {
                 DB::rollback();
-                return redirect('admin/products')->withError('อัพเดทรายการไม่สำเร็จ');
+                return redirect('admin/products-pending-tranfer')->withError('อัพเดทรายการไม่สำเร็จ');
             }
 
 
@@ -414,7 +421,7 @@ class ProductsController extends Controller
 
 
         $products_transfer = DB::table('products_transfer')
-        ->select('products_item.*','customer.name as stor_name','products_transfer.approve_status as approve_status_transfer')
+        ->select('products_item.*','customer.name as stor_name','products_transfer.approve_status as approve_status_transfer','products_transfer.id as products_transfer_id')
         ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
         ->where('products_transfer.approve_status','=',0);
@@ -499,7 +506,7 @@ class ProductsController extends Controller
             ->addColumn('action', function ($row) {
 
                 $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="'.route('admin/product-panding-tranfer-detail',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> อนุมัติรายการ </a>
+                <a class="flex items-center mr-3" href="'.route('admin/product-panding-tranfer-detail',['id'=>$row->products_transfer_id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> อนุมัติรายการ </a>
 
            </div>';
            // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
