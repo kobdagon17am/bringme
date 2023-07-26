@@ -108,9 +108,10 @@ class ProductsController extends Controller
     public function item_confirmation(Request $rs)
     {
 
-        if($rs->tranfer_status == 3){
+        if($rs->tranfer_status == 1){
             // dd($rs->transfer_id);
-           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number,$rs->shelf_id,$rs->floor);
+
+           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number,$rs->shelf,$rs->floor);
 
            if($data['status'] == 0 ){
             return redirect('admin/products-pending-tranfer')->withError($data['message']);
@@ -123,13 +124,16 @@ class ProductsController extends Controller
         }else{
             try {
                 DB::BeginTransaction();
-                $dataPrepare = [
-                    'transfer_status' => $rs->tranfer_status,
 
-                ];
-                $products_item = DB::table('products_item')
-                    ->where('id', $rs->item_id)
-                    ->update($dataPrepare);
+                    $dataPrepare = [
+                        'approve_status' => $rs->tranfer_status,
+
+                    ];
+                    $products_item = DB::table('products_transfer')
+                        ->where('id', $rs->transfer_id)
+                        ->update($dataPrepare);
+
+
                 DB::commit();
                 return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
             } catch (Exception $e) {
@@ -424,7 +428,7 @@ class ProductsController extends Controller
         ->select('products_item.*','customer.name as stor_name','products_transfer.approve_status as approve_status_transfer','products_transfer.id as products_transfer_id')
         ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
-        ->where('products_transfer.approve_status','=',0);
+        ->wherein('products_transfer.approve_status',[0,2,3]);
 
 
 

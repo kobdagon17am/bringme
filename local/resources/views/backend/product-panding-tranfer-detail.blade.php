@@ -13,6 +13,7 @@
                         </div>
                         <form method="POST" action="{{ route('admin/item_confirmation') }}" id="item_confirmation">
                             @csrf
+
                             <input type="hidden" name="item_id" value="{{ $data->id }}">
                             <input type="hidden" name="transfer_id" value="{{ $data->transfer_id }}">
 
@@ -153,66 +154,52 @@
 
                                     <div class="w-full mt-3 xl:mt-0 flex-1">
                                         <div class="flex flex-col sm:flex-row">
-                                            @if ($data->transfer_status == 3)
+                                            @if ($data->approve_status_transfer == 1)
+                                                <div class="form-check mr-2 mt-2 sm:mt-0">
+                                                    <input id="radio-switch-6" class="form-check-input" value="1"
+                                                        type="radio" name="tranfer_status"
+                                                        value="horizontal-radio-daniel-craig"
+                                                        @if ($data->approve_status_transfer == 1) checked @endif>
+                                                    <label class="form-check-label"
+                                                        for="radio-switch-6">รับสินค้าครบแล้ว</label>
+                                                </div>
+                                            @elseif($data->approve_status_transfer == 3)
                                                 <div class="form-check mr-2 mt-2 sm:mt-0">
                                                     <input id="radio-switch-6" class="form-check-input" value="3"
                                                         type="radio" name="tranfer_status"
                                                         value="horizontal-radio-daniel-craig"
-                                                        @if ($data->transfer_status == 3) checked @endif>
-                                                    <label class="form-check-label"
-                                                        for="radio-switch-6">รับสินค้าแล้ว</label>
-                                                </div>
-                                            @elseif($data->transfer_status == 9)
-                                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                                    <input id="radio-switch-6" class="form-check-input" value="9"
-                                                        type="radio" name="tranfer_status"
-                                                        value="horizontal-radio-daniel-craig"
-                                                        @if ($data->transfer_status == 9) checked @endif>
+                                                        @if ($data->approve_status_transfer == 3) checked @endif>
                                                     <label class="form-check-label"
                                                         for="radio-switch-6">ไม่อนุมัติ</label>
                                                 </div>
                                             @else
                                                 <div class="form-check mr-2">
-                                                    <input id="radio-switch-4" class="form-check-input" value="0"
+                                                    <input id="radio-switch-4" class="form-check-input" value="1"
                                                         type="radio" name="tranfer_status"
                                                         value="horizontal-radio-chris-evans"
-                                                        @if ($data->transfer_status == 0) checked @endif>
+                                                        @if ($data->approve_status_transfer == 1) checked @endif>
                                                     <label class="form-check-label"
-                                                        for="radio-switch-4">รออนุมัติจัดส่ง</label>
+                                                        for="radio-switch-4">รับสินค้าครบแล้ว</label>
                                                 </div>
                                                 <div class="form-check mr-2 mt-2 sm:mt-0">
-                                                    <input id="radio-switch-5" class="form-check-input" value="1"
+                                                    <input id="radio-switch-5" class="form-check-input" value="2"
                                                         type="radio" name="tranfer_status"
                                                         value="horizontal-radio-liam-neeson"
-                                                        @if ($data->transfer_status == 1) checked @endif>
-                                                    <label class="form-check-label" for="radio-switch-5">รอจัดส่ง</label>
-                                                </div>
-                                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                                    <input id="radio-switch-6" class="form-check-input" value="2"
-                                                        type="radio" name="tranfer_status"
-                                                        value="horizontal-radio-daniel-craig"
-                                                        @if ($data->transfer_status == 2) checked @endif>
-                                                    <label class="form-check-label"
-                                                        for="radio-switch-6">รอรับสินค้า</label>
+                                                        @if ($data->approve_status_transfer == 2) checked @endif>
+                                                    <label class="form-check-label" for="radio-switch-5">รับสินค้าบางส่วน</label>
                                                 </div>
 
                                                 <div class="form-check mr-2 mt-2 sm:mt-0">
-                                                    <input id="radio-switch-6" class="form-check-input" value="3"
+                                                    <input id="radio-switch-5" class="form-check-input" value="3"
                                                         type="radio" name="tranfer_status"
-                                                        value="horizontal-radio-daniel-craig"
-                                                        @if ($data->transfer_status == 3) checked @endif>
-                                                    <label class="form-check-label"
-                                                        for="radio-switch-6">รับสินค้าแล้ว</label>
+                                                        value="horizontal-radio-liam-neeson"
+                                                        @if ($data->approve_status_transfer == 3) checked @endif>
+                                                    <label class="form-check-label" for="radio-switch-5">ไม่อนุมัติ</label>
                                                 </div>
 
-                                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                                    <input id="radio-switch-6" class="form-check-input" value="9"
-                                                        type="radio" name="tranfer_status"
-                                                        value="horizontal-radio-daniel-craig"
-                                                        @if ($data->transfer_status == 9) checked @endif>
-                                                    <label class="form-check-label"
-                                                        for="radio-switch-6">ไม่อนุมัติ</label>
-                                                </div>
+
+
+
                                             @endif
                                         </div>
                                     </div>

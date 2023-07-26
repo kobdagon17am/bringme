@@ -218,7 +218,10 @@ class API2Controller extends  Controller
                     // $stock_shelf->store_id = $products_item->store_id;
                     $stock_shelf->customer_id = $products_item->customer_id;
                     $stock_shelf->name = 'Shelf 1';
+
+
                     $stock_shelf->save();
+
 
                     $stock_floor = new StockFloor();
                     $stock_floor->stock_shelf_id = $stock_shelf->id;
