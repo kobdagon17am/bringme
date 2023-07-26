@@ -5,6 +5,143 @@
         <div class="grid grid-cols-11 gap-x-6 mt-5 pb-20">
             <div class="intro-y col-span-11 ">
                 <!-- BEGIN: Uplaod Product -->
+
+
+                <div class="intro-y box p-5">
+                    <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
+                        <div
+                            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
+                            รายละเอียดสินค้า
+
+                        </div>
+                        <div class="mt-5">
+                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                <div class="form-label xl:w-64 xl:!mr-10">
+                                    <div class="text-left">
+                                        <div class="flex items-center">
+                                            <div class="font-medium">ชื่อแบรนด์</div>
+                                            <div
+                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                Required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input id="brand-name" type="text" class="form-control" placeholder="Brand name">
+                            </div>
+                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                <div class="form-label xl:w-64 xl:!mr-10">
+                                    <div class="text-left">
+                                        <div class="flex items-center">
+                                            <div class="font-medium">ชื่อสินค้า</div>
+                                            <div
+                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                Required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input id="product-name" type="text" class="form-control" value="{{$data->name_th}}" placeholder="Product name">
+                            </div>
+                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                <div class="form-label xl:w-64 xl:!mr-10">
+                                    <div class="text-left">
+                                        <div class="flex items-center">
+                                            <div class="font-medium">ประเภทสินค้า</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-full mt-3 xl:mt-0 flex-1">
+                                    <select id="category" data-placeholder="" class="tom-select w-full tomselected"
+                                        multiple="multiple" tabindex="-1" hidden="hidden">
+                                        <option value="Electronic" selected="true">Electronic</option>
+                                        <option value="Photography" selected="true">Photography</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="item_id" value="{{ $data->id }}">
+                                <div class="form-inline items-start flex-col xl:flex-row mt-10">
+                                    <div class="form-label w-full xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">รูปสินค้า</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
+                                        <div class="grid grid-cols-10 gap-5 pl-4 pr-5 gallery_place">
+                                            @if (!empty($gallery))
+                                                @foreach ($gallery as $_gallery)
+                                                    <div
+                                                        class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
+                                                        <img class="rounded-md" alt="Midone - HTML Admin Template"
+                                                            src="{{ !empty($_gallery->name) ? asset('local/storage/app/uploads/gallery/' . $_gallery->product_id . '/' . $_gallery->name) : asset('backend/dist/images/preview-12.jpg') }}">
+                                                        <div
+                                                            class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
+                                                            <i data-lucide="x" class="w-4 h-4"></i>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        {{-- <div
+                                            class="px-4 pb-4 mt-5 flex items-center justify-center cursor-pointer relative">
+                                            <i data-lucide="image" class="w-4 h-4 mr-2"></i>
+                                            <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
+                                            <input id="horizontal-form-1" type="file" name="gallery_file[]"
+                                                class="w-full h-full top-0 left-0 absolute opacity-0 image-input" multiple>
+                                        </div> --}}
+                                    </div>
+                                </div>
+                                {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+                                    <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
+                                </div> --}}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="intro-y box p-5 mt-5">
+                    <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
+                        <div
+                            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
+                            รายละเอียดสินค้า
+                        </div>
+                        <div class="mt-5">
+                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                <div class="form-label xl:w-64 xl:!mr-10">
+                                    <div class="text-left">
+                                        <div class="flex items-center">
+                                            <div class="font-medium">รายละเอียดสินค้า</div>
+                                            <div
+                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                Required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-full mt-3 xl:mt-0 flex-1">
+                                    <div class="editor" style="display: none;">
+                                        <p>Content of the editor.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+
+                                <button type="button" class="btn py-3 btn-primary">บันทึก</button>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="intro-y box p-5 mt-5 mb-5">
                     <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                         <div
@@ -242,183 +379,6 @@
                         </form>
                     </div>
                 </div>
-
-                <div class="intro-y box p-5">
-                    <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                        <div
-                            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                            อัปโหลดสินค้า
-                        </div>
-                        <div class="mt-5">
-                            <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="item_id" value="{{ $data->id }}">
-                                <div class="form-inline items-start flex-col xl:flex-row mt-10">
-                                    <div class="form-label w-full xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">รูปสินค้า</div>
-                                                <div
-                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    Required</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
-                                        <div class="grid grid-cols-10 gap-5 pl-4 pr-5 gallery_place">
-                                            @if (!empty($gallery))
-                                                @foreach ($gallery as $_gallery)
-                                                    <div
-                                                        class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                                        <img class="rounded-md" alt="Midone - HTML Admin Template"
-                                                            src="{{ !empty($_gallery->name) ? asset('local/storage/app/uploads/gallery/' . $_gallery->product_id . '/' . $_gallery->name) : asset('backend/dist/images/preview-12.jpg') }}">
-                                                        <div
-                                                            class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                        </div>
-                                        <div
-                                            class="px-4 pb-4 mt-5 flex items-center justify-center cursor-pointer relative">
-                                            <i data-lucide="image" class="w-4 h-4 mr-2"></i>
-                                            <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                            <input id="horizontal-form-1" type="file" name="gallery_file[]"
-                                                class="w-full h-full top-0 left-0 absolute opacity-0 image-input" multiple>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-                                    <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <!-- END: Uplaod Product -->
-                <!-- BEGIN: Product Information -->
-                <div class="intro-y box p-5 mt-5">
-                    <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                        <div
-                            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                            ข้อมูลสินค้า
-                        </div>
-                        <div class="mt-5">
-                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                <div class="form-label xl:w-64 xl:!mr-10">
-                                    <div class="text-left">
-                                        <div class="flex items-center">
-                                            <div class="font-medium">ชื่อแบรนด์</div>
-                                            <div
-                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                Required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input id="brand-name" type="text" class="form-control" placeholder="Brand name">
-                            </div>
-                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                <div class="form-label xl:w-64 xl:!mr-10">
-                                    <div class="text-left">
-                                        <div class="flex items-center">
-                                            <div class="font-medium">ชื่อสินค้า</div>
-                                            <div
-                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                Required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input id="product-name" type="text" class="form-control" placeholder="Product name">
-                            </div>
-                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                <div class="form-label xl:w-64 xl:!mr-10">
-                                    <div class="text-left">
-                                        <div class="flex items-center">
-                                            <div class="font-medium">ประเภทสินค้า</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <select id="category" data-placeholder="" class="tom-select w-full tomselected"
-                                        multiple="multiple" tabindex="-1" hidden="hidden">
-                                        <option value="Electronic" selected="true">Electronic</option>
-                                        <option value="Photography" selected="true">Photography</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                <div class="form-label xl:w-64 xl:!mr-10">
-                                    <div class="text-left">
-                                        <div class="flex items-center">
-                                            <div class="font-medium">วิธีการจัดเก็บ</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <div class="flex flex-col sm:flex-row">
-                                        <div class="form-check mr-2">
-                                            <input id="radio-switch-4" class="form-check-input" type="radio"
-                                                name="horizontal_radio_button" value="horizontal-radio-chris-evans">
-                                            <label class="form-check-label" for="radio-switch-4">Ambient</label>
-                                        </div>
-                                        <div class="form-check mr-2 mt-2 sm:mt-0">
-                                            <input id="radio-switch-5" class="form-check-input" type="radio"
-                                                name="horizontal_radio_button" value="horizontal-radio-liam-neeson">
-                                            <label class="form-check-label" for="radio-switch-5">Chilled</label>
-                                        </div>
-                                        <div class="form-check mr-2 mt-2 sm:mt-0">
-                                            <input id="radio-switch-6" class="form-check-input" type="radio"
-                                                name="horizontal_radio_button" value="horizontal-radio-daniel-craig">
-                                            <label class="form-check-label" for="radio-switch-6">Frozen</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-                                <button type="button" class="btn py-3 btn-primary">บันทึก</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END: Product Information -->
-                <!-- BEGIN: Product Detail -->
-                <div class="intro-y box p-5 mt-5">
-                    <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                        <div
-                            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                            รายละเอียดสินค้า
-                        </div>
-                        <div class="mt-5">
-                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                <div class="form-label xl:w-64 xl:!mr-10">
-                                    <div class="text-left">
-                                        <div class="flex items-center">
-                                            <div class="font-medium">รายละเอียดสินค้า</div>
-                                            <div
-                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                Required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <div class="editor" style="display: none;">
-                                        <p>Content of the editor.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-
-                                <button type="button" class="btn py-3 btn-primary">บันทึก</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
 
 
                 <!-- END: Product Management -->
