@@ -65,7 +65,7 @@
         </li>
 
         <li>
-            <a href="javascript:;" class="side-menu {{ (request()->is('admin/products') || request()->is('admin/products-waitapproved') || request()->is('admin/products-pending-tranfer')  ) ? 'side-menu--active' : '' }}"">
+            <a href="javascript:;" class="side-menu {{ (request()->is('admin/products') || request()->is('admin/products-waitapproved') || request()->is('admin/products-pending-tranfer')  ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-05.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     จัดการสินค้า
@@ -257,7 +257,9 @@
         </li>
 
         <li>
-            <a href="{{route('admin/check-stock')}}" class="side-menu">
+
+
+            <a href="{{route('admin/check-stock')}}" class="side-menu  {{ (request()->is('admin/check-stock') ) ? 'side-menu--active' : '' }}">
             <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-18.png')}}" alt=""></div>
                 <div class="side-menu__title"> ตรวจสอบสต็อก</div>
             </a>
