@@ -1055,8 +1055,13 @@ class API1Controller extends Controller
 
             $product_gallery = ProductsGallery::where('product_id',$r->product_id)->orderBy('use_profile','desc')->get();
             $url_img = Storage::disk('public')->url('');
-            $stock_lot = StockLot::select('lot_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->orderBy('lot_expired_date','asc')->first();
-
+            $stock_lot = StockLot::select('lot_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+            if($stock_lot){
+                $lot_expired_date = date('d/m/Y', strtotime($stock_lot->lot_expired_date));
+            }else{
+                $lot_expired_date = '';
+            }
+            $stock_lot_all = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1069,7 +1074,8 @@ class API1Controller extends Controller
                     'product_detail' => $product_detail,
                     'product_gallery' => $product_gallery,
                     'url_img' => $url_img,
-                    'lot_expired_date' => date('d/m/Y', strtotime($stock_lot->lot_expired_date)),
+                    'lot_expired_date' => $lot_expired_date,
+                    'stock_lot_all' => $stock_lot_all,
                 ],
             ]);
         }else{
