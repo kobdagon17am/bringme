@@ -136,10 +136,6 @@ Route::get('admin/employee-add', function () {
     return view('backend/user-store-product-edit');
   })->name('admin/user-store-product-edit');
 
-  Route::get('admin/orders', function () {
-    return view('backend/orders');
-  })->name('admin/orders');
-
   Route::get('admin/discount-code', function () {
     return view('backend/discount-code');
   })->name('admin/discount-code');
@@ -172,13 +168,13 @@ Route::get('admin/employee-add', function () {
     return view('backend/order-detail');
   })->name('admin/order-detail');
 
-  Route::get('admin/orders', function () {
-    return view('backend/orders');
-  })->name('admin/orders');
+//   Route::get('admin/orders', function () {
+//     return view('backend/orders');
+//   })->name('admin/orders');
 
-  Route::get('admin/orders', function () {
-    return view('backend/orders');
-  })->name('admin/orders');
+//   Route::get('admin/orders', function () {
+//     return view('backend/orders');
+//   })->name('admin/orders');
 
   Route::get('admin/products-awaiting-delivery', function () {
     return view('backend/products-awaiting-delivery');
@@ -192,10 +188,18 @@ Route::get('admin/employee-add', function () {
     return view('backend/bill-lading');
   })->name('admin/bill-lading');
 
-  Route::get('admin/check-stock', function () {
-    return view('backend/check-stock');
-  })->name('admin/check-stock');
+//   Route::get('admin/check-stock', function () {
+//     return view('backend/check-stock');
+//   })->name('admin/check-stock');
 
+// Route::get('admin/orders', function () {
+//     return view('backend/orders');
+//   })->name('admin/orders');
+
+
+
+  Route::get('admin/check-stock', 'Admin\StockController@check_stock')->name('admin/check-stock');
+  Route::get('admin/orders', 'Admin\StockController@order_list')->name('admin/orders');
 
 
 
