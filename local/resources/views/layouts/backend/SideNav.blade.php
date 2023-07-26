@@ -212,12 +212,12 @@
 
 
 
-        <li class="mt-10">
+        {{-- <li class="mt-10">
             <a href="{{route('admin/receive-product')}}" class="side-menu">
             <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-14.png')}}" alt=""></div>
                 <div class="side-menu__title"> รับสินค้าเข้า</div>
             </a>
-        </li>
+        </li> --}}
         <li>
             <a href="{{route('admin/orders')}}" class="side-menu">
             <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-15.png')}}" alt=""></div>
