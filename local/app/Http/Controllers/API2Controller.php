@@ -171,7 +171,7 @@ class API2Controller extends  Controller
                     'data' => '',
                 ]);
                 }
-                catch(\FatalThrowableError $fe)
+                catch(\FatalThrowableError $e)
                 {
                     DB::rollback();
                     return response()->json([
@@ -182,9 +182,9 @@ class API2Controller extends  Controller
                 }
     }
 
-    public static function api_products_transfer_approve_backen($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number)
+
+    public static function api_products_transfer_approve_back($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number,$shelf_id,$floor)
     {
-          // App\Http\Controllers\API2Controller::api_products_transfer_approve_backen($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number);
 
 
         DB::beginTransaction();
@@ -214,19 +214,21 @@ class API2Controller extends  Controller
                     $stock_shelf->stock_id = $stock->id;
                     $stock_shelf->stock_lot_id = $stock_lot->id;
                     $stock_shelf->product_id = $products_item->product_id;
-                    // $stock_shelf->shelf_id = $r->shelf_id;
-                    $stock_shelf->shelf_id = '1';
+                    $stock_shelf->shelf_id = $shelf_id;
+                    // $stock_shelf->store_id = $products_item->store_id;
                     $stock_shelf->customer_id = $products_item->customer_id;
                     $stock_shelf->name = 'Shelf 1';
+
+
                     $stock_shelf->save();
+
 
                     $stock_floor = new StockFloor();
                     $stock_floor->stock_shelf_id = $stock_shelf->id;
                     $stock_floor->product_id = $stock_shelf->product_id;
                     $stock_floor->customer_id = $stock_shelf->customer_id;
                     $stock_floor->stock_lot_id = $stock_lot->id;
-                    // $stock_floor->floor = $r->floor;
-                    $stock_floor->floor = '1';
+                    $stock_floor->floor = $floor;
                     $stock_floor->save();
 
                     $products_option_2_items = ProductsOption2Items::where('products_item_id',$products_transfer->products_item_id)
@@ -244,6 +246,7 @@ class API2Controller extends  Controller
                         $stock_items->stock_lot_id = $stock_lot->id;
                         $stock_items->stock_shelt_id = $stock_shelf->id;
                         $stock_items->product_id = $products_item->product_id;
+                        // $stock_items->store_id = $products_item->store_id;
                         $stock_items->customer_id = $products_item->customer_id;
 
                         $stock_items->products_option_2_items_id = $item->id;
@@ -277,7 +280,7 @@ class API2Controller extends  Controller
 
 
                 }else{
-                    return $data=[
+                    return $data = [
                         'message' =>  'ไม่พบข้อมูลสินค้า',
                         'status' => 0,
                         'data' => '',
@@ -285,9 +288,8 @@ class API2Controller extends  Controller
                 }
 
                 DB::commit();
-
-                return $data=[
-                    'message' =>  'ทำรายการสำเร็จ',
+                return $data = [
+                    'message' => 'ทำรายการสำเร็จ',
                     'status' => 1,
                     'data' => '',
                 ];
@@ -296,24 +298,23 @@ class API2Controller extends  Controller
                 catch (\Exception $e) {
                     DB::rollback();
                 // return $e->getMessage();
-
-
-                return $data=[
+                return $data = [
                     'message' =>  $e->getMessage(),
                     'status' => 0,
                     'data' => '',
                 ];
                 }
-                catch(\FatalThrowableError $fe)
+                catch(\FatalThrowableError $e)
                 {
                     DB::rollback();
-                    return $data=[
+                    return $data = [
                         'message' =>  $e->getMessage(),
                         'status' => 0,
                         'data' => '',
                     ];
                 }
     }
+
 
 
     public function api_get_picking_list(Request $r)

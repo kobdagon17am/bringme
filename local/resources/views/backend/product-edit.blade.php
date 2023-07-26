@@ -10,7 +10,7 @@
                     <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
                         อนุมัติการจัดส่งสินค้า
                     </div>
-                    <form method="POST" action="{{ route('admin/item_confirmation') }}" id="item_confirmation" >
+                    <form method="POST" action="" id="item_confirmation" >
                         @csrf
                         <input type="hidden" name="item_id" value="{{$data->id}}">
                         <input type="hidden" name="transfer_id" value="{{$data->transfer_id}}">
@@ -122,10 +122,10 @@
                             </div>
                         </div>
 
-                        <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+                        {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
 
                             <button type="button"  data-tw-toggle="modal" data-tw-target="#confirm-confirmation-modal"  class="btn py-3 btn-primary">บันทึก</button>
-                        </div>
+                        </div> --}}
 
                         <div id="confirm-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog">
@@ -163,7 +163,7 @@
                     <div class="mt-5">
                         <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="item_id" value="{{$data->id}}">    
+                            <input type="hidden" name="item_id" value="{{$data->id}}">
                             <div class="form-inline items-start flex-col xl:flex-row mt-10">
                                 <div class="form-label w-full xl:w-64 xl:!mr-10">
                                     <div class="text-left">
@@ -1025,7 +1025,7 @@
         $('.image-input').change(function(e) {
             var files = e.target.files;
             var galleryDiv = $('.gallery_place');
-            
+
             // Remove existing preview images and divs
             galleryDiv.empty();
 
@@ -1033,7 +1033,7 @@
             for (var i = 0; i < files.length; i++) {
                 (function(file, index) {
                     var reader = new FileReader();
-                    
+
                     // Closure to capture the file information
                     reader.onload = function(e) {
                         var div = $('<div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in gallery_number_'+index+'" ref="'+index+'">'
@@ -1046,7 +1046,7 @@
                         // Append the div to the gallery
                         galleryDiv.append(div);
                     };
-                    
+
                     // Read the image file as a data URL
                     reader.readAsDataURL(file);
                 })(files[i], i);

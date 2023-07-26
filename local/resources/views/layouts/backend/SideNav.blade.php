@@ -72,7 +72,7 @@
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                 </div>
             </a>
-            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/products') || request()->is('admin/roducts-waitapproved') || request()->is('admin/products-pending-tranfer')   ) ? 'side-menu__sub-open' : '' }}">
+            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/products') || request()->is('admin/products-waitapproved') || request()->is('admin/products-pending-tranfer')   ) ? 'side-menu__sub-open' : '' }}">
                 <li>
                     <a href="{{route('admin/products')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
