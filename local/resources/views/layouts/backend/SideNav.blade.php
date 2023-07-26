@@ -219,6 +219,7 @@
             </a>
         </li> --}}
         {{-- <li>
+        <li>
             <a href="{{route('admin/orders')}}" class="side-menu">
             <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-15.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการการสั่งซื้อ</div>

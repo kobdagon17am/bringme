@@ -77,12 +77,14 @@
                                     <div
                                         class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="grid grid-cols-10 gap-5 pl-4 pr-5 gallery_place">
+                                            <?php $url_img = Storage::disk('public')->url(''); ?>
+
                                             @if (!empty($gallery))
                                                 @foreach ($gallery as $_gallery)
                                                     <div
                                                         class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                                        <img class="rounded-md" alt="Midone - HTML Admin Template"
-                                                            src="{{ !empty($_gallery->name) ? asset('local/storage/app/uploads/gallery/' . $_gallery->product_id . '/' . $_gallery->name) : asset('backend/dist/images/preview-12.jpg') }}">
+                                                        <img class="rounded-md" data-action="zoom" alt="Midone - HTML Admin Template"
+                                                            src="{{ !empty($_gallery->name) ? asset($url_img .''. $_gallery->path . '' . $_gallery->name) : asset('backend/dist/images/preview-12.jpg') }}">
                                                         <div
                                                             class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
                                                             <i data-lucide="x" class="w-4 h-4"></i>
@@ -127,9 +129,9 @@
                                     </div>
                                 </div>
                                 <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <div class="editor" style="display: none;">
-                                        <p>Content of the editor.</p>
-                                    </div>
+                                    <textarea class="form-control">
+                                        {{ $data->detail_th }}
+                                    </textarea>
                                 </div>
                             </div>
 
@@ -204,7 +206,7 @@
                                     </div>
 
                                     <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required
-                                        value="{{ $data->barcode }}">
+                                        value="{{date('Ymd')}}">
 
 
 
@@ -247,18 +249,6 @@
 
 
 
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">รายละเอียด</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <textarea id="regular-form-1" type="text" class="form-control" name="note" placeholder="Note">{{ $data->detail_th }}</textarea>
-                                    </div>
-                                </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -270,7 +260,7 @@
                                     </div>
                                     <div class="w-full mt-3 xl:mt-0 flex-1">
                                         <div class="h-64 w-3/5 mr-6 image-fit">
-                                            <?php $url_img = Storage::disk('public')->url(''); ?>
+
                                             <img alt="Midone - HTML Admin Template"
                                                 src="{{ asset($url_img . '' . $data->path_img . '' . $data->img) }}"
                                                 data-action="zoom" class="w-full rounded-md">
@@ -298,7 +288,7 @@
                                                         value="horizontal-radio-daniel-craig"
                                                         @if ($data->approve_status_transfer == 1) checked @endif>
                                                     <label class="form-check-label"
-                                                        for="radio-switch-6">รับสินค้าครบแล้ว</label>
+                                                        for="radio-switch-6">รับสินค้า</label>
                                                 </div>
                                             @elseif($data->approve_status_transfer == 3)
                                                 <div class="form-check mr-2 mt-2 sm:mt-0">
@@ -313,18 +303,17 @@
                                                 <div class="form-check mr-2">
                                                     <input id="radio-switch-4" class="form-check-input" value="1"
                                                         type="radio" name="tranfer_status"
-                                                        value="horizontal-radio-chris-evans"
-                                                        @if ($data->approve_status_transfer == 1) checked @endif>
+                                                        value="horizontal-radio-chris-evans" checked>
                                                     <label class="form-check-label"
-                                                        for="radio-switch-4">รับสินค้าครบแล้ว</label>
+                                                        for="radio-switch-4">รับสินค้า</label>
                                                 </div>
-                                                <div class="form-check mr-2 mt-2 sm:mt-0">
+                                                {{-- <div class="form-check mr-2 mt-2 sm:mt-0">
                                                     <input id="radio-switch-5" class="form-check-input" value="2"
                                                         type="radio" name="tranfer_status"
                                                         value="horizontal-radio-liam-neeson"
                                                         @if ($data->approve_status_transfer == 2) checked @endif>
                                                     <label class="form-check-label" for="radio-switch-5">รับสินค้าบางส่วน</label>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="form-check mr-2 mt-2 sm:mt-0">
                                                     <input id="radio-switch-5" class="form-check-input" value="3"
