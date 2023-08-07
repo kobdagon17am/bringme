@@ -23,14 +23,14 @@
         </li>
 
         <li>
-            <a href="javascript:;" class="side-menu {{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/stores-detail') || request()->is('admin/users')    ) ? 'side-menu--active' : '' }}">
+            <a href="javascript:;" class="side-menu {{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/store-detail/*') || request()->is('admin/users')    ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-04.png')}}" alt=""></div>
                 <div class="side-menu__title">
                     จัดการผู้ใช้
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                 </div>
             </a>
-            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/users') || request()->is('admin/stores-detail')  ) ? 'side-menu__sub-open' : '' }}">
+            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/users') || request()->is('admin/store-detail/*')  ) ? 'side-menu__sub-open' : '' }}">
                 <li>
                     <a href="{{route('admin/users')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
@@ -46,7 +46,7 @@
                             <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                         </div>
                     </a>
-                    <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/stores-detail')   ) ? 'side-menu__sub-open' : '' }}">
+                    <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/store-detail/*')   ) ? 'side-menu__sub-open'  : '' }}">
                         <li>
                             <a href="{{route('admin/stores')}}" class="side-menu ">
                                 <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>

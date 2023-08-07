@@ -81,9 +81,21 @@ Route::get('admin/employee-add', function () {
     return view('backend/permission');
   })->name('admin/permission');
 
-  Route::get('admin/users', function () {
-    return view('backend/users');
-  })->name('admin/users');
+//   Route::get('admin/users', function () {
+//     return view('backend/users');
+//   })->name('admin/users');
+
+  Route::get('admin/user-edit', function () {
+    return view('backend/user-edit');
+  })->name('admin/user-edit');
+
+
+
+  Route::get('admin/users', 'Admin\CustomersController@index')->name('admin/users');
+
+  Route::get('admin/customers_datable', 'Admin\CustomersController@customers_datable')->name('admin/customers_datable');
+
+  Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
 
 
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
