@@ -94,12 +94,12 @@
                 </li>
             </ul>
         </li>
-        <li>
+        {{-- <li>
             <a href="{{route('admin/transaction')}}" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-06.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการการสั่งซื้อ </div>
             </a>
-        </li>
+        </li> --}}
         <li>
             <a href="{{route('admin/refund')}}" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-07.png')}}" alt=""></div>
@@ -231,7 +231,7 @@
                 <div class="side-menu__title"> สินค้ารอจัดส่ง</div>
             </a>
         </li>
-
+{{--
         <li>
             <a href="javascript:;" class="side-menu">
             <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-17.png')}}" alt=""></div>
@@ -255,7 +255,7 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li> --}}
 
         <li>
 
