@@ -503,7 +503,7 @@ class API2Controller extends  Controller
         {
                 // $product_cart = CustomerCartProduct::where('id',$r->id)->first();
                 // $product = Products::select('barcode')->where('id',$product_cart->product_id)->first();
-                $product = Products::select('barcode')->where('products_code',$r->barcode)->first();
+                $product = Products::select('barcode','id')->where('barcode',$r->barcode)->first();
                 if($product){
                     $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->where('product_id',$product->id)->first();
                     if($product_cart){
@@ -518,7 +518,7 @@ class API2Controller extends  Controller
                         $product_cart->save();
                     }else{
                         return response()->json([
-                            'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
+                            'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือกในออเดอร์',
                             'status' => 0,
                             'data' => '',
                         ]);
