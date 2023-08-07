@@ -60,3 +60,5 @@ Route::post('api_scan_update', 'API2Controller@api_scan_update');
 Route::post('api_scan_approve', 'API2Controller@api_scan_approve');
 Route::post('api_shipping_approve', 'API2Controller@api_shipping_approve');
 Route::post('api_cart_reciept', 'API2Controller@api_cart_reciept');
+Route::post('api_get_customer_cart_product_detail', 'API2Controller@api_get_customer_cart_product_detail');
+Route::post('api_tracking_item_update', 'API2Controller@api_tracking_item_update');
