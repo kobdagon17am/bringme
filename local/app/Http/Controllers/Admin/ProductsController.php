@@ -304,6 +304,7 @@ class ProductsController extends Controller
             })
 
 
+
             ->rawColumns(['product_name','approve_status','transfer_status', 'action', 'img'])
             ->make(true);
     }
@@ -403,6 +404,12 @@ class ProductsController extends Controller
                 return $htmml;
             })
 
+            ->addColumn('barcode', function ($row) {
+                $html = '<div class="flex justify-center items-center">
+                <a class="flex items-center mr-3" href="'.route('admin/products-waitapproved-detail',['id'=>$row->id]).'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> BarCode </a></div>';
+                return $html;
+             })
+
             ->addColumn('action', function ($row) {
 
                 $html = ' <div class="flex justify-center items-center">
@@ -414,7 +421,7 @@ class ProductsController extends Controller
             })
 
 
-            ->rawColumns(['product_name','approve_status','transfer_status', 'action', 'img'])
+            ->rawColumns(['product_name','approve_status','transfer_status', 'action', 'img','barcode'])
             ->make(true);
     }
 
