@@ -26,7 +26,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input id="brand-name" type="text" class="form-control" placeholder="Brand name">
+                                <input id="brand-name" type="text" class="form-control" placeholder="Brand name" value="TH: Orange and bread">
                             </div>
                             <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                 <div class="form-label xl:w-64 xl:!mr-10">
@@ -226,6 +226,53 @@
                                         value="">
                                 </div>
 
+                             <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">Tracking Number</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                        <input  type="text" class="form-control w-56 block mx-auto" placeholder="Tracking Numbe">
+
+
+
+
+                                </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">ชื่อขนส่ง</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input  type="text" class="form-control w-56 block mx-auto" placeholder="ชื่อขนส่ง">
+
+
+                                </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">เบอร์โทรศัพท์</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                        <input type="text" class="form-control w-56 " placeholder="เบอร์โทรศัพท์">
+
+
+
+
+                                </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
