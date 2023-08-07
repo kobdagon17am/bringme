@@ -89,7 +89,7 @@ class ProductsController extends Controller
 
         $data['data'] = DB::table('products_transfer')
         ->select('products_item.*','customer.name as stor_name','products_transfer.approve_status as approve_status_transfer'
-        ,'products_transfer.id as transfer_id','products_transfer.path_img','products_transfer.path_img','products_transfer.img')
+        ,'products_transfer.id as transfer_id','products_transfer.path_img','products_transfer.path_img','products_transfer.img','products_transfer.tracking')
         ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
         ->where('products_transfer.id','=',$id)

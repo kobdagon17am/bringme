@@ -157,6 +157,24 @@
                             <input type="hidden" name="transfer_id" value="{{ $data->transfer_id }}">
 
                             <div class="mt-5">
+
+
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">เลข Tracking</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto" name="tracking" required
+                                        value="{{$data->tracking}}">
+                                </div>
+
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
@@ -197,22 +215,32 @@
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
                                             <div class="flex items-center">
-                                                <div class="font-medium">หมายเลข Lot | ชื่อ Lot</div>
+                                                <div class="font-medium">ชื่อขนส่ง</div>
                                                 <div
                                                     class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
                                                     Required</div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required
-                                        value="{{date('Ymd')}}">
-
-
-
-
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" required
+                                        value="">
                                 </div>
 
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">จำนวนสินค้า</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto" name="qty" required
+                                        value="{{$data->qty}}">
+                                </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -246,15 +274,11 @@
                                     </div>
                                 </div>
 
-
-
-
-
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
                                             <div class="flex items-center">
-                                                <div class="font-medium">สลิปโอนเงิน</div>
+                                                <div class="font-medium">หลักฐานการจัดส่ง</div>
                                             </div>
                                         </div>
                                     </div>
@@ -268,6 +292,20 @@
                                     </div>
                                 </div>
 
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">ค่าจัดส่งเพิ่มเติม (กรณีที่สินค้าชิ้นใหญ่)</div>
+                                                {{-- <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_price" required
+                                        value="">
+                                </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -323,13 +361,27 @@
                                                     <label class="form-check-label" for="radio-switch-5">ไม่อนุมัติ</label>
                                                 </div>
 
-
-
-
                                             @endif
                                         </div>
                                     </div>
+
                                 </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">หมายเหตุ</div>
+                                                {{-- <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_remark" required
+                                        value="">
+                                </div>
+
 
                                 <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
 
