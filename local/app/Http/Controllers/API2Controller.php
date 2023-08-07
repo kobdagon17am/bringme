@@ -34,6 +34,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
 Use App\Models\CustomerCartTracking;
+Use App\Models\CustomerCartTrackingItem;
 
 class API2Controller extends  Controller
 {
@@ -500,36 +501,49 @@ class API2Controller extends  Controller
         DB::beginTransaction();
         try
         {
-                $product_cart = CustomerCartProduct::where('id',$r->id)->first();
-                $product = Products::select('barcode')->where('id',$product_cart->product_id)->first();
-                if($r->barcode != $product->barcode){
-                    return response()->json([
-                        'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
-                        'status' => 0,
-                        'data' => '',
-                    ]);
+                // $product_cart = CustomerCartProduct::where('id',$r->id)->first();
+                // $product = Products::select('barcode')->where('id',$product_cart->product_id)->first();
+                $product = Products::select('barcode')->where('products_code',$r->barcode)->first();
+                if($product){
+                    $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->where('product_id',$product->id)->first();
+                    if($product_cart){
+                        if(($product_cart->scan_qty+1) > $product_cart->qty){
+                            return response()->json([
+                                'message' =>  'คุณหยิบสินค้าเกินจำนวน',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
+                        $product_cart->scan_qty = $product_cart->scan_qty+1;
+                        $product_cart->save();
+                    }else{
+                        return response()->json([
+                            'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+
+
+                }else{
+                        return response()->json([
+                            'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
                 }
-                if(($product_cart->scan_qty+1) > $product_cart->qty){
-                    return response()->json([
-                        'message' =>  'คุณหยิบสินค้าเกินจำนวน',
-                        'status' => 0,
-                        'data' => '',
-                    ]);
-                }
-                $product_cart->scan_qty = $product_cart->scan_qty+1;
-                $product_cart->save();
 
             DB::commit();
 
-            if($product_cart->scan_qty == $product_cart->qty){
-                return response()->json([
-                    'message' =>  'สำเร็จ',
-                    'status' => 1,
-                    'data' => [
-                        'qty_status' => 'full'
-                    ],
-                ]);
-            }else{
+            // if($product_cart->scan_qty == $product_cart->qty){
+            //     return response()->json([
+            //         'message' =>  'สำเร็จ',
+            //         'status' => 1,
+            //         'data' => [
+            //             'qty_status' => 'full'
+            //         ],
+            //     ]);
+            // }else{
                 return response()->json([
                     'message' =>  'สำเร็จ',
                     'status' => 1,
@@ -537,7 +551,7 @@ class API2Controller extends  Controller
                         'qty_status' => 'wait'
                     ],
                 ]);
-            }
+            // }
 
 
         }
@@ -666,6 +680,30 @@ class API2Controller extends  Controller
                 $cart = CustomerCart::where('id',$r->id)->first();
                 $cart->picking_status = 1;
                 $cart->save();
+
+                    $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
+                    if(!$tracking_no1){
+                        $tracking_no1 = new CustomerCartTracking();
+                    }
+                    $tracking_no1->customer_cart_id = $cart->id;
+                    $tracking_no1->customer_id = $cart->customer_id;
+                    $tracking_no1->tracking_no = '';
+                    $tracking_no1->transfer_type = 1;
+                    $tracking_no1->cod = 0;
+                    $tracking_no1->no = 1;
+                    $tracking_no1->save();
+
+                $customer_cart_product = CustomerCartProduct::Where('customer_cart_id',$cart->id)->get();
+                CustomerCartTrackingItem::where('customer_cart_id',$cart->id)->delete();
+                foreach($customer_cart_product as $c){
+                    $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                    $customer_cart_tracking_item->customer_cart_id = $cart->id;
+                    $customer_cart_tracking_item->customer_id = $cart->customer_id;
+                    $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1->id;
+                    $customer_cart_tracking_item->customer_cart_product_id = $c->id;
+                    $customer_cart_tracking_item->qty = $c->qty;
+                    $customer_cart_tracking_item->save();
+                }
 
             DB::commit();
 
@@ -925,6 +963,331 @@ class API2Controller extends  Controller
                 'message' =>  $e->getMessage(),
                 'status' => 0,
                 'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_customer_cart_product_detail(Request $r)
+    {
+            $customer_cart_product = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products.products_code', 'products.barcode',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.id',$r->customer_cart_product_id)->first();
+
+            if($customer_cart_product){
+                $url_img = Storage::disk('public')->url('');
+
+                $tracking_no1_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',1)->first();
+                $tracking_no2_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',2)->first();
+                $tracking_no3_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',3)->first();
+                $tracking_no4_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',4)->first();
+                $tracking_no5_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',5)->first();
+
+                $tracking_no1 = ($tracking_no1_data)? $tracking_no1_data->tracking_no : '';
+                $tracking_no2 = ($tracking_no2_data)? $tracking_no2_data->tracking_no : '';
+                $tracking_no3 = ($tracking_no3_data)? $tracking_no3_data->tracking_no : '';
+                $tracking_no4 = ($tracking_no4_data)? $tracking_no4_data->tracking_no : '';
+                $tracking_no5 = ($tracking_no5_data)? $tracking_no5_data->tracking_no : '';
+
+                if($tracking_no1_data){
+                    $customer_cart_tracking_item_no1 = CustomerCartTrackingItem::select('qty')->where('customer_cart_tracking_id',$tracking_no1_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                    $tracking_no1_qty = $customer_cart_tracking_item_no1->qty;
+                }else{
+                    $tracking_no1_qty = '';
+                }
+
+                if($tracking_no2_data){
+                    $customer_cart_tracking_item_no2 = CustomerCartTrackingItem::select('qty')->where('customer_cart_tracking_id',$tracking_no2_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                    if(!$customer_cart_tracking_item_no2){
+                        $customer_cart_tracking_item_no2 = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item_no2->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item_no2->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item_no2->customer_cart_tracking_id = $tracking_no2_data->id;
+                        $customer_cart_tracking_item_no2->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item_no2->qty = 0;
+                        $customer_cart_tracking_item_no2->save();
+                    }
+                    $tracking_no2_qty = $customer_cart_tracking_item_no2->qty;
+                }else{
+                    $tracking_no2_qty = '';
+                }
+
+                if($tracking_no3_data){
+                    $customer_cart_tracking_item_no3 = CustomerCartTrackingItem::select('qty')->where('customer_cart_tracking_id',$tracking_no3_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                    if(!$customer_cart_tracking_item_no3){
+                        $customer_cart_tracking_item_no3 = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item_no3->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item_no3->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item_no3->customer_cart_tracking_id = $tracking_no3_data->id;
+                        $customer_cart_tracking_item_no3->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item_no3->qty = 0;
+                        $customer_cart_tracking_item_no3->save();
+                    }
+                    $tracking_no3_qty = $customer_cart_tracking_item_no3->qty;
+                }else{
+                    $tracking_no3_qty = '';
+                }
+
+                if($tracking_no4_data){
+                    $customer_cart_tracking_item_no4 = CustomerCartTrackingItem::select('qty')->where('customer_cart_tracking_id',$tracking_no4_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                    if(!$customer_cart_tracking_item_no4){
+                        $customer_cart_tracking_item_no4 = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item_no4->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item_no4->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item_no4->customer_cart_tracking_id = $tracking_no4_data->id;
+                        $customer_cart_tracking_item_no4->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item_no4->qty = 0;
+                        $customer_cart_tracking_item_no4->save();
+                    }
+                    $tracking_no4_qty = $customer_cart_tracking_item_no4->qty;
+                }else{
+                    $tracking_no4_qty = '';
+                }
+
+                if($tracking_no5_data){
+                    $customer_cart_tracking_item_no5 = CustomerCartTrackingItem::select('qty')->where('customer_cart_tracking_id',$tracking_no5_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                    if(!$customer_cart_tracking_item_no5){
+                        $customer_cart_tracking_item_no5 = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item_no5->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item_no5->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item_no5->customer_cart_tracking_id = $tracking_no5_data->id;
+                        $customer_cart_tracking_item_no5->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item_no5->qty = 0;
+                        $customer_cart_tracking_item_no5->save();
+                    }
+                    $tracking_no5_qty = $customer_cart_tracking_item_no5->qty;
+                }else{
+                    $tracking_no5_qty = '';
+                }
+
+                return response()->json([
+                    'message' => 'สำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'customer_cart_product' => $customer_cart_product,
+                        'url_img' => $url_img,
+                        'tracking_no1' => $tracking_no1,
+                        'tracking_no2' => $tracking_no2,
+                        'tracking_no3' => $tracking_no3,
+                        'tracking_no4' => $tracking_no4,
+                        'tracking_no5' => $tracking_no5,
+
+                        'tracking_no1_qty' => $tracking_no1_qty,
+                        'tracking_no2_qty' => $tracking_no2_qty,
+                        'tracking_no3_qty' => $tracking_no3_qty,
+                        'tracking_no4_qty' => $tracking_no4_qty,
+                        'tracking_no5_qty' => $tracking_no5_qty,
+                    ],
+                ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+    }
+
+    public function api_tracking_item_update(Request $r)
+    {
+
+            $customer_cart_product = CustomerCartProduct::select('customer_cart_product.id','customer_cart_product.customer_cart_id','customer_cart_product.qty','customer_cart_product.customer_id')
+            ->where('customer_cart_product.id',$r->customer_cart_product_id)->first();
+            $url_img = Storage::disk('public')->url('');
+
+            if($customer_cart_product){
+
+                DB::beginTransaction();
+                try
+                {
+
+                $tracking_no1_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',1)->first();
+                $tracking_no2_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',2)->first();
+                $tracking_no3_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',3)->first();
+                $tracking_no4_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',4)->first();
+                $tracking_no5_data = CustomerCartTracking::select('tracking_no','id')->where('customer_cart_id',$customer_cart_product->customer_cart_id)->where('no',5)->first();
+                $qty_total = 0;
+
+                if($r->tracking_no1_qty!=''){
+                    if($tracking_no1_data){
+                        $customer_cart_tracking_item = CustomerCartTrackingItem::where('customer_cart_tracking_id',$tracking_no1_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                        $customer_cart_tracking_item->qty = $r->tracking_no1_qty;
+                        $customer_cart_tracking_item->save();
+                    }else{
+                        $tracking_no1_data = new CustomerCartTracking();
+                        $tracking_no1_data->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $tracking_no1_data->customer_id = $customer_cart_product->customer_id;
+                        $tracking_no1_data->tracking_no = '';
+                        $tracking_no1_data->transfer_type = 1;
+                        $tracking_no1_data->cod = 0;
+                        $tracking_no1_data->no = 1;
+                        $tracking_no1_data->save();
+
+                        $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1_data->id;
+                        $customer_cart_tracking_item->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item->qty = $r->tracking_no1_qty;
+                        $customer_cart_tracking_item->save();
+                    }
+                    $qty_total += $r->tracking_no1_qty;
+                }
+
+                if($r->tracking_no2_qty!=''){
+                    if($tracking_no2_data){
+                        $customer_cart_tracking_item = CustomerCartTrackingItem::where('customer_cart_tracking_id',$tracking_no2_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                        $customer_cart_tracking_item->qty = $r->tracking_no2_qty;
+                        $customer_cart_tracking_item->save();
+                    }else{
+                        $tracking_no2_data = new CustomerCartTracking();
+                        $tracking_no2_data->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $tracking_no2_data->customer_id = $customer_cart_product->customer_id;
+                        $tracking_no2_data->tracking_no = '';
+                        $tracking_no2_data->transfer_type = 1;
+                        $tracking_no2_data->cod = 0;
+                        $tracking_no2_data->no = 2;
+                        $tracking_no2_data->save();
+
+                        $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no2_data->id;
+                        $customer_cart_tracking_item->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item->qty = $r->tracking_no2_qty;
+                        $customer_cart_tracking_item->save();
+                    }
+                    $qty_total += $r->tracking_no2_qty;
+                }
+
+                if($r->tracking_no3_qty!=''){
+                    if($tracking_no3_data){
+                        $customer_cart_tracking_item = CustomerCartTrackingItem::where('customer_cart_tracking_id',$tracking_no3_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                        $customer_cart_tracking_item->qty = $r->tracking_no3_qty;
+                        $customer_cart_tracking_item->save();
+                    }else{
+                        $tracking_no3_data = new CustomerCartTracking();
+                        $tracking_no3_data->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $tracking_no3_data->customer_id = $customer_cart_product->customer_id;
+                        $tracking_no3_data->tracking_no = '';
+                        $tracking_no3_data->transfer_type = 1;
+                        $tracking_no3_data->cod = 0;
+                        $tracking_no3_data->no = 3;
+                        $tracking_no3_data->save();
+
+                        $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no3_data->id;
+                        $customer_cart_tracking_item->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item->qty = $r->tracking_no3_qty;
+                        $customer_cart_tracking_item->save();
+                    }
+                    $qty_total += $r->tracking_no3_qty;
+                }
+
+                if($r->tracking_no4_qty!=''){
+                    if($tracking_no4_data){
+                        $customer_cart_tracking_item = CustomerCartTrackingItem::where('customer_cart_tracking_id',$tracking_no4_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                        $customer_cart_tracking_item->qty = $r->tracking_no4_qty;
+                        $customer_cart_tracking_item->save();
+                    }else{
+                        $tracking_no4_data = new CustomerCartTracking();
+                        $tracking_no4_data->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $tracking_no4_data->customer_id = $customer_cart_product->customer_id;
+                        $tracking_no4_data->tracking_no = '';
+                        $tracking_no4_data->transfer_type = 1;
+                        $tracking_no4_data->cod = 0;
+                        $tracking_no4_data->no = 4;
+                        $tracking_no4_data->save();
+
+                        $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no4_data->id;
+                        $customer_cart_tracking_item->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item->qty = $r->tracking_no4_qty;
+                        $customer_cart_tracking_item->save();
+                    }
+                    $qty_total += $r->tracking_no4_qty;
+                }
+
+                if($r->tracking_no5_qty!=''){
+                    if($tracking_no5_data){
+                        $customer_cart_tracking_item = CustomerCartTrackingItem::where('customer_cart_tracking_id',$tracking_no5_data->id)->where('customer_cart_product_id',$customer_cart_product->id)->first();
+                        $customer_cart_tracking_item->qty = $r->tracking_no5_qty;
+                        $customer_cart_tracking_item->save();
+                    }else{
+                        $tracking_no5_data = new CustomerCartTracking();
+                        $tracking_no5_data->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $tracking_no5_data->customer_id = $customer_cart_product->customer_id;
+                        $tracking_no5_data->tracking_no = '';
+                        $tracking_no5_data->transfer_type = 1;
+                        $tracking_no5_data->cod = 0;
+                        $tracking_no5_data->no = 5;
+                        $tracking_no5_data->save();
+
+                        $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item->customer_cart_id = $customer_cart_product->customer_cart_id;
+                        $customer_cart_tracking_item->customer_id = $customer_cart_product->customer_id;
+                        $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no5_data->id;
+                        $customer_cart_tracking_item->customer_cart_product_id = $customer_cart_product->id;
+                        $customer_cart_tracking_item->qty = $r->tracking_no5_qty;
+                        $customer_cart_tracking_item->save();
+                    }
+                    $qty_total += $r->tracking_no5_qty;
+                }
+
+                if($qty_total != $customer_cart_product->qty){
+                    return response()->json([
+                        'message' =>  'จำนวนยอดสินค้าไม่พอดี',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'สำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'customer_cart_product' => $customer_cart_product,
+                    ],
+                ]);
+
+            }
+
+            catch (\Exception $e) {
+                DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+            catch(\FatalThrowableError $e)
+            {
+                DB::rollback();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
             ]);
         }
     }
