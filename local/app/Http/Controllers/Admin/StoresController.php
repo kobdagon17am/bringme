@@ -35,9 +35,6 @@ class StoresController extends Controller
         }else{
             return redirect('admin/stores')->withError(' Data Is Null');
         }
-
-
-
     }
 
 

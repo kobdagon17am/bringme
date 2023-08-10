@@ -85,9 +85,10 @@ Route::get('admin/employee-add', function () {
 //     return view('backend/users');
 //   })->name('admin/users');
 
-  Route::get('admin/user-edit', function () {
-    return view('backend/user-edit');
-  })->name('admin/user-edit');
+  Route::get('admin/user-edit/{id}', 'Admin\CustomersController@customers_view')->name('admin/users');
+  Route::post('admin/block_user', 'Admin\CustomersController@block_user')->name('admin/block_user');
+  Route::post('admin/unblock_user', 'Admin\CustomersController@unblock_user')->name('admin/unblock_user');
+  Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->name('admin/approve_user');
 
 
 

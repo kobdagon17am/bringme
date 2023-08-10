@@ -13,20 +13,7 @@
                             <thead>
                                 <tr>
                                     <th class="whitespace-nowrap">รูปภาพ</th>
-                                    <th class="whitespace-nowrap">ชื่อ-นามสกุล</th>
-                                    <th class="text-center whitespace-nowrap">อีเมล</th>
-                                    <th class="text-center whitespace-nowrap">เบอร์โทรศัพท์</th>
-                                    <th class="text-center whitespace-nowrap">สถานะ</th>
-                                    <th class="text-center whitespace-nowrap"></th>
-                                </tr>
-                            </thead>
-
-                        </table>
-                        {{-- <table class="table table-report -mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="whitespace-nowrap">รูป</th>
-                                    <th class="whitespace-nowrap">ชื่อ-นามสกุล</th>
+                                    <th class="whitespace-nowrap">ชื่อผู้ใช้</th>
                                     <th class="text-center whitespace-nowrap">อีเมล</th>
                                     <th class="text-center whitespace-nowrap">เบอร์โทรศัพท์</th>
                                     <th class="text-center whitespace-nowrap">สถานะ</th>
@@ -34,30 +21,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="intro-x">
-                                    <td class="w-40">
-                                        <div class="flex">
-                                            <div class="w-10 h-10 image-fit zoom-in">
-                                                <img alt="Midone - HTML Admin Template" class=" rounded-full" src="dist/images/preview-9.jpg">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">วีรพล อุดมทรัพย์</a>
-                                    </td>
-                                    <td class="text-center">example@mail.com</td>
-                                    <td class="text-center">089-998-8899</td>
-                                    <td class="w-40">
-                                    <div class="flex items-center justify-center text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> กำลังใช้งาน </div>
-                                    </td>
-                                    <td class="table-report__action w-56">
-                                        <div class="flex justify-center items-center">
-                                        <a class="flex items-center mr-3" href="user-edit.php"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i>  แก้ไข </a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
-                        </table> --}}
+                        </table>
+                        
                     </div>
 
                 </div>
@@ -132,7 +99,7 @@
                 // },
 
                 {
-                    data: "name_full",
+                    data: "name",
                     //title: "ชื่อเจ้าของร้าน",
                     className: "w-10",
                 },
