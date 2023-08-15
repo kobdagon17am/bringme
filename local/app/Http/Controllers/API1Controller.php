@@ -1334,7 +1334,7 @@ class API1Controller extends Controller
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->where('customer_cart.transfer_status',1)
-            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
             $arr_cart_shipping[$key] = [];
             foreach($products2 as $key2 => $p){
                 // $arr_cart[$key] = $p;
@@ -1344,7 +1344,6 @@ class API1Controller extends Controller
         }
 
         foreach($carts_success as $key=> $c){
-
             $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
