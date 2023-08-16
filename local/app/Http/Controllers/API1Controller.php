@@ -1063,8 +1063,14 @@ class API1Controller extends Controller
                 $lot_expired_date = '';
             }
             $stock_lot_all = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-            $products_comment = ProductsComment::where('product_id',$r->product_id)->orderBy('created_at','desc')->get();
+            $products_comment = ProductsComment::
+            select('products_comment.*','customer.name as cus_name')
+            ->join('customer','customer.id','products_comment.customer_id')
+            ->where('products_comment.product_id',$r->product_id)
+            ->orderBy('products_comment.created_at','desc')->get();
 
+            $store->visitor_number = $store->visitor_number+1;
+            $store->save();
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1080,6 +1086,7 @@ class API1Controller extends Controller
                     'lot_expired_date' => $lot_expired_date,
                     'stock_lot_all' => $stock_lot_all,
                     'products_comment' => $products_comment,
+                    'comment_number' => count($products_comment),
                 ],
             ]);
         }else{
@@ -1314,11 +1321,32 @@ class API1Controller extends Controller
         $carts = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',0)->orderBy('id','desc')->get();
         $carts_shipping = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',1)->orderBy('id','desc')->get();
         $carts_success = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
+
+        $carts_claim = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('claim_status',1)->orderBy('id','desc')->get();
+
         $arr_cart = [];
         $arr_cart_shipping = [];
         $arr_cart_success = [];
+        $cart_claim = [];
 
         foreach($carts as $key=> $c){
+            if(!isset($r->limit)){
+                $products = CustomerCartProduct::select('customer_cart_product.*',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+                ->join('products','products.id','customer_cart_product.product_id')
+                ->join('brands','brands.id','products.brands_id')
+                ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                // ->where('customer_cart.transfer_status',0)
+                ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
+                $arr_cart[$key] = [];
+                foreach($products as $key2 => $p){
+                    // $arr_cart[$key] = $p;
+                    array_push($arr_cart[$key],$p);
+                }
+            }else{
+
             $products = CustomerCartProduct::select('customer_cart_product.*',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
@@ -1327,15 +1355,18 @@ class API1Controller extends Controller
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             // ->where('customer_cart.transfer_status',0)
-            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
             $arr_cart[$key] = [];
             foreach($products as $key2 => $p){
                 // $arr_cart[$key] = $p;
                 array_push($arr_cart[$key],$p);
             }
+            }
+
         }
 
         foreach($carts_shipping as $key=> $c){
+             if(!isset($r->limit)){
             $products2 = CustomerCartProduct::select('customer_cart_product.*',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
@@ -1350,10 +1381,27 @@ class API1Controller extends Controller
                 // $arr_cart[$key] = $p;
                 array_push($arr_cart_shipping[$key],$p);
             }
+        }else{
+            $products2 = CustomerCartProduct::select('customer_cart_product.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('customer_cart.transfer_status',1)
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            $arr_cart_shipping[$key] = [];
+            foreach($products2 as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart_shipping[$key],$p);
+            }
+        }
 
         }
 
         foreach($carts_success as $key=> $c){
+            if(!isset($r->limit)){
             $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total',
             'customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price',
             'brands.name_th as brand_name',
@@ -1373,6 +1421,62 @@ class API1Controller extends Controller
                 // $arr_cart[$key] = $p;
                 array_push($arr_cart_success[$key],$p);
             }
+        }else{
+            $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total',
+            'customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            )
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
+            ->where('customer_cart.transfer_status',2)
+            ->get();
+            $arr_cart_success[$key] = [];
+            foreach($products3 as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart_success[$key],$p);
+            }
+        }
+        }
+
+        foreach($carts_claim as $key=> $c){
+            if(!isset($r->limit)){
+                $products = CustomerCartProduct::select('customer_cart_product.*',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+                ->join('products','products.id','customer_cart_product.product_id')
+                ->join('brands','brands.id','products.brands_id')
+                ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                // ->where('customer_cart.transfer_status',0)
+                ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
+                $cart_claim[$key] = [];
+                foreach($products as $key2 => $p){
+                    // $arr_cart[$key] = $p;
+                    array_push($cart_claim[$key],$p);
+                }
+            }else{
+
+            $products = CustomerCartProduct::select('customer_cart_product.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            // ->where('customer_cart.transfer_status',0)
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            $cart_claim[$key] = [];
+            foreach($products as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($cart_claim[$key],$p);
+            }
+            }
+
         }
 
         $url_img = Storage::disk('public')->url('');

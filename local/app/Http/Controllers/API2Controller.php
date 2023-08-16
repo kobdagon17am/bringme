@@ -36,6 +36,7 @@ Use App\Models\CustomerCartProductCutStock;
 Use App\Models\CustomerCartTracking;
 Use App\Models\CustomerCartTrackingItem;
 Use App\Models\ProductsComment;
+Use App\Models\CustomerCartClaim;
 
 class API2Controller extends  Controller
 {
@@ -1521,4 +1522,99 @@ class API2Controller extends  Controller
             }
 
         }
+
+        public function api_get_store_report(Request $r)
+        {
+            $store = Store::where('customerr_id',$r->customerr_id)->first();
+
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'store' => $store,
+                ],
+            ]);
+        }
+
+        public function api_claim_store(Request $r)
+        {
+            DB::beginTransaction();
+            try
+                {
+
+                    $CustomerCart = CustomerCart::where('id',$r->customer_cart_id)->first();
+                    $CustomerCartProduct = CustomerCartProduct::where('customer_cart_id',$r->customer_cart_id)->first();
+                    $product = Products::where('id',$CustomerCartProduct->product_id)->first();
+
+
+                    $cart_claim = new CustomerCartClaim();
+                    $cart_claim->customer_cart_id = $r->customer_cart_id;
+                    $cart_claim->customer_id = $CustomerCart->customer_id;
+
+                    $cart_claim->store_id = $product->store_id;
+                    $cart_claim->problem_id = $r->problem_id;
+                    $cart_claim->other_problem = $r->other_problem;
+
+                        $gal = explode('|',$r->images);
+                        foreach ($gal as $key => $img) {
+                            if($img!=''){
+                                $image_64 = $img;
+                                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                                 // find substring fro replace here eg: data:image/png;base64,
+                                $image = str_replace($replace, '', $image_64);
+                                $image = str_replace(' ', '+', $image);
+                                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                                Storage::disk('public')->put('order/'.$CustomerCart->customer_id.'/'.$CustomerCart->id.'/' . $imageName, base64_decode($image));
+                                // Storage::delete('file_payment/' . $check->file_slip);
+
+                                if($key+1 == 1){
+                                    $cart_claim->img1 = $imageName;
+                                }
+                                if($key+1 == 2){
+                                    $cart_claim->img2 = $imageName;
+                                }
+                                if($key+1 == 3){
+                                    $cart_claim->img3 = $imageName;
+                                }
+
+                            }
+
+                            $cart_claim->img_path = 'order/'.$CustomerCart->customer_id.'/'.$CustomerCart->id.'/';
+                            $cart_claim->save();
+
+                            $CustomerCart->claim_status = 1;
+                            $CustomerCart->save();
+
+                    }
+
+                    DB::commit();
+                    return response()->json([
+                        'message' => 'บันทึกสำเร็จ กรุณารอการตรวจสอบ',
+                        'status' => 1,
+                        'data' => '',
+                    ]);
+
+                    }
+                    catch (\Exception $e) {
+                        DB::rollback();
+                    // return $e->getMessage();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                    }
+                    catch(\FatalThrowableError $fe)
+                    {
+                        DB::rollback();
+                        return response()->json([
+                            'message' =>  $e->getMessage(),
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+        }
+
 }
