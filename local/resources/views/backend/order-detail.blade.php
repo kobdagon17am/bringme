@@ -13,22 +13,32 @@
                             <div class="font-medium text-base truncate">รายละเอียดคำสั่งซื้อ</div>
                         </div>
                         <div class="flex items-center">
-                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> คำสั่งซื้อ: <a href="" class="underline decoration-dotted ml-1">#20220217/MPL/2053411933</a>
+                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> คำสั่งซื้อ: <b class="underline decoration-dotted ml-1">{{$order_detail['data']['cart']->order_number}}</b>
                         </div>
                         <div class="flex items-center mt-3">
                             <i data-lucide="calendar" class="w-4 h-4 text-slate-500 mr-2">
-                            </i> วันที่สั่งซื้อ: 24 มีนาคม 2022
+                            </i> วันที่สั่งซื้อ: {{date('Y/m/d',strtotime($order_detail['data']['cart']->created_at))}}
                         </div>
                         <div class="flex items-center mt-3">
-                            <i data-lucide="clock" class="w-4 h-4 text-slate-500 mr-2"></i> สถานะคำสั่งซื้อ: <span class="bg-success/20 text-success rounded px-2 ml-1">สำเร็จ</span>
+                            <i data-lucide="clock" class="w-4 h-4 text-slate-500 mr-2"></i> สถานะคำสั่งซื้อ:
+                            {{-- 0.ยังไม่บันทึก 1.รออนุมัติ 2.ชำระเงินสำเร็จ 3.ยกเลิก --}}
+                            @if($order_detail['data']['cart']->status == 1)
+                            <span class="bg-success/20 text-warning rounded px-2 ml-1">รออนุมัติ</span>
+                            @endif
+                            @if($order_detail['data']['cart']->status == 2)
+                            <span class="bg-success/20 text-success rounded px-2 ml-1">ชำระเงินสำเร็จ</span>
+                            @endif
+                            @if($order_detail['data']['cart']->status == 3)
+                            <span class="bg-success/20 text-danger rounded px-2 ml-1">ยกเลิก</span>
+                            @endif
                         </div>
                     </div>
                     <div class="box p-5 rounded-md mt-5">
                         <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
                             <div class="font-medium text-base truncate">รายละเอียดผู้ซื้อ</div>
-                            <a href="user-detail.php" class="flex items-center ml-auto text-primary">
+                            {{-- <a href="user-detail.php" class="flex items-center ml-auto text-primary">
                                 <i data-lucide="edit" class="w-4 h-4 mr-2"></i> รายละเอียด
-                            </a>
+                            </a> --}}
                         </div>
                         <div class="flex items-center">
                             <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> ชื่อ: <a href="" class="underline decoration-dotted ml-1">วีรพล อุดมทรัพย์</a>
@@ -94,58 +104,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+
+                                    <?php
+
+                                        $url_img = Storage::disk('public')->url(''); ?>
+                                    @foreach($order_detail['data']['products'] as $value)
                                     <tr>
                                         <td class="!py-4">
                                             <div class="flex items-center">
                                                 <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip" src="http://rubick-laravel.left4code.com/dist/images/preview-13.jpg">
+                                                    <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip"
+                                                    src=" {{($url_img .''. $value->img_path . '' . $value->img_name)}}">
+
+
+
                                                 </div>
                                                 <a href="" class="font-medium whitespace-nowrap ml-4">Oppo Find X2 Pro</a>
                                             </div>
                                         </td>
-                                        <td class="text-right">฿50,000.00</td>
-                                        <td class="text-right">2</td>
-                                        <td class="text-right">฿100,000.00</td>
+                                        <td class="text-right">{{$value->price}}</td>
+                                        <td class="text-right">{{$value->qty}}</td>
+                                        <td class="text-right">{{$value->total_price}}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="!py-4">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip" src="http://rubick-laravel.left4code.com/dist/images/preview-7.jpg">
-                                                </div>
-                                                <a href="" class="font-medium whitespace-nowrap ml-4">Nikon Z6</a>
-                                            </div>
-                                        </td>
-                                        <td class="text-right">฿50,000.00</td>
-                                        <td class="text-right">2</td>
-                                        <td class="text-right">฿100,000.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="!py-4">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip" src="http://rubick-laravel.left4code.com/dist/images/preview-10.jpg">
-                                                </div>
-                                                <a href="" class="font-medium whitespace-nowrap ml-4">Samsung Q90 QLED TV</a>
-                                            </div>
-                                        </td>
-                                        <td class="text-right">฿55,000.00</td>
-                                        <td class="text-right">2</td>
-                                        <td class="text-right">฿110,000.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-4">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip" src="http://rubick-laravel.left4code.com/dist/images/preview-9.jpg">
-                                                </div>
-                                                <a href="" class="font-medium whitespace-nowrap ml-4">Nike Air Max 270</a>
-                                            </div>
-                                        </td>
-                                        <td class="text-right">฿46,000.00</td>
-                                        <td class="text-right">2</td>
-                                        <td class="text-right">฿92,000.00</td>
-                                    </tr>
+                                    @endforeach
+
                                 </tbody>
                             </table>
                         </div>

@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
 Use App\Models\CustomerCartTracking;
 
-class StockController extends  Controller
+class OrdersController extends  Controller
 {
     /**
      * Create a new controller instance.
@@ -53,17 +53,43 @@ class StockController extends  Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function check_stock(Request $r){
-        $stock_lot = StockLot::select('stock_lot.*','products.products_code','products.name_th as product_name')
-        ->join('products','products.id','stock_lot.product_id')
-        ->orderBy('stock_lot.store_id','asc')
-        ->orderBy('stock_lot.product_id','asc')
-        ->orderBy('stock_lot.lot_expired_date','asc')
+    public function order_list(Request $r){
+        // $stock_lot = StockLot::select('stock_lot.*','products.products_code','products.name_th as product_name')
+        // ->join('products','products.id','stock_lot.product_id')
+        // ->orderBy('store_id','asc')
+        // ->orderBy('product_id','asc')
+        // ->orderBy('lot_expired_date','asc')
+        // ->get();
+        $customer_cart = CustomerCart::select('customer_cart.*','customer.name as cus_name')
+        ->join('customer','customer.id','customer_cart.customer_id')
+        ->where('customer_cart.status',2)
+        ->orderBy('customer_cart.order_number','desc')
         ->get();
-        return view('backend/check-stock',[
-            'stock_lots' => $stock_lot
+
+
+        return view('backend/orders',[
+            'customer_cart' => $customer_cart
         ]);
     }
+
+
+    public function order_detail($cart_id){
+
+       $resule =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($cart_id);
+       if( $resule['status'] == 1){
+
+        return view('backend/order-detail',[
+            'order_detail' => $resule
+        ]);
+
+       }else{
+        return redirect('admin/orders')->withSuccess('ไม่พบข้อมูลรายการ');
+       }
+
+
+    }
+
+
 
 
     // public function check_stock(Request $r){

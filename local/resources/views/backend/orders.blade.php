@@ -44,6 +44,7 @@
                     </thead>
                     <tbody>
                         @foreach ($customer_cart as $cc)
+
                             <tr class="intro-x">
                                 <td class="w-10">
                                     <input class="form-check-input" type="checkbox">
@@ -92,7 +93,7 @@
                                 </td>
                                 <td class="table-report__action">
                                     <div class="flex justify-center items-center">
-                                        <a class="flex items-center whitespace-nowrap mr-5" href="order-detail.php">
+                                        <a class="flex items-center whitespace-nowrap mr-5" href="{{route('admin/order-detail',['cart_id'=>$cc->id])}}">
                                             <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด
                                         </a>
                                     </div>
