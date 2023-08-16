@@ -1063,7 +1063,7 @@ class API1Controller extends Controller
                 $lot_expired_date = '';
             }
             $stock_lot_all = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-            $products_comment = ProductsComment::where('product_id',$r->product_id)->orderBy('desc','created_at')->get();
+            $products_comment = ProductsComment::where('product_id',$r->product_id)->orderBy('created_at','desc')->get();
 
 
             return response()->json([
