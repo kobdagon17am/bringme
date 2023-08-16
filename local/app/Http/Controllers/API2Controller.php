@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
 Use App\Models\CustomerCartTracking;
 Use App\Models\CustomerCartTrackingItem;
+Use App\Models\ProductsComment;
 
 class API2Controller extends  Controller
 {
@@ -367,11 +368,15 @@ class API2Controller extends  Controller
 
     public function api_get_cart_detail(Request $r)
     {
-        $cart = CustomerCart::where('id',$r->cart_id)->first();
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->where('customer_cart.id',$r->cart_id)->first();
         $product_qty = 0;
         if($cart){
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
             'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
             'products.products_code', 'products.barcode',
             'customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
@@ -1292,4 +1297,128 @@ class API2Controller extends  Controller
         }
     }
 
+    public function api_get_order_point_list(Request $r)
+    {
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->where('customer_cart.id',$r->cart_id)->first();
+        $product_qty = 0;
+        if($cart){
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
+            'customer.name as cus_name',
+            'products.products_code', 'products.barcode',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('customer','customer.id','customer_cart_product.customer_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)
+            ->where('customer_cart_product.rate_status',0)
+            ->get();
+
+            $products_success = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
+            'customer.name as cus_name',
+            'products.products_code', 'products.barcode',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('customer','customer.id','customer_cart_product.customer_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)
+            ->where('customer_cart_product.rate_status',1)
+            ->get();
+
+            $url_img = Storage::disk('public')->url('');
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'products_success' => $products_success,
+                    'product_qty' => $product_qty,
+                    'cart' => $cart,
+                    'url_img' => $url_img,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+    }
+
+    public function api_review_update(Request $r)
+    {
+      DB::beginTransaction();
+                try
+                {
+
+                    $customer_cart_product = CustomerCartProduct::where('id',$r->customer_cart_product_id)->first();
+                    $customer_cart_product->rate_status = 1;
+
+                    $products_comment = new ProductsComment();
+                    $products_comment->products_id = $customer_cart_product->products_id;
+                    $products_comment->customer_id = $customer_cart_product->customer_id;
+                    $products_comment->customer_cart_product_id = $customer_cart_product->id;
+                    $products_comment->rate = $r->rate;
+                    $products_comment->detail = $r->detail;
+
+                    if($r->show_name == 'true'){
+                        $r->show_name = 1;
+                    }else{
+                        $r->show_name = 0;
+                    }
+
+                    $products_comment->show_name = $r->show_name;
+                    $products_comment->save();
+
+                    $products_comment_arr = ProductsComment::select('rate')->where('products_id',$customer_cart_product->products_id)->pluck('rate')->toArray();
+
+                    $rate = array_sum($products_comment_arr)/count($products_comment_arr);
+
+                    $customer_cart_product->rate = $rate;
+                    $customer_cart_product->save();
+
+                 DB::commit();
+                return response()->json([
+                    'message' => 'สำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        // 'customer_cart_product' => $customer_cart_product,
+                    ],
+                ]);
+
+            }
+
+            catch (\Exception $e) {
+                DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+            catch(\FatalThrowableError $e)
+            {
+                DB::rollback();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+
+        }
 }

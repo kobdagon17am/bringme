@@ -1315,12 +1315,15 @@ class API1Controller extends Controller
         $arr_cart_success = [];
 
         foreach($carts as $key=> $c){
-            $products = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            $products = CustomerCartProduct::select('customer_cart_product.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
             // ->where('customer_cart.transfer_status',0)
-            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
             $arr_cart[$key] = [];
             foreach($products as $key2 => $p){
                 // $arr_cart[$key] = $p;
@@ -1329,10 +1332,13 @@ class API1Controller extends Controller
         }
 
         foreach($carts_shipping as $key=> $c){
-            $products2 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            $products2 = CustomerCartProduct::select('customer_cart_product.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
             ->where('customer_cart.transfer_status',1)
             ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
             $arr_cart_shipping[$key] = [];
@@ -1344,12 +1350,19 @@ class API1Controller extends Controller
         }
 
         foreach($carts_success as $key=> $c){
-            $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total',
+            'customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            )
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
             ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
             ->where('customer_cart.transfer_status',2)
+            ->limit(1)
             ->get();
             $arr_cart_success[$key] = [];
             foreach($products3 as $key2 => $p){
@@ -1358,6 +1371,8 @@ class API1Controller extends Controller
             }
         }
 
+        $url_img = Storage::disk('public')->url('');
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1365,6 +1380,7 @@ class API1Controller extends Controller
                     'cart' => $arr_cart,
                     'cart_shipping' => $arr_cart_shipping,
                     'cart_success' => $arr_cart_success,
+                    'url_img' => $url_img,
                 ],
             ]);
     }
