@@ -33,6 +33,7 @@ Use App\Models\ProductsGallery;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
+Use App\Models\ProductsComment;
 
 class API1Controller extends Controller
 {
@@ -1062,6 +1063,8 @@ class API1Controller extends Controller
                 $lot_expired_date = '';
             }
             $stock_lot_all = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+            $products_comment = ProductsComment::where('product_id',$r->product_id)->orderBy('created_at','desc')->get();
+
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1076,6 +1079,7 @@ class API1Controller extends Controller
                     'url_img' => $url_img,
                     'lot_expired_date' => $lot_expired_date,
                     'stock_lot_all' => $stock_lot_all,
+                    'products_comment' => $products_comment,
                 ],
             ]);
         }else{
