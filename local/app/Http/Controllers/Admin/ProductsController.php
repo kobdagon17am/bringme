@@ -310,6 +310,9 @@ class ProductsController extends Controller
     }
 
 
+
+
+
     public function products_datable(Request $request)
     {
 
