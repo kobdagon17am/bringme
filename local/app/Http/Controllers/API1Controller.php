@@ -1488,6 +1488,7 @@ class API1Controller extends Controller
                     'cart' => $arr_cart,
                     'cart_shipping' => $arr_cart_shipping,
                     'cart_success' => $arr_cart_success,
+                    'cart_claim' => $cart_claim,
                     'url_img' => $url_img,
                 ],
             ]);
@@ -1642,7 +1643,7 @@ class API1Controller extends Controller
                 $products_item->production_date = $r->production_date;
                 $products_item->shipping_date = $r->shipping_date;
                 $products_item->products_code = $products->products_code;
-                $products_item->barcode = $products->barcode;
+                // $products_item->barcode = $products->barcode;
                 $products_item->save();
 
                 $products_option_head1 = new ProductsOptionHead();
@@ -1681,6 +1682,8 @@ class API1Controller extends Controller
                 $products_option_2_items->name_th = '';
                 $products_option_2_items->name_en = '';
                 $products_option_2_items->save();
+
+                $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
 
                 $products->min_price = $r->price;
                 $products->max_price = $r->price;
