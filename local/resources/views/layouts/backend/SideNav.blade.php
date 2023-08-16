@@ -127,7 +127,7 @@
             </a>
         </li>
         <li>
-            <a href="{{route('admin/orders')}}" class="side-menu">
+            <a href="{{route('admin/orders')}}" class="side-menu {{ (request()->is('admin/orders') || request()->is('admin/order-detail') ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-11.png')}}" alt=""></div>
                 <div class="side-menu__title"> คำสั่งซื้อ </div>
             </a>

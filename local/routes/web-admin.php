@@ -81,6 +81,12 @@ Route::get('admin/employee-add', function () {
     return view('backend/permission');
   })->name('admin/permission');
 
+
+
+  Route::get('admin/permission-add', function () {
+    return view('backend/permission-add');
+  })->name('admin/permission-add');
+
 //   Route::get('admin/users', function () {
 //     return view('backend/users');
 //   })->name('admin/users');

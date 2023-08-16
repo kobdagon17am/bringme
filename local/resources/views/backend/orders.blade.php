@@ -187,3 +187,7 @@
         <!-- END: Delete Confirmation Modal -->
     </div>
 @endsection
+
+@section('js')
+
+@endsection
