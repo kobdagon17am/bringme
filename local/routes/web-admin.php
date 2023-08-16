@@ -187,6 +187,8 @@ Route::get('admin/employee-add', function () {
 
   Route::get('admin/orders', 'Admin\OrdersController@order_list')->name('admin/orders');
 
+  Route::get('admin/genbarcode/{product_id}', 'Admin\ProductsController@genbarcode')->name('admin/genbarcode');
+
   Route::get('admin/order-detail/{cart_id}', 'Admin\OrdersController@order_detail')->name('admin/order-detail');
 
 

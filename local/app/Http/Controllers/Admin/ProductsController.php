@@ -29,6 +29,26 @@ class ProductsController extends Controller
         return view('backend/products');
     }
 
+    public function genbarcode($product_id)
+    {
+
+        $genbarcode = DB::table('products')
+        ->where('id', $product_id)
+        ->first();
+
+
+
+        if($genbarcode){
+        return view('backend/product-genbarcode',[
+            'genbarcode' => $genbarcode
+        ]);
+
+       }else{
+        return redirect('admin/products')->withError('ไม่พบข้อมูลรายการ');
+       }
+
+    }
+
 
     public function products_pending_tranfer()
     {
@@ -310,9 +330,6 @@ class ProductsController extends Controller
     }
 
 
-
-
-
     public function products_datable(Request $request)
     {
 
@@ -409,7 +426,7 @@ class ProductsController extends Controller
 
             ->addColumn('barcode', function ($row) {
                 $html = '<div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="'.route('admin/products-waitapproved-detail',['id'=>$row->id]).'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> BarCode </a></div>';
+                <a class="flex items-center mr-3" href="'.route('admin/genbarcode',['product_id'=>$row->product_id]).'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> BarCode </a></div>';
                 return $html;
              })
 

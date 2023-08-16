@@ -83,7 +83,7 @@ class OrdersController extends  Controller
         ]);
 
        }else{
-        return redirect('admin/orders')->withSuccess('ไม่พบข้อมูลรายการ');
+        return redirect('admin/orders')->withError('ไม่พบข้อมูลรายการ');
        }
 
 
