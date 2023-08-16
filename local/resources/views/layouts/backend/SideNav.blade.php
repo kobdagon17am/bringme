@@ -120,12 +120,12 @@
         </li>
 
 
-        <li class="mt-10">
+        {{-- <li class="mt-10">
             <a href="{{route('admin/user-store')}}" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-10.png')}}" alt=""></div>
                 <div class="side-menu__title"> จัดการร้านค้า </div>
             </a>
-        </li>
+        </li> --}}
         <li>
             <a href="{{route('admin/orders')}}" class="side-menu {{ (request()->is('admin/orders') || request()->is('admin/order-detail') ) ? 'side-menu--active' : '' }}">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-11.png')}}" alt=""></div>
@@ -203,12 +203,12 @@
                 </li>
             </ul>
         </li>
-        <li>
+        {{-- <li>
             <a href="{{route('admin/profile-edit')}}" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-13.png')}}" alt=""></div>
                 <div class="side-menu__title"> ตั้งค่าโปรไฟล์</div>
             </a>
-        </li>
+        </li> --}}
 
 
 
