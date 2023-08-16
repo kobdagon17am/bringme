@@ -30,7 +30,7 @@
                     <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
                 </div>
             </a>
-            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/users') || request()->is('admin/store-detail/*')  ) ? 'side-menu__sub-open' : '' }}">
+            <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/users') || request()->is('admin/user-edit/*') || request()->is('admin/store-detail/*')  ) ? 'side-menu__sub-open' : '' }}">
                 <li>
                     <a href="{{route('admin/users')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
