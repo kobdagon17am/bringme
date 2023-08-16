@@ -457,6 +457,95 @@ class API2Controller extends  Controller
         }
     }
 
+    public static function api_get_cart_detail_web($cart_id)
+    {
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->where('customer_cart.id',$cart_id)->first();
+        $product_qty = 0;
+        if($cart){
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
+            'products.products_code', 'products.barcode',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
+
+            $arr_lot = [];
+            foreach($products as $index => $pro){
+                $product_qty+=$pro->qty;
+
+                // ดึงตำแหน่งสินค้า
+                $customer_cart_product_cut_stock = CustomerCartProductCutStock::
+                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','stock_floor.floor','stock_items.name as stock_item_name')
+                ->join('stock_items','stock_items.id','customer_cart_product_cut_stock.stock_item_id')
+                ->join('stock_floor','stock_floor.id','stock_items.stock_floor_id')
+                ->join('stock_shelf','stock_shelf.id','stock_items.stock_shelt_id')
+                ->join('dataset_shelf','dataset_shelf.id','stock_shelf.shelf_id')
+                ->join('stock_lot','stock_lot.id','stock_shelf.stock_lot_id')
+                ->where('customer_cart_product_cut_stock.customer_cart_product_id',$pro->id)
+                ->get();
+
+                foreach($customer_cart_product_cut_stock as $key => $c){
+                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name;
+                }
+            }
+
+            $customer_address = Customer_address::
+            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            ->join('districts','districts.id','customer_address.district_id')
+            ->join('amphures','amphures.id','customer_address.amphures_id')
+            ->join('provinces','provinces.id','customer_address.province_id')
+            ->where('customer_address.id',$cart->customer_address_id)->first();
+            if(!$customer_address){
+                $customer_address = '';
+            }
+
+            $url_img = Storage::disk('public')->url('');
+
+            $tracking_no1 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$cart_id)->where('no',1)->first();
+            $tracking_no2 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$cart_id)->where('no',2)->first();
+            $tracking_no3 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$cart_id)->where('no',3)->first();
+            $tracking_no4 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$cart_id)->where('no',4)->first();
+            $tracking_no5 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$cart_id)->where('no',5)->first();
+
+            $tracking_no1 = ($tracking_no1)? $tracking_no1->tracking_no : '';
+            $tracking_no2 = ($tracking_no2)? $tracking_no2->tracking_no : '';
+            $tracking_no3 = ($tracking_no3)? $tracking_no3->tracking_no : '';
+            $tracking_no4 = ($tracking_no4)? $tracking_no4->tracking_no : '';
+            $tracking_no5 = ($tracking_no5)? $tracking_no5->tracking_no : '';
+
+            return $data = [
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'product_qty' => $product_qty,
+                    'cart' => $cart,
+                    'customer_address' => $customer_address,
+                    'url_img' => $url_img,
+                    'arr_lot' => $arr_lot,
+                    'tracking_no1' => $tracking_no1,
+                    'tracking_no2' => $tracking_no2,
+                    'tracking_no3' => $tracking_no3,
+                    'tracking_no4' => $tracking_no4,
+                    'tracking_no5' => $tracking_no5,
+                ]];
+        }else{
+            return $data = [
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ]];
+        }
+    }
+
+
     public function api_pick_update(Request $r){
         DB::beginTransaction();
         try

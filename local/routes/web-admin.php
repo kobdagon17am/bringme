@@ -81,6 +81,12 @@ Route::get('admin/employee-add', function () {
     return view('backend/permission');
   })->name('admin/permission');
 
+
+
+  Route::get('admin/permission-add', function () {
+    return view('backend/permission-add');
+  })->name('admin/permission-add');
+
 //   Route::get('admin/users', function () {
 //     return view('backend/users');
 //   })->name('admin/users');
@@ -177,9 +183,18 @@ Route::get('admin/employee-add', function () {
     return view('backend/receive-product');
   })->name('admin/receive-product');
 
-  Route::get('admin/order-detail', function () {
-    return view('backend/order-detail');
-  })->name('admin/order-detail');
+
+
+  Route::get('admin/orders', 'Admin\OrdersController@order_list')->name('admin/orders');
+
+  Route::get('admin/genbarcode/{product_id}', 'Admin\ProductsController@genbarcode')->name('admin/genbarcode');
+
+  Route::get('admin/order-detail/{cart_id}', 'Admin\OrdersController@order_detail')->name('admin/order-detail');
+
+
+//   Route::get('admin/order-detail', function () {
+//     return view('backend/order-detail');
+//   })->name('admin/order-detail');
 
 //   Route::get('admin/orders', function () {
 //     return view('backend/orders');
@@ -212,7 +227,8 @@ Route::get('admin/employee-add', function () {
 
 
   Route::get('admin/check-stock', 'Admin\StockController@check_stock')->name('admin/check-stock');
-  Route::get('admin/orders', 'Admin\StockController@order_list')->name('admin/orders');
+
+
 
 
 
