@@ -1584,6 +1584,9 @@ class API2Controller extends  Controller
                             $cart_claim->img_path = 'order/'.$CustomerCart->customer_id.'/'.$CustomerCart->id.'/';
                             $cart_claim->save();
 
+                            $CustomerCart->claim_status = 1;
+                            $CustomerCart->save();
+
                     }
 
                     DB::commit();
