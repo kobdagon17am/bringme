@@ -1324,12 +1324,18 @@ class API2Controller extends  Controller
             'products_gallery.path as img_path','products_gallery.name as img_name',
             'products_gallery.path as gal_path','products_gallery.name as gal_name',
             'customer.name as cus_name',
-            'products.products_code', 'products.barcode',
+            'products.products_code',
+            'products.barcode',
+            'products_comment.show_name',
+            'products_comment.comment_date',
+            'products_comment.detail as comment_detail',
+            'products_comment.rate as comment_rate',
             'customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->join('customer','customer.id','customer_cart_product.customer_id')
+            ->join('products_comment','products_comment.customer_cart_product_id','customer_cart_product.id')
             ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)
             ->where('customer_cart_product.rate_status',1)
@@ -1368,11 +1374,12 @@ class API2Controller extends  Controller
                     $customer_cart_product->rate_status = 1;
 
                     $products_comment = new ProductsComment();
-                    $products_comment->products_id = $customer_cart_product->products_id;
+                    $products_comment->product_id = $customer_cart_product->product_id;
                     $products_comment->customer_id = $customer_cart_product->customer_id;
                     $products_comment->customer_cart_product_id = $customer_cart_product->id;
                     $products_comment->rate = $r->rate;
                     $products_comment->detail = $r->detail;
+                    $products_comment->comment_date = date('Y-m-d');
 
                     if($r->show_name == 'true'){
                         $r->show_name = 1;
@@ -1383,11 +1390,15 @@ class API2Controller extends  Controller
                     $products_comment->show_name = $r->show_name;
                     $products_comment->save();
 
-                    $products_comment_arr = ProductsComment::select('rate')->where('products_id',$customer_cart_product->products_id)->pluck('rate')->toArray();
+                    $products_comment_arr = ProductsComment::select('rate')->where('product_id',$customer_cart_product->product_id)->pluck('rate')->toArray();
 
                     $rate = array_sum($products_comment_arr)/count($products_comment_arr);
 
-                    $customer_cart_product->rate = $rate;
+                    $product = Products::where('id',$customer_cart_product->product_id)->first();
+                    $product->rate = $rate;
+                    $product->save();
+
+                    $customer_cart_product->rate = $r->rate;
                     $customer_cart_product->save();
 
                  DB::commit();
