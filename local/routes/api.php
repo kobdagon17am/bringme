@@ -64,3 +64,6 @@ Route::post('api_get_customer_cart_product_detail', 'API2Controller@api_get_cust
 Route::post('api_tracking_item_update', 'API2Controller@api_tracking_item_update');
 Route::post('api_get_order_point_list', 'API2Controller@api_get_order_point_list');
 Route::post('api_review_update', 'API2Controller@api_review_update');
+Route::post('api_get_store_report', 'API2Controller@api_get_store_report');
+Route::post('api_claim_store', 'API2Controller@api_claim_store');
+

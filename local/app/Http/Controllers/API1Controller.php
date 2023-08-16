@@ -1063,8 +1063,14 @@ class API1Controller extends Controller
                 $lot_expired_date = '';
             }
             $stock_lot_all = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-            $products_comment = ProductsComment::where('product_id',$r->product_id)->orderBy('created_at','desc')->get();
+            $products_comment = ProductsComment::
+            select('products_comment.*','customer.name as cus_name')
+            ->join('customer','customer.id','products_comment.customer_id')
+            ->where('products_comment.product_id',$r->product_id)
+            ->orderBy('products_comment.created_at','desc')->get();
 
+            $store->visitor_number = $store->visitor_number+1;
+            $store->save();
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1080,6 +1086,7 @@ class API1Controller extends Controller
                     'lot_expired_date' => $lot_expired_date,
                     'stock_lot_all' => $stock_lot_all,
                     'products_comment' => $products_comment,
+                    'comment_number' => count($products_comment),
                 ],
             ]);
         }else{
