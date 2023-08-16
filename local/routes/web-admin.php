@@ -192,6 +192,13 @@ Route::get('admin/employee-add', function () {
   Route::get('admin/order-detail/{cart_id}', 'Admin\OrdersController@order_detail')->name('admin/order-detail');
 
 
+
+
+  Route::get('admin/discount-code-add', function () {
+    return view('backend/discount-code-add');
+  })->name('admin/discount-code-add');
+
+
 //   Route::get('admin/order-detail', function () {
 //     return view('backend/order-detail');
 //   })->name('admin/order-detail');
@@ -204,9 +211,12 @@ Route::get('admin/employee-add', function () {
 //     return view('backend/orders');
 //   })->name('admin/orders');
 
-  Route::get('admin/products-awaiting-delivery', function () {
-    return view('backend/products-awaiting-delivery');
-  })->name('admin/products-awaiting-delivery');
+
+
+
+  Route::get('admin/products-awaiting-delivery', 'Admin\ProductsAwaitingDeliveryController@index')->name('admin/products-awaiting-delivery');
+
+
 
   Route::get('admin/create-bill-lading', function () {
     return view('backend/create-bill-lading');
