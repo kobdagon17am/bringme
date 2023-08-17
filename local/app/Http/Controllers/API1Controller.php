@@ -1753,7 +1753,11 @@ class API1Controller extends Controller
                 $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
                 $products_item = ProductsItem::where('id',$r->products_item_id)->first();
                 if($products_item){
-                    $products_transfer = new ProductsTransfer();
+
+                    $products_transfer = ProductsTransfer::where('product_id',$products_item->product_id)->where('products_item_id',$products_item->id)->first();
+                    if(!$products_transfer){
+                        $products_transfer = new ProductsTransfer();
+                    }
                     $products_transfer->product_id = $products_item->product_id;
                     $products_transfer->products_item_id = $products_item->id;
                     $products_transfer->transfer_type = 1;
@@ -1762,6 +1766,7 @@ class API1Controller extends Controller
                     $products_transfer->save();
 
                     if($r->img!=''){
+                        Storage::disk('public')->delete('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $products_transfer->img);
                         $image_64 = $r->img;
                         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
                         $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
@@ -1770,12 +1775,9 @@ class API1Controller extends Controller
                         $image = str_replace(' ', '+', $image);
                         $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
                         Storage::disk('public')->put('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $imageName, base64_decode($image));
-                        // Storage::delete('file_payment/' . $check->file_slip);
-
                         $products_transfer->path_img = 'product/'.$products_item->customer_id.'/'.$products_item->id.'/';
                         $products_transfer->img = $imageName;
                         $products_transfer->save();
-
                         // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
                     }
 
