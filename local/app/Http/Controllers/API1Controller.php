@@ -335,6 +335,27 @@ class API1Controller extends Controller
             ]);
     }
 
+    public function api_get_dataset(Request $r)
+    {
+        $category = DB::table('category')->orderBy('name_th','asc')->get();
+        $brands = DB::table('brands')->orderBy('name_th','asc')->get();
+        $bank = DB::table('bank')->orderBy('txt_desc','asc')->get();
+        $dataset_pay_type = DB::table('dataset_pay_type')->get();
+        $storage_method = DB::table('storage_method')->get();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'category' => $category,
+                    'brands' => $brands,
+                    'bank' => $bank,
+                    'dataset_pay_type' => $dataset_pay_type,
+                    'storage_method' => $storage_method,
+                ],
+            ]);
+    }
+
     public function api_register_store(Request $r)
     {
         DB::beginTransaction();
@@ -381,6 +402,17 @@ class API1Controller extends Controller
                     $store->customer_id = $customer->id;
                     $store->brands_id = $brand->id;
                     $store->category_id = $customer->category_id;
+
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+                    // $store->category_id = $r->category_id;
+
                     $store->save();
 
 
