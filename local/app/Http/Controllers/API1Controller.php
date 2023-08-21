@@ -338,7 +338,17 @@ class API1Controller extends Controller
     public function api_get_dataset(Request $r)
     {
         $category = DB::table('category')->orderBy('name_th','asc')->get();
-        $brands = DB::table('brands')->orderBy('name_th','asc')->get();
+        $brands = DB::table('brands')->where('has_store',0)->orderBy('name_th','asc')->get();
+        if(isset($r->user_id)){
+            $store = DB::table('store')->select('brands_id')->where('customer_id',$r->user_id)->first();
+            if($store){
+                $brands_store = DB::table('brands')->where('id',$store->brands_id)->orderBy('name_th','asc')->get();
+            }else{
+                $brands_store = DB::table('brands')->where('id',0)->orderBy('name_th','asc')->get();
+            }
+        }else{
+            $brands_store = DB::table('brands')->where('id',0)->orderBy('name_th','asc')->get();
+        }
         $bank = DB::table('bank')->orderBy('txt_desc','asc')->get();
         $dataset_pay_type = DB::table('dataset_pay_type')->get();
         $storage_method = DB::table('storage_method')->get();
@@ -349,6 +359,7 @@ class API1Controller extends Controller
                 'data' => [
                     'category' => $category,
                     'brands' => $brands,
+                    'brands_store' => $brands_store,
                     'bank' => $bank,
                     'dataset_pay_type' => $dataset_pay_type,
                     'storage_method' => $storage_method,
@@ -378,7 +389,6 @@ class API1Controller extends Controller
                     $customer->customer_type = 2;
                     $customer->select_type = 1;
                     $customer->status = 1;
-                    //
                     $customer->address = $r->address;
                     $customer->province_id = $r->province_id;
                     $customer->amphures_id = $r->amphures_id;
@@ -393,28 +403,111 @@ class API1Controller extends Controller
                     $brands = Brands::where('name_th',$r->brands)->first();
                     if(!$brands){
                         $brand = new Brands();
-                        $brand->name_th = $r->brands_th;
-                        $brand->name_en = $r->brands_en;
+                        $brand->name_th = $r->brands;
+                        $brand->name_en = $r->brands;
+                        $brand->has_store = 1;
                         $brand->save();
                     }
 
                     $store = new Store();
                     $store->customer_id = $customer->id;
                     $store->brands_id = $brand->id;
+                    $store->store_name = $r->brands;
                     $store->category_id = $customer->category_id;
-
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-                    // $store->category_id = $r->category_id;
-
+                    $store->brand_product_detail = $r->brand_product_detail;
+                    $store->product_price = $r->product_price;
+                    $store->storage_method_id = $r->storage_method_id;
+                    $store->shelf_lift = $r->shelf_lift;
+                    $store->qty_sku = $r->qty_sku;
+                    $store->shipping_date = $r->shipping_date;
+                    $store->social = $r->social;
+                    $store->address = $r->address2;
+                    $store->province_id = $r->province_id2;
+                    $store->amphures_id = $r->amphures_id2;
+                    $store->district_id = $r->district_id2;
+                    $store->zipcode = $r->zipcode2;
+                    $store->bank_id = $r->bank_id;
+                    $store->bank_account_name = $r->bank_account_name;
+                    $store->bank_account_number = $r->bank_account_number;
                     $store->save();
 
+                    if($r->product_ex_img!=''){
+                        $image_64 = $r->product_ex_img;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                        $store->product_ex_img_path = 'store/'.$store->id.'/';
+                        $store->product_ex_img = $imageName;
+                        $store->save();
+                    }
+
+                    if($r->product_pack_img!=''){
+                        $image_64 = $r->product_pack_img;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                        $store->product_pack_img_path = 'store/'.$store->id.'/';
+                        $store->product_pack_img = $imageName;
+                        $store->save();
+                    }
+
+                    if($r->certificate!=''){
+                        $image_64 = $r->certificate;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                        $store->certificate_path = 'store/'.$store->id.'/';
+                        $store->certificate = $imageName;
+                        $store->save();
+                    }
+
+                    if($r->bank_img!=''){
+                        $image_64 = $r->bank_img;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                        $store->bank_img_path = 'store/'.$store->id.'/';
+                        $store->bank_img = $imageName;
+                        $store->save();
+                    }
+
+                    if($r->id_card_img!=''){
+                        $image_64 = $r->id_card_img;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                        $store->id_card_img_path = 'store/'.$store->id.'/';
+                        $store->id_card_img = $imageName;
+                        $store->save();
+                    }
+
+                    if($r->company_img!=''){
+                        $image_64 = $r->company_img;
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                        $image = str_replace($replace, '', $image_64);
+                        $image = str_replace(' ', '+', $image);
+                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                        $store->company_img_path = 'store/'.$store->id.'/';
+                        $store->company_img = $imageName;
+                        $store->save();
+                    }
 
                 }
                 DB::commit();
@@ -1626,8 +1719,8 @@ class API1Controller extends Controller
             {
 
                 $store = Store::where('customer_id',$r->user_id)->first();
-                $r->production_date = date('Y-m-d', strtotime($r->production_date));
-                $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+                // $r->production_date = date('Y-m-d', strtotime($r->production_date));
+                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
 
                 // เพิ่มสินค้าหลัก
                 $products = new Products();
@@ -1636,8 +1729,8 @@ class API1Controller extends Controller
                 $products->name_th = $r->name_th;
                 $products->detail_th = $r->name_th;
                 $products->detail_en = $r->detail_en;
-                $products->category_id = $store->category_id;
-                $products->brands_id = $store->brands_id;
+                $products->category_id = $r->category_id;
+                $products->brands_id = $r->brands_id;
                 // $products->shelf_lift = $r->shelf_lift;
                 // $products->storage_method_id = $store->storage_method_id;
                 $products->store_id = $store->id;
@@ -1655,7 +1748,7 @@ class API1Controller extends Controller
 
                 $products->save();
 
-                // เพิ่ม item สินค้า
+                // เพิ่ม item สินค้า storage_method_id
                 $products_item = new ProductsItem();
                 $products_item->product_id = $products->id;
                 $products_item->customer_id = $r->user_id;
@@ -1664,10 +1757,10 @@ class API1Controller extends Controller
                 $products_item->name_th = $r->name_th;
                 $products_item->detail_th = $r->name_th;
                 $products_item->detail_en = $r->detail_en;
-                $products_item->category_id = $store->category_id;
-                $products_item->brands_id = $store->brands_id;
+                $products_item->category_id = $r->category_id;
+                $products_item->brands_id = $r->brands_id;
                 $products_item->shelf_lift = $r->shelf_lift;
-                $products_item->storage_method_id = $store->storage_method_id;
+                $products_item->storage_method_id = $r->storage_method_id;
                 $products_item->store_id = $store->id;
                 $products_item->price = $r->price;
                 $products_item->qty = $r->qty;
@@ -1782,7 +1875,7 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
             {
-                $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
                 $products_item = ProductsItem::where('id',$r->products_item_id)->first();
                 if($products_item){
 
@@ -1795,6 +1888,8 @@ class API1Controller extends Controller
                     $products_transfer->transfer_type = 1;
                     $products_transfer->shipping_date = $r->shipping_date;
                     $products_transfer->tracking = $r->tracking;
+                    $products_transfer->shipping_name = $r->shipping_name;
+                    $products_transfer->qty = $r->qty;
                     $products_transfer->save();
 
                     if($r->img!=''){
