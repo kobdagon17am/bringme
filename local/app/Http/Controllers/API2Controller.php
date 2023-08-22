@@ -369,9 +369,9 @@ class API2Controller extends  Controller
 
     public function api_get_cart_detail(Request $r)
     {
-        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
-        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
         ->where('customer_cart.id',$r->cart_id)->first();
         $product_qty = 0;
         if($cart){
@@ -459,9 +459,9 @@ class API2Controller extends  Controller
 
     public static function api_get_cart_detail_web($cart_id)
     {
-        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
-        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
         ->where('customer_cart.id',$cart_id)->first();
         $product_qty = 0;
         if($cart){
@@ -1389,9 +1389,9 @@ class API2Controller extends  Controller
 
     public function api_get_order_point_list(Request $r)
     {
-        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
-        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
         ->where('customer_cart.id',$r->cart_id)->first();
         $product_qty = 0;
         if($cart){
