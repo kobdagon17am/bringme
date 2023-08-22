@@ -867,7 +867,7 @@ class API1Controller extends Controller
             }
             $cart->customer_id = $r->user_id;
 
-            $cart->delivery_type = 1;
+            $cart->shipping_type_id = 1;
             $customer_address = Customer_address::
             select('customer_address.id')
             ->where('customer_address.customer_id',$r->user_id)
@@ -1227,12 +1227,14 @@ class API1Controller extends Controller
     {
         $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
         $product_qty = 0;
+        $cold = 0;
         if($cart){
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
             'customer_cart_product.price as product_price',
             'brands.name_th as brand_name',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
+            'products.storage_method_id',
             )
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
@@ -1241,6 +1243,9 @@ class API1Controller extends Controller
             ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
             foreach($products as $pro){
                 $product_qty+=$pro->qty;
+                if($pro->storage_method_id == 2){
+                    $cold++;
+                }
             }
 
             $customer_address = Customer_address::
@@ -1253,7 +1258,34 @@ class API1Controller extends Controller
                 $customer_address = '';
             }
 
+            if(isset($r->product_id)){
+                $products_one = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+                'customer_cart_product.price as product_price',
+                'brands.name_th as brand_name',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name',
+                )
+                ->join('products','products.id','customer_cart_product.product_id')
+                ->join('brands','brands.id','products.brands_id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                ->where('products_gallery.use_profile',1)
+                ->where('customer_cart_product.customer_cart_id',$cart->id)
+                ->where('customer_cart_product.customer_id',$r->user_id)
+                ->where('customer_cart_product.product_id',$r->product_id)
+                ->get();
+                $product_qty = 0;
+                foreach($products_one as $pro){
+                    $product_qty+=$pro->qty;
+                }
+            }
+
             $url_img = Storage::disk('public')->url('');
+            if($cold>0){
+              $arr_type_not = [1];
+            }else{
+              $arr_type_not = [2];
+            }
+            $shipping_type = DB::table('shipping_type')->whereNotIn('type',$arr_type_not)->get();
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1264,6 +1296,7 @@ class API1Controller extends Controller
                     'cart' => $cart,
                     'customer_address' => $customer_address,
                     'url_img' => $url_img,
+                    'shipping_type' => $shipping_type,
                 ],
             ]);
         }else{
@@ -1732,7 +1765,7 @@ class API1Controller extends Controller
                 $products->category_id = $r->category_id;
                 $products->brands_id = $r->brands_id;
                 // $products->shelf_lift = $r->shelf_lift;
-                // $products->storage_method_id = $store->storage_method_id;
+                $products->storage_method_id = $r->storage_method_id;
                 $products->store_id = $store->id;
                 $products->customer_id = $r->user_id;
                 // $products->price = $r->price;
@@ -1748,7 +1781,7 @@ class API1Controller extends Controller
 
                 $products->save();
 
-                // เพิ่ม item สินค้า storage_method_id
+                // เพิ่ม item สินค้า storage_method_id brands_id
                 $products_item = new ProductsItem();
                 $products_item->product_id = $products->id;
                 $products_item->customer_id = $r->user_id;
@@ -1757,10 +1790,10 @@ class API1Controller extends Controller
                 $products_item->name_th = $r->name_th;
                 $products_item->detail_th = $r->name_th;
                 $products_item->detail_en = $r->detail_en;
-                $products_item->category_id = $r->category_id;
-                $products_item->brands_id = $r->brands_id;
+                // $products_item->category_id = $r->category_id;
+                // $products_item->brands_id = $r->brands_id;
                 $products_item->shelf_lift = $r->shelf_lift;
-                $products_item->storage_method_id = $r->storage_method_id;
+                // $products_item->storage_method_id = $r->storage_method_id;
                 $products_item->store_id = $store->id;
                 $products_item->price = $r->price;
                 $products_item->qty = $r->qty;
