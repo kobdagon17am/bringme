@@ -25,8 +25,8 @@
                 <div class="font-medium text-center lg:text-left lg:mt-3">รายละเอียดการติดต่อ</div>
                 <div class="flex flex-col justify-center items-center lg:items-start mt-4">
                     <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ (!empty($store) ? $store->email : '' ) }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="instagram" class="w-4 h-4 mr-2"></i> Instagram The Empty Kite </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="twitter" class="w-4 h-4 mr-2"></i> Twitter The Empty Kite</div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="instagram" class="w-4 h-4 mr-2"></i> Instagram {{ (!empty($store) ? $store->firstname : '') }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="twitter" class="w-4 h-4 mr-2"></i> Twitter {{ (!empty($store) ? $store->firstname : '') }} </div>
                 </div>
             </div>
             <div class="mt-6 lg:mt-0 flex-1 px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
@@ -222,45 +222,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="intro-x">
-                                    <td class="w-auto">1</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">40000</td>
-                                </tr>
-                                <tr class="intro-x">
-                                    <td class="w-auto">2</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">30000</td>
-                                </tr>
-                                <tr class="intro-x">
-                                    <td class="w-auto">3</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">15000</td>
-                                </tr>
+
+                                @if(!empty($product))
+                                    @foreach($product as $_product)
+                                        <tr class="intro-x">
+                                            <td class="w-auto">1</td>
+                                            <td class="w-auto">
+                                                <div class="w-10 h-10 image-fit zoom-in">
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} </a>
+                                                <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5"> TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</div>
+                                            </td>
+                                            <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+
                             </tbody>
                         </table>
 
@@ -315,45 +295,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="intro-x">
-                                    <td class="w-auto">1</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">20</td>
-                                </tr>
-                                <tr class="intro-x">
-                                    <td class="w-auto">2</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">10</td>
-                                </tr>
-                                <tr class="intro-x">
-                                    <td class="w-auto">3</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">5</td>
-                                </tr>
+                                @if(!empty($product))
+                                    @foreach($product as $_product)
+                                        <tr class="intro-x">
+                                            <td class="w-auto">1</td>
+                                            <td class="w-auto">
+                                                <div class="w-10 h-10 image-fit zoom-in">
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} </a>
+                                                <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5"> TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</div>
+                                            </td>
+                                            <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
 
@@ -408,45 +366,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="intro-x">
-                                    <td class="w-auto">1</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">150</td>
-                                </tr>
-                                <tr class="intro-x">
-                                    <td class="w-auto">2</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">120</td>
-                                </tr>
-                                <tr class="intro-x">
-                                    <td class="w-auto">3</td>
-                                    <td class="w-auto">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="" class="font-medium whitespace-nowrap">Samsung Q90 QLED TV</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Electronic</div>
-                                    </td>
-                                    <td class="text-center">80</td>
-                                </tr>
+                                @if(!empty($product))
+                                    @foreach($product as $_product)
+                                        <tr class="intro-x">
+                                            <td class="w-auto">1</td>
+                                            <td class="w-auto">
+                                                <div class="w-10 h-10 image-fit zoom-in">
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} </a>
+                                                <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5"> TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</div>
+                                            </td>
+                                            <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
 
@@ -505,149 +441,35 @@
                     </div>
                 </div>
                 <!-- BEGIN: Users Layout -->
-                <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
-                    <div class="box">
-                        <div class="p-5">
-                            <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-1.jpg')}}">
-                                <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
-                                    <a href="" class="block font-medium text-base">Nike Tanjun</a>
-                                    <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
-                                </div>
-                            </div>
-                            <div class="text-slate-600 dark:text-slate-500 mt-5">
-                                <div class="flex items-center">
-                                    <i data-lucide="link" class="w-4 h-4 mr-2"></i> ราคา: ฿2739
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="layers" class="w-4 h-4 mr-2"></i> จำนวน: 50
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: Active
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="flex justify-center lg:justify-end items-center p-5 border-t border-slate-200/60 dark:border-darkmode-400">
-                                    <a class="flex items-center text-primary mr-auto" href="javascript:;">
-                                        <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Preview
-                                    </a>
-                                    <a class="flex items-center mr-3" href="javascript:;">
-                                        <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข
-                                    </a>
-                                    <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal">
-                                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> ลบ
-                                    </a>
-                                </div> -->
-                    </div>
-                </div>
 
-                <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
-                    <div class="box">
-                        <div class="p-5">
-                            <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-2.jpg')}}">
-                                <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
-                                    <a href="" class="block font-medium text-base">Nike Tanjun</a>
-                                    <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
-                                </div>
-                            </div>
-                            <div class="text-slate-600 dark:text-slate-500 mt-5">
-                                <div class="flex items-center">
-                                    <i data-lucide="link" class="w-4 h-4 mr-2"></i> ราคา: ฿2739
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="layers" class="w-4 h-4 mr-2"></i> จำนวน: 50
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: Active
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="flex justify-center lg:justify-end items-center p-5 border-t border-slate-200/60 dark:border-darkmode-400">
-                                    <a class="flex items-center text-primary mr-auto" href="javascript:;">
-                                        <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Preview
-                                    </a>
-                                    <a class="flex items-center mr-3" href="javascript:;">
-                                        <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข
-                                    </a>
-                                    <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal">
-                                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> ลบ
-                                    </a>
-                                </div> -->
-                    </div>
-                </div>
-
-                <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
-                    <div class="box">
-                        <div class="p-5">
-                            <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-3.jpg')}}">
-                                <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
-                                    <a href="" class="block font-medium text-base">Nike Tanjun</a>
-                                    <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
-                                </div>
-                            </div>
-                            <div class="text-slate-600 dark:text-slate-500 mt-5">
-                                <div class="flex items-center">
-                                    <i data-lucide="link" class="w-4 h-4 mr-2"></i> ราคา: ฿2739
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="layers" class="w-4 h-4 mr-2"></i> จำนวน: 50
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: Active
+                @if(!empty($product))
+                    @foreach($product as $_product)
+                        <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
+                            <div class="box">
+                                <div class="p-5">
+                                    <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-1.jpg">
+                                        <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
+                                            <a href="" class="block font-medium text-base">{{ $_product->product_name_th | $_product->product_name_en }}</a>
+                                            <span class="text-white/90 text-xs mt-3">TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} &amp; TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-slate-600 dark:text-slate-500 mt-5">
+                                        <div class="flex items-center">
+                                            <i data-lucide="link" class="w-4 h-4 mr-2"></i> ราคา: ฿ {{ number_format($_product->max_price,2) }}
+                                        </div>
+                                        <div class="flex items-center mt-2">
+                                            <i data-lucide="layers" class="w-4 h-4 mr-2"></i> จำนวน: {{ $_product->qty }}
+                                        </div>
+                                        <div class="flex items-center mt-2">
+                                            <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: {{ ($_product->approve_status == 1 ? 'Active' : 'Deactive') }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="flex justify-center lg:justify-end items-center p-5 border-t border-slate-200/60 dark:border-darkmode-400">
-                                    <a class="flex items-center text-primary mr-auto" href="javascript:;">
-                                        <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Preview
-                                    </a>
-                                    <a class="flex items-center mr-3" href="javascript:;">
-                                        <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข
-                                    </a>
-                                    <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal">
-                                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> ลบ
-                                    </a>
-                                </div> -->
-                    </div>
-                </div>
-
-                <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
-                    <div class="box">
-                        <div class="p-5">
-                            <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-4.jpg')}}">
-                                <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
-                                    <a href="" class="block font-medium text-base">Nike Tanjun</a>
-                                    <span class="text-white/90 text-xs mt-3">Sport &amp; Outdoor</span>
-                                </div>
-                            </div>
-                            <div class="text-slate-600 dark:text-slate-500 mt-5">
-                                <div class="flex items-center">
-                                    <i data-lucide="link" class="w-4 h-4 mr-2"></i> ราคา: ฿2739
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="layers" class="w-4 h-4 mr-2"></i> จำนวน: 50
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: Active
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="flex justify-center lg:justify-end items-center p-5 border-t border-slate-200/60 dark:border-darkmode-400">
-                                    <a class="flex items-center text-primary mr-auto" href="javascript:;">
-                                        <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Preview
-                                    </a>
-                                    <a class="flex items-center mr-3" href="javascript:;">
-                                        <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข
-                                    </a>
-                                    <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal">
-                                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> ลบ
-                                    </a>
-                                </div> -->
-                    </div>
-                </div>
+                    @endforeach
+                @endif
 
 
                 <!-- END: Users Layout -->
