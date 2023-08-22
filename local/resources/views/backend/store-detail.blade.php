@@ -17,14 +17,14 @@
                     <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-primary rounded-full p-2"> <i class="w-4 h-4 text-white" data-lucide="camera"></i> </div>
                 </div>
                 <div class="ml-5">
-                    <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">The Empty Kite</div>
+                    <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">{{ (!empty($store) ? $store->firstname : '') }}</div>
                     <!-- <div class="text-slate-500">Frontend Engineer</div> -->
                 </div>
             </div>
             <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
                 <div class="font-medium text-center lg:text-left lg:mt-3">รายละเอียดการติดต่อ</div>
                 <div class="flex flex-col justify-center items-center lg:items-start mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> theemptykite@gmail.com </div>
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ (!empty($store) ? $store->email : '' ) }} </div>
                     <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="instagram" class="w-4 h-4 mr-2"></i> Instagram The Empty Kite </div>
                     <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="twitter" class="w-4 h-4 mr-2"></i> Twitter The Empty Kite</div>
                 </div>

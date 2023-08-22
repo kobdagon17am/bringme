@@ -27,11 +27,30 @@ class StoresController extends Controller
         return view('backend/stores');
     }
 
+    public function store_view($id){
+        $data['store'] = DB::table('customer')->where('id',$id)->first();
+        $data['address'] = DB::table('customer_address')
+                                ->where('customer_id',$id)
+                                ->select('provinces.name_th as provinces_name', 'amphures.name_th as amphures_name', 'districts.name_th as districts_name', 'zipcode', 'address_number', 'tel')
+                                ->leftJoin('provinces','provinces.id','=','customer_address.province_id')
+                                ->leftJoin('amphures','amphures.id','=','customer_address.amphures_id')
+                                ->leftJoin('districts','districts.id','=','customer_address.district_id')
+                                ->get();
+        return view('backend/user-edit',$data);
+    }
 
-    public function store_detail($id = '')
+
+    public function store_detail($id)
     {
         if($id){
-            return view('backend/store-detail',compact('id'));
+            $data['id'] = $id;
+            $data['store'] = DB::table('customer')->where('customer.id',$id)
+                                ->leftJoin('provinces','provinces.id','=','customer.province_id')
+                                ->leftJoin('amphures','amphures.id','=','customer.amphures_id')
+                                ->leftJoin('districts','districts.id','=','customer.district_id')
+                                ->first();
+            $data['product'] = DB::table('products')->where('store_id',$id)->get();
+            return view('backend/store-detail',$data);
         }else{
             return redirect('admin/stores')->withError(' Data Is Null');
         }
