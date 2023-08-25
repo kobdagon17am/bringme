@@ -1466,7 +1466,7 @@ class API1Controller extends Controller
                 CustomerCartProduct::select('customer_cart_product.*')
                 ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)
                 ->update([
-                    'customer_cart_id' => $cart_new,
+                    'customer_cart_id' => $cart_new->id,
                 ]);
 
             }else{
