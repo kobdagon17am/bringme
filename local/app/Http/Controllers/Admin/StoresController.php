@@ -49,7 +49,15 @@ class StoresController extends Controller
                                 ->leftJoin('amphures','amphures.id','=','customer.amphures_id')
                                 ->leftJoin('districts','districts.id','=','customer.district_id')
                                 ->first();
-            $data['product'] = DB::table('products')->where('store_id',$id)->get();
+            $data['product'] = DB::table('products')
+                                ->select('products.name_th AS product_name_th','products.name_en AS product_name_en', 'category.name_th AS category_name_th','category.name_en AS category_name_en','brands.name_th AS brands_name_th','brands.name_en AS brands_name_en','max_price','qty','approve_status','products_gallery.path AS gallery_path','products_gallery.name AS gallery_name','products_gallery.product_id','products.id','products_gallery.use_profile')
+                                ->leftJoin('category','category.id','=','products.category_id')
+                                ->leftJoin('brands','brands.id','=','products.brands_id')
+                                ->leftJoin('products_gallery','products_gallery.product_id','=','products.id')
+                                ->where('customer_id',$id)
+                                ->where('products_gallery.use_profile','1')
+                                ->get();
+            // dd($data);
             return view('backend/store-detail',$data);
         }else{
             return redirect('admin/stores')->withError(' Data Is Null');
