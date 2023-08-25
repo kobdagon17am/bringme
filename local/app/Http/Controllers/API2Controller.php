@@ -1617,4 +1617,56 @@ class API2Controller extends  Controller
                     }
         }
 
+    public function api_get_shipping_price(Request $r){
+
+            $shipping_type_price_1 = DB::table('shipping_type_price')
+            ->select('shipping_price')
+            ->where('shipping_type_id',1)
+            ->where('min_price','<=',$r->product_total_price)
+            ->where('max_price','>=',$r->product_total_price)
+            ->orderBy('max_price','asc')
+            ->first();
+            if($shipping_type_price_1){
+                $shipping_price_1 = $shipping_type_price_1->shipping_price;
+            }else{
+                $shipping_price_1 = 0;
+            }
+
+            $shipping_type_price_2 = DB::table('shipping_type_price')
+            ->select('shipping_price')
+            ->where('shipping_type_id',2)
+            ->where('min_price','<=',$r->product_total_price)
+            ->where('max_price','>=',$r->product_total_price)
+            ->orderBy('max_price','asc')
+            ->first();
+            if($shipping_type_price_2){
+                $shipping_price_2 = $shipping_type_price_2->shipping_price;
+            }else{
+                $shipping_price_2 = 0;
+            }
+
+            $shipping_type_price_3 = DB::table('shipping_type_price')
+            ->select('shipping_price')
+            ->where('shipping_type_id',3)
+            ->where('min_price','<=',$r->product_total_price)
+            ->where('max_price','>=',$r->product_total_price)
+            ->orderBy('max_price','asc')
+            ->first();
+            if($shipping_type_price_3){
+                $shipping_price_3 = $shipping_type_price_3->shipping_price;
+            }else{
+                $shipping_price_3 = 0;
+            }
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'shipping_price_1' => $shipping_price_1,
+                    'shipping_price_2' => $shipping_price_2,
+                    'shipping_price_3' => $shipping_price_3,
+                ],
+            ]);
+    }
+
 }
