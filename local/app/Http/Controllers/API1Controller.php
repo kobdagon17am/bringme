@@ -1369,8 +1369,9 @@ class API1Controller extends Controller
                 $cart->customer_name = $customer->name;
                 $cart->save();
 
+                $cart_products_id = explode(',',$r->cart_products_id);
                 $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
-                ->where('customer_cart_product.customer_cart_id',$r->cart_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+                ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
                 foreach($arr_pro as $p){
                     $product = DB::table('products')->where('id',$p->product_id)->first();
                     if($product){
@@ -1436,6 +1437,38 @@ class API1Controller extends Controller
                         }
                     }
                 }
+
+                $cart->shipping_type_id = $r->shipping_type_id;
+                $cart->shipping_price = $r->shipping_price_total;
+                $cart->total_price = $r->product_total_price;
+                $cart->grand_total = $r->all_price_total;
+                $cart->save();
+
+                $cart_new = new CustomerCart();
+                $cart_new->customer_id = $r->user_id;
+                $cart_new->shipping_type_id = 1;
+                $customer_address = Customer_address::
+                          select('customer_address.id')
+                ->where('customer_address.customer_id',$r->user_id)
+                ->where('customer_address.default_active','Y')
+                ->first();
+                if($customer_address){
+                    $cart_new->customer_address_id = $customer_address->id;
+                }
+                $cart_new->total_price = 0;
+                $cart_new->shipping_price = 0;
+                $cart_new->grand_total = 0;
+                $cart_new->has_promotion = 0;
+                $cart_new->discount_price = 0;
+                $cart_new->action_date = date('Y-m-d');
+                $cart_new->save();
+                // อัพเดทพวกที่เลหือไปตะกร้าใหม่
+                CustomerCartProduct::select('customer_cart_product.*')
+                ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)
+                ->update([
+                    'customer_cart_id' => $cart_new,
+                ]);
+
             }else{
                 return response()->json([
                     'message' =>  'ไม่พบข้อมูลสินค้า',
