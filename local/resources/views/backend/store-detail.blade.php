@@ -1,5 +1,15 @@
 @extends('layouts.backend.app')
-
+<style type="text/css">
+    .dataTables_wrapper .dataTables_length select {
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        padding: 5px;
+        background-color: transparent;
+        color: inherit;
+        padding: 4px;
+        width: 65px;
+    }
+</style>
 @section('content')
 <div class="content">
     <div class="intro-y flex items-center mt-8">
@@ -212,7 +222,7 @@
 
                 <div class="tab-content py-5 mt-5">
                     <div id="sales" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="example-5-tab">
-                        <table class="table table-report -mt-2">
+                        <table class="table table-report -mt-2 datatable">
                             <thead class="box">
                                 <tr>
                                     <th class="whitespace-nowrap">#</th>
@@ -224,9 +234,10 @@
                             <tbody>
 
                                 @if(!empty($product))
+                                    <?php $i = 1; ?>
                                     @foreach($product as $_product)
                                         <tr class="intro-x">
-                                            <td class="w-auto">1</td>
+                                            <td class="w-auto">{{ $i }}</td>
                                             <td class="w-auto">
                                                 <div class="w-10 h-10 image-fit zoom-in">
                                                     <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
@@ -238,13 +249,14 @@
                                             </td>
                                             <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
                                         </tr>
+                                        <?php $i++; ?>
                                     @endforeach
                                 @endif
 
                             </tbody>
                         </table>
 
-                        <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
+                        <!-- <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
                             <nav class="w-full sm:w-auto sm:mr-auto">
                                 <ul class="pagination">
                                     <li class="page-item">
@@ -282,10 +294,10 @@
                                 <option>35</option>
                                 <option>50</option>
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                     <div id="numberofproducts" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-6-tab">
-                        <table class="table table-report -mt-2">
+                        <table class="table table-report -mt-2 datatable">
                             <thead class="box">
                                 <tr>
                                     <th class="whitespace-nowrap">#</th>
@@ -296,9 +308,10 @@
                             </thead>
                             <tbody>
                                 @if(!empty($product))
+                                    <?php $i = 1; ?>
                                     @foreach($product as $_product)
                                         <tr class="intro-x">
-                                            <td class="w-auto">1</td>
+                                            <td class="w-auto">{{ $i }}</td>
                                             <td class="w-auto">
                                                 <div class="w-10 h-10 image-fit zoom-in">
                                                     <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
@@ -310,12 +323,13 @@
                                             </td>
                                             <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
                                         </tr>
+                                        <?php $i++; ?>
                                     @endforeach
                                 @endif
                             </tbody>
                         </table>
 
-                        <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
+                        <!-- <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
                             <nav class="w-full sm:w-auto sm:mr-auto">
                                 <ul class="pagination">
                                     <li class="page-item">
@@ -353,10 +367,10 @@
                                 <option>35</option>
                                 <option>50</option>
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                     <div id="productviews" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-6-tab">
-                        <table class="table table-report -mt-2">
+                        <table class="table table-report -mt-2 datatable">
                             <thead class="box">
                                 <tr>
                                     <th class="whitespace-nowrap">#</th>
@@ -367,9 +381,10 @@
                             </thead>
                             <tbody>
                                 @if(!empty($product))
+                                    <?php $i = 1; ?>
                                     @foreach($product as $_product)
                                         <tr class="intro-x">
-                                            <td class="w-auto">1</td>
+                                            <td class="w-auto">{{ $i }}</td>
                                             <td class="w-auto">
                                                 <div class="w-10 h-10 image-fit zoom-in">
                                                     <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/preview-9.jpg')}}" title="Uploaded at 20 August 2020">
@@ -381,12 +396,13 @@
                                             </td>
                                             <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
                                         </tr>
+                                        <?php $i++; ?>
                                     @endforeach
                                 @endif
                             </tbody>
                         </table>
 
-                        <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
+                        <!-- <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
                             <nav class="w-full sm:w-auto sm:mr-auto">
                                 <ul class="pagination">
                                     <li class="page-item">
@@ -424,7 +440,7 @@
                                 <option>35</option>
                                 <option>50</option>
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -448,7 +464,7 @@
                             <div class="box">
                                 <div class="p-5">
                                     <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-md" src="http://rubick-laravel.left4code.com/dist/images/preview-1.jpg">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-md" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                         <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                             <a href="" class="block font-medium text-base">{{ $_product->product_name_th | $_product->product_name_en }}</a>
                                             <span class="text-white/90 text-xs mt-3">TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} &amp; TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</span>
@@ -494,29 +510,36 @@
 
                                     <div>
                                         <label for="" class="form-label">ชื่อ-นามสกุล</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="รชานนท์ พงศ์พินิจ">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->firstname }}">
                                     </div>
 
                                     <div>
                                         <label for="" class="form-label">วันเดือนปีเกิด</label>
                                         <div class="relative">
-                                            <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"> <i data-lucide="calendar" class="w-4 h-4"></i> </div> <input type="text" class="datepicker form-control pl-12" data-single-mode="true">
+                                            <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"> <i data-lucide="calendar" class="w-4 h-4"></i> </div> <input type="text" class="datepicker form-control pl-12" data-single-mode="true" value="{{ $store->birthday }}">
                                         </div>
                                     </div>
 
+                                    <?php 
+                                        $dateOfBirth = $store->birthday;
+                                        $dob = new DateTime($dateOfBirth);
+                                        $now = new DateTime();
+                                        $diff = $now->diff($dob);
+                                    ?>
+
                                     <div>
                                         <label for="" class="form-label">อายุ</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="30">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $diff->y }}">
                                     </div>
 
                                     <div>
                                         <label for="" class="form-label">อีเมล</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="example@mail.com">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->email }}">
                                     </div>
 
                                     <div>
                                         <label for="" class="form-label">เบอร์ติดต่อ</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="089-782-4267">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->tel }}">
                                     </div>
 
                                 </div>
@@ -530,7 +553,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
                                     <div>
                                         <label for="" class="form-label">ห้อง/บ้านเลขที่</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->address }}">
                                     </div>
 
                                     <div>
@@ -815,3 +838,16 @@
     <!-- END: Content -->
 </div>
 @endsection
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/v/ju/dt-1.13.6/b-2.4.1/r-2.5.0/sc-2.2.0/datatables.min.css" rel="stylesheet">
+ 
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/v/ju/dt-1.13.6/b-2.4.1/r-2.5.0/sc-2.2.0/datatables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        new DataTable('.datatable');
+    });
+</script>
