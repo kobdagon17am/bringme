@@ -3,11 +3,11 @@
 @section('content')
 <div class="content">
             <h2 class="intro-y text-lg font-medium mt-10">
-                ข้อมูลสิทธิ์การใช้งาน
+                ข้อมูลแบรนด์สินค้า
             </h2>
             <div class="grid grid-cols-12 gap-6 mt-5">
                 <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
-                    <a href="{{route('admin/permission-add')}}" class="btn btn-primary shadow-md mr-2">เพิ่มสิทธิ์การใช้งาน</a>
+                    <a href="{{route('admin/setting-brands-add')}}" class="btn btn-primary shadow-md mr-2">เพิ่มแบรนด์ใหม่</a>
                     <div class="dropdown">
                         <button class="dropdown-toggle btn px-2 box" aria-expanded="false" data-tw-toggle="dropdown">
                             <span class="w-5 h-5 flex items-center justify-center"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="plus" class="lucide lucide-plus w-4 h-4" data-lucide="plus">
@@ -62,11 +62,8 @@
                     <table class="table table-striped table-hover dt-responsive -mt-2" id="workL">
                         <thead>
                             <tr>
-                                <th class="whitespace-nowrap">ชื่อสิทธิ์</th>
-                                <th class="whitespace-nowrap">สิทธิ์การดู</th>
-                                <th class="text-center whitespace-nowrap">สิทธิ์การเพิ่ม</th>
-                                <th class="text-center whitespace-nowrap">สิทธิ์การแก้ไข</th>
-                                <th class="text-center whitespace-nowrap">สิทธิ์การลบ</th>
+                                <th class="whitespace-nowrap">ชื่อแบรนด์ (TH)</th>
+                                <th class="whitespace-nowrap">ชื่อแบรนด์ (EN)</th>
                                 <th class="text-center whitespace-nowrap"></th>
                             </tr>
                         </thead>
@@ -77,33 +74,6 @@
                 </div>
 
             </div>
-            <!-- BEGIN: Delete Confirmation Modal -->
-            <div id="delete-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body p-0">
-                            <div class="p-5 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="x-circle" data-lucide="x-circle" class="lucide lucide-x-circle w-16 h-16 text-danger mx-auto mt-3">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                                </svg>
-                                <div class="text-3xl mt-5">Are you sure?</div>
-                                <div class="text-slate-500 mt-2">
-                                    Do you really want to delete these records?
-                                    <br>
-                                    This process cannot be undone.
-                                </div>
-                            </div>
-                            <div class="px-5 pb-8 text-center">
-                                <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-                                <button type="button" class="btn btn-danger w-24">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- END: Delete Confirmation Modal -->
         </div>
 @endsection
 
@@ -111,7 +81,6 @@
 <script type="text/javascript">
 
     $(function() {
-
 
         table_order = $('#workL').DataTable({
             // dom: 'Bfrtip',
@@ -141,37 +110,21 @@
             },
 
             ajax: {
-                url: '{{ url("admin/permission_datatable") }}',
+                url: '{{ url("admin/setting-brands_datatable") }}',
                 data: function(d) {
                 },
             },
 
             columns: [
                 {
-                    data: "name",
+                    data: "name_th",
                     //title: "ชื่อเจ้าของร้าน",
                     className: "w-10",
                 },
                 {
-                    data: "view",
+                    data: "name_en",
                     //title: "ชื่อเจ้าของร้าน",
                     className: "w-10",
-                },
-                {
-                    data: "add",
-                    //title: "ชื่อเจ้าของร้าน",
-                    className: "w-10",
-                },
-                {
-                    data: "edit",
-                    // title: "สถานะ",
-                    className: "w-10",
-                },
-                {
-                    data: "delete",
-                    // title: "action",
-                    className: "w-5 ",
-
                 },
                 {
                     data: "action",
@@ -182,11 +135,37 @@
             ],
 
         });
+
+        $('#workL').on('click', '.delete-brands', function() {
+            var url = $(this).attr('url');
+            Swal.fire({
+              title: 'Are you sure?',
+              html: "Do you really want to delete these records?<br>This process cannot be undone.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Delete',
+              reverseButtons: true,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire(
+                  'Deleted!',
+                  'Your file has been deleted.',
+                  'success'
+                )
+                window.location.href = url;
+              }
+            })
+        });
+
         $('#search-form').on('click', function(e) {
-        table_order.draw();
-        e.preventDefault();
-    });
+            table_order.draw();
+            e.preventDefault();
+
+        });
 
     });
+
     </script>
     @endsection

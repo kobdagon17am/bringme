@@ -65,36 +65,46 @@ Route::get('admin/employee-edit/{id}', 'Admin\EmployeeController@employee_edit')
 Route::post('admin/employee_update', 'Admin\EmployeeController@employee_update')->name('admin/employee_update');
 
 
-
-
-
-// Route::get('admin/employee-edit', function () {
-//     return view('backend/employee-edit');
-//   })->name('admin/employee-edit');
-
-
 Route::get('admin/employee-add', function () {
     return view('backend/employee-add');
   })->name('admin/employee-add');
 
-  Route::get('admin/permission', function () {
-    return view('backend/permission');
-  })->name('admin/permission');
+Route::get('admin/permission', 'Admin\PermissionController@index')->name('admin/permission');
+Route::get('admin/permission-add', 'Admin\PermissionController@permission_add')->name('admin/permission-add');
+Route::get('admin/permission-edit/{id}', 'Admin\PermissionController@permission_edit')->name('admin/permission-edit');
+Route::get('admin/permission_datatable', 'Admin\PermissionController@permission_datatable')->name('admin/permission_datatable');
+Route::post('admin/permission-create', 'Admin\PermissionController@permission_create')->name('admin/permission-create');
+Route::post('admin/permission-update', 'Admin\PermissionController@permission_update')->name('admin/permission-update');
+Route::get('admin/permission-delete/{id}', 'Admin\PermissionController@permission_delete')->name('admin/permission-delete');
 
+Route::get('admin/setting-category', 'Admin\CategoryController@index')->name('admin/setting-category');
+Route::get('admin/setting-category-add', 'Admin\CategoryController@category_add')->name('admin/setting-category-add');
+Route::get('admin/setting-category-edit/{id}', 'Admin\CategoryController@category_edit')->name('admin/setting-category-edit');
+Route::get('admin/setting-category_datatable', 'Admin\CategoryController@category_datatable')->name('admin/setting-category_datatable');
+Route::post('admin/setting-category-create', 'Admin\CategoryController@category_create')->name('admin/setting-category-create');
+Route::post('admin/setting-category-update', 'Admin\CategoryController@category_update')->name('admin/setting-category-update');
+Route::get('admin/setting-category-delete/{id}', 'Admin\CategoryController@category_delete')->name('admin/setting-category-delete');
 
+Route::get('admin/setting-brands', 'Admin\BrandsController@index')->name('admin/setting-brands');
+Route::get('admin/setting-brands-add', 'Admin\BrandsController@brands_add')->name('admin/setting-brands-add');
+Route::get('admin/setting-brands-edit/{id}', 'Admin\BrandsController@brands_edit')->name('admin/setting-brands-edit');
+Route::get('admin/setting-brands_datatable', 'Admin\BrandsController@brands_datatable')->name('admin/setting-brands_datatable');
+Route::post('admin/setting-brands-create', 'Admin\BrandsController@brands_create')->name('admin/setting-brands-create');
+Route::post('admin/setting-brands-update', 'Admin\BrandsController@brands_update')->name('admin/setting-brands-update');
+Route::get('admin/setting-brands-delete/{id}', 'Admin\BrandsController@brands_delete')->name('admin/setting-brands-delete');
 
-  Route::get('admin/permission-add', function () {
-    return view('backend/permission-add');
-  })->name('admin/permission-add');
+Route::get('admin/setting-banner', 'Admin\BannerController@index')->name('admin/setting-banner');
+Route::get('admin/setting-banner-add', 'Admin\BannerController@banner_add')->name('admin/setting-banner-add');
+Route::get('admin/setting-banner-edit/{id}', 'Admin\BannerController@banner_edit')->name('admin/setting-banner-edit');
+Route::get('admin/setting-banner_datatable', 'Admin\BannerController@banner_datatable')->name('admin/setting-banner_datatable');
+Route::post('admin/setting-banner-create', 'Admin\BannerController@banner_create')->name('admin/setting-banner-create');
+Route::post('admin/setting-banner-update', 'Admin\BannerController@banner_update')->name('admin/setting-banner-update');
+Route::get('admin/setting-banner-delete/{id}', 'Admin\BannerController@banner_delete')->name('admin/setting-banner-delete');
 
-//   Route::get('admin/users', function () {
-//     return view('backend/users');
-//   })->name('admin/users');
-
-  Route::get('admin/user-edit/{id}', 'Admin\CustomersController@customers_view')->name('admin/users');
-  Route::post('admin/block_user', 'Admin\CustomersController@block_user')->name('admin/block_user');
-  Route::post('admin/unblock_user', 'Admin\CustomersController@unblock_user')->name('admin/unblock_user');
-  Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->name('admin/approve_user');
+Route::get('admin/user-edit/{id}', 'Admin\CustomersController@customers_view')->name('admin/users');
+Route::post('admin/block_user', 'Admin\CustomersController@block_user')->name('admin/block_user');
+Route::post('admin/unblock_user', 'Admin\CustomersController@unblock_user')->name('admin/unblock_user');
+Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->name('admin/approve_user');
 
 
 

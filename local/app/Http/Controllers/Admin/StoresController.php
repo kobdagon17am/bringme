@@ -49,6 +49,9 @@ class StoresController extends Controller
                                 ->leftJoin('amphures','amphures.id','=','customer.amphures_id')
                                 ->leftJoin('districts','districts.id','=','customer.district_id')
                                 ->first();
+            $data['store_detail'] = DB::table('store')->where('customer_id',$id)->first();
+            $data['category'] = DB::table('category')->get();
+            $data['storage_method'] = DB::table('storage_method')->get();
             $data['product'] = DB::table('products')
                                 ->select('products.name_th AS product_name_th','products.name_en AS product_name_en', 'category.name_th AS category_name_th','category.name_en AS category_name_en','brands.name_th AS brands_name_th','brands.name_en AS brands_name_en','max_price','qty','approve_status','products_gallery.path AS gallery_path','products_gallery.name AS gallery_name','products_gallery.product_id','products.id','products_gallery.use_profile')
                                 ->leftJoin('category','category.id','=','products.category_id')
@@ -57,7 +60,10 @@ class StoresController extends Controller
                                 ->where('customer_id',$id)
                                 ->where('products_gallery.use_profile','1')
                                 ->get();
-            // dd($data);
+            $data['provinces'] = DB::table('provinces')->get();
+            $data['amphures'] = DB::table('amphures')->get();
+            $data['districts'] = DB::table('districts')->get();
+            $data['bank'] = DB::table('bank')->get();
             return view('backend/store-detail',$data);
         }else{
             return redirect('admin/stores')->withError(' Data Is Null');
@@ -65,20 +71,14 @@ class StoresController extends Controller
     }
 
 
-
-
     public function stores_datable(Request $request)
     {
 
 
         $customer = DB::table('customer')
-        // ->where('status','=','success')
         ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
         ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
         ->whereRaw(("case WHEN '{$request->s_date}' = '' and '{$request->e_date}' != ''  THEN  date(created_at) = '{$request->e_date}' else 1 END"));
-        // ->whereRaw(("case WHEN  '{$request->user_name}' != ''  THEN  customer_user = '{$request->user_name}' else 1 END"));
-        // ->whereRaw(("case WHEN  '{$request->position}' != ''  THEN  new_lavel = '{$request->position}' else 1 END"))
-        // ->whereRaw(("case WHEN  '{$request->type}' != ''  THEN  type = '{$request->type}' else 1 END"));
 
         $sQuery = Datatables::of($customer);
         return $sQuery
