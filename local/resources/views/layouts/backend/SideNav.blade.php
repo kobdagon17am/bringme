@@ -112,13 +112,44 @@
                 <div class="side-menu__title"> รายการแคมเปญ </div>
             </a>
         </li>
-        <li>
+
+        <!-- <li>
             <a href="#" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-09.png')}}" alt=""></div>
                 <div class="side-menu__title"> จัดการข้อมูลแสดงผลแอพพลิเคชั่น </div>
             </a>
-        </li>
+        </li> -->
+        <li>
+            <a href="javascript:;" class="side-menu {{ (request()->is('admin/setting') || request()->is('admin/setting-category') || request()->is('admin/setting-brands') || request()->is('admin/setting-banner')  ) ? 'side-menu--active' : '' }}">
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-09.png')}}" alt=""></div>
+                <div class="side-menu__title">
+                    จัดการข้อมูลหลัก
+                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                </div>
+            </a>
+            <ul class="{{ (request()->is('admin/setting') || request()->is('admin/setting-category') || request()->is('admin/setting-brands') || request()->is('admin/setting-banner')  ) ? 'side-menu__sub-open' : '' }}
+                ">
+                <li>
+                    <a href="{{route('admin/setting-category')}}" class="side-menu">
+                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__title"> จัดการหมวดสินค้า </div>
+                    </a>
+                </li>
 
+                <li>
+                    <a href="{{route('admin/setting-brands')}}" class="side-menu">
+                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__title"> จัดการแบรนสินค้า </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('admin/setting-banner')}}" class="side-menu">
+                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__title"> จัดการแบนเนอร์ </div>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         {{-- <li class="mt-10">
             <a href="{{route('admin/user-store')}}" class="side-menu">
