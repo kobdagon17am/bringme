@@ -62,6 +62,7 @@
                     <table class="table table-striped table-hover dt-responsive -mt-2" id="workL">
                         <thead>
                             <tr>
+                                <th class="whitespace-nowrap">ภาพ</th>
                                 <th class="whitespace-nowrap">ชื่อหมวดหมู่ (TH)</th>
                                 <th class="whitespace-nowrap">ชื่อหมวดหมู่ (EN)</th>
                                 <th class="text-center whitespace-nowrap"></th>
@@ -117,6 +118,11 @@
 
             columns: [
                 {
+                    data: "img",
+                    //title: "ชื่อเจ้าของร้าน",
+                    className: "w-10",
+                },
+                {
                     data: "name_th",
                     //title: "ชื่อเจ้าของร้าน",
                     className: "w-10",
@@ -153,10 +159,9 @@
                   'Deleted!',
                   'Your file has been deleted.',
                   'success'
-                )
+                );
+                window.location.href = url;
               }
-
-              window.location.href = url;
             })
         });
 

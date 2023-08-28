@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Storage;
 class CategoryController extends Controller
 {
     /**
@@ -29,9 +30,16 @@ class CategoryController extends Controller
 
     public function category_datatable(Request $request)
     {
-        $category = DB::table('category')->where('status','1');
+        $category = DB::table('category')->where('status','1')->orderBy('id','DESC');
         $sQuery = Datatables::of($category);
         return $sQuery
+
+        ->addColumn('img', function ($row) {
+            $html = '<div class="w-10 h-10 image-fit zoom-in">';
+            $html .= '<img class="rounded-full" src="'.(!empty($row) ? asset('local/storage/app/public').'/'.$row->path.'/'.$row->img : asset('backend/dist/images/profile-1.jpg')).'">';
+            $html .= '<div>';
+            return $html;
+        })
 
         ->addColumn('name_th', function ($row) {
             return $row->name_th;
@@ -51,7 +59,7 @@ class CategoryController extends Controller
             return $html;
         })
 
-        ->rawColumns(['name_th','name_en', 'action'])
+        ->rawColumns(['img', 'name_th','name_en', 'action'])
         ->make(true);
     }
 
@@ -66,20 +74,53 @@ class CategoryController extends Controller
     }
 
     public function category_create(Request $request){
+
         $data['name_th'] = $request->input('name_th');
         $data['name_en'] = $request->input('name_en');
         $data['status'] = '1';
         $data['created_at'] = date('Y-m-d H:i:s');
-        DB::table('category')->insert($data);
+        $category_id = DB::table('category')->insertGetID($data);
+
+        if ($request->hasFile('category_img')) {
+            $imageFile = $request->file('category_img');
+            $extension = $imageFile->getClientOriginalExtension();
+            $imageName = time() . '_' . uniqid() . '.' . $extension;
+            
+            $disk = Storage::disk('public');
+            $path = 'category/' . $category_id . '/' . $imageName;
+            
+            $disk->putFileAs('category/' . $category_id, $imageFile, $imageName, 'public');
+            $data_img['path'] = 'category/'.$category_id.'/';
+            $data_img['img'] = $imageName;
+            DB::table('category')->where('id',$category_id)->update($data_img);
+        }
+
         return redirect('admin/setting-category');
     }
 
     public function category_update(Request $request){
+
+        $category_id = $request->input('id');
+
+        if ($request->hasFile('category_img')) {
+            $imageFile = $request->file('category_img');
+            $extension = $imageFile->getClientOriginalExtension();
+            $imageName = time() . '_' . uniqid() . '.' . $extension;
+            
+            $disk = Storage::disk('public');
+            $path = 'category/' . $category_id . '/' . $imageName;
+            
+            $disk->putFileAs('category/' . $category_id, $imageFile, $imageName, 'public');
+            $data_img['path'] = 'category/'.$category_id.'/';
+            $data_img['img'] = $imageName;
+            DB::table('category')->where('id',$category_id)->update($data_img);
+        }
+
         $data['name_th'] = $request->input('name_th');
         $data['name_en'] = $request->input('name_en');
         $data['updated_at'] = date('Y-m-d H:i:s');
 
-        DB::table('category')->where('id',$request->input('id'))->update($data);
+        DB::table('category')->where('id',$category_id)->update($data);
         return redirect('admin/setting-category');
     }
 

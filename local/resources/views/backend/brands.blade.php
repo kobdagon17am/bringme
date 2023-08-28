@@ -154,9 +154,8 @@
                   'Your file has been deleted.',
                   'success'
                 )
+                window.location.href = url;
               }
-
-              window.location.href = url;
             })
         });
 
