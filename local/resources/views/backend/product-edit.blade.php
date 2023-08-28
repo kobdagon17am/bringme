@@ -54,7 +54,7 @@
                                 </div>
                             </div>
 
-                                <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required value="{{ $data->barcode }}">
+                                <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required value="">
 
 
                         </div>
