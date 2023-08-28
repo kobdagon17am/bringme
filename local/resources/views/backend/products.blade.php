@@ -142,11 +142,11 @@
                     title: "สถานะการจัดส่ง",
                     className: "w-10 text-center",
                 },
-                // {
-                //     data: "barcode",
-                //     title: "ปริ้น BarCode",
-                //     className: "w-10 text-center",
-                // },
+                {
+                    data: "barcode",
+                    title: "ปริ้น BarCode",
+                    className: "w-10 text-center",
+                },
 
                 {
                     data: "action",

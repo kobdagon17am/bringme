@@ -32,15 +32,20 @@ class ProductsController extends Controller
     public function genbarcode($product_id)
     {
 
-        $genbarcode = DB::table('products')
+        $products = DB::table('products')
         ->where('id', $product_id)
+        ->first();
+
+        $barcode = DB::table('products_option_2_items')
+        ->where('product_id', $product_id)
         ->first();
 
 
 
-        if($genbarcode){
+        if($products){
         return view('backend/product-genbarcode',[
-            'genbarcode' => $genbarcode
+            'products' => $products,
+            'barcode' => $barcode
         ]);
 
        }else{
