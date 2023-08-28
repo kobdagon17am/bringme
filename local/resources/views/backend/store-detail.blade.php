@@ -520,7 +520,7 @@
                                         </div>
                                     </div>
 
-                                    <?php 
+                                    <?php
                                         $dateOfBirth = $store->birthday;
                                         $dob = new DateTime($dateOfBirth);
                                         $now = new DateTime();
@@ -629,7 +629,7 @@
 
                             <div>
                                 <label for="" class="form-label">ชื่อแบรนด์</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->store_name }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ @$store_detail->store_name }}">
                             </div>
 
                             <div>
@@ -887,7 +887,7 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/v/ju/dt-1.13.6/b-2.4.1/r-2.5.0/sc-2.2.0/datatables.min.css" rel="stylesheet">
- 
+
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/v/ju/dt-1.13.6/b-2.4.1/r-2.5.0/sc-2.2.0/datatables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>

@@ -61,9 +61,9 @@ class ProductsAwaitingDeliveryController extends  Controller
 
     public function index(){
 
-        $order = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','dataset_delivery_type.delivery_type_name')
+        $order = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as shipping_type_name','shipping_type.detail as shipping_type_detail')
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
-        ->join('dataset_delivery_type','dataset_delivery_type.id','customer_cart.delivery_type')
+        ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
         ->where('customer_cart.status',2)
         ->where('customer_cart.transfer_status',0)
         ->get();
