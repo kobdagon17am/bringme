@@ -40,16 +40,27 @@
         display: inline-block;
         margin: 0 auto;
     }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
 </style>
 
 <body>
-    <div class="card">
-        <div style="border-radius:500px; height:500px; width:500px; background: #F8FAF5; margin:0 auto;">
-            <i class="checkmark">X</i>
+    <div class="container">
+        <div class="Centerdive">
+            <div class="card">
+                <div style="border-radius:500px; height:500px; width:500px; background: #F8FAF5; margin:0 auto;">
+                    <i class="checkmark">X</i>
+                </div>
+                <h1 class="text_fam">{{ $result_status }}</h1>
+                <p style="color:rgb(255, 66, 98);">BringMe ขอขอบคุณ<br /> <span
+                        style="color:rgb(48, 48, 48);">ท่านทำรายการไม่สำเร็จ กรุณาปิดหน้าจอนี้และกลับไปยังแอพ</span></p>
+            </div>
         </div>
-        <h1 class="text_fam">{{ $result_status }}</h1>
-        <p style="color:rgb(255, 66, 98);">BeFRIENDS ขอขอบคุณ<br /> <span
-                style="color:rgb(48, 48, 48);">ท่านทำรายการไม่สำเร็จ กรุณาปิดหน้าจอนี้และกลับไปยังแอพ</span></p>
     </div>
 </body>
 

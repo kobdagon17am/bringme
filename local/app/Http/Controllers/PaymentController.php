@@ -58,30 +58,30 @@ class PaymentController extends Controller
 
         // dd($_GET['movement_id']);
         // $banners = Banner::get();
-        if(isset($_GET['movement_id'])){
-            $movement_id = $_GET['movement_id'];
-            $payment = Payment::where('point_movement_id',$movement_id)->first();
-            $point_movement = PointMovement::where('id',$movement_id)->first();
-            $customer = Customer::where('id',$payment->customer_id)->first();
-            if($point_movement){
-                return view('backend.payment.payment_form',[
-                    'payment'=>$payment,
-                    'point_movement'=>$point_movement,
-                    'customer'=>$customer,
+        // if(isset($_GET['movement_id'])){
+        //     $movement_id = $_GET['movement_id'];
+            // $payment = Payment::where('point_movement_id',$movement_id)->first();
+            // $point_movement = PointMovement::where('id',$movement_id)->first();
+            // $customer = Customer::where('id',$payment->customer_id)->first();
+            // if($point_movement){
+                return view('payment.payment_form',[
+                    // 'payment'=>$payment,
+                    // 'point_movement'=>$point_movement,
+                    // 'customer'=>$customer,
                 ]);
-            }
-        }
+            // }
+        // }
 
     }
 
     public function payment_complete(Request $r)
     {
         if($r->respCode=='0'){
-            return view('backend.payment.payment_complete',[
+            return view('payment.payment_complete',[
                 'result_status'=>$r->status,
             ]);
         }else{
-            return view('backend.payment.payment_error',[
+            return view('payment.payment_error',[
                 'result_status'=>$r->status,
             ]);
         }
