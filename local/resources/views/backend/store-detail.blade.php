@@ -23,7 +23,13 @@
         <div class="flex flex-col lg:flex-row border-b border-slate-200/60 dark:border-darkmode-400 pb-5 -mx-5">
             <div class="flex flex-1 px-5 items-center justify-center lg:justify-start">
                 <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
+
+                    @if(!empty($store->profile_img))
                     <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{ asset('local/storage/app') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
+                    @else
+                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                    @endif
+
                     <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-primary rounded-full p-2"> <i class="w-4 h-4 text-white" data-lucide="camera"></i> </div>
                 </div>
                 <div class="ml-5">
@@ -240,7 +246,11 @@
                                             <td class="w-auto">{{ $i }}</td>
                                             <td class="w-auto">
                                                 <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}" title="Uploaded at 20 August 2020">
+                                                    @if(!empty($_product->gallery_name))
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}">
+                                                    @else
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>
@@ -314,7 +324,11 @@
                                             <td class="w-auto">{{ $i }}</td>
                                             <td class="w-auto">
                                                 <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}" title="Uploaded at 20 August 2020">
+                                                    @if(!empty($_product->gallery_name))
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}">
+                                                    @else
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>
@@ -387,7 +401,11 @@
                                             <td class="w-auto">{{ $i }}</td>
                                             <td class="w-auto">
                                                 <div class="w-10 h-10 image-fit zoom-in">
-                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}" title="Uploaded at 20 August 2020">
+                                                    @if(!empty($_product->gallery_name))
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}">
+                                                    @else
+                                                    <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>
@@ -464,7 +482,13 @@
                             <div class="box">
                                 <div class="p-5">
                                     <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
+                                        
+                                        @if(!empty($_product->gallery_name))
                                         <img alt="Midone - HTML Admin Template" class="rounded-md" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}">
+                                        @else
+                                        <img alt="Midone - HTML Admin Template" class="rounded-md" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                        @endif
+
                                         <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                             <a href="" class="block font-medium text-base">{{ $_product->product_name_th | $_product->product_name_en }}</a>
                                             <span class="text-white/90 text-xs mt-3">TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} &amp; TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</span>
@@ -603,7 +627,11 @@
                             <div class="w-52 mx-auto xl:mr-0 xl:ml-6">
                                 <div class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                                     <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
+                                        @if(!empty($store->profile_img))
+                                        <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
+                                        @else
+                                        <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                        @endif
                                         <div title="Remove this profile photo?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                     </div>
                                     <div class="mx-auto cursor-pointer relative mt-5">
@@ -629,7 +657,7 @@
 
                             <div>
                                 <label for="" class="form-label">ชื่อแบรนด์</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ @$store_detail->store_name }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->store_name : '') }}">
                             </div>
 
                             <div>
@@ -638,7 +666,7 @@
                                     <option value="">- เลือกประเภทสินค้า -</option>
                                     @if(!empty($category))
                                         @foreach($category as $_category)
-                                            <option {{ ($_category->id == $store_detail->category_id ? 'selected' : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
+                                            <option {{ (!empty($store_detail) ? ($_category->id == $store_detail->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -646,7 +674,7 @@
 
                             <div class="md:col-span-2">
                                 <label for="" class="form-label">รายละเอียดเกี่ยวกับแบรนด์และสินค้า</label>
-                                <textarea class="form-control" name="" id="" rows="5">{{ nl2br($store_detail->brand_product_detail) }}</textarea>
+                                <textarea class="form-control" name="" id="" rows="5">{{ (!empty($store_detail) ? nl2br($store_detail->brand_product_detail) : '') }}</textarea>
                             </div>
 
                             <div>
@@ -655,7 +683,7 @@
                                     option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
                                     @if(!empty($storage_method))
                                         @foreach($storage_method as $_storage_method)
-                                            <option {{ ($_storage_method->id == $store_detail->storage_method_id ? 'selected' : '') }} value="{{ $_storage_method->id }}">{{ $_storage_method->name_th }}</option>
+                                            <option {{ (!empty($store_detail->storage_method_id) ? ($_storage_method->id == $store_detail->storage_method_id ? 'selected' : '') : '') }} value="{{ $_storage_method->id }}">{{ $_storage_method->name_th }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -663,12 +691,12 @@
 
                             <div>
                                 <label for="" class="form-label">Shelf-life</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->shelf_lift }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->shelf_lift : '') }}">
                             </div>
 
                             <div>
                                 <label for="" class="form-label">จำนวนรายการสินค้า (SKU)</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->qty_sku }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->qty_sku : '') }}">
                             </div>
 
                             <div>
@@ -677,13 +705,13 @@
                                     <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
                                         <i data-lucide="calendar" class="w-4 h-4"></i>
                                     </div>
-                                    <input type="text" class="datepicker form-control pl-12" data-single-mode="true" value="{{ $store_detail->shipping_date }}">
+                                    <input type="text" class="datepicker form-control pl-12" data-single-mode="true" value="{{ (!empty($store_detail) ? $store_detail->shipping_date : '') }}">
                                 </div>
                             </div>
 
                             <div>
                                 <label for="" class="form-label">ช่องทาง social media</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->social }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
                             </div>
 
                         </div>
@@ -697,7 +725,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
                             <div>
                                 <label for="" class="form-label">ห้อง/บ้านเลขที่</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->address }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->address : '') }}">
                             </div>
 
                             <div>
@@ -706,7 +734,7 @@
                                     <option value="">- เลือกจังหวัด -</option>
                                     @if(!empty($provinces))
                                         @foreach($provinces as $_provinces)
-                                            <option {{ ($_provinces->id == $store_detail->province_id ? 'selected' : '') }} value="{{ $_provinces->id }}">{{ $_provinces->name_th }}</option>
+                                            <option {{ (!empty($store_detail) ? ($_provinces->id == $store_detail->province_id ? 'selected' : '') : '') }} value="{{ $_provinces->id }}">{{ $_provinces->name_th }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -718,7 +746,7 @@
                                     <option value="">- เลือกเขต -</option>
                                     @if(!empty($amphures))
                                         @foreach($amphures as $_amphures)
-                                            <option {{ ($_amphures->id == $store_detail->amphures_id ? 'selected' : '') }} value="{{ $_amphures->id }}">{{ $_amphures->name_th }}</option>
+                                            <option {{ (!empty($store_detail) ? ($_amphures->id == $store_detail->amphures_id ? 'selected' : '') : '') }} value="{{ $_amphures->id }}">{{ $_amphures->name_th }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -730,7 +758,7 @@
                                     <option value="">- เลือกแขวง -</option>
                                     @if(!empty($districts))
                                         @foreach($districts as $_districts)
-                                            <option {{ ($_districts->id == $store_detail->district_id ? 'selected' : '') }} value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
+                                            <option {{ (!empty($store_detail) ? ($_districts->id == $store_detail->district_id ? 'selected' : '') : '') }} value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -738,7 +766,7 @@
 
                             <div>
                                 <label for="" class="form-label">รหัสไปรษณีย์</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->zipcode }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->zipcode : '') }}">
                             </div>
 
                             <div class="col-span-1 md:col-span-2">
@@ -746,7 +774,11 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
+                                            @if(!empty($store_detail))
                                             <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_ex_img_path }}{{ $store_detail->product_ex_img }}">
+                                            @else
+                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                            @endif
                                             <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
@@ -762,7 +794,11 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
+                                            @if(!empty($store_detail))
                                             <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_pack_img_path }}{{ $store_detail->product_pack_img }}">
+                                            @else
+                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                            @endif
                                             <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
@@ -778,7 +814,11 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
+                                            @if(!empty($store_detail))
                                             <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->certificate_path }}{{ $store_detail->certificate }}">
+                                            @else
+                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                            @endif
                                             <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
@@ -807,7 +847,7 @@
                                         <option value="">- เลือกธนาคาร -</option>
                                         @if(!empty($bank))
                                             @foreach($bank as $_bank)
-                                                <option {{ ($_bank->id == $store_detail->bank_id ? 'selected' : '') }} value="{{ $_bank->id }}">{{ $_bank->txt_desc }}</option>
+                                                <option {{ (!empty($store_detail) ? ($_bank->id == $store_detail->bank_id ? 'selected' : '') : '') }} value="{{ $_bank->id }}">{{ $_bank->txt_desc }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -815,12 +855,12 @@
 
                                 <div>
                                     <label for="" class="form-label">ชื่อบัญชี</label>
-                                    <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->bank_account_name }}">
+                                    <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->bank_account_name : '') }}">
                                 </div>
 
                                 <div>
                                     <label for="" class="form-label">เลขบัญชี</label>
-                                    <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store_detail->bank_account_number }}">
+                                    <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->bank_account_number : '') }}">
                                 </div>
 
                                 <div class="col-span-1 md:col-span-2">
@@ -828,7 +868,11 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
+                                                @if(!empty($store_detail))
                                                 <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->id_card_img }}">
+                                                @else
+                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                @endif
                                                 <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
@@ -844,7 +888,11 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
+                                                @if(!empty($store_detail))
                                                 <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->bank_img }}">
+                                                @else
+                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                @endif
                                                 <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
@@ -860,7 +908,11 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
+                                                @if(!empty($store_detail))
                                                 <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->company_img_path }}{{ $store_detail->company_img }}">
+                                                @else
+                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                @endif
                                                 <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
