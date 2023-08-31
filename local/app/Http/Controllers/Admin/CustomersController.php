@@ -61,7 +61,7 @@ class CustomersController extends Controller
                 $img = '<div class="flex">
                 <div class="w-10 h-10 image-fit zoom-in">
                     <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                    src="'.(!empty($row->profile_img) ? asset('local/storage/app').'/'.$row->profile_img_path.''.$row->profile_img : asset('backend/dist/images/preview-9.jpg') ). '">
                 </div>
             </div>';
 
