@@ -26,7 +26,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input id="brand-name" type="text" class="form-control" placeholder="Brand name" value="TH: Orange and bread">
+                                <input id="brand-name" type="text" class="form-control" placeholder="Brand name" readonly value="{{$data->brand_name}}">
                             </div>
                             <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                 <div class="form-label xl:w-64 xl:!mr-10">
@@ -39,7 +39,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input id="product-name" type="text" class="form-control" value="{{$data->name_th}}" placeholder="Product name">
+                                <input id="product-name" type="text" class="form-control" readonly value="{{$data->name_th}}" placeholder="Product name">
                             </div>
                             <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                 <div class="form-label xl:w-64 xl:!mr-10">
@@ -86,7 +86,7 @@
                                                         <img class="rounded-md" data-action="zoom" alt="Midone - HTML Admin Template"
                                                             src="{{ !empty($_gallery->name) ? asset($url_img .''. $_gallery->path . '' . $_gallery->name) : asset('backend/dist/images/preview-12.jpg') }}">
                                                         <div
-                                                            class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
+                                                            class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white right-0 top-0 -mr-2 -mt-2">
                                                             <i data-lucide="x" class="w-4 h-4"></i>
                                                         </div>
                                                     </div>
@@ -129,9 +129,7 @@
                                     </div>
                                 </div>
                                 <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <textarea class="form-control">
-                                        {{ $data->detail_th }}
-                                    </textarea>
+                                    <textarea class="form-control" readonly>{{ $data->detail_th }}</textarea>
                                 </div>
                             </div>
 
@@ -223,38 +221,7 @@
                                         </div>
                                     </div>
                                     <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" required
-                                        value="">
-                                </div>
-
-                             <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Tracking Number</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                        <input  type="text" class="form-control w-56 block mx-auto" placeholder="Tracking Numbe">
-
-
-
-
-                                </div>
-
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">ชื่อขนส่ง</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <input  type="text" class="form-control w-56 block mx-auto" placeholder="ชื่อขนส่ง">
-
-
+                                        value="{{$data->shipping_name}}">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -267,7 +234,7 @@
                                     </div>
 
 
-                                        <input type="text" class="form-control w-56 " placeholder="เบอร์โทรศัพท์">
+                                        <input type="text" class="form-control w-56 " readonly placeholder="เบอร์โทรศัพท์" name="tel" value="{{$data->tel}}">
 
 
 

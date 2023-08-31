@@ -1358,116 +1358,123 @@ class API1Controller extends Controller
             if($cart){
                 $cart->action_date = date('Y-m-d');
                 $cart->pay_type = $r->pay_type;
+                // 2 คือแนบสลิป
                 if($r->pay_type==2){
                     $cart->status = 1;
-                }else{
+                }elseif($r->pay_type==1){
                     $cart->status = 2;
+                    if($r->pay_type==1){
+                        $cart->cod = 1;
+                    }
+                }elseif($r->pay_type==3){
+                    $cart->status = 1;
                 }
                 $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
                 $cart->shipping_date = date('Y-m-d');
                 $cart->period = 2;
-                $cart->customer_name = $customer->name;
-                $cart->save();
-
-                $cart_products_id = explode(',',$r->cart_products_id);
-                $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
-                ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
-                foreach($arr_pro as $p){
-                    $product = DB::table('products')->where('id',$p->product_id)->first();
-                    if($product){
-                        DB::table('products')->where('id',$product->id)->update([
-                            'sale_number' => $product->sale_number + $p->qty,
-                        ]);
-                    }
-
-                    $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                    ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
-                    if(!$stock_lot){
-                        return response()->json([
-                            'message' =>  'จำนวนสินค้าไม่เพียงพอ',
-                            'status' => 0,
-                            'data' => '',
-                        ]);
-                    }
-                    // $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
-                    // $stock_lot->save();
-                    // $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                    // $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
-                    // $stock_items->save();
-
-                    // จองสต็อก
-                    $qty_mis_total = $p->qty;
-                    if($qty_mis_total>0){
-                        $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                        ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-
-                        foreach($stock_lot_arr as $st_arr){
-                            if($qty_mis_total > 0){
-                                $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
-
-                                $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
-                                $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
-                                $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
-                                $customer_cart_product_cut_stock->customer_id = $p->customer_id;
-                                $customer_cart_product_cut_stock->product_id = $p->product_id;
-                                $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
-                                $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
-                                $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
-                                if($stock_items->qty<$qty_mis_total){
-                                    $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
-                                }else{
-                                    $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
-                                }
-                                $qty_mis_total = ($qty_mis_total-$stock_items->qty);
-                                if($qty_mis_total < 0){
-                                    $qty_mis_total = 0;
-                                }
-                                $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
-                                $customer_cart_product_cut_stock->save();
-
-                                // ตัดสต็อก booking
-                                $stock_lot_arr = StockLot::where('id',$st_arr->id)->first();
-                                $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
-                                $stock_lot->save();
-
-                                $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                                $stock_items->qty_booking = $stock_items->qty_booking-$customer_cart_product_cut_stock->qty_has;
-                                $stock_items->save();
-                            }
-                        }
-                    }
-                }
-
-                $cart->shipping_type_id = $r->shipping_type_id;
+                $cart->customer_name = $customer->name;  $cart->shipping_type_id = $r->shipping_type_id;
                 $cart->shipping_price = $r->shipping_price_total;
                 $cart->total_price = $r->product_total_price;
                 $cart->grand_total = $r->all_price_total;
+                $cart->cart_products_id = $r->cart_products_id;
                 $cart->save();
 
-                $cart_new = new CustomerCart();
-                $cart_new->customer_id = $r->user_id;
-                $cart_new->shipping_type_id = 1;
-                $customer_address = Customer_address::
-                          select('customer_address.id')
-                ->where('customer_address.customer_id',$r->user_id)
-                ->where('customer_address.default_active','Y')
-                ->first();
-                if($customer_address){
-                    $cart_new->customer_address_id = $customer_address->id;
+                if($cart->status==2){
+                    $cart_products_id = explode(',',$r->cart_products_id);
+                    $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
+                    ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+                    foreach($arr_pro as $p){
+                        $product = DB::table('products')->where('id',$p->product_id)->first();
+                        if($product){
+                            DB::table('products')->where('id',$product->id)->update([
+                                'sale_number' => $product->sale_number + $p->qty,
+                            ]);
+                        }
+
+                        $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                        ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                        if(!$stock_lot){
+                            DB::rollback();
+                            return response()->json([
+                                'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
+                        // $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+                        // $stock_lot->save();
+                        // $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                        // $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
+                        // $stock_items->save();
+
+                        // จองสต็อก
+                        $qty_mis_total = $p->qty;
+                        if($qty_mis_total>0){
+                            $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                            ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+
+                            foreach($stock_lot_arr as $st_arr){
+                                if($qty_mis_total > 0){
+                                    $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
+
+                                    $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
+                                    $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
+                                    $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
+                                    $customer_cart_product_cut_stock->customer_id = $p->customer_id;
+                                    $customer_cart_product_cut_stock->product_id = $p->product_id;
+                                    $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
+                                    $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
+                                    $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
+                                    if($stock_items->qty<$qty_mis_total){
+                                        $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
+                                    }else{
+                                        $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
+                                    }
+                                    $qty_mis_total = ($qty_mis_total-$stock_items->qty);
+                                    if($qty_mis_total < 0){
+                                        $qty_mis_total = 0;
+                                    }
+                                    $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
+                                    $customer_cart_product_cut_stock->save();
+
+                                    // ตัดสต็อก booking
+                                    $stock_lot_arr = StockLot::where('id',$st_arr->id)->first();
+                                    $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+                                    $stock_lot->save();
+
+                                    $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                                    $stock_items->qty_booking = $stock_items->qty_booking-$customer_cart_product_cut_stock->qty_has;
+                                    $stock_items->save();
+                                }
+                            }
+                        }
+                    }
+
+                    $cart_new = new CustomerCart();
+                    $cart_new->customer_id = $r->user_id;
+                    $cart_new->shipping_type_id = 1;
+                    $customer_address = Customer_address::
+                              select('customer_address.id')
+                    ->where('customer_address.customer_id',$r->user_id)
+                    ->where('customer_address.default_active','Y')
+                    ->first();
+                    if($customer_address){
+                        $cart_new->customer_address_id = $customer_address->id;
+                    }
+                    $cart_new->total_price = 0;
+                    $cart_new->shipping_price = 0;
+                    $cart_new->grand_total = 0;
+                    $cart_new->has_promotion = 0;
+                    $cart_new->discount_price = 0;
+                    $cart_new->action_date = date('Y-m-d');
+                    $cart_new->save();
+                    // อัพเดทพวกที่เลหือไปตะกร้าใหม่
+                    CustomerCartProduct::select('customer_cart_product.*')
+                    ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)
+                    ->update([
+                        'customer_cart_id' => $cart_new->id,
+                    ]);
                 }
-                $cart_new->total_price = 0;
-                $cart_new->shipping_price = 0;
-                $cart_new->grand_total = 0;
-                $cart_new->has_promotion = 0;
-                $cart_new->discount_price = 0;
-                $cart_new->action_date = date('Y-m-d');
-                $cart_new->save();
-                // อัพเดทพวกที่เลหือไปตะกร้าใหม่
-                CustomerCartProduct::select('customer_cart_product.*')
-                ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)
-                ->update([
-                    'customer_cart_id' => $cart_new->id,
-                ]);
 
             }else{
                 return response()->json([
