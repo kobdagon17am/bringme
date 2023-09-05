@@ -34,6 +34,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
 Use App\Models\ProductsComment;
+Use App\Models\CustomerCartAddress;
 
 class PaymentController extends Controller
 {
@@ -212,6 +213,9 @@ class PaymentController extends Controller
                                 ->update([
                                     'customer_cart_id' => $cart_new->id,
                                 ]);
+
+                                $cart->status = 2;
+                                $cart->save();
                             // }
 
                         }else{

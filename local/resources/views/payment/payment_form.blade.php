@@ -56,7 +56,7 @@
             <form id="payment-form" action="https://sandbox-cdnv3.chillpay.co/Payment/" method="post" role="form"
                 class="form-horizontal">
                 <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461"
-                    data-amount="{{ $cart->grand_totalss }}" data-orderno="{{ $cart->order_number }}"
+                    data-amount="{{ $cart->grand_total }}" data-orderno="{{ $cart->order_number }}"
                     data-customerid="{{ $cart->customer_id }}" data-mobileno="{{ $customer_cart_address->tel }}"
                     data-clientip="" data-routeno="1" data-currency="764" data-description="Test Payment"
                     data-apikey="QFUbuOg6OrRzigvXaspcULOw95GczT1GCdc3CnBHQRxJDKNYuKlW1FvGIBYWrs9U">

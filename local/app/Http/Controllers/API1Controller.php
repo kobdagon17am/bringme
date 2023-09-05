@@ -1354,13 +1354,14 @@ class API1Controller extends Controller
         {
             $cart = CustomerCart::where('id',$r->cart_id)->first();
             if($cart){
+                $customer = Customer::select('name')->where('id',$r->user_id)->first();
                 $cart->cart_products_id_arr = $r->cart_products_id;
                 $cart->save();
 
          // ตะกร้า
          $cart->action_date = date('Y-m-d');
          $cart->pay_type = $r->pay_type;
-         $cart->status = 1;
+         $cart->status = 0;
          $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
          $cart->shipping_date = date('Y-m-d');
          $cart->period = 2;
