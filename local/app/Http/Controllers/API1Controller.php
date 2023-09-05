@@ -1410,6 +1410,7 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
         {
+            // cart_products_id
             $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->where('id',$r->cart_id)->first();
             $customer = Customer::select('name')->where('id',$r->user_id)->first();
             if($cart){
@@ -1433,7 +1434,7 @@ class API1Controller extends Controller
                 $cart->shipping_price = $r->shipping_price_total;
                 $cart->total_price = $r->product_total_price;
                 $cart->grand_total = $r->all_price_total;
-                $cart->cart_products_id = $r->cart_products_id;
+                $cart->cart_products_id_arr = $r->cart_products_id;
                 $cart->save();
 
                 if($cart->status==2){

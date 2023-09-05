@@ -55,16 +55,29 @@
         <div class="Centerdive">
             <form id="payment-form" action="https://sandbox-cdnv3.chillpay.co/Payment/" method="post" role="form"
                 class="form-horizontal">
-                <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461"
-                    data-amount="{{ ($cart->grand_total*1000) }}" data-orderno="{{ $cart->order_number }}"
-                    data-customerid="{{ $cart->customer_id }}" data-mobileno="{{ $customer_cart_address->tel }}"
-                    data-clientip="" data-routeno="1" data-currency="764" data-description="Test Payment"
+                <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461" data-amount="{{ ($cart->grand_total*100) }}"
+                    data-orderno="{{ $cart->order_number }}" data-customerid="{{ $cart->customer_id }}" data-mobileno="{{ $customer_cart_address->tel }}"
+                    data-clientip="101.109.170.201" data-routeno="1" data-currency="764" data-description="Test Payment"
                     data-apikey="QFUbuOg6OrRzigvXaspcULOw95GczT1GCdc3CnBHQRxJDKNYuKlW1FvGIBYWrs9U">
                 </modernpay:widget>
                 {{-- <button type="submit" id="btnSubmit" value="Submit" class="btn">Payment</button> --}}
             </form>
         </div>
     </div>
+
+    {{-- <div class="container">
+        <div class="Centerdive">
+            <form id="payment-form" action="https://sandbox-cdnv3.chillpay.co/Payment/" method="post" role="form"
+                class="form-horizontal">
+                <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461"
+                    data-amount="{{ ($cart->grand_total*100) }}" data-orderno="{{ $cart->order_number }}"
+                    data-customerid="{{ $cart->customer_id }}" data-mobileno="{{ $customer_cart_address->tel }}"
+                    data-routeno="1" data-currency="764" data-description="Test Payment"
+                    data-apikey="QFUbuOg6OrRzigvXaspcULOw95GczT1GCdc3CnBHQRxJDKNYuKlW1FvGIBYWrs9U">
+                </modernpay:widget>
+            </form>
+        </div>
+    </div> --}}
 
     <script async src="https://sandbox-cdnv3.chillpay.co/js/widgets.js?v=1.00" charset="utf-8"></script>
 </body>
