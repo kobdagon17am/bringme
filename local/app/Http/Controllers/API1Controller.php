@@ -34,6 +34,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
 Use App\Models\ProductsComment;
+use App\Models\CustomerCartAddress;
 
 class API1Controller extends Controller
 {
@@ -1347,6 +1348,61 @@ class API1Controller extends Controller
                     'customer_address' => $customer_address,
                 ],
             ]);
+    }
+
+    public function api_pre_cart_purchase(Request $r){
+        {
+            $cart = CustomerCart::where('id',$r->cart_id)->first();
+            if($cart){
+                $cart->cart_products_id_arr = $r->cart_products_id;
+                $cart->save();
+
+         // ตะกร้า
+         $cart->action_date = date('Y-m-d');
+         $cart->pay_type = $r->pay_type;
+         $cart->status = 1;
+         $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
+         $cart->shipping_date = date('Y-m-d');
+         $cart->period = 2;
+         $cart->customer_name = $customer->name;
+         $cart->save();
+
+        // บันทึกที่อยู่
+        $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
+        if(!$customer_cart_address){
+            $customer_cart_address = new CustomerCartAddress();
+        }
+        $customer_cart_address->customer_id = $cart->customer_id;
+
+        $customer_cart_address->customer_cart_id = $cart->id;
+        $customer_cart_address->customer_address_id = $cart->customer_address_id;
+
+        $address = Customer_address::where('id',$cart->customer_address_id)->first();
+
+        $customer_cart_address->name = $address->name;
+        $customer_cart_address->tel = $address->tel;
+        $customer_cart_address->address_number = $address->address_number;
+        $customer_cart_address->province_id = $address->province_id;
+        $customer_cart_address->amphures_id = $address->amphures_id;
+        $customer_cart_address->district_id = $address->district_id;
+        $customer_cart_address->zipcode = $address->zipcode;
+        $customer_cart_address->address_lat = $address->address_lat;
+        $customer_cart_address->address_long = $address->address_long;
+        $customer_cart_address->save();
+
+                return response()->json([
+                    'message' =>  'success',
+                    'status' => 1,
+                    'data' => '',
+                ]);
+            }else{
+                return response()->json([
+                    'message' =>  'ไม่พบข้อมูลสินค้า',
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
+        }
     }
 
     public function api_purchase_cart(Request $r){

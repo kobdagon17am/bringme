@@ -55,9 +55,10 @@
         <div class="Centerdive">
             <form id="payment-form" action="https://sandbox-cdnv3.chillpay.co/Payment/" method="post" role="form"
                 class="form-horizontal">
-                <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461" data-amount="10000"
-                    data-orderno="00000001" data-customerid="123456" data-mobileno="0889999999"
-                    data-clientip="101.109.170.201" data-routeno="1" data-currency="764" data-description="Test Payment"
+                <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461"
+                    data-amount="{{ $cart->grand_totalss }}" data-orderno="{{ $cart->order_number }}"
+                    data-customerid="{{ $cart->customer_id }}" data-mobileno="{{ $customer_cart_address->tel }}"
+                    data-clientip="" data-routeno="1" data-currency="764" data-description="Test Payment"
                     data-apikey="QFUbuOg6OrRzigvXaspcULOw95GczT1GCdc3CnBHQRxJDKNYuKlW1FvGIBYWrs9U">
                 </modernpay:widget>
                 {{-- <button type="submit" id="btnSubmit" value="Submit" class="btn">Payment</button> --}}

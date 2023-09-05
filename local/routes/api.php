@@ -68,3 +68,4 @@ Route::post('api_get_store_report', 'API2Controller@api_get_store_report');
 Route::post('api_claim_store', 'API2Controller@api_claim_store');
 Route::post('api_get_dataset', 'API1Controller@api_get_dataset');
 Route::post('api_get_shipping_price', 'API2Controller@api_get_shipping_price');
+Route::post('api_pre_cart_purchase', 'API1Controller@api_pre_cart_purchase');
