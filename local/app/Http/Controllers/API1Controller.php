@@ -2078,4 +2078,24 @@ class API1Controller extends Controller
                 }
     }
 
+    public function api_check_cart_status(Request $r)
+    {
+        $cart = CustomerCart::select('status')->where('id',$r->cart_id)->first();
+        if($cart){
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart_status' => $cart->status,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' =>  'ไม่พบข้อมูลสินค้า',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
 }
