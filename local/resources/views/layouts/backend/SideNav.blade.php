@@ -73,13 +73,14 @@
                 </div>
             </a>
             <ul class="{{ (request()->is('admin/stores') || request()->is('admin/products') || request()->is('admin/products-waitapproved') || request()->is('admin/products-pending-tranfer')   ) ? 'side-menu__sub-open' : '' }}">
+
+
                 <li>
-                    <a href="{{route('admin/products')}}" class="side-menu">
+                    <a href="{{route('admin/products-waitapproved')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                        <div class="side-menu__title"> รายการสินค้าที่อนุมัติ </div>
+                        <div class="side-menu__title"> รายการสินค้ายังไม่อนุมัติ </div>
                     </a>
                 </li>
-
                 <li>
                     <a href="{{route('admin/products-pending-tranfer')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
@@ -87,11 +88,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{route('admin/products-waitapproved')}}" class="side-menu">
+                    <a href="{{route('admin/products')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                        <div class="side-menu__title"> รายการสินค้ายังไม่อนุมัติ </div>
+                        <div class="side-menu__title"> รายการสินค้าทั้งหมด </div>
                     </a>
                 </li>
+
+
             </ul>
         </li>
         {{-- <li>

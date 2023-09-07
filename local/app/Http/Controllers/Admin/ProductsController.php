@@ -38,7 +38,7 @@ class ProductsController extends Controller
 
         $barcode = DB::table('products_option_2_items')
         ->where('product_id', $product_id)
-        ->first();
+        ->get();
 
 
 
