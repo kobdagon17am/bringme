@@ -1025,11 +1025,23 @@ class API2Controller extends  Controller
         DB::beginTransaction();
         try
         {
-                $cart = CustomerCart::where('id',$r->id)->first();
-                if($cart->picking_status == 1 && $cart->scan_status == 1 && $cart->transfer_status == 1){
-                    $cart->transfer_status = 2;
+                $cart = CustomerCart::where('id',$r->id)->where('transfer_status','!=',2)->first();
+                if($cart){
+                    if($cart->picking_status == 1 && $cart->scan_status == 1 && $cart->transfer_status == 1){
+                        $cart->transfer_status = 2;
+                    }
+                    $cart->save();
+
+                    $cus_products = CustomerCartProduct::where('customer_cart_id',$cart->id)->get();
+                    foreach($cus_products as $cp){
+                        $p = Products::select('store_id')->where('id',$cp->product_id)->first();
+                        if($p){
+                            $store = Store::where('id',$p->store_id)->first();
+                            $store->credit = $store->credit + $cp->total_price;
+                            $store->save();
+                        }
+                    }
                 }
-                $cart->save();
 
             DB::commit();
 

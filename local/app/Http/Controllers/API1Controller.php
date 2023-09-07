@@ -1885,14 +1885,153 @@ class API1Controller extends Controller
                 $products_item->customer_id = $r->user_id;
                 $products_item->name_th = $r->name_th;
                 $products_item->name_en = $r->name_en;
-                $products_item->name_th = $r->name_th;
-                $products_item->detail_th = $r->name_th;
+                $products_item->detail_th = $r->detail_th;
                 $products_item->detail_en = $r->detail_en;
                 // $products_item->category_id = $r->category_id;
                 // $products_item->brands_id = $r->brands_id;
                 $products_item->shelf_lift = $r->shelf_lift;
                 // $products_item->storage_method_id = $r->storage_method_id;
                 $products_item->store_id = $store->id;
+                $products_item->price = $r->price;
+                $products_item->qty = $r->qty;
+                $products_item->stock_cut_off = $r->stock_cut_off;
+                $products_item->production_date = $r->production_date;
+                $products_item->shipping_date = $r->shipping_date;
+                $products_item->products_code = $products->products_code;
+                // $products_item->barcode = $products->barcode;
+                $products_item->save();
+
+                $products_option_head1 = new ProductsOptionHead();
+                $products_option_head1->product_id = $products->id;
+                $products_option_head1->option_type = 1;
+                $products_option_head1->name_th = '';
+                $products_option_head1->name_en = '';
+                $products_option_head1->save();
+
+                $products_option_head2 = new ProductsOptionHead();
+                $products_option_head2->product_id = $products->id;
+                $products_option_head2->option_type = 2;
+                $products_option_head2->name_th = '';
+                $products_option_head2->name_en = '';
+                $products_option_head2->save();
+
+                $products_option_1 = new ProductsOption1();
+                $products_option_1->product_id = $products->id;
+                $products_option_1->name_th = '';
+                $products_option_1->name_en = '';
+                $products_option_1->save();
+
+                $products_option_2 = new ProductsOption2();
+                $products_option_2->product_id = $products->id;
+                $products_option_2->name_th = '';
+                $products_option_2->name_en = '';
+                $products_option_2->save();
+
+                $products_option_2_items = new ProductsOption2Items();
+                $products_option_2_items->product_id = $products->id;
+                $products_option_2_items->products_item_id = $products_item->id;
+                $products_option_2_items->option_1_id = $products_option_1->id;
+                $products_option_2_items->option_2_id = $products_option_2->id;
+                $products_option_2_items->price = $r->price;
+                $products_option_2_items->qty = $r->qty;
+                $products_option_2_items->name_th = '';
+                $products_option_2_items->name_en = '';
+                $products_option_2_items->save();
+
+                $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+
+                $products->min_price = $r->price;
+                $products->max_price = $r->price;
+                $products->save();
+
+                    $gal = explode('|',$r->images);
+                    foreach ($gal as $key => $img) {
+                        if($img!=''){
+                            $image_64 = $img;
+                            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                             // find substring fro replace here eg: data:image/png;base64,
+                            $image = str_replace($replace, '', $image_64);
+                            $image = str_replace(' ', '+', $image);
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->put('product/'.$products->customer_id.'/'.$products->id.'/' . $imageName, base64_decode($image));
+                            // Storage::delete('file_payment/' . $check->file_slip);
+
+                            $gal = new ProductsGallery();
+                            $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
+                            $gal->name = $imageName;
+                            $gal->product_id = $products->id;
+                            if($key==0){
+                                $gal->use_profile = 1;
+                            }else{
+                                $gal->use_profile = 0;
+                            }
+                            $gal->save();
+                            // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                        }
+
+                }
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'บันทึกสำเร็จ กรุณารอการตรวจสอบ',
+                    'status' => 1,
+                    'data' => '',
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
+    public function api_product_store_more(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+
+                $store = Store::where('customer_id',$r->user_id)->first();
+                // $r->production_date = date('Y-m-d', strtotime($r->production_date));
+                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+
+                // เพิ่มสินค้าหลัก
+                $products = Products::where('id',$r->product_id)->first();
+                if(!$products){
+                    return response()->json([
+                        'message' =>  'ไม่พบรายการสินค้า',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+                // เพิ่ม item สินค้า storage_method_id brands_id
+                $products_item = new ProductsItem();
+                $products_item->product_id = $products->id;
+                $products_item->customer_id = $r->user_id;
+                $products_item->name_th = $products->name_th;
+                $products_item->name_en = $products->name_en;
+                $products_item->detail_th = $products->detail_th;
+                $products_item->detail_en = $products->detail_en;
+                // $products_item->category_id = $r->category_id;
+                // $products_item->brands_id = $r->brands_id;
+                $products_item->shelf_lift = $r->shelf_lift;
+                // $products_item->storage_method_id = $r->storage_method_id;
+                $products_item->store_id = $products->store_id;
                 $products_item->price = $r->price;
                 $products_item->qty = $r->qty;
                 $products_item->stock_cut_off = $r->stock_cut_off;
