@@ -188,7 +188,7 @@ class API2Controller extends  Controller
     }
 
 
-    public static function api_products_transfer_approve_back($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number,$shelf_id,$floor)
+    public static function api_products_transfer_approve_back($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number,$shelf_id,$floor,$r)
     {
 
 
@@ -283,7 +283,11 @@ class API2Controller extends  Controller
                     $products_item->transfer_status = 3;
                     $products_item->save();
 
+                    $products_transfer->qty = $r->qty;
+                    $products_transfer->shipping_remark = $r->shipping_remark;
+                    $products_transfer->shipping_name = $r->shipping_name;
                     $products_transfer->approve_status = 1;
+
                     $products_transfer->save();
 
 

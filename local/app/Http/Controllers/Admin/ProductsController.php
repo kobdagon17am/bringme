@@ -142,7 +142,7 @@ class ProductsController extends Controller
         if($rs->tranfer_status == 1){
             // dd($rs->transfer_id);
 
-           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number,$rs->shelf,$rs->floor);
+           $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id,$rs->date_in_stock,$rs->lot_expired_date,$rs->lot_number,$rs->shelf,$rs->floor,$rs);
 
            if($data['status'] == 0 ){
             return redirect('admin/products-pending-tranfer')->withError($data['message']);
