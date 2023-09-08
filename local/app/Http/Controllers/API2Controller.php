@@ -373,6 +373,7 @@ class API2Controller extends  Controller
 
     public function api_get_cart_detail(Request $r)
     {
+        // barcode
         $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
         ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
@@ -391,22 +392,24 @@ class API2Controller extends  Controller
             ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
 
             $arr_lot = [];
+            $arr_barcode = [];
             foreach($products as $index => $pro){
                 $product_qty+=$pro->qty;
 
                 // ดึงตำแหน่งสินค้า
                 $customer_cart_product_cut_stock = CustomerCartProductCutStock::
-                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','stock_floor.floor','stock_items.name as stock_item_name')
+                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','products_option_2_items.barcode','stock_floor.floor','stock_items.name as stock_item_name')
                 ->join('stock_items','stock_items.id','customer_cart_product_cut_stock.stock_item_id')
                 ->join('stock_floor','stock_floor.id','stock_items.stock_floor_id')
                 ->join('stock_shelf','stock_shelf.id','stock_items.stock_shelt_id')
                 ->join('dataset_shelf','dataset_shelf.id','stock_shelf.shelf_id')
                 ->join('stock_lot','stock_lot.id','stock_shelf.stock_lot_id')
+                ->join('products_option_2_items','products_option_2_items.id','stock_items.products_option_2_items_id')
                 ->where('customer_cart_product_cut_stock.customer_cart_product_id',$pro->id)
                 ->get();
 
                 foreach($customer_cart_product_cut_stock as $key => $c){
-                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name;
+                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name.' (Barcode:'.$c->barcode.')';
                 }
             }
 
@@ -481,22 +484,24 @@ class API2Controller extends  Controller
             ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
 
             $arr_lot = [];
+            $arr_barcode = [];
             foreach($products as $index => $pro){
                 $product_qty+=$pro->qty;
 
                 // ดึงตำแหน่งสินค้า
                 $customer_cart_product_cut_stock = CustomerCartProductCutStock::
-                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','stock_floor.floor','stock_items.name as stock_item_name')
+                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','products_option_2_items.barcode','dataset_shelf.name as shelf_name','stock_floor.floor','stock_items.name as stock_item_name')
                 ->join('stock_items','stock_items.id','customer_cart_product_cut_stock.stock_item_id')
                 ->join('stock_floor','stock_floor.id','stock_items.stock_floor_id')
                 ->join('stock_shelf','stock_shelf.id','stock_items.stock_shelt_id')
                 ->join('dataset_shelf','dataset_shelf.id','stock_shelf.shelf_id')
                 ->join('stock_lot','stock_lot.id','stock_shelf.stock_lot_id')
                 ->where('customer_cart_product_cut_stock.customer_cart_product_id',$pro->id)
+                ->join('products_option_2_items','products_option_2_items.id','stock_items.products_option_2_items_id')
                 ->get();
 
                 foreach($customer_cart_product_cut_stock as $key => $c){
-                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name;
+                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name.' (Barcode:'.$c->barcode.')';
                 }
             }
 
@@ -600,11 +605,10 @@ class API2Controller extends  Controller
         DB::beginTransaction();
         try
         {
-                // $product_cart = CustomerCartProduct::where('id',$r->id)->first();
-                // $product = Products::select('barcode')->where('id',$product_cart->product_id)->first();
-                $product = Products::select('barcode','id')->where('barcode',$r->barcode)->first();
+                // $product = Products::select('barcode','id')->where('barcode',$r->barcode)->first();
+                $product = DB::table('products_option_2_items')->select('product_id')->where('barcode',$r->barcode)->first();
                 if($product){
-                    $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->where('product_id',$product->id)->first();
+                    $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->where('product_id',$product->product_id)->first();
                     if($product_cart){
                         if(($product_cart->scan_qty+1) > $product_cart->qty){
                             return response()->json([
@@ -622,8 +626,6 @@ class API2Controller extends  Controller
                             'data' => '',
                         ]);
                     }
-
-
                 }else{
                         return response()->json([
                             'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
