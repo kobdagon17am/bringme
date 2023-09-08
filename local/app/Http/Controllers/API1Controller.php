@@ -1939,6 +1939,7 @@ class API1Controller extends Controller
                 $products_option_2_items->save();
 
                 $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $products_option_2_items->save();
 
                 $products->min_price = $r->price;
                 $products->max_price = $r->price;

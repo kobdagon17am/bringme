@@ -109,7 +109,6 @@ class ProductsController extends Controller
     {
         if(empty($id)){
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
-
         }
 
         $data['data'] = DB::table('products_transfer')

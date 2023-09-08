@@ -202,7 +202,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="date" value="{{ date('Y-m-d', strtotime($data->production_date)) }}"
+                                        <input type="date" value="{{ date('Y-m-d', strtotime($data->production_date. ' + '.($data->shelf_lift-$data->stock_cut_off).' days')) }}"
                                             class="form-control w-56 block mx-auto" name="lot_expired_date"
                                             data-single-mode="true">
                                     </div>
