@@ -78,7 +78,7 @@
                 <li>
                     <a href="{{route('admin/products-waitapproved')}}" class="side-menu">
                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                        <div class="side-menu__title"> รายการสินค้ายังไม่อนุมัติ </div>
+                        <div class="side-menu__title"> รายการสินค้ายังรออนุมัติ </div>
                     </a>
                 </li>
                 <li>
