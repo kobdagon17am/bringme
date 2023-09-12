@@ -1061,9 +1061,12 @@ class API1Controller extends Controller
 
             $product_good_sale = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
-            'products_gallery.name as gal_name',)
+            'products_gallery.name as gal_name',
+            'store.logo_path','store.logo',
+            )
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
@@ -1077,9 +1080,11 @@ class API1Controller extends Controller
 
             $product_new = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
+            'store.logo_path','store.logo',
             'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
@@ -1094,9 +1099,11 @@ class API1Controller extends Controller
 
             $product_pro = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
+            'store.logo_path','store.logo',
             'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
@@ -1112,9 +1119,11 @@ class API1Controller extends Controller
 
             $product_recome = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
+            'store.logo_path','store.logo',
             'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
@@ -1134,6 +1143,20 @@ class API1Controller extends Controller
                 }
             }
 
+            $category = Category::where('status',1)->orderBy('name_th','asc')->get();
+            $cnum = count($category)/2;
+            $c_arr1 = [];
+            $c_arr2 = [];
+            foreach($category as $key => $c){
+                if(($key+1) <= $cnum){
+                    array_push($c_arr1, $c->id);
+                }else{
+                    array_push($c_arr2, $c->id);
+                }
+            }
+
+            $category1 = Category::where('status',1)->whereIn('id',$c_arr1)->orderBy('name_th','asc')->get();
+            $category2 = Category::where('status',1)->whereIn('id',$c_arr2)->orderBy('name_th','asc')->get();
             $url_img = Storage::disk('public')->url('');
 
             return response()->json([
@@ -1146,6 +1169,8 @@ class API1Controller extends Controller
                     'product_recome' => $product_recome,
                     'address' => $address,
                     'url_img' => $url_img,
+                    'category1' => $category1,
+                    'category2' => $category2,
                 ],
             ]);
     }
@@ -1203,7 +1228,7 @@ class API1Controller extends Controller
                 'status' => 1,
                 'data' => [
                     'customer' => [$customer],
-                    'store' => [$store],
+                    'store' => $store,
                     'product_good_sale' => $product_good_sale,
                     'product_your_like' => $product_your_like,
                     'product_detail' => $product_detail,
@@ -1824,6 +1849,10 @@ class API1Controller extends Controller
         $customer = Customer::where('id',$r->user_id)->first();
         if($customer){
             $store = Store::where('customer_id',$r->user_id)->first();
+            $product_number = DB::table('products')->select('id')->where('store_id',$store->id)->where('approve_status',1)->get();
+            $product_number = count($product_number);
+            $store_rate = number_format($store->rate,'1');
+            $url_img = Storage::disk('public')->url('');
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1831,6 +1860,9 @@ class API1Controller extends Controller
                 'data' => [
                     'customer' => $customer,
                     'store' => $store,
+                    'product_number' => $product_number,
+                    'store_rate' => $store_rate,
+                    'url_img' => $url_img,
                 ],
             ]);
         }else{
@@ -1841,6 +1873,82 @@ class API1Controller extends Controller
             ]);
         }
 
+    }
+
+    public function api_get_store_detail(Request $r)
+    {
+        $store = Store::where('id',$r->store_id)->first();
+        if($store){
+            $products = DB::table('products')->select('id')->where('store_id',$store->id)->where('approve_status',1)->get();
+            $product_number = count($products);
+            $store_rate = number_format($store->rate,'1');
+            $url_img = Storage::disk('public')->url('');
+
+            $product_new = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'store.logo_path','store.logo',
+            'products_gallery.name as gal_name',)
+            ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->where('products.store_id',$store->id)
+            // ->orderBy('products.sale_number','desc')
+            ->inRandomOrder()->get();
+
+            $product_good_sale = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'store.logo_path','store.logo',
+            )
+            ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->where('products.store_id',$store->id)
+            // ->orderBy('products.sale_number','desc')
+            ->inRandomOrder()->get();
+
+             $product_recome = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'store.logo_path','store.logo',
+            'products_gallery.name as gal_name',)
+            ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->where('products.store_id',$store->id)
+            // ->orderBy('products.updated_at','desc')
+            ->inRandomOrder()->get();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'store' => $store,
+                    'product_number' => $product_number,
+                    'store_rate' => $store_rate,
+                    'url_img' => $url_img,
+
+                    'product_new' => $product_new,
+                    'product_good_sale' => $product_good_sale,
+                    'product_recome' => $product_recome,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบข้อมูผู้ใช้',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
     }
 
     public function api_product_store(Request $r)

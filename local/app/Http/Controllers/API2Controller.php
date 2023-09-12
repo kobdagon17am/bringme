@@ -1687,4 +1687,195 @@ class API2Controller extends  Controller
             ]);
     }
 
+     public function api_store_update(Request $r){
+         DB::beginTransaction();
+            try
+                {
+                    $customer = Customer::where('id',$r->user_id)->first();
+                    if($customer){
+                        $store = Store::where('customer_id',$r->user_id)->first();
+                        $store->products_new_show = $r->products_new_show;
+                        $store->products_good_show = $r->products_good_show;
+                        $store->products_recom_show = $r->products_recom_show;
+                        $store->save();
+
+                        if($r->banner!=''){
+                            Storage::disk('public')->delete('customer/'.$store->customer_id.'/' . $store->banner);
+                            $image_64 = $r->banner;
+                            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                             // find substring fro replace here eg: data:image/png;base64,
+                            $image = str_replace($replace, '', $image_64);
+                            $image = str_replace(' ', '+', $image);
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->put('customer/'.$store->customer_id.'/' . $imageName, base64_decode($image));
+                            $store->banner_path = 'customer/'.$store->customer_id.'/';
+                            $store->banner = $imageName;
+                            $store->save();
+                            // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                        }
+
+                        if($r->logo!=''){
+                            Storage::disk('public')->delete('customer/'.$store->customer_id.'/' . $store->logo);
+                            $image_64 = $r->logo;
+                            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                             // find substring fro replace here eg: data:image/png;base64,
+                            $image = str_replace($replace, '', $image_64);
+                            $image = str_replace(' ', '+', $image);
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->put('customer/'.$store->customer_id.'/' . $imageName, base64_decode($image));
+                            $store->logo_path = 'customer/'.$store->customer_id.'/';
+                            $store->logo = $imageName;
+                            $store->save();
+                            // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                        }
+
+                    }else{
+                        return response()->json([
+                            'message' => 'ไม่พบข้อมูล',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+
+
+                    DB::commit();
+                    return response()->json([
+                        'message' => 'บันทึกสำเร็จ',
+                        'status' => 1,
+                        'data' => '',
+                    ]);
+
+                    }
+                    catch (\Exception $e) {
+                        DB::rollback();
+                    // return $e->getMessage();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                    }
+                    catch(\FatalThrowableError $fe)
+                    {
+                        DB::rollback();
+                        return response()->json([
+                            'message' =>  $e->getMessage(),
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+    }
+
+        public function api_store_following_update(Request $r){
+
+            DB::beginTransaction();
+            try
+                {
+                    $store = Store::where('id',$r->store_id)->first();
+                    if($store){
+                        $follow = DB::table('store_following')
+                        ->where('customer_id',$r->customer_id)
+                        ->where('store_id',$r->store_id)
+                        ->first();
+                        if($follow){
+                            if($follow->status == 1){
+                                DB::table('store_following')
+                                ->where('customer_id',$r->customer_id)
+                                ->where('store_id',$r->store_id)
+                                ->update([
+                                    'status' => 0,
+                                    'updated_at' => date('Y-m-d H:i:s'),
+                                ]);
+                                $store->following = $store->following-1;
+                                $store->save();
+                                $message = 'ยกเลิกติดตามร้านค้าแล้ว';
+                            }else{
+                                DB::table('store_following')
+                                ->where('customer_id',$r->customer_id)
+                                ->where('store_id',$r->store_id)
+                                ->update([
+                                    'status' => 1,
+                                    'updated_at' => date('Y-m-d H:i:s'),
+                                ]);
+                                $store->following = $store->following+1;
+                                $store->save();
+                                $message = 'ติดตามร้านค้าสำเร็จ';
+                            }
+                        }else{
+                            DB::table('store_following')->insert(
+                                [
+                                    'customer_id' => $r->customer_id,
+                                    'store_id' => $r->store_id,
+                                    'status' => 1,
+                                    'created_at' => date('Y-m-d H:i:s'),
+                                    'updated_at' => date('Y-m-d H:i:s'),
+                                ]
+                            );
+                            $store->following = $store->following+1;
+                            $store->save();
+                            $message = 'ติดตามร้านค้าสำเร็จ';
+                        }
+                    }
+
+                    DB::commit();
+                    return response()->json([
+                        'message' => $message,
+                        'status' => 1,
+                        'data' => '',
+                    ]);
+
+                    }
+                    catch (\Exception $e) {
+                        DB::rollback();
+                    // return $e->getMessage();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                    }
+                    catch(\FatalThrowableError $fe)
+                    {
+                        DB::rollback();
+                        return response()->json([
+                            'message' =>  $e->getMessage(),
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+    }
+
+    public function api_get_product_list_category(Request $r)
+    {
+
+        $products = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'store.logo_path','store.logo',
+            )
+            ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            ->where('products.category_id',$r->category_id)
+            ->orderBy('products.sale_number','desc')
+            ->inRandomOrder()->get();
+
+            $url_img = Storage::disk('public')->url('');
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'url_img' => $url_img,
+                ],
+            ]);
+
+    }
+
 }

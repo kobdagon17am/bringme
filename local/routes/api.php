@@ -44,6 +44,9 @@ Route::post('api_purchase_cart', 'API1Controller@api_purchase_cart');
 Route::post('api_get_order_list', 'API1Controller@api_get_order_list');
 Route::post('api_get_product_list', 'API1Controller@api_get_product_list');
 Route::post('api_get_store', 'API1Controller@api_get_store');
+Route::post('api_get_store_detail', 'API1Controller@api_get_store_detail');
+Route::post('api_store_following_update', 'API2Controller@api_store_following_update');
+
 Route::post('api_product_store', 'API1Controller@api_product_store');
 Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
 // API2Controller
@@ -70,3 +73,5 @@ Route::post('api_get_dataset', 'API1Controller@api_get_dataset');
 Route::post('api_get_shipping_price', 'API2Controller@api_get_shipping_price');
 Route::post('api_pre_cart_purchase', 'API1Controller@api_pre_cart_purchase');
 Route::post('api_check_cart_status', 'API1Controller@api_check_cart_status');
+Route::post('api_store_update', 'API2Controller@api_store_update');
+Route::post('api_get_product_list_category', 'API2Controller@api_get_product_list_category');
