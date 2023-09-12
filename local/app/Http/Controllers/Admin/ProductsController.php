@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Storage;
 
 class ProductsController extends Controller
 {
@@ -89,18 +90,19 @@ class ProductsController extends Controller
 
         if(empty($id)){
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
-
         }
-        $data['data'] = DB::table('products_item')
-        ->select('products_item.*','customer.name as stor_name','products_transfer.id as transfer_id')
+
+        $data['products_item'] = DB::table('products_item')
+        ->select('products_item.*','customer.name as store_name','products_transfer.id as transfer_id','products.category_id','products.brands_id')
         ->where('products_item.id', $id)
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
         ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
         ->first();
 
-
-
         $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['category'] = DB::table('category')->get();
+        $data['brands'] = DB::table('brands')->get();
 
         return view('backend/product-edit',$data);
     }
@@ -109,6 +111,7 @@ class ProductsController extends Controller
     {
         if(empty($id)){
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
+
         }
 
         $data['data'] = DB::table('products_transfer')
@@ -226,7 +229,50 @@ class ProductsController extends Controller
     }
 
     public function item_gallery(Request $request){
-        dd($request->file());
+
+        if ($request->hasFile('gallery_file')) {
+            $products = DB::table('products_item')->where('product_id',$request->input('item_id'))->first();
+            foreach ($request->file('gallery_file') as $key => $imageFile) {
+                $extension = $imageFile->getClientOriginalExtension();
+                $imageName = time().'_'.uniqid().'.'.$extension;
+                
+                $disk = Storage::disk('public');
+                $path = 'product/'.$products->customer_id.'/'.$products->id.'/'.$imageName;
+                
+                $disk->putFileAs('product/'.$products->customer_id.'/'.$products->id, $imageFile, $imageName, 'public');
+                $data_img['product_id'] = $products->id;
+                $data_img['path'] = 'product/'.$products->customer_id.'/'.$products->id.'/';
+                $data_img['name'] = $imageName;
+                $data_img['use_profile'] = 1;
+                $data_img['created_at'] = date('Y-m-d H:i:s');
+                $data_img['updated_at'] = date('Y-m-d H:i:s');
+                DB::table('products_gallery')->insert($data_img);
+            }
+        }
+
+        return redirect('admin/product-edit/'.$request->input('item_id'));
+    }
+
+    public function remove_gallery(Request $request){
+        $gallery = DB::table('products_gallery')->where('products_gallery.id', $request->input('gallery_id'))->first();
+
+        if (!$gallery) {
+            return response()->json(['message' => 'Gallery not found'], 404);
+        }
+
+        $filePath = 'public/' . $gallery->path . $gallery->name; // e.g., public/product/14/1/168982623844956.jpeg
+
+        if (Storage::disk('local')->exists($filePath)) {
+            // File exists, so you can delete it
+            Storage::disk('local')->delete($filePath);
+
+            // Optionally, you can also remove the gallery entry from the database
+            DB::table('products_gallery')->where('products_gallery.id', $request->input('gallery_id'))->delete();
+
+            return response()->json(['message' => 'Gallery deleted successfully']);
+        } else {
+            return response()->json(['message' => 'File not found'], 404);
+        }
     }
 
 
