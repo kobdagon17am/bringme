@@ -1,67 +1,32 @@
 @extends('layouts.backend.app')
 
 @section('content')
+<form method="POST" action="{{ url('admin/product_create') }}" enctype="multipart/form-data">
+@csrf()
 <div class="content">
     <div class="grid grid-cols-11 gap-x-6 mt-5 pb-20">
         <div class="intro-y col-span-11 ">
             <!-- BEGIN: Uplaod Product -->
             <div class="intro-y box p-5">
-                <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                    <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                        อัปโหลดสินค้า
-                    </div>
-                    <div class="mt-5">
-                        <div class="form-inline items-start flex-col xl:flex-row mt-10">
-                            <div class="form-label w-full xl:w-64 xl:!mr-10">
-                                <div class="text-left">
-                                    <div class="flex items-center">
-                                        <div class="font-medium">รูปสินค้า</div>
-                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
-                                <div class="grid grid-cols-10 gap-5 pl-4 pr-5">
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-12.jpg">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-13.jpg">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-4.jpg">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-15.jpg">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in">
-                                        <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://rubick-laravel.left4code.com/dist/images/preview-6.jpg">
-                                        <div class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="px-4 pb-4 mt-5 flex items-center justify-center cursor-pointer relative">
-                                    <i data-lucide="image" class="w-4 h-4 mr-2"></i>
-                                    <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                    <input id="horizontal-form-1" type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
+                <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
+                  อัปโหลดสินค้า
                 </div>
+                <div class="mt-5">
+                  <div class="col-span-1 md:col-span-12">
+                    <label for="" class="form-label">รูปสินค้า</label>
+                    <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
+                      <div class="flex flex-wrap px-4" id="image-container">
+                        <!-- Images will be added here dynamically -->
+                      </div>
+                      <div class="px-4 pb-4 flex items-center cursor-pointer relative">
+                        <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
+                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="produc_gallery[]" multiple>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <!-- END: Uplaod Product -->
             <!-- BEGIN: Product Information -->
@@ -80,18 +45,37 @@
                                     </div>
                                 </div>
                             </div>
-                            <input id="brand-name" type="text" class="form-control" placeholder="Brand name">
+                            <input id="brands_id" type="text" class="w-full" name="brands_id" placeholder="Select Brand" list="brand_list" required>
+                            <datalist id="brand_list">
+                                <option value="" selected="true">- เลือกแบรนด์ -</option>
+                                @if(!empty($brands))
+                                    @foreach($brands as $_brands)
+                                        <option {{ (!empty($product_detail) ? ($_brands->id == $product_detail->brands_id ? 'selected' : '') : '') }} value="{{ $_brands->name_th }}">{{ $_brands->name_th }}</option>
+                                    @endforeach
+                                @endif
+                            </datalist>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
                                 <div class="text-left">
                                     <div class="flex items-center">
-                                        <div class="font-medium">ชื่อสินค้า</div>
+                                        <div class="font-medium">ชื่อสินค้า (ไทย)</div>
                                         <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
                                     </div>
                                 </div>
                             </div>
-                            <input id="product-name" type="text" class="form-control" placeholder="Product name">
+                            <input id="product-name" type="text" class="w-full" name="name_th" placeholder="Product name th">
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">ชื่อสินค้า (Eng)</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="text" class="w-full" name="name_en" placeholder="Product name en">
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
@@ -101,12 +85,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-full mt-3 xl:mt-0 flex-1">
-                                <select id="category" data-placeholder="" class="tom-select w-full tomselected" multiple="multiple" tabindex="-1" hidden="hidden">
-                                    <option value="Electronic" selected="true">Electronic</option>
-                                    <option value="Photography" selected="true">Photography</option>
-                                </select>
-                            </div>
+                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" multiple="multiple" tabindex="-1" hidden="hidden">
+                                @if(!empty($category))
+                                    @foreach($category as $_category)
+                                        <option {{ (!empty($product_detail) ? ($_category->id == $product_detail->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
@@ -116,20 +101,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-full mt-3 xl:mt-0 flex-1">
-                                <div class="flex flex-col sm:flex-row">
-                                    <div class="form-check mr-2">
-                                        <input id="radio-switch-4" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-chris-evans">
-                                        <label class="form-check-label" for="radio-switch-4">Ambient</label>
-                                    </div>
-                                    <div class="form-check mr-2 mt-2 sm:mt-0">
-                                        <input id="radio-switch-5" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-liam-neeson">
-                                        <label class="form-check-label" for="radio-switch-5">Chilled</label>
-                                    </div>
-                                    <div class="form-check mr-2 mt-2 sm:mt-0">
-                                        <input id="radio-switch-6" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-daniel-craig">
-                                        <label class="form-check-label" for="radio-switch-6">Frozen</label>
-                                    </div>
+                            <div class="flex flex-col sm:flex-row">
+                                <div class="form-check mr-2">
+                                    <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="0">
+                                    <label class="form-check-label" for="radio-switch-4">Ambient</label>
+                                </div>
+                                <div class="form-check mr-2 mt-2 sm:mt-0">
+                                    <input name="storage_method_id" id="radio-switch-5" class="form-check-input" type="radio" name="storage_method_id" value="1">
+                                    <label class="form-check-label" for="radio-switch-5">Chilled</label>
+                                </div>
+                                <div class="form-check mr-2 mt-2 sm:mt-0">
+                                    <input name="storage_method_id" id="radio-switch-6" class="form-check-input" type="radio" name="storage_method_id" value="2">
+                                    <label class="form-check-label" for="radio-switch-6">Frozen</label>
                                 </div>
                             </div>
                         </div>
@@ -148,47 +131,38 @@
                             <div class="form-label xl:w-64 xl:!mr-10">
                                 <div class="text-left">
                                     <div class="flex items-center">
-                                        <div class="font-medium">รายละเอียดสินค้า</div>
+                                        <div class="font-medium">รายละเอียดสินค้า (TH)</div>
                                         <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="w-full mt-3 xl:mt-0 flex-1">
-                                <div class="editor" style="display: none;">
-                                    <p>Content of the editor.</p>
+                                <div class="editor" style="display: none;" name="detail_th">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- END: Product Detail -->
-            <!-- BEGIN: Product Variant -->
             <div class="intro-y box p-5 mt-5">
                 <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                    <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                        ตัวเลือกสินค้า
-                    </div>
-                    <div class="mt-5">
-                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                            <div class="form-label sm:!mr-10">
-                                <div class="text-left">
-                                    <div class="flex items-center">
-                                        <div class="font-medium">ตัวเลือกสินค้า</div>
-                                    </div>
+                    <div class="form-inline items-start flex-col xl:flex-row pt-5 first:mt-0 first:pt-0">
+                        <div class="form-label xl:w-64 xl:!mr-10">
+                            <div class="text-left">
+                                <div class="flex items-center">
+                                    <div class="font-medium">รายละเอียดสินค้า (EN)</div>
+                                    <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
                                 </div>
                             </div>
-                            <div class="w-full mt-3 xl:mt-0 flex-1 xl:text-right">
-                                <button class="btn btn-primary w-44">
-                                    <i data-lucide="plus" class="w-4 h-4 mr-2"></i> เพิ่มตัวเลือก
-                                </button>
+                        </div>
+                        <div class="w-full mt-3 xl:mt-0 flex-1">
+                            <div class="editor" style="display: none;" name="detail_en">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- END: Product Variant -->
-            <!-- BEGIN: Product Variant (Details) -->
+
             <div class="intro-y box p-5 mt-5">
                 <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                     <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
@@ -205,64 +179,32 @@
                             </div>
                             <div class="w-full mt-3 xl:mt-0 flex-1">
                                 <div class="relative pl-5 pr-5 xl:pr-10 py-10 bg-slate-50 dark:bg-transparent dark:border rounded-md">
-                                    <a href="" class="text-slate-500 absolute top-0 right-0 mr-4 mt-4">
-                                        <i data-lucide="x" class="w-5 h-5"></i>
-                                    </a>
                                     <div>
                                         <div class="form-inline mt-5 first:mt-0">
-                                            <label class="form-label sm:w-20">ชื่อ</label>
+                                            <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control" placeholder="Color">
+                                                    <input type="text" class="form-control" placeholder="" name="option_title[]">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-inline mt-5 items-start first:mt-0">
+                                        <div class="form-inline mt-5 items-start first:mt-0 option_detail">
                                             <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
                                             <div class="flex-1">
                                                 <div class="xl:flex items-center mt-5 first:mt-0">
                                                     <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="Black">
+                                                        <input type="text" class="form-control" placeholder="" name="option_detail[]">
                                                     </div>
                                                     <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <a href="" class="xl:ml-5">
-                                                            <i data-lucide="move" class="w-4 h-4"></i>
-                                                        </a>
-                                                        <a href="" class="ml-3 xl:ml-5">
+                                                        <p class="ml-3 xl:ml-5 remove_option_detail">
                                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="xl:flex items-center mt-5 first:mt-0">
-                                                    <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="White">
-                                                    </div>
-                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <a href="" class="xl:ml-5">
-                                                            <i data-lucide="move" class="w-4 h-4"></i>
-                                                        </a>
-                                                        <a href="" class="ml-3 xl:ml-5">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="xl:flex items-center mt-5 first:mt-0">
-                                                    <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="Gray">
-                                                    </div>
-                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <a href="" class="xl:ml-5">
-                                                            <i data-lucide="move" class="w-4 h-4"></i>
-                                                        </a>
-                                                        <a href="" class="ml-3 xl:ml-5">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="xl:ml-20 xl:pl-5 xl:pr-20 mt-5 first:mt-0">
-                                            <button class="btn btn-outline-primary border-dashed w-full">
+                                            <button type="button" class="btn btn-outline-primary border-dashed w-full add_option_detail_1">
                                                 <i data-lucide="plus" class="w-4 h-4 mr-2"></i> เพิ่มตัวเลือกใหม่
                                             </button>
                                         </div>
@@ -280,64 +222,32 @@
                             </div>
                             <div class="w-full mt-3 xl:mt-0 flex-1">
                                 <div class="relative pl-5 pr-5 xl:pr-10 py-10 bg-slate-50 dark:bg-transparent dark:border rounded-md">
-                                    <a href="" class="text-slate-500 absolute top-0 right-0 mr-4 mt-4">
-                                        <i data-lucide="x" class="w-5 h-5"></i>
-                                    </a>
                                     <div>
                                         <div class="form-inline mt-5 first:mt-0">
-                                            <label class="form-label sm:w-20">ชื่อ</label>
+                                            <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control" placeholder="Size">
+                                                    <input type="text" class="form-control" placeholder="" name="option_title[]">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-inline mt-5 items-start first:mt-0">
+                                        <div class="form-inline mt-5 items-start first:mt-0 option_detail_2">
                                             <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
                                             <div class="flex-1">
                                                 <div class="xl:flex items-center mt-5 first:mt-0">
                                                     <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="Small">
+                                                        <input type="text" class="form-control" placeholder="" name="option_detail_2[]">
                                                     </div>
                                                     <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <a href="" class="xl:ml-5">
-                                                            <i data-lucide="move" class="w-4 h-4"></i>
-                                                        </a>
-                                                        <a href="" class="ml-3 xl:ml-5">
+                                                        <p class="ml-3 xl:ml-5 remove_option_detail_2">
                                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="xl:flex items-center mt-5 first:mt-0">
-                                                    <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="Medium">
-                                                    </div>
-                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <a href="" class="xl:ml-5">
-                                                            <i data-lucide="move" class="w-4 h-4"></i>
-                                                        </a>
-                                                        <a href="" class="ml-3 xl:ml-5">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="xl:flex items-center mt-5 first:mt-0">
-                                                    <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="Large">
-                                                    </div>
-                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <a href="" class="xl:ml-5">
-                                                            <i data-lucide="move" class="w-4 h-4"></i>
-                                                        </a>
-                                                        <a href="" class="ml-3 xl:ml-5">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="xl:ml-20 xl:pl-5 xl:pr-20 mt-5 first:mt-0">
-                                            <button class="btn btn-outline-primary border-dashed w-full">
+                                            <button type="button" class="btn btn-outline-primary border-dashed w-full add_option_detail_2">
                                                 <i data-lucide="plus" class="w-4 h-4 mr-2"></i> เพิ่มตัวเลือกใหม่
                                             </button>
                                         </div>
@@ -345,32 +255,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Variant Information</div>
-                                            </div>
-                                            <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                                Apply price and stock on all variants or based on certain variant codes.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="sm:grid grid-cols-4 gap-2">
-                                            <div class="input-group">
-                                                <div class="input-group-text">$</div>
-                                                <input type="text" class="form-control" placeholder="Price">
-                                            </div>
-                                            <input type="text" class="form-control mt-2 sm:mt-0" placeholder="Stock">
-                                            <input type="text" class="form-control mt-2 sm:mt-0" placeholder="Variant Code">
-                                            <button class="btn btn-primary mt-2 sm:mt-0">
-                                                Apply To All
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> -->
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
                                 <div class="text-left">
@@ -381,230 +265,20 @@
                             </div>
                             <div class="w-full mt-3 xl:mt-0 flex-1">
                                 <div class="overflow-x-auto">
-                                    <table class="table border">
+                                    <table id="optionTable" class="table border">
                                         <thead>
-                                            <tr>
-                                                <th class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap">สี</th>
-                                                <th class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap">
-                                                    <div class="flex items-center">ไซส์</div>
-                                                </th>
-                                                <th class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap !px-2">ราคา</th>
-                                                <th class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap !px-2">
-                                                    <div class="flex items-center">
-                                                        <div class="
-                                                            relative w-4 h-4 mr-2 -mt-0.5
-                                                            before:content-[''] before:absolute before:w-4 before:h-4 before:bg-primary/20 before:rounded-full lg:before:animate-ping
-                                                            after:content-[''] after:absolute after:w-4 after:h-4 after:bg-primary after:rounded-full after:border-4 after:border-white/60 after:dark:border-darkmode-300
-                                                        "></div>
-                                                        สต็อค
-                                                    </div>
-                                                </th>
-                                            </tr>
+                                            
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td rowspan="3" class="border-r">ดำ</td>
-                                                <td>S</td>
-                                                <td class="!px-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">฿</div>
-                                                        <input type="text" class="form-control min-w-[6rem]" placeholder="ราคา">
-                                                    </div>
-                                                </td>
-                                                <td class="!px-2">
-                                                    <input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค">
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>M</td>
-                                                <td class="!px-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">฿</div>
-                                                        <input type="text" class="form-control min-w-[6rem]" placeholder="ราคา">
-                                                    </div>
-                                                </td>
-                                                <td class="!px-2">
-                                                    <input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค">
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>L</td>
-                                                <td class="!px-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">฿</div>
-                                                        <input type="text" class="form-control min-w-[6rem]" placeholder="ราคา">
-                                                    </div>
-                                                </td>
-                                                <td class="!px-2">
-                                                    <input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค">
-                                                </td>
-
-                                            <tr>
-                                                <td rowspan="3" class="border-r">ดำ</td>
-                                                <td>S</td>
-                                                <td class="!px-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">฿</div>
-                                                        <input type="text" class="form-control min-w-[6rem]" placeholder="ราคา">
-                                                    </div>
-                                                </td>
-                                                <td class="!px-2">
-                                                    <input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค">
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>M</td>
-                                                <td class="!px-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">฿</div>
-                                                        <input type="text" class="form-control min-w-[6rem]" placeholder="ราคา">
-                                                    </div>
-                                                </td>
-                                                <td class="!px-2">
-                                                    <input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค">
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>L</td>
-                                                <td class="!px-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">฿</div>
-                                                        <input type="text" class="form-control min-w-[6rem]" placeholder="ราคา">
-                                                    </div>
-                                                </td>
-                                                <td class="!px-2">
-                                                    <input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค">
-                                                </td>
-
-                                            </tr>
+                                            <!-- Table content will be generated here -->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Wholesale</div>
-                                            </div>
-                                            <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                                Add wholesale price for certain quantity purchases.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="overflow-x-auto">
-                                            <table class="table border">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="!pr-2 bg-slate-50 dark:bg-darkmode-800"></th>
-                                                        <th class="bg-slate-50 dark:bg-darkmode-800"></th>
-                                                        <th class="!px-2 bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap">Min.</th>
-                                                        <th class="!px-2 bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap">Max.</th>
-                                                        <th class="!px-2 bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap">Unit Price</th>
-                                                        <th class="!px-2 bg-slate-50 dark:bg-darkmode-800"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="!pr-2">1.</td>
-                                                        <td class="whitespace-nowrap">Wholesale Price 1</td>
-                                                        <td class="!px-2">
-                                                            <input type="text" class="form-control min-w-[6rem]" placeholder="Min Qty">
-                                                        </td>
-                                                        <td class="!px-2">
-                                                            <input type="text" class="form-control min-w-[6rem]" placeholder="Max Qty">
-                                                        </td>
-                                                        <td class="!px-2">
-                                                            <div class="input-group">
-                                                                <div class="input-group-text">$</div>
-                                                                <input type="text" class="form-control min-w-[6rem]" placeholder="Price">
-                                                            </div>
-                                                        </td>
-                                                        <td class="!pl-4 text-slate-500">
-                                                            <a href="">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="trash-2" data-lucide="trash-2" class="lucide lucide-trash-2 w-4 h-4">
-                                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                                                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                                </svg>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="!pr-2">2.</td>
-                                                        <td class="whitespace-nowrap">Wholesale Price 2</td>
-                                                        <td class="!px-2">
-                                                            <input type="text" class="form-control min-w-[6rem]" placeholder="Min Qty">
-                                                        </td>
-                                                        <td class="!px-2">
-                                                            <input type="text" class="form-control min-w-[6rem]" placeholder="Max Qty">
-                                                        </td>
-                                                        <td class="!px-2">
-                                                            <div class="input-group">
-                                                                <div class="input-group-text">$</div>
-                                                                <input type="text" class="form-control min-w-[6rem]" placeholder="Price">
-                                                            </div>
-                                                        </td>
-                                                        <td class="!pl-4 text-slate-500">
-                                                            <a href="">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="trash-2" data-lucide="trash-2" class="lucide lucide-trash-2 w-4 h-4">
-                                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                                                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                                </svg>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="!pr-2">3.</td>
-                                                        <td class="whitespace-nowrap">Wholesale Price 3</td>
-                                                        <td class="!px-2">
-                                                            <input type="text" class="form-control min-w-[6rem]" placeholder="Min Qty">
-                                                        </td>
-                                                        <td class="!px-2">
-                                                            <input type="text" class="form-control min-w-[6rem]" placeholder="Max Qty">
-                                                        </td>
-                                                        <td class="!px-2">
-                                                            <div class="input-group">
-                                                                <div class="input-group-text">$</div>
-                                                                <input type="text" class="form-control min-w-[6rem]" placeholder="Price">
-                                                            </div>
-                                                        </td>
-                                                        <td class="!pl-4 text-slate-500">
-                                                            <a href="">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="trash-2" data-lucide="trash-2" class="lucide lucide-trash-2 w-4 h-4">
-                                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                                                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                                </svg>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <button class="btn btn-outline-primary border-dashed w-full mt-4">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="plus" data-lucide="plus" class="lucide lucide-plus w-4 h-4 mr-2">
-                                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            </svg> Add New Wholesale Price
-                                        </button>
-                                    </div>
-                                </div> -->
                     </div>
                 </div>
             </div>
-            <!-- END: Product Variant (Details) -->
-            <!-- BEGIN: Product Management -->
             <div class="intro-y box p-5 mt-5">
                 <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                     <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
@@ -630,208 +304,173 @@
                     </div>
                 </div>
             </div>
-            <!-- END: Product Management -->
-            <!-- BEGIN: Weight & Shipping -->
-            <!-- <div class="intro-y box p-5 mt-5">
-                        <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                            <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="chevron-down" data-lucide="chevron-down" class="lucide lucide-chevron-down w-4 h-4 mr-2">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg> Weight &amp; Shipping
-                            </div>
-                            <div class="mt-5">
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Product Weight</div>
-                                                <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
-                                            </div>
-                                            <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                                Enter the weight by weighing the product after it is <span class="font-medium text-slate-600 dark:text-slate-300">packaged</span>.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="sm:grid grid-cols-4 gap-2">
-                                            <select class="form-select">
-                                                <option value="Gram (g)">Gram (g)</option>
-                                                <option value="Kilogram (kg)">Kilogram (kg)</option>
-                                            </select>
-                                            <input type="text" id="product-weight" class="form-control mt-2 sm:mt-0" placeholder="Stock">
-                                        </div>
-                                        <div class="alert alert-outline-warning alert-dismissible show flex items-center bg-warning/20 dark:bg-darkmode-400 dark:border-darkmode-400 mt-5" role="alert">
-                                            <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="alert-triangle" data-lucide="alert-triangle" class="lucide lucide-alert-triangle w-6 h-6 mr-3">
-                                                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
-                                                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                                </svg></span>
-                                            <span class="text-slate-800 dark:text-slate-500">Pay close attention to the weight of the product so that there is no difference in data with the shipping courier. <a class="text-primary font-medium" href="">Learn More</a></span>
-                                            <button type="button" class="btn-close dark:text-white" data-tw-dismiss="alert" aria-label="Close">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="x" data-lucide="x" class="lucide lucide-x w-4 h-4">
-                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Product Size</div>
-                                                <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
-                                            </div>
-                                            <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                                Enter the product size after packing to calculate the volume weight. <a class="text-primary font-medium" href="">Learn Volume Weight</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="sm:grid grid-cols-3 gap-2">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" placeholder="Width">
-                                                <div class="input-group-text">cm</div>
-                                            </div>
-                                            <div class="input-group mt-2 sm:mt-0">
-                                                <input type="text" class="form-control" placeholder="Height">
-                                                <div class="input-group-text">cm</div>
-                                            </div>
-                                            <div class="input-group mt-2 sm:mt-0">
-                                                <input type="text" class="form-control" placeholder="Length">
-                                                <div class="input-group-text">cm</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Shipping Insurance</div>
-                                            </div>
-                                            <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                                Refund product &amp; postage for the seller and buyer in case of damage / loss during shipping. <a class="text-primary font-medium" href="">Learn More</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="flex flex-col sm:flex-row">
-                                            <div class="form-check mr-4">
-                                                <input id="shipping-insurance-required" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-chris-evans">
-                                                <div class="form-check-label">
-                                                    <div>Required</div>
-                                                    <div class="leading-relaxed text-slate-500 text-xs mt-1 w-56">
-                                                        You <span class="font-medium text-slate-600 dark:text-slate-300">require</span> the buyer to activate shipping insurance
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-check mr-4 mt-2 sm:mt-0">
-                                                <input id="shipping-insurance-optional" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-liam-neeson">
-                                                <div class="form-check-label">
-                                                    <div>Optional</div>
-                                                    <div class="leading-relaxed text-slate-500 text-xs mt-1 w-56">
-                                                        You <span class="font-medium text-slate-600 dark:text-slate-300">give the buyer the option</span> to activate shipping insurance
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">Shipping Service</div>
-                                            </div>
-                                            <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                                Configure shipping services according to your product type.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="flex flex-col sm:flex-row">
-                                            <div class="form-check mr-4">
-                                                <input id="shipping-service-standard" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-chris-evans">
-                                                <label class="form-check-label" for="shipping-service-standard">Standard</label>
-                                            </div>
-                                            <div class="form-check mr-4 mt-2 sm:mt-0">
-                                                <input id="shipping-service-custom" class="form-check-input" type="radio" name="horizontal_radio_button" value="horizontal-radio-liam-neeson">
-                                                <label class="form-check-label" for="shipping-service-custom">Custom</label>
-                                            </div>
-                                        </div>
-                                        <div class="leading-relaxed text-slate-500 text-xs mt-3">
-                                            The delivery service for this product will be the same as in the <a class="text-primary font-medium" href="">Shipping Settings.</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">PreOrder</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="w-full mt-3 xl:mt-0 flex-1">
-                                        <div class="form-check form-switch">
-                                            <input id="preorder-active" class="form-check-input" type="checkbox">
-                                            <label class="form-check-label leading-relaxed text-slate-500 text-xs" for="preorder-active">
-                                                Activate PreOrder if you need a longer shipping process. <a class="text-primary font-medium" href="">Learn more.</a>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-            <!-- END: Weight & Shipping -->
             <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
                 <a href="products.php" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ยกเลิก</a>
                 <button type="button" class="btn py-3 btn-primary">บันทึก</button>
             </div>
         </div>
-        <!-- <div class="intro-y col-span-2 hidden 2xl:block">
-                    <div class="pt-10 sticky top-0">
-                        <ul class="text-slate-500 relative before:content-[''] before:w-[2px] before:bg-slate-200 before:dark:bg-darkmode-600 before:h-full before:absolute before:left-0 before:z-[-1]">
-                            <li class="mb-4 border-l-2 pl-5 border-primary dark:border-primary text-primary font-medium">
-                                <a href="">Upload Product</a>
-                            </li>
-                            <li class="mb-4 border-l-2 pl-5 border-transparent dark:border-transparent">
-                                <a href="">Product Information</a>
-                            </li>
-                            <li class="mb-4 border-l-2 pl-5 border-transparent dark:border-transparent">
-                                <a href="">Product Detail</a>
-                            </li>
-                            <li class="mb-4 border-l-2 pl-5 border-transparent dark:border-transparent">
-                                <a href="">Product Variant</a>
-                            </li>
-                            <li class="mb-4 border-l-2 pl-5 border-transparent dark:border-transparent">
-                                <a href="">Product Variant (Details)</a>
-                            </li>
-                            <li class="mb-4 border-l-2 pl-5 border-transparent dark:border-transparent">
-                                <a href="">Product Management</a>
-                            </li>
-                            <li class="mb-4 border-l-2 pl-5 border-transparent dark:border-transparent">
-                                <a href="">Weight &amp; Shipping</a>
-                            </li>
-                        </ul>
-                        <div class="mt-10 bg-warning/20 dark:bg-darkmode-600 border border-warning dark:border-0 rounded-md relative p-5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="lightbulb" data-lucide="lightbulb" class="lucide lucide-lightbulb w-12 h-12 text-warning/80 absolute top-0 right-0 mt-5 mr-3">
-                                <line x1="9" y1="18" x2="15" y2="18"></line>
-                                <line x1="10" y1="22" x2="14" y2="22"></line>
-                                <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14"></path>
-                            </svg>
-                            <h2 class="text-lg font-medium">Tips</h2>
-                            <div class="mt-5 font-medium">Price</div>
-                            <div class="leading-relaxed text-xs mt-2 text-slate-600 dark:text-slate-500">
-                                <div>The image format is .jpg .jpeg .png and a minimum size of 300 x 300 pixels (For optimal images use a minimum size of 700 x 700 pixels).</div>
-                                <div class="mt-2">Select product photos or drag and drop up to 5 photos at once here. Include min. 3 attractive photos to make the product more attractive to buyers.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
     </div>
 </div>
+
+</form>
+
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.product').change(function(e) {
+          const files = e.target.files;
+          const imageContainer = $('#image-container');
+
+          // Clear the existing images
+          imageContainer.empty();
+
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+              // Create a new image element for each uploaded file
+              const imgElement = $('<div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">')
+                .append($('<img class="rounded-md product_place" alt="Midone - HTML Admin Template">').attr('src', e.target.result))
+                .append($('<div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_product">').html('<i data-lucide="x">x</i>'));
+
+              // Append the new image element to the container
+              imageContainer.append(imgElement);
+            };
+
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Handle remove image click
+        $('#image-container').on('click', '.remove_product', function() {
+          $(this).parent().remove();
+        });
+
+        // Ensure that images are displayed when the page loads
+        $(document).ready(function() {
+          const productImages = $('.product');
+          if (productImages.length > 0 && productImages[0].files.length > 0) {
+            // Trigger the change event to display existing images
+            productImages.change();
+          }
+        });
+
+        let optionCounter = 1;
+        let optionCounter_2 = 1;
+
+        // Function to add a new option_detail div for option 1
+        function addOptionDetail_1() {
+            optionCounter++;
+            const optionDetailClone = $('.option_detail:first').clone(true);
+            optionDetailClone.find('input').attr('name', 'option_detail[]');
+            optionDetailClone.find('.add_option_detail_1').removeClass('add_option_detail_1').addClass('remove_option_detail').html('<i data-lucide="trash-2" class="w-4 h-4"></i> ลบตัวเลือก');
+            optionDetailClone.find('.remove_option_detail').on('click', removeOptionDetail(optionCounter));
+            $('.option_detail:last').after(optionDetailClone);
+            $('.option_detail:last').attr('ref', optionCounter);
+            $('.remove_option_detail:last').attr('ref', optionCounter);
+        }
+
+        // Function to add a new option_detail div for option 2
+        function addOptionDetail_2() {
+            optionCounter_2++;
+            const optionDetailClone_2 = $('.option_detail_2:first').clone(true);
+            optionDetailClone_2.find('input').attr('name', 'option_detail_2[]');
+            optionDetailClone_2.find('.add_option_detail_2').removeClass('add_option_detail_2').addClass('remove_option_detail_2').html('<i data-lucide="trash-2" class="w-4 h-4"></i> ลบตัวเลือก');
+            optionDetailClone_2.find('.remove_option_detail_2').on('click', removeOptionDetail_2(optionCounter_2));
+            $('.option_detail_2:last').after(optionDetailClone_2);
+            $('.option_detail_2:last').attr('ref', optionCounter_2);
+            $('.remove_option_detail_2:last').attr('ref', optionCounter_2);
+        }
+
+        // Function to remove the last option_detail div for option 1
+        function removeOptionDetail(optionCounter) {
+            $('.option_detail').each(function () {
+                if ($(this).attr('ref') != null) {
+                    if ($(this).attr('ref') == optionCounter) {
+                        $(this).remove();
+                    }
+                }
+            });
+        }
+
+        // Function to remove the last option_detail div for option 2
+        function removeOptionDetail_2(optionCounter_2) {
+            $('.option_detail_2').each(function () {
+                if ($(this).attr('ref') != null) {
+                    if ($(this).attr('ref') == optionCounter_2) {
+                        $(this).remove();
+                    }
+                }
+            });
+        }
+
+        // Attach click event to add_option_detail_1 button
+        $('.add_option_detail_1').on('click', addOptionDetail_1);
+
+        // Attach click event to add_option_detail_2 button
+        $('.add_option_detail_2').on('click', addOptionDetail_2);
+
+        // Attach click event to remove_option_detail button (for existing options 1)
+        $('.remove_option_detail').click(function () {
+            removeOptionDetail($(this).attr('ref'));
+        });
+
+        // Attach click event to remove_option_detail_2 button (for existing options 2)
+        $('.remove_option_detail_2').click(function () {
+            removeOptionDetail_2($(this).attr('ref'));
+        });
+
+        $('.option_detail').change(function(){
+            generateTable();
+        });
+
+        function generateTable() {
+            const optionTitles = $('input[name="option_title[]"]');
+            const optionDetails = $('input[name="option_detail[]"]');
+            const optionDetails_2 = $('input[name="option_detail_2[]"]');
+            
+            $('#optionTable tbody').empty();
+
+            optionTitles.each(function (index) {
+                const color = $(this).val();
+                const option = [];
+
+                optionDetails_2.each(function () {
+                    option.push($(this).val());
+                });
+
+                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap"></td>'));
+                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap"></td>'));
+                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap !px-2">ราคา</td>'));
+                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap !px-2">จำนวน</td>'));
+
+                $('#optionTable thead').append(row_title);
+                
+                const rowCount = Math.max(option.length);
+
+                for (let i = 0; i < rowCount; i++) {
+                    const row = $('<tr>');
+
+                    if (i === 0) {
+                        row.append($('<td rowspan="' + rowCount + '" class="border-r">' + color + '</td>'));
+                    }
+
+                    if (option[i]) {
+                        row.append($('<td>' + option[i] + '</td>'));
+                    } else {
+                        row.append($('<td></td>'));
+                    }
+
+                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา"></div></td>'));
+
+                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค"></td>'));
+
+                    $('#optionTable tbody').append(row);
+                }
+            });
+        }
+    });
+</script>

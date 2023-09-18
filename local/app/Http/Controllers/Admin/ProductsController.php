@@ -83,16 +83,27 @@ class ProductsController extends Controller
         return view('backend/products-waitapproved-detail',compact('data','id'));
     }
 
+    public function product_add($id){
+        if(empty($id)){
+            return redirect()->back()->withError('กรุณาเลือกร้านค้า');
+        }
 
+        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['category'] = DB::table('category')->get();
+        $data['brands'] = DB::table('brands')->get();
+        $data['product_detail'] = '';
 
-    public function product_edit($id='')
+        return view('backend/product-add',$data);
+    }
+
+    public function product_edit($id)
     {
 
         if(empty($id)){
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
         }
 
-        $data['products_item'] = DB::table('products_item')
+        $data['product_detail'] = DB::table('products_item')
         ->select('products_item.*','customer.name as store_name','products_transfer.id as transfer_id','products.category_id','products.brands_id')
         ->where('products_item.id', $id)
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
@@ -105,6 +116,128 @@ class ProductsController extends Controller
         $data['brands'] = DB::table('brands')->get();
 
         return view('backend/product-edit',$data);
+    }
+
+    public function product_create(Request $request){
+
+        dd($request->input() , $request->file());
+        $store = Store::where('customer_id',$r->user_id)->first();
+
+            // เพิ่มสินค้าหลัก
+            $products = new Products();
+            $products->name_th = $r->name_th;
+            $products->name_en = $r->name_en;
+            $products->detail_th = $r->detail_th;
+            $products->detail_en = $r->detail_en;
+            $products->category_id = $r->category_id;
+            $products->brands_id = $r->brands_id;
+            $products->storage_method_id = $r->storage_method_id;
+            $products->store_id = $r->store_id;
+            $products->customer_id = $r->user_id;
+            $products->qty = 0;
+            $products->save();
+
+            $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
+            $products->products_code = 'BM'.$products_code.'B';
+            $products->barcode = $products->id.date('YmdHis');
+
+            $products->save();
+
+            // เพิ่ม item สินค้า storage_method_id brands_id
+            $products_item = new ProductsItem();
+            $products_item->product_id = $products->id;
+            $products_item->customer_id = $r->user_id;
+            $products_item->name_th = $r->name_th;
+            $products_item->name_en = $r->name_en;
+            $products_item->detail_th = $r->detail_th;
+            $products_item->detail_en = $r->detail_en;
+            $products_item->shelf_lift = $r->shelf_lift;
+            $products_item->store_id = $store->id;
+            $products_item->price = $r->price;
+            $products_item->qty = $r->qty;
+            $products_item->stock_cut_off = $r->stock_cut_off;
+            $products_item->production_date = $r->production_date;
+            $products_item->shipping_date = $r->shipping_date;
+            $products_item->products_code = $products->products_code;
+            $products_item->save();
+
+            $products_option_head1 = new ProductsOptionHead();
+            $products_option_head1->product_id = $products->id;
+            $products_option_head1->option_type = 1;
+            $products_option_head1->name_th = '';
+            $products_option_head1->name_en = '';
+            $products_option_head1->save();
+
+            $products_option_head2 = new ProductsOptionHead();
+            $products_option_head2->product_id = $products->id;
+            $products_option_head2->option_type = 2;
+            $products_option_head2->name_th = '';
+            $products_option_head2->name_en = '';
+            $products_option_head2->save();
+
+            $products_option_1 = new ProductsOption1();
+            $products_option_1->product_id = $products->id;
+            $products_option_1->name_th = '';
+            $products_option_1->name_en = '';
+            $products_option_1->save();
+
+            $products_option_2 = new ProductsOption2();
+            $products_option_2->product_id = $products->id;
+            $products_option_2->name_th = '';
+            $products_option_2->name_en = '';
+            $products_option_2->save();
+
+            $products_option_2_items = new ProductsOption2Items();
+            $products_option_2_items->product_id = $products->id;
+            $products_option_2_items->products_item_id = $products_item->id;
+            $products_option_2_items->option_1_id = $products_option_1->id;
+            $products_option_2_items->option_2_id = $products_option_2->id;
+            $products_option_2_items->price = $r->price;
+            $products_option_2_items->qty = $r->qty;
+            $products_option_2_items->name_th = '';
+            $products_option_2_items->name_en = '';
+            $products_option_2_items->save();
+
+            $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+            $products_option_2_items->save();
+
+            $products->min_price = $r->price;
+            $products->max_price = $r->price;
+            $products->save();
+
+            $gal = explode('|',$r->images);
+            foreach ($gal as $key => $img) {
+                if($img!=''){
+                    $image_64 = $img;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('product/'.$products->customer_id.'/'.$products->id.'/' . $imageName, base64_decode($image));
+
+                    $gal = new ProductsGallery();
+                    $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
+                    $gal->name = $imageName;
+                    $gal->product_id = $products->id;
+                    if($key==0){
+                        $gal->use_profile = 1;
+                    }else{
+                        $gal->use_profile = 0;
+                    }
+                    $gal->save();
+                }
+
+            }
+
+        DB::commit();
+        return response()->json([
+            'message' => 'บันทึกสำเร็จ กรุณารอการตรวจสอบ',
+            'status' => 1,
+            'data' => '',
+        ]);
+
+        return redirect('backend/store-detail/'.$request->input('store_id'));
     }
 
     public function product_panding_tranfer_detail($id='')

@@ -1,5 +1,5 @@
 @extends('layouts.backend.app')
-
+<title>ข้อมูลร้านค้า</title>
 
 @section('content')
     <div class="content">
