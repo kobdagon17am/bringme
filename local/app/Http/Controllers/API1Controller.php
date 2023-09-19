@@ -271,14 +271,98 @@ class API1Controller extends Controller
                 }
     }
 
+    public function api_customer_profile_update(Request $r)
+    {
+        DB::beginTransaction();
+        try
+            {
+
+                if(isset($r->type)){
+                    $customer = Customer::where('id',$r->user_id)->first();
+                    if($r->share_policy=='true'){
+                        $customer->share_policy = 1;
+                    }else{
+                        $customer->share_policy = 0;
+                    }
+                    $customer->save();
+                }else{
+                    $check_email = Customer::select('id')->where('email',$r->email)->first();
+                    if($check_email){
+                        if($check_email->id != $r->user_id){
+                            return response()->json([
+                                'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
+                    }
+
+                        $customer = Customer::where('id',$r->user_id)->first();
+                        $customer->name = $r->name;
+                        $customer->email = $r->email;
+                        $customer->birthday = $r->birthday;
+                        $customer->tel = $r->tel;
+                        if($r->password!=''){
+                            $customer->password = Hash::make($r->password);
+                        }
+                        // $customer->customer_type = 1;
+                        // $customer->select_type = 1;
+                        // $customer->status = 1;
+                        $customer->save();
+
+                        if($r->profile_img != ''){
+                            $image_64 = $r->profile_img;
+                            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                            $image = str_replace($replace, '', $image_64);
+                            $image = str_replace(' ', '+', $image);
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->put('uploads/profile/' . $imageName, base64_decode($image));
+                            $customer->profile_img_path = 'uploads/profile/';
+                            $customer->profile_img = $imageName;
+                            $customer->save();
+                        }
+                }
+
+                DB::commit();
+                $customer = Customer::where('id',$r->user_id)->first();
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => $customer,
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $e)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
     public function api_get_user(Request $r)
     {
         $user = Customer::where('id',$r->user_id)->first();
+        $url_img = Storage::disk('public')->url('');
         if($user){
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => $user,
+                'url_img' => $url_img,
             ]);
         }else{
             return response()->json([
@@ -961,6 +1045,7 @@ class API1Controller extends Controller
                     $product->customer_cart_id = $cart->id;
                     $product->customer_id = $r->user_id;
                     $product->product_id = $r->product_id;
+                    $product->store_id = $product_datail->store_id;
                     $product->price = $stock_items->price;
                     $product->total_price = ($stock_items->price*$r->qty);
                     $product->qty = $r->qty;
@@ -1223,6 +1308,17 @@ class API1Controller extends Controller
             $store->visitor_number = $store->visitor_number+1;
             $store->save();
 
+            if(isset($r->user_id)){
+                $favorite_customer = DB::table('favorite_customer')->select('status')->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+                if($favorite_customer){
+                    $favorite = $favorite_customer->status;
+                }else{
+                    $favorite = 0;
+                }
+            }else{
+                $favorite = 0;
+            }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1238,6 +1334,7 @@ class API1Controller extends Controller
                     'stock_lot_all' => $stock_lot_all,
                     'products_comment' => $products_comment,
                     'comment_number' => count($products_comment),
+                    'favorite' => $favorite,
                 ],
             ]);
         }else{
@@ -1313,6 +1410,16 @@ class API1Controller extends Controller
             }
             $shipping_type = DB::table('shipping_type')->whereNotIn('type',$arr_type_not)->get();
 
+            if(date("Y-m-d H:i:s") < date("Y-m-d".' 08:00:00')){
+                $period = '1';
+            }else{
+                if(date("Y-m-d H:i:s") > date("Y-m-d".' 13:00:00')){
+                    $period = '1';
+                }else{
+                    $period = '2';
+                }
+            }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1323,6 +1430,7 @@ class API1Controller extends Controller
                     'customer_address' => $customer_address,
                     'url_img' => $url_img,
                     'shipping_type' => $shipping_type,
+                    'period' => $period,
                 ],
             ]);
         }else{
@@ -1774,6 +1882,112 @@ class API1Controller extends Controller
                 ],
             ]);
     }
+
+    public function api_get_order_list_store(Request $r)
+    {
+
+        $carts_success = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
+
+        $carts_claim = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('claim_status',1)->orderBy('id','desc')->get();
+
+        $arr_cart_success = [];
+        $cart_claim = [];
+
+        foreach($carts_success as $key=> $c){
+
+            if(!isset($r->limit)){
+            $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total',
+            'customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            )
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
+            ->where('customer_cart.transfer_status',2)
+            ->limit(1)
+            ->get();
+            $arr_cart_success[$key] = [];
+            foreach($products3 as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart_success[$key],$p);
+            }
+        }else{
+
+            $products3 = CustomerCartProduct::select('customer_cart_product.*','customer_cart.grand_total as cart_grand_total',
+            'customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            )
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
+            ->where('customer_cart.transfer_status',2)
+            ->get();
+            $arr_cart_success[$key] = [];
+            foreach($products3 as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($arr_cart_success[$key],$p);
+            }
+        }
+        }
+
+        foreach($carts_claim as $key=> $c){
+            if(!isset($r->limit)){
+
+                $products = CustomerCartProduct::select('customer_cart_product.*',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+                ->join('products','products.id','customer_cart_product.product_id')
+                ->join('brands','brands.id','products.brands_id')
+                ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                // ->where('customer_cart.transfer_status',0)
+                ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
+                $cart_claim[$key] = [];
+                foreach($products as $key2 => $p){
+                    // $arr_cart[$key] = $p;
+                    array_push($cart_claim[$key],$p);
+                }
+            }else{
+
+            $products = CustomerCartProduct::select('customer_cart_product.*',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            // ->where('customer_cart.transfer_status',0)
+            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            $cart_claim[$key] = [];
+            foreach($products as $key2 => $p){
+                // $arr_cart[$key] = $p;
+                array_push($cart_claim[$key],$p);
+            }
+            }
+
+        }
+
+        $url_img = Storage::disk('public')->url('');
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'cart_success' => $arr_cart_success,
+                    'cart_claim' => $cart_claim,
+                    'url_img' => $url_img,
+                ],
+            ]);
+    }
+
 
     public function api_get_product_list(Request $r)
     {

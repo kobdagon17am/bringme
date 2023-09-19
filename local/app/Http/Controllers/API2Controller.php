@@ -37,6 +37,7 @@ Use App\Models\CustomerCartTracking;
 Use App\Models\CustomerCartTrackingItem;
 Use App\Models\ProductsComment;
 Use App\Models\CustomerCartClaim;
+use Carbon\Carbon;
 
 class API2Controller extends  Controller
 {
@@ -1849,8 +1850,8 @@ class API2Controller extends  Controller
 
     public function api_get_product_list_category(Request $r)
     {
-
-        $products = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+        if(!isset($r->brand_id)){
+            $products = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
             'store.logo_path','store.logo',
@@ -1864,17 +1865,245 @@ class API2Controller extends  Controller
             ->where('products.category_id',$r->category_id)
             ->orderBy('products.sale_number','desc')
             ->inRandomOrder()->get();
+        }else{
+            if($r->brand_id!=0){
+                $products = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name',
+                'store.logo_path','store.logo',
+                )
+                ->join('products_item','products_item.product_id','products.id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                ->join('store','store.id','products.store_id')
+                ->where('products_gallery.use_profile',1)
+                ->where('products_item.transfer_status',3)
+                ->where('products.display_status',1)
+                ->where('products.category_id',$r->category_id)
+                ->where('products.brands_id',$r->brand_id)
+                ->orderBy('products.sale_number','desc')
+                ->inRandomOrder()->get();
+            }else{
+                $products = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name',
+                'store.logo_path','store.logo',
+                )
+                ->join('products_item','products_item.product_id','products.id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                ->join('store','store.id','products.store_id')
+                ->where('products_gallery.use_profile',1)
+                ->where('products_item.transfer_status',3)
+                ->where('products.display_status',1)
+                ->where('products.category_id',$r->category_id)
+                ->orderBy('products.sale_number','desc')
+                ->inRandomOrder()->get();
+            }
+        }
 
-            $url_img = Storage::disk('public')->url('');
+        $url_img = Storage::disk('public')->url('');
+
+        $category = Category::where('status',1)->where('id',$r->category_id)->get();
+        $categorys = Category::where('status',1)->where('id','!=',$r->category_id)->get();
+        $brands = Brands::where('status',1)->orderBy('name_th','asc')->get();
 
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => [
                     'products' => $products,
+                    'category' => $category,
+                    'categorys' => $categorys,
                     'url_img' => $url_img,
+                    'brands' => $brands,
                 ],
             ]);
+
+    }
+
+    public function api_get_question_ans(Request $r)
+    {
+        $question_ans = DB::table('question_ans')->orderBy('id','desc')->get();
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'question_ans' => $question_ans,
+                ],
+            ]);
+    }
+
+    public function api_get_web_data(Request $r)
+    {
+        $policy = DB::table('policy')->orderBy('id','desc')->first();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'policy' => $policy,
+                ],
+            ]);
+    }
+
+    public function api_favorite_update(Request $r){
+
+        DB::beginTransaction();
+        try
+            {
+                if($r->favorite){
+
+                }
+                $favorite_customer = DB::table('favorite_customer')->select('status')->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+                if($favorite_customer){
+                    if($favorite_customer->status==1){
+                        DB::table('favorite_customer')->select('status')->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->update([
+                            'status' => 0,
+                        ]);
+                    }else{
+                        DB::table('favorite_customer')->select('status')->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->update([
+                            'status' => 1,
+                        ]);
+                    }
+                }else{
+                    DB::table('favorite_customer')->insert([
+                        'customer_id' => $r->user_id,
+                        'product_id' => $r->product_id,
+                        'status' => 1,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]);
+                }
+
+                // $favorite_customer = DB::table('favorite_customer')->select('status')->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'success',
+                    'status' => 1,
+                    'data' => [
+                        // 'favorite_customer' => $favorite_customer,
+                    ],
+                ]);
+
+                }
+                catch (\Exception $e) {
+                    DB::rollback();
+                // return $e->getMessage();
+                return response()->json([
+                    'message' =>  $e->getMessage(),
+                    'status' => 0,
+                    'data' => '',
+                ]);
+                }
+                catch(\FatalThrowableError $fe)
+                {
+                    DB::rollback();
+                    return response()->json([
+                        'message' =>  $e->getMessage(),
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+    }
+
+    public function api_reset_password(Request $r)
+    {
+
+        $customer = DB::table('customer')->where('email',$r->email)->first();
+        if(!$customer){
+            return response()->json([
+                'message' =>  'ไม่พบผู้ใช้ในระบบ',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+        DB::beginTransaction();
+        try
+            {
+
+        DB::table('reset_password')->where('customer_id',$customer->id)->update([
+            'customer_id' => $customer->id,
+            'date_end' => Carbon::parse(date('Y-m-d H:i:s'))->addDays(1),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+            'status' => 0,
+        ]);
+
+        // $reset_password = new ResetPassword();
+        // $reset_password->customer_id = $customer->id;
+        // $reset_password->date_end = Carbon::parse(date('Y-m-d H:i:s'))->addDays(1);
+        // $reset_password->save();
+        // $receiver = $r->email;
+        // $subject = 'App Befriends แจ้งลืมรหัสผ่าน';
+        // $name = 'applicationbefriends';
+        // $sender = 'applicationbefriends@gmail.com';
+        // $message = 'ท่านสามารถรีเซ็ตรหัสผ่านใหม่ได้โดยคลิกที่ <a href="https://appbefriends.com/reset_password/'.$reset_password->id.'" target="_blank">เปลี่ยนรหัสผ่าน</a>';
+
+        // try {
+
+        // $url = 'http://wut.orangeworkshop.info/ansportagency/api/api_sendmail_befriend_app';
+
+        // $curl = curl_init();
+
+        // $fields = array(
+        //     'receiver' => $receiver,
+        //     'subject' => $subject,
+        //     'name' => $name,
+        //     'email' => $sender,
+        //     'message' => $message
+        // );
+
+        // $fields_string = http_build_query($fields);
+
+        // curl_setopt($curl, CURLOPT_URL, $url);
+        // curl_setopt($curl, CURLOPT_POST, TRUE);
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, $fields_string);
+
+        // $data_r = curl_exec($curl);
+
+        // curl_close($curl);
+
+        // // $response =  json_decode($response);  //แปลง string ที่ได้เป็น object
+        // // var_dump($response);
+        // // echo "<script> location.href='contact.php'; </script>";
+        // } catch (Exception $e) {
+        //     // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        //     return response()->json([
+        //         'message' =>  $mail->ErrorInfo,
+        //         'status' => 0,
+        //         'data' => '',
+        //     ]);
+
+        // }
+
+
+        DB::commit();
+        return response()->json([
+            'message' => 'สำเร็จ กรุณาตรวจสอบที่ email ของท่าน',
+            'status' => 1,
+            'data' =>'',
+        ]);
+
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+        // return $e->getMessage();
+        return response()->json([
+            'message' =>  $e->getMessage(),
+            'status' => 0,
+            'data' => '',
+        ]);
+        }
+        catch(\FatalThrowableError $fe)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
 
     }
 
