@@ -265,7 +265,7 @@ class ProductsController extends Controller
                 }
             }
 
-            if(!in_array(null, $request->input('option_detail_1')) || !in_array(null, $request->input('option_detail_2'))){
+            if(!empty($request->input('option_detail_1')) || !empty($request->input('option_detail_2'))){
                 foreach ($request->input('option_detail') as $key_1 => $_option_detail) {
                     foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
 
