@@ -7,6 +7,33 @@ use Illuminate\Http\Request;
 use DB;
 use DataTables;
 use Storage;
+use File;
+use Hash;
+use App\Models\Store;
+use App\Models\Brands;
+use App\Models\Products;
+Use App\Models\Customer_address;
+Use App\Models\Category;
+Use App\Models\CustomerCartProduct;
+Use App\Models\CustomerCart;
+use App\Mail\SendMail;
+Use App\Models\ProductsItem;
+use Illuminate\Support\Facades\Mail;
+Use App\Models\ProductsOptionHead;
+Use App\Models\ProductsOption1;
+Use App\Models\ProductsOption2;
+Use App\Models\ProductsOption2Items;
+Use App\Models\ProductsTransfer;
+Use App\Models\Stock;
+Use App\Models\StockLot;
+Use App\Models\StockShelf;
+Use App\Models\StockItems;
+Use App\Models\ProductsGallery;
+use Illuminate\Support\Str;
+Use App\Models\CustomerCartProductCutStock;
+Use App\Models\ProductsComment;
+use App\Models\CustomerCartAddress;
+
 
 class ProductsController extends Controller
 {
@@ -88,10 +115,9 @@ class ProductsController extends Controller
             return redirect()->back()->withError('กรุณาเลือกร้านค้า');
         }
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
-        $data['product_detail'] = '';
+        $data['store_id'] = $id;
 
         return view('backend/product-add',$data);
     }
@@ -103,119 +129,153 @@ class ProductsController extends Controller
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
         }
 
-        $data['product_detail'] = DB::table('products_item')
-        ->select('products_item.*','customer.name as store_name','products_transfer.id as transfer_id','products.category_id','products.brands_id')
-        ->where('products_item.id', $id)
+        $data['products_item'] = DB::table('products_item')
+        ->select('products_item.*','products_item.id as item_id','customer.name as store_name','products_transfer.id as transfer_id','products.category_id','products.brands_id','products.store_id as store_id','products.storage_method_id')
+        ->where('products_item.product_id', $id)
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
         ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
         ->first();
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->item_id)->get();
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
+        $data['brands_select'] = DB::table('brands')->where('id', $data['products_item']->brands_id)->first();
+
+        $data['products_option_head'] = DB::table('products_option_head')->where('product_id',$data['products_item']->product_id)->get();
+        $data['products_option_1'] = DB::table('products_option_1')->where('product_id',$data['products_item']->product_id)->get();
+        $data['products_option_2'] = DB::table('products_option_2')->where('product_id',$data['products_item']->product_id)->get();
+        $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id',$data['products_item']->product_id)->get();
 
         return view('backend/product-edit',$data);
     }
 
     public function product_create(Request $request){
 
-        dd($request->input() , $request->file());
-        $store = Store::where('customer_id',$r->user_id)->first();
+        // dd($request->input() , $request->file());
+
+        $store = DB::table('store')->where('customer_id',$request->input('store_id'))->first();
+        $brands = DB::table('brands')->where('name_th','LIKE',$request->input('brands_id'))->first();
+        $brands_id = null;
+        if(!empty($brands)){
+            $brands_id = $brands->id;
+        }else{
+            $data['name_th'] = $request->input('brands_id');
+            $data['name_en'] = $request->input('brands_id');
+            $data['status'] = 1;
+            $data['has_store'] = 1;
+            $brands_id = DB::table('brands')->insertGetID($data);
+        }
 
             // เพิ่มสินค้าหลัก
             $products = new Products();
-            $products->name_th = $r->name_th;
-            $products->name_en = $r->name_en;
-            $products->detail_th = $r->detail_th;
-            $products->detail_en = $r->detail_en;
-            $products->category_id = $r->category_id;
-            $products->brands_id = $r->brands_id;
-            $products->storage_method_id = $r->storage_method_id;
-            $products->store_id = $r->store_id;
-            $products->customer_id = $r->user_id;
-            $products->qty = 0;
+            $products->name_th = $request->input('name_th');
+            $products->name_en = $request->input('name_en');
+            $products->detail_th = $request->input('detail_th');
+            $products->detail_en = $request->input('detail_en');
+            $products->category_id = $request->input('category_id');
+            $products->brands_id = $brands_id;
+            $products->storage_method_id = $request->input('storage_method_id');
+            $products->store_id = $store->id;
+            $products->customer_id = $store->customer_id;
+            $products->qty = $request->input('product_qty');
             $products->save();
 
             $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
             $products->products_code = 'BM'.$products_code.'B';
             $products->barcode = $products->id.date('YmdHis');
-
             $products->save();
 
             // เพิ่ม item สินค้า storage_method_id brands_id
             $products_item = new ProductsItem();
             $products_item->product_id = $products->id;
-            $products_item->customer_id = $r->user_id;
-            $products_item->name_th = $r->name_th;
-            $products_item->name_en = $r->name_en;
-            $products_item->detail_th = $r->detail_th;
-            $products_item->detail_en = $r->detail_en;
-            $products_item->shelf_lift = $r->shelf_lift;
+            $products_item->customer_id = $store->customer_id;
+            $products_item->name_th = $request->input('name_th');
+            $products_item->name_en = $request->input('name_en');
+            $products_item->detail_th = $request->input('detail_th');
+            $products_item->detail_en = $request->input('detail_en');
+            $products_item->shelf_lift = (!empty($request->input('shelf_lift')) ? $request->input('shelf_lift') : 15);
             $products_item->store_id = $store->id;
-            $products_item->price = $r->price;
-            $products_item->qty = $r->qty;
-            $products_item->stock_cut_off = $r->stock_cut_off;
-            $products_item->production_date = $r->production_date;
-            $products_item->shipping_date = $r->shipping_date;
+            $products_item->price = $request->input('product_price');
+            $products_item->qty = $request->input('product_qty');
+            $products_item->stock_cut_off = (!empty($request->input('stock_cut_off')) ? $request->input('stock_cut_off') : 10);
+            $products_item->production_date = (!empty($request->input('production_date')) ? $request->input('production_date') : date('Y-m-d'));
+            $products_item->shipping_date = (!empty($request->input('shipping_date')) ? $request->input('shipping_date') : date('Y-m-d'));
             $products_item->products_code = $products->products_code;
             $products_item->save();
 
-            $products_option_head1 = new ProductsOptionHead();
-            $products_option_head1->product_id = $products->id;
-            $products_option_head1->option_type = 1;
-            $products_option_head1->name_th = '';
-            $products_option_head1->name_en = '';
-            $products_option_head1->save();
+            if(!empty($request->input('option_title'))){
+                foreach ($request->input('option_title') as $key => $_option_title) {
+                    $products_option_head1 = new ProductsOptionHead();
+                    $products_option_head1->product_id = $products->id;
+                    $products_option_head1->option_type = $key+1;
+                    $products_option_head1->name_th = $_option_title;
+                    $products_option_head1->name_en = $_option_title;
+                    $products_option_head1->save();
+                }
+            }
 
-            $products_option_head2 = new ProductsOptionHead();
-            $products_option_head2->product_id = $products->id;
-            $products_option_head2->option_type = 2;
-            $products_option_head2->name_th = '';
-            $products_option_head2->name_en = '';
-            $products_option_head2->save();
+            $array_max_min = array();
+            $id_option_1 = array();
+            $id_option_2 = array();
 
-            $products_option_1 = new ProductsOption1();
-            $products_option_1->product_id = $products->id;
-            $products_option_1->name_th = '';
-            $products_option_1->name_en = '';
-            $products_option_1->save();
+            if(!in_array(null, $request->input('option_detail_1'))){
+                foreach ($request->input('option_detail') as $key => $_option_detail) {
+                    $products_option_1 = new ProductsOption1();
+                    $products_option_1->product_id = $products->id;
+                    $products_option_1->name_th = $_option_detail;
+                    $products_option_1->name_en = $_option_detail;
+                    $products_option_1->save();
+                    array_push($id_option_1, $products_option_1->id);
+                }
+            }
 
-            $products_option_2 = new ProductsOption2();
-            $products_option_2->product_id = $products->id;
-            $products_option_2->name_th = '';
-            $products_option_2->name_en = '';
-            $products_option_2->save();
+            if(!in_array(null, $request->input('option_detail_2'))){
+                foreach ($request->input('option_detail_2') as $key => $_option_detail_2) {
+                    $products_option_2 = new ProductsOption2();
+                    $products_option_2->product_id = $products->id;
+                    $products_option_2->name_th = $_option_detail_2;
+                    $products_option_2->name_en = $_option_detail_2;
+                    $products_option_2->save();
+                    array_push($id_option_2, $products_option_2->id);
+                }
+            }
 
-            $products_option_2_items = new ProductsOption2Items();
-            $products_option_2_items->product_id = $products->id;
-            $products_option_2_items->products_item_id = $products_item->id;
-            $products_option_2_items->option_1_id = $products_option_1->id;
-            $products_option_2_items->option_2_id = $products_option_2->id;
-            $products_option_2_items->price = $r->price;
-            $products_option_2_items->qty = $r->qty;
-            $products_option_2_items->name_th = '';
-            $products_option_2_items->name_en = '';
-            $products_option_2_items->save();
+            if(!in_array(null, $request->input('option_detail_1')) || !in_array(null, $request->input('option_detail_2'))){
+                foreach ($request->input('option_detail') as $key_1 => $_option_detail) {
+                    foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
 
-            $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
-            $products_option_2_items->save();
+                        $products_option_2_items = new ProductsOption2Items();
+                        $products_option_2_items->product_id = $products->id;
+                        $products_option_2_items->products_item_id = $products_item->id;
+                        $products_option_2_items->option_1_id = $id_option_1[$key_1];
+                        $products_option_2_items->option_2_id = $id_option_2[$key_2];
+                        $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                        $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
+                        $products_option_2_items->name_th = $_option_detail.' '.$_option_detail_2;
+                        $products_option_2_items->name_en = $_option_detail.' '.$_option_detail_2;
+                        $products_option_2_items->save();
 
-            $products->min_price = $r->price;
-            $products->max_price = $r->price;
+                        $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                        $products_option_2_items->save();
+
+                        if(!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)){
+                            array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
+                        }
+                    }
+                }
+            }
+
+        
+            $products->min_price = array_shift($array_max_min);
+            $products->max_price = end($array_max_min);
             $products->save();
 
-            $gal = explode('|',$r->images);
-            foreach ($gal as $key => $img) {
-                if($img!=''){
-                    $image_64 = $img;
-                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
-                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                    $image = str_replace($replace, '', $image_64);
-                    $image = str_replace(' ', '+', $image);
+            if(!empty($request->file('produc_gallery'))){
+                foreach ($request->file('produc_gallery') as $key => $imageFile) {
+                    $extension = $imageFile->getClientOriginalExtension();
                     $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                    Storage::disk('public')->put('product/'.$products->customer_id.'/'.$products->id.'/' . $imageName, base64_decode($image));
-
+                    Storage::disk('public')->putFileAs('product/'.$products->customer_id.'/'.$products->id, $imageFile, $imageName, 'public');
                     $gal = new ProductsGallery();
                     $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
                     $gal->name = $imageName;
@@ -227,15 +287,10 @@ class ProductsController extends Controller
                     }
                     $gal->save();
                 }
-
             }
+                
 
         DB::commit();
-        return response()->json([
-            'message' => 'บันทึกสำเร็จ กรุณารอการตรวจสอบ',
-            'status' => 1,
-            'data' => '',
-        ]);
 
         return redirect('backend/store-detail/'.$request->input('store_id'));
     }

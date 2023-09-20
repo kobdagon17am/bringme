@@ -2,6 +2,7 @@
 
 @section('content')
 <form method="POST" action="{{ url('admin/product_create') }}" enctype="multipart/form-data">
+    <input type="hidden" name="store_id" value="{{ $store_id }}">
 @csrf()
 <div class="content">
     <div class="grid grid-cols-11 gap-x-6 mt-5 pb-20">
@@ -116,6 +117,74 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">จำนวนวันที่เก็บได้ (วัน)</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="text" class="w-full" name="shelf_lift" placeholder="" required>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">ราคาโดยเฉลี่ย</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="text" class="w-full" name="product_price" placeholder="" required>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">จำนวนที่จัดส่งทั้งหมด</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="text" class="w-full" name="product_qty" placeholder="" required>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">จำนวนวันก่อนตัด (วัน)</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="text" class="w-full" name="stock_cut_off" placeholder="" required>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">วันที่ผลิต</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="date" class="w-full" name="production_date" placeholder="" required>
+                        </div>
+                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                            <div class="form-label xl:w-64 xl:!mr-10">
+                                <div class="text-left">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">วันที่จัดส่ง</div>
+                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="product-name" type="date" class="w-full" name="shipping_date" placeholder="" required>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -137,8 +206,8 @@
                                 </div>
                             </div>
                             <div class="w-full mt-3 xl:mt-0 flex-1">
-                                <div class="editor" style="display: none;" name="detail_th">
-                                </div>
+                                <textarea class="editor" style="display: none;" name="detail_th">
+                                </textarea>
                             </div>
                         </div>
                     </div>
@@ -156,8 +225,8 @@
                             </div>
                         </div>
                         <div class="w-full mt-3 xl:mt-0 flex-1">
-                            <div class="editor" style="display: none;" name="detail_en">
-                            </div>
+                            <textarea class="editor" style="display: none;" name="detail_en">
+                            </textarea>
                         </div>
                     </div>
                 </div>
@@ -184,7 +253,7 @@
                                             <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control" placeholder="" name="option_title[]">
+                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[]">
                                                 </div>
                                             </div>
                                         </div>
@@ -193,7 +262,7 @@
                                             <div class="flex-1">
                                                 <div class="xl:flex items-center mt-5 first:mt-0">
                                                     <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="" name="option_detail[]">
+                                                        <input type="text" class="form-control generate_table" placeholder="" name="option_detail[]">
                                                     </div>
                                                     <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
                                                         <p class="ml-3 xl:ml-5 remove_option_detail">
@@ -227,7 +296,7 @@
                                             <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control" placeholder="" name="option_title[]">
+                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[]">
                                                 </div>
                                             </div>
                                         </div>
@@ -236,7 +305,7 @@
                                             <div class="flex-1">
                                                 <div class="xl:flex items-center mt-5 first:mt-0">
                                                     <div class="input-group flex-1">
-                                                        <input type="text" class="form-control" placeholder="" name="option_detail_2[]">
+                                                        <input type="text" class="form-control generate_table" placeholder="" name="option_detail_2[]">
                                                     </div>
                                                     <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
                                                         <p class="ml-3 xl:ml-5 remove_option_detail_2">
@@ -279,34 +348,10 @@
                     </div>
                 </div>
             </div>
-            <div class="intro-y box p-5 mt-5">
-                <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                    <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                        การจัดการสินค้า
-                    </div>
-                    <div class="mt-5">
-                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                            <div class="form-label xl:w-64 xl:!mr-10">
-                                <div class="text-left">
-                                    <div class="flex items-center">
-                                        <div class="font-medium">สถานะสินค้า</div>
-                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-full mt-3 xl:mt-0 flex-1">
-                                <div class="form-check form-switch">
-                                    <input id="product-status-active" class="form-check-input" type="checkbox">
-                                    <label class="form-check-label" for="product-status-active">Active</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
                 <a href="products.php" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ยกเลิก</a>
-                <button type="button" class="btn py-3 btn-primary">บันทึก</button>
+                <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
             </div>
         </div>
     </div>
@@ -423,7 +468,7 @@
             removeOptionDetail_2($(this).attr('ref'));
         });
 
-        $('.option_detail').change(function(){
+        $('.generate_table').change(function(){
             generateTable();
         });
 
@@ -434,39 +479,36 @@
             
             $('#optionTable tbody').empty();
 
-            optionTitles.each(function (index) {
-                const color = $(this).val();
-                const option = [];
+            optionDetails.each(function (index) {
+                const option_1 = [];
+                const option_2 = [];
 
-                optionDetails_2.each(function () {
-                    option.push($(this).val());
+                optionDetails.each(function () {
+                    option_1.push($(this).val());
                 });
 
-                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap"></td>'));
-                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap"></td>'));
-                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap !px-2">ราคา</td>'));
-                row_title.append($('<td class="bg-slate-50 dark:bg-darkmode-800 text-slate-500 whitespace-nowrap !px-2">จำนวน</td>'));
-
-                $('#optionTable thead').append(row_title);
+                optionDetails_2.each(function () {
+                    option_2.push($(this).val());
+                });
                 
-                const rowCount = Math.max(option.length);
+                const rowCount = Math.max(option_2.length);
 
                 for (let i = 0; i < rowCount; i++) {
                     const row = $('<tr>');
 
-                    if (i === 0) {
-                        row.append($('<td rowspan="' + rowCount + '" class="border-r">' + color + '</td>'));
+                    if (i == 0) {
+                        row.append($('<td rowspan="' + rowCount + '" class="border-r">' + $(this).val() + '</td>'));
                     }
 
-                    if (option[i]) {
-                        row.append($('<td>' + option[i] + '</td>'));
+                    if (option_2[i]) {
+                        row.append($('<td>' + option_2[i] + '</td>'));
                     } else {
                         row.append($('<td></td>'));
                     }
 
-                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา"></div></td>'));
+                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price['+$(this).val()+']['+option_2[i]+'][]"></div></td>'));
 
-                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" placeholder="สต็อค"></td>'));
+                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock['+$(this).val()+']['+option_2[i]+'][]" placeholder="สต็อค"></td>'));
 
                     $('#optionTable tbody').append(row);
                 }

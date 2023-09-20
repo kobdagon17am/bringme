@@ -39,6 +39,19 @@
 						            <input id="update-profile-form-1" type="text" class="form-control" name="name_en" value="{{ (!empty($category) ? $category->name_en : '') }}">
 	            				</div>
 	            			</div>
+	            			<div class="col-span-12 2xl:col-span-6">
+	                            <div class="">
+						            <label for="update-profile-form-1" class="form-label mt-5">สี</label>
+						            <select class="form-control" name="color_id" >
+						            	<option {{ (!empty($category) ? ($category->color_id == '1' ? 'selected' : '' ) : '' ) }} value="1" style="background-color: rgba(255, 255, 99, 151); ">เหลือง</option>
+						            	<option {{ (!empty($category) ? ($category->color_id == '2' ? 'selected' : '' ) : '' ) }} value="2" style="background-color: rgba(187, 221, 83, 1); ">เขียว</option>
+						            	<option {{ (!empty($category) ? ($category->color_id == '3' ? 'selected' : '' ) : '' ) }} value="3" style="background-color: rgba(255, 241, 162, 1); ">ครีม</option>
+						            	<option {{ (!empty($category) ? ($category->color_id == '4' ? 'selected' : '' ) : '' ) }} value="4" style="background-color: rgba(241, 146, 194, 1); ">ชมพู</option>
+						            	<option {{ (!empty($category) ? ($category->color_id == '5' ? 'selected' : '' ) : '' ) }} value="5" style="background-color: rgba(255, 239, 18, 1); ">เหลืองเข้ม</option>
+						            	<option {{ (!empty($category) ? ($category->color_id == '6' ? 'selected' : '' ) : '' ) }} value="6" style="background-color: rgba(255, 136, 81, 1); ">ส้ม</option>
+						            </select>
+	            				</div>
+	            			</div>
 			            </div>
 			            <div class="text-right mt-5">
 			                    <button type="button" class="btn btn-outline-secondary w-24 mr-1">ยกเลิก</button>
