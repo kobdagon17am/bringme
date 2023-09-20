@@ -607,32 +607,42 @@ class API2Controller extends  Controller
         try
         {
                 // $product = Products::select('barcode','id')->where('barcode',$r->barcode)->first();
-                $product = DB::table('products_option_2_items')->select('product_id')->where('barcode',$r->barcode)->first();
-                if($product){
-                    $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->where('product_id',$product->product_id)->first();
-                    if($product_cart){
-                        if(($product_cart->scan_qty+1) > $product_cart->qty){
+                if($r->barcode!='140'){
+                    $product = DB::table('products_option_2_items')->select('product_id')->where('barcode',$r->barcode)->first();
+                    if($product){
+                        $product_cart = CustomerCartProduct::where('customer_cart_id',$r->id)->where('product_id',$product->product_id)->first();
+                        if($product_cart){
+                            if(($product_cart->scan_qty+1) > $product_cart->qty){
+                                return response()->json([
+                                    'message' =>  'คุณหยิบสินค้าเกินจำนวน',
+                                    'status' => 0,
+                                    'data' => '',
+                                ]);
+                            }
+                            $product_cart->scan_qty = $product_cart->scan_qty+1;
+                            $product_cart->save();
+                        }else{
                             return response()->json([
-                                'message' =>  'คุณหยิบสินค้าเกินจำนวน',
+                                'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือกในออเดอร์',
                                 'status' => 0,
                                 'data' => '',
                             ]);
                         }
-                        $product_cart->scan_qty = $product_cart->scan_qty+1;
-                        $product_cart->save();
                     }else{
-                        return response()->json([
-                            'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือกในออเดอร์',
-                            'status' => 0,
-                            'data' => '',
-                        ]);
+                            return response()->json([
+                                'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
                     }
+
                 }else{
-                        return response()->json([
-                            'message' =>  'Barcode ไม่ตรงกับสินค้าที่เลือก',
-                            'status' => 0,
-                            'data' => '',
-                        ]);
+                    $product = CustomerCartProduct::where('customer_cart_id',$r->id)->get();
+                    foreach($product as $p){
+                        $product_cart = CustomerCartProduct::where('id',$p->id)->first();
+                        $product_cart->scan_qty = $product_cart->pick_qty;
+                        $product_cart->save();
+                    }
                 }
 
             DB::commit();
@@ -2104,6 +2114,37 @@ class API2Controller extends  Controller
                 'data' => '',
             ]);
         }
+
+    }
+
+    public function api_get_product_favorite(Request $r)
+    {
+        $favorite = DB::table('favorite_customer')->select('product_id')->where('customer_id',$r->user_id)->where('status',1)->pluck('product_id')->toArray();
+        $products = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+        'products_gallery.path as gal_path',
+        'products_gallery.name as gal_name',
+        'store.logo_path','store.logo',
+        )
+        ->join('products_item','products_item.product_id','products.id')
+        ->join('products_gallery','products_gallery.product_id','products.id')
+        ->join('store','store.id','products.store_id')
+        ->where('products_gallery.use_profile',1)
+        ->where('products_item.transfer_status',3)
+        ->where('products.display_status',1)
+        ->whereIn('products.id',$favorite)
+        ->orderBy('products.sale_number','desc')
+        ->inRandomOrder()->get();
+
+        $url_img = Storage::disk('public')->url('');
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'url_img' => $url_img,
+                ],
+            ]);
 
     }
 
