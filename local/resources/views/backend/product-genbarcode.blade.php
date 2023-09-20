@@ -19,36 +19,7 @@
 
                             </div>
 
-                           {{-- {!!DNS1D::getBarcodeHTML('4445645656', 'C39+');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C39E');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C39E+');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C93');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'S25');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'S25+');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'I25');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'I25+');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C128');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C128A');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C128B');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'C128C');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'GS1-128');!!}
-                           {!!DNS1D::getBarcodeHTML('44455656', 'EAN2');!!}
-                           {!!DNS1D::getBarcodeHTML('4445656', 'EAN5');!!}
-                           {!!DNS1D::getBarcodeHTML('4445', 'EAN8');!!}
-                           {!!DNS1D::getBarcodeHTML('4445', 'EAN13');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'UPCA');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'UPCE');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'MSI');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'MSI+');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'POSTNET');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'PLANET');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'RMS4CC');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'KIX');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'IMB');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'CODABAR');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'CODE11');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'PHARMA');!!}
-                           {!!DNS1D::getBarcodeHTML('4445645656', 'PHARMA2T');!!} --}}
+                        </div>
 
                     </div>
                     <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">

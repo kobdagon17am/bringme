@@ -227,7 +227,7 @@
 <body style=" text-align: center;">
 
     <b>COD: test  test</b>
-    <div style="margin-left: 10px; ">
+    <div style="margin-left: 20px; margin-top: 10px">
         {!! DNS1D::getBarcodeHTML("1111111111", 'C128B') !!}
     </div>
 
