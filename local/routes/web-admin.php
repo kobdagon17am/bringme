@@ -38,25 +38,22 @@ Route::post('admin/employee_add', 'Admin\EmployeeController@employee_add')->name
 
 Route::get('admin/products', 'Admin\ProductsController@index')->name('admin/products');
 Route::get('admin/products_datable', 'Admin\ProductsController@products_datable')->name('admin/products_datable');
+Route::get('admin/product_add/{id}', 'Admin\ProductsController@product_add')->name('admin/product_add');
+Route::post('admin/product_create', 'Admin\ProductsController@product_create')->name('admin/product_create');
+Route::get('admin/product_edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product_edit');
 
 
 Route::get('admin/products-pending-tranfer', 'Admin\ProductsController@products_pending_tranfer')->name('admin/products-pending-tranfer');
 Route::get('admin/products_pending_tranfer_datatable', 'Admin\ProductsController@products_pending_tranfer_datatable')->name('admin/products_pending_tranfer_datatable');
-
 Route::get('admin/products-waitapproved', 'Admin\ProductsController@products_waitapproved')->name('admin/products-waitapproved');
 Route::get('admin/products_waitapproved_datable', 'Admin\ProductsController@products_waitapproved_datable')->name('admin/products_waitapproved_datable');
-
 Route::get('admin/products-waitapproved-detail/{id}', 'Admin\ProductsController@products_waitapproved_detail')->name('admin/products-waitapproved-detail');
-
-
 Route::get('admin/product-panding-tranfer-detail/{id}', 'Admin\ProductsController@product_panding_tranfer_detail')->name('admin/product-panding-tranfer-detail');
-
-
-
 
 Route::post('admin/product_confirmation}', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
 Route::post('admin/item_confirmation}', 'Admin\ProductsController@item_confirmation')->name('admin/item_confirmation');
-Route::post('admin/item_gallery}', 'Admin\ProductsController@item_gallery')->name('admin/item_gallery');
+Route::post('admin/item_gallery', 'Admin\ProductsController@item_gallery')->name('admin/item_gallery');
+Route::post('admin/remove_gallery', 'Admin\ProductsController@remove_gallery')->name('admin/remove_gallery');
 
 Route::get('admin/product-edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product-edit');
 
@@ -109,16 +106,11 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
 
 
   Route::get('admin/users', 'Admin\CustomersController@index')->name('admin/users');
-
   Route::get('admin/customers_datable', 'Admin\CustomersController@customers_datable')->name('admin/customers_datable');
-
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
 
-
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
-
   Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
-
   Route::get('admin/store-detail/{id}', 'Admin\StoresController@store_detail')->name('admin/store-detail');
 
 

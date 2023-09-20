@@ -185,7 +185,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="date" value="{{ date('Y-m-d', strtotime($data->shipping_date)) }}"
+                                        <input type="date" value="{{ date('Y-m-d') }}"
                                             class=" form-control w-56 block mx-auto" name="date_in_stock"
                                             data-single-mode="true">
                                     </div>
@@ -202,7 +202,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="date" value="{{ date('Y-m-d', strtotime($data->production_date)) }}"
+                                        <input type="date" value="{{ date('Y-m-d', strtotime($data->production_date. ' + '.($data->shelf_lift-$data->stock_cut_off).' days')) }}"
                                             class="form-control w-56 block mx-auto" name="lot_expired_date"
                                             data-single-mode="true">
                                     </div>
@@ -254,6 +254,21 @@
                                     </div>
                                     <input type="text" class="form-control w-56 block mx-auto" name="qty" required
                                         value="{{$data->qty}}">
+                                </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">Lot number</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto" name="lot_number" required
+                                        value="{{date('Ymd')}}">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -317,7 +332,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_price" required
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_price"
                                         value="">
                                 </div>
 
@@ -392,7 +407,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_remark" required
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_remark"
                                         value="">
                                 </div>
 

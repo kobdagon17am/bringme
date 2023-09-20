@@ -130,6 +130,17 @@ class PaymentController extends Controller
                                 $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
                                 ->where('customer_cart_product.customer_cart_id',$cart->id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$cart->customer_id)->get();
                                 foreach($arr_pro as $p){
+
+                                    $customer_cart_store = DB::table('customer_cart_store')->select('id')->where('customer_cart_id',$cart->id)->where('store_id',$p->store_id)->first();
+                                    if(!$customer_cart_store){
+                                        DB::table('customer_cart_store')->insert([
+                                            'customer_cart_id' => $cart->id,
+                                            'store_id' => $p->store_id,
+                                            'created_at' => date('Y-m-d H:i:s'),
+                                            'updated_at' => date('Y-m-d H:i:s'),
+                                        ]);
+                                    }
+
                                     $product = DB::table('products')->where('id',$p->product_id)->first();
                                     if($product){
                                         DB::table('products')->where('id',$product->id)->update([
