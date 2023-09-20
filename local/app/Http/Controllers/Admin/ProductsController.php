@@ -242,7 +242,7 @@ class ProductsController extends Controller
             $id_option_1 = array();
             $id_option_2 = array();
 
-            if(!in_array(null, $request->input('option_detail_1'))){
+            if(!empty($request->input('option_detail_1'))){
                 foreach ($request->input('option_detail') as $key => $_option_detail) {
                     $products_option_1 = new ProductsOption1();
                     $products_option_1->product_id = $products->id;
@@ -253,7 +253,7 @@ class ProductsController extends Controller
                 }
             }
 
-            if(!in_array(null, $request->input('option_detail_2'))){
+            if(!empty($request->input('option_detail_2'))){
                 foreach ($request->input('option_detail_2') as $key => $_option_detail_2) {
                     $products_option_2 = new ProductsOption2();
                     $products_option_2->product_id = $products->id;
