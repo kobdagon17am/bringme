@@ -129,17 +129,23 @@ class ProductsController extends Controller
             return redirect()->back()->withError('กรุณาเลือกสินค้า');
         }
 
-        $data['product_detail'] = DB::table('products_item')
-        ->select('products_item.*','customer.name as store_name','products_transfer.id as transfer_id','products.category_id','products.brands_id')
-        ->where('products_item.id', $id)
+        $data['products_item'] = DB::table('products_item')
+        ->select('products_item.*','products_item.id as item_id','customer.name as store_name','products_transfer.id as transfer_id','products.category_id','products.brands_id','products.store_id as store_id','products.storage_method_id')
+        ->where('products_item.product_id', $id)
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
         ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
         ->first();
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->item_id)->get();
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
+        $data['brands_select'] = DB::table('brands')->where('id', $data['products_item']->brands_id)->first();
+
+        $data['products_option_head'] = DB::table('products_option_head')->where('product_id',$data['products_item']->product_id)->get();
+        $data['products_option_1'] = DB::table('products_option_1')->where('product_id',$data['products_item']->product_id)->get();
+        $data['products_option_2'] = DB::table('products_option_2')->where('product_id',$data['products_item']->product_id)->get();
+        $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id',$data['products_item']->product_id)->get();
 
         return view('backend/product-edit',$data);
     }
@@ -172,13 +178,12 @@ class ProductsController extends Controller
             $products->storage_method_id = $request->input('storage_method_id');
             $products->store_id = $store->id;
             $products->customer_id = $store->customer_id;
-            $products->qty = 0;
+            $products->qty = $request->input('product_qty');
             $products->save();
 
             $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
             $products->products_code = 'BM'.$products_code.'B';
             $products->barcode = $products->id.date('YmdHis');
-
             $products->save();
 
             // เพิ่ม item สินค้า storage_method_id brands_id
@@ -211,28 +216,40 @@ class ProductsController extends Controller
             }
 
             $array_max_min = array();
+            $id_option_1 = array();
+            $id_option_2 = array();
 
-            if(!empty($request->input('option_detail')) && !in_array(null, $request->input('option_detail_2')) ){
+            if(!in_array(null, $request->input('option_detail_1'))){
                 foreach ($request->input('option_detail') as $key => $_option_detail) {
-                    foreach ($request->input('option_detail_2') as $key => $_option_detail_2) {
+                    $products_option_1 = new ProductsOption1();
+                    $products_option_1->product_id = $products->id;
+                    $products_option_1->name_th = $_option_detail;
+                    $products_option_1->name_en = $_option_detail;
+                    $products_option_1->save();
+                    array_push($id_option_1, $products_option_1->id);
+                }
+            }
 
-                        $products_option_1 = new ProductsOption1();
-                        $products_option_1->product_id = $products->id;
-                        $products_option_1->name_th = $_option_detail;
-                        $products_option_1->name_en = $_option_detail;
-                        $products_option_1->save();
+            if(!in_array(null, $request->input('option_detail_2'))){
+                foreach ($request->input('option_detail_2') as $key => $_option_detail_2) {
+                    $products_option_2 = new ProductsOption2();
+                    $products_option_2->product_id = $products->id;
+                    $products_option_2->name_th = $_option_detail_2;
+                    $products_option_2->name_en = $_option_detail_2;
+                    $products_option_2->save();
+                    array_push($id_option_2, $products_option_2->id);
+                }
+            }
 
-                        $products_option_2 = new ProductsOption2();
-                        $products_option_2->product_id = $products->id;
-                        $products_option_2->name_th = $_option_detail_2;
-                        $products_option_2->name_en = $_option_detail_2;
-                        $products_option_2->save();
+            if(!in_array(null, $request->input('option_detail_1')) || !in_array(null, $request->input('option_detail_2'))){
+                foreach ($request->input('option_detail') as $key_1 => $_option_detail) {
+                    foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
 
                         $products_option_2_items = new ProductsOption2Items();
                         $products_option_2_items->product_id = $products->id;
                         $products_option_2_items->products_item_id = $products_item->id;
-                        $products_option_2_items->option_1_id = $products_option_1->id;
-                        $products_option_2_items->option_2_id = $products_option_2->id;
+                        $products_option_2_items->option_1_id = $id_option_1[$key_1];
+                        $products_option_2_items->option_2_id = $id_option_2[$key_2];
                         $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
                         $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                         $products_option_2_items->name_th = $_option_detail.' '.$_option_detail_2;
@@ -245,22 +262,20 @@ class ProductsController extends Controller
                         if(!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)){
                             array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                         }
-
                     }
                 }
             }
 
-            asort($array_max_min);
         
-            $products->min_price = array_key_first($array_max_min);
-            $products->max_price = array_key_last($array_max_min);
+            $products->min_price = array_shift($array_max_min);
+            $products->max_price = end($array_max_min);
             $products->save();
 
             if(!empty($request->file('produc_gallery'))){
                 foreach ($request->file('produc_gallery') as $key => $imageFile) {
                     $extension = $imageFile->getClientOriginalExtension();
                     $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                    Storage::disk('public')->putFileAs('product/' . $request->input('category_id'), $imageFile, $imageName, 'public');
+                    Storage::disk('public')->putFileAs('product/'.$products->customer_id.'/'.$products->id, $imageFile, $imageName, 'public');
                     $gal = new ProductsGallery();
                     $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
                     $gal->name = $imageName;

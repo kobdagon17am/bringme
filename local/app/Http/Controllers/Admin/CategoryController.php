@@ -77,6 +77,7 @@ class CategoryController extends Controller
 
         $data['name_th'] = $request->input('name_th');
         $data['name_en'] = $request->input('name_en');
+        $data['color_id'] = $request->input('color_id');
         $data['status'] = '1';
         $data['created_at'] = date('Y-m-d H:i:s');
         $category_id = DB::table('category')->insertGetID($data);
@@ -118,6 +119,7 @@ class CategoryController extends Controller
 
         $data['name_th'] = $request->input('name_th');
         $data['name_en'] = $request->input('name_en');
+        $data['color_id'] = $request->input('color_id');
         $data['updated_at'] = date('Y-m-d H:i:s');
 
         DB::table('category')->where('id',$category_id)->update($data);
