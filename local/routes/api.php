@@ -48,6 +48,7 @@ Route::post('api_get_store_detail', 'API1Controller@api_get_store_detail');
 Route::post('api_store_following_update', 'API2Controller@api_store_following_update');
 
 Route::post('api_product_store', 'API1Controller@api_product_store');
+Route::post('api_product_store_more', 'API1Controller@api_product_store_more');
 Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
 // API2Controller
 Route::post('api_products_transfer_approve', 'API2Controller@api_products_transfer_approve');
@@ -82,3 +83,5 @@ Route::post('api_favorite_update', 'API2Controller@api_favorite_update');
 Route::post('api_reset_password', 'API2Controller@api_reset_password');
 Route::post('api_get_order_list_store', 'API1Controller@api_get_order_list_store');
 Route::post('api_get_product_favorite', 'API2Controller@api_get_product_favorite');
+Route::post('api_get_order_point_list_store', 'API2Controller@api_get_order_point_list_store');
+Route::post('api_get_report_store', 'API2Controller@api_get_report_store');

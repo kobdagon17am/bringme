@@ -53,7 +53,7 @@ class StoresController extends Controller
             $data['category'] = DB::table('category')->get();
             $data['storage_method'] = DB::table('storage_method')->get();
             $data['product'] = DB::table('products')
-                                ->select('products.name_th AS product_name_th','products.name_en AS product_name_en', 'category.name_th AS category_name_th','category.name_en AS category_name_en','brands.name_th AS brands_name_th','brands.name_en AS brands_name_en','max_price','qty','approve_status','products_gallery.path AS gallery_path','products_gallery.name AS gallery_name','products_gallery.product_id','products.id','products_gallery.use_profile')
+                                ->select('products.name_th as product_name_th','products.name_en as product_name_en', 'category.name_th AS category_name_th','category.name_en AS category_name_en','brands.name_th AS brands_name_th','brands.name_en AS brands_name_en','max_price','qty','approve_status','products_gallery.path AS gallery_path','products_gallery.name AS gallery_name','products_gallery.product_id','products.id','products_gallery.use_profile')
                                 ->leftJoin('category','category.id','=','products.category_id')
                                 ->leftJoin('brands','brands.id','=','products.brands_id')
                                 ->leftJoin('products_gallery','products_gallery.product_id','=','products.id')

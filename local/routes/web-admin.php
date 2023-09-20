@@ -41,6 +41,7 @@ Route::get('admin/products_datable', 'Admin\ProductsController@products_datable'
 Route::get('admin/product_add/{id}', 'Admin\ProductsController@product_add')->name('admin/product_add');
 Route::post('admin/product_create', 'Admin\ProductsController@product_create')->name('admin/product_create');
 Route::get('admin/product_edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product_edit');
+Route::post('admin/product_update', 'Admin\ProductsController@product_update')->name('admin/product_update');
 
 
 Route::get('admin/products-pending-tranfer', 'Admin\ProductsController@products_pending_tranfer')->name('admin/products-pending-tranfer');
