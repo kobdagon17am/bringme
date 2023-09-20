@@ -1263,6 +1263,9 @@ class API1Controller extends Controller
     public function api_get_product_detail(Request $r)
     {
         $product_detail = Products::where('id',$r->product_id)->first();
+        $product_detail->visitor_number = $product_detail->visitor_number+1;
+        $product_detail->save();
+
         if($product_detail){
             $store = Store::where('id',$product_detail->store_id)->first();
             $customer = Customer::where('id',$store->customer_id)->first();

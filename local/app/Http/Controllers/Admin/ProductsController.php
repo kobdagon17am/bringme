@@ -9,6 +9,7 @@ use DataTables;
 use Storage;
 use File;
 use Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Store;
 use App\Models\Brands;
 use App\Models\Products;

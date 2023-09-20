@@ -1483,6 +1483,78 @@ class API2Controller extends  Controller
         }
     }
 
+    public function api_get_order_point_list_store(Request $r)
+    {
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
+        ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+        ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
+        ->where('customer_cart.id',$r->cart_id)->first();
+
+        $store = Store::select('id')->where('customer_id',$r->user_id)->first();
+
+        $product_qty = 0;
+        if($cart){
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
+            'customer.name as cus_name',
+            'products.products_code', 'products.barcode',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('customer','customer.id','customer_cart_product.customer_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)
+            ->where('customer_cart_product.store_id',$store->id)
+            ->where('customer_cart_product.rate_status',0)
+            ->get();
+
+            $products_success = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
+            'customer.name as cus_name',
+            'products.products_code',
+            'products.barcode',
+            'products_comment.show_name',
+            'products_comment.comment_date',
+            'products_comment.detail as comment_detail',
+            'products_comment.rate as comment_rate',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('customer','customer.id','customer_cart_product.customer_id')
+            ->join('products_comment','products_comment.customer_cart_product_id','customer_cart_product.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)
+            ->where('customer_cart_product.store_id',$store->id)
+            ->where('customer_cart_product.rate_status',1)
+            ->get();
+
+            $url_img = Storage::disk('public')->url('');
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'products_success' => $products_success,
+                    'product_qty' => $product_qty,
+                    'cart' => $cart,
+                    'url_img' => $url_img,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+    }
+
     public function api_review_update(Request $r)
     {
       DB::beginTransaction();
@@ -1587,7 +1659,7 @@ class API2Controller extends  Controller
                             $cart_claim = new CustomerCartClaim();
                             $cart_claim->customer_cart_id = $r->customer_cart_id;
                             $cart_claim->customer_id = $CustomerCart->customer_id;
-
+                            $cart_claim->customer_cart_product_id = $arr;
                             $cart_claim->store_id = $product->store_id;
                             $cart_claim->problem_id = $r->problem_id;
                             $cart_claim->other_problem = $r->other_problem;
@@ -2158,6 +2230,116 @@ class API2Controller extends  Controller
                     'url_img' => $url_img,
                 ],
             ]);
+
+    }
+
+    public function api_get_report_store(Request $r)
+    {
+        $store = Store::where('customer_id',$r->user_id)->first();
+        if($store){
+            $store_success = DB::table('customer_cart_store')->select('customer_cart_id')->where('store_id',$store->id)->pluck('customer_cart_id')->toArray();
+            $carts_success = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
+            $order_number = count($carts_success);
+
+            $sale_number = 0;
+            $cart_arr = [];
+            foreach($carts_success as $c){
+                array_push($cart_arr,$c->id);
+                $products = CustomerCartProduct::select('total_price')->where('customer_cart_id',$c->id)->where('store_id',$store->id)->get();
+                foreach($products as $p){
+                    $sale_number+= $p->total_price;
+                }
+            }
+
+            $visitor_number = $store->visitor_number;
+
+            // $product_list = Products::where('store_id',$store->id)->where('approve_status',1)->get();
+            $product_list = Products::select('products.id'
+            // ,'products_item.transfer_status',
+            // 'products_item.id as products_item_id',
+            // 'products_gallery.path as gal_path',
+            // 'products_gallery.name as gal_name',
+            )
+            // ->join('products_item','products_item.product_id','products.id')
+            // ->join('products_gallery','products_gallery.product_id','products.id')
+            // ->where('products_gallery.use_profile',1)
+            ->where('products.store_id',$store->id)
+            // ->where('products_item.transfer_status',3)
+            // ->orderBy('products.updated_at','desc')
+            ->where('products.approve_status',1)
+            ->get();
+
+            $products_total_price_arr = [];
+            $products_total_qty_arr = [];
+            $arr_products = [];
+            foreach($product_list as $p){
+                $total_price = CustomerCartProduct::select('total_price')->whereIn('customer_cart_id',$cart_arr)->where('store_id',$store->id)->where('product_id',$p->id)->sum('total_price');
+                $products_total_price_arr[$p->id] = $total_price;
+
+                if($total_price>0){
+                    array_push($arr_products,$p->id);
+                }
+
+                $qty = CustomerCartProduct::select('qty')->whereIn('customer_cart_id',$cart_arr)->where('store_id',$store->id)->where('product_id',$p->id)->sum('qty');
+                $products_total_qty_arr[$p->id] = $qty;
+            }
+
+            if(count($arr_products)>0){
+                $product_list = Products::select('products.*','products_item.transfer_status',
+                'products_item.id as products_item_id',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name',
+                )
+                ->join('products_item','products_item.product_id','products.id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                ->where('products_gallery.use_profile',1)
+                ->where('products.store_id',$store->id)
+                // ->whereIn('products.id',$arr_products)
+                // ->where('products_item.transfer_status',3)
+                // ->orderBy('products.updated_at','desc')
+                ->where('products.approve_status',1)
+                ->get();
+            }else{
+                $product_list = Products::select('products.*','products_item.transfer_status',
+                'products_item.id as products_item_id',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name',
+                )
+                ->join('products_item','products_item.product_id','products.id')
+                ->join('products_gallery','products_gallery.product_id','products.id')
+                ->where('products_gallery.use_profile',1)
+                ->where('products.store_id',$store->id)
+                // ->where('products.id',0)
+                // ->where('products_item.transfer_status',3)
+                // ->orderBy('products.updated_at','desc')
+                ->where('products.approve_status',1)
+                ->get();
+            }
+
+
+        $url_img = Storage::disk('public')->url('');
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                'order_number' => $order_number,
+                'sale_number' => $sale_number,
+                'visitor_number' => $visitor_number,
+                'url_img' => $url_img,
+                'store' => $store,
+                'products_total_price_arr' => $products_total_price_arr,
+                'products_total_qty_arr' => $products_total_qty_arr,
+                'product_list' => $product_list,
+
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' =>  'ไม่พบข้อมูล',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
 
     }
 
