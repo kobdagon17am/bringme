@@ -81,6 +81,17 @@ class ProductsController extends Controller
        }
 
     }
+    public function pdf_barcode($product_id,$count)
+    {
+
+        $pdf = PDF::loadView('backend/PDF/barcode');
+
+
+
+        return $pdf->stream('barcode.pdf');
+
+
+    }
 
 
     public function products_pending_tranfer()
@@ -278,7 +289,7 @@ class ProductsController extends Controller
                 }
             }
 
-        
+
             $products->min_price = array_shift($array_max_min);
             $products->max_price = end($array_max_min);
             $products->save();
@@ -300,7 +311,7 @@ class ProductsController extends Controller
                     $gal->save();
                 }
             }
-                
+
 
         DB::commit();
 
@@ -581,10 +592,10 @@ class ProductsController extends Controller
             foreach ($request->file('gallery_file') as $key => $imageFile) {
                 $extension = $imageFile->getClientOriginalExtension();
                 $imageName = time().'_'.uniqid().'.'.$extension;
-                
+
                 $disk = Storage::disk('public');
                 $path = 'product/'.$products->customer_id.'/'.$products->id.'/'.$imageName;
-                
+
                 $disk->putFileAs('product/'.$products->customer_id.'/'.$products->id, $imageFile, $imageName, 'public');
                 $data_img['product_id'] = $products->id;
                 $data_img['path'] = 'product/'.$products->customer_id.'/'.$products->id.'/';
@@ -680,18 +691,18 @@ class ProductsController extends Controller
             })
 
 
-            ->addColumn('approve_status', function ($row) {
+            // ->addColumn('approve_status', function ($row) {
 
-                if ($row->approve_status == 1) {
-                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
-                } elseif ($row->approve_status == 2) {
+            //     if ($row->approve_status == 1) {
+            //         $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
+            //     } elseif ($row->approve_status == 2) {
 
-                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
-                } else {
-                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
-                }
-                return $htmml;
-            })
+            //         $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
+            //     } else {
+            //         $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
+            //     }
+            //     return $htmml;
+            // })
 
 
             ->addColumn('transfer_status', function ($row) {
@@ -719,9 +730,8 @@ class ProductsController extends Controller
             ->addColumn('action', function ($row) {
 
 
-
            $html = '<div class="flex justify-center items-center">
-           <a class="flex items-center mr-3" href="'.route('admin/products-waitapproved-detail',['id'=>$row->id]).'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
+           <a class="flex items-center mr-3 btn btn-sm  btn-outline-primary mr-2 mb-2" href="'.route('admin/products-waitapproved-detail',['id'=>$row->id]).'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
        </div>';
                 return $html;
             })
@@ -829,13 +839,16 @@ class ProductsController extends Controller
 
             ->addColumn('barcode', function ($row) {
                 $html = '<div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="'.route('admin/genbarcode',['product_id'=>$row->product_id]).'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> BarCode </a></div>';
+
+
+
+                <a class="flex items-center mr-3 btn-sm btn btn-sm btn-outline-primary" href="'.route('admin/genbarcode',['product_id'=>$row->product_id]).'">  BarCode </a></div>';
                 return $html;
              })
 
             ->addColumn('action', function ($row) {
                 $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="'.route('admin/product-edit',['id'=>$row->id]).'"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> แก้ไข </a>
+                <a class="flex items-center mr-3 btn btn-sm btn-outline-primary" href="'.route('admin/product-edit',['id'=>$row->id]).'">  แก้ไข </a>
            </div>';
            // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;

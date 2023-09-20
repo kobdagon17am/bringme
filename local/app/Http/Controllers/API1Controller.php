@@ -1499,6 +1499,11 @@ class API1Controller extends Controller
          $cart->shipping_date = date('Y-m-d');
          $cart->period = 2;
          $cart->customer_name = $customer->name;
+         // เพิ่มมา
+         $cart->shipping_price = $r->shipping_price_total;
+         $cart->total_price = $r->product_total_price;
+         $cart->grand_total = $r->all_price_total;
+        //
          $cart->save();
 
         // บันทึกที่อยู่
@@ -1570,11 +1575,45 @@ class API1Controller extends Controller
                 $cart->cart_products_id_arr = $r->cart_products_id;
                 $cart->save();
 
+                 // บันทึกที่อยู่
+                $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
+                if(!$customer_cart_address){
+                    $customer_cart_address = new CustomerCartAddress();
+                }
+                $customer_cart_address->customer_id = $cart->customer_id;
+
+                $customer_cart_address->customer_cart_id = $cart->id;
+                $customer_cart_address->customer_address_id = $cart->customer_address_id;
+
+                $address = Customer_address::where('id',$cart->customer_address_id)->first();
+
+                $customer_cart_address->name = $address->name;
+                $customer_cart_address->tel = $address->tel;
+                $customer_cart_address->address_number = $address->address_number;
+                $customer_cart_address->province_id = $address->province_id;
+                $customer_cart_address->amphures_id = $address->amphures_id;
+                $customer_cart_address->district_id = $address->district_id;
+                $customer_cart_address->zipcode = $address->zipcode;
+                $customer_cart_address->address_lat = $address->address_lat;
+                $customer_cart_address->address_long = $address->address_long;
+                $customer_cart_address->save();
+
+
                 if($cart->status==2){
                     $cart_products_id = explode(',',$r->cart_products_id);
                     $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
                     ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
                     foreach($arr_pro as $p){
+                        $customer_cart_store = DB::table('customer_cart_store')->select('id')->where('customer_cart_id',$r->cart_id)->where('store_id',$p->store_id)->first();
+                        if(!$customer_cart_store){
+                            DB::table('customer_cart_store')->insert([
+                                'customer_cart_id' => $r->cart_id,
+                                'store_id' => $p->store_id,
+                                'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s'),
+                            ]);
+                        }
+
                         $product = DB::table('products')->where('id',$p->product_id)->first();
                         if($product){
                             DB::table('products')->where('id',$product->id)->update([
@@ -1885,10 +1924,11 @@ class API1Controller extends Controller
 
     public function api_get_order_list_store(Request $r)
     {
+        $store = Store::where('customer_id',$r->user_id)->first();
+        $store_success = DB::table('customer_cart_store')->select('customer_cart_id')->where('store_id',$store->id)->pluck('customer_cart_id')->toArray();
 
-        $carts_success = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
-
-        $carts_claim = CustomerCart::select('id')->where('customer_id',$r->user_id)->where('status',2)->where('claim_status',1)->orderBy('id','desc')->get();
+        $carts_success = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
+        $carts_claim = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('claim_status',1)->orderBy('id','desc')->get();
 
         $arr_cart_success = [];
         $cart_claim = [];
@@ -1906,7 +1946,7 @@ class API1Controller extends Controller
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
-            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
+            ->where('customer_cart_product.customer_cart_id',$c->id)
             ->where('customer_cart.transfer_status',2)
             ->limit(1)
             ->get();
@@ -1927,7 +1967,7 @@ class API1Controller extends Controller
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
-            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)
+            ->where('customer_cart_product.customer_cart_id',$c->id)
             ->where('customer_cart.transfer_status',2)
             ->get();
             $arr_cart_success[$key] = [];
@@ -1949,7 +1989,8 @@ class API1Controller extends Controller
                 ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
                 ->join('products_gallery','products_gallery.product_id','products.id')
                 // ->where('customer_cart.transfer_status',0)
-                ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->limit(1)->get();
+                ->where('customer_cart_product.customer_cart_id',$c->id)
+                ->limit(1)->get();
                 $cart_claim[$key] = [];
                 foreach($products as $key2 => $p){
                     // $arr_cart[$key] = $p;
@@ -1965,7 +2006,8 @@ class API1Controller extends Controller
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             // ->where('customer_cart.transfer_status',0)
-            ->where('customer_cart_product.customer_cart_id',$c->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            ->where('customer_cart_product.customer_cart_id',$c->id)
+            ->get();
             $cart_claim[$key] = [];
             foreach($products as $key2 => $p){
                 // $arr_cart[$key] = $p;
