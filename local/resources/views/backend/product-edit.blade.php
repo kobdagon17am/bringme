@@ -52,6 +52,10 @@
             </div>
             <!-- END: Uplaod Product -->
             <!-- BEGIN: Product Information -->
+    <form method="POST" action="{{ url('admin/product_update') }}" enctype="multipart/form-data">
+        <input type="hidden" name="store_id" value="{{ $products_item->store_id }}">
+        <input type="hidden" name="item_id" value="{{ $products_item->item_id }}">
+        @csrf()
             <div class="intro-y box p-5 mt-5">
                 <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                     <div class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
@@ -67,7 +71,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input id="brand-name" type="text" class="w-full" placeholder="Brand name" list="brand_list" value="{{ (!empty($brands_select) ? $brands_select->name_th : '') }}">
+                            <input id="brand-name" type="text" class="w-full" name="brands_id" placeholder="Brand name" list="brand_list" value="{{ (!empty($brands_select) ? $brands_select->name_th : '') }}">
                             <datalist id="brand_list">
                                 <option value="" selected="true">- เลือกแบรนด์ -</option>
                                 @if(!empty($brands))
@@ -276,7 +280,7 @@
                                             <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[]" value="{{ (!empty($products_option_head) ? $products_option_head[0]->name_th : '' ) }}">
+                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[{{ (!empty($products_option_head) ? $products_option_head[0]->id : '' ) }}]" value="{{ (!empty($products_option_head) ? $products_option_head[0]->name_th : '' ) }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -323,7 +327,7 @@
                                             <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[]" value="{{ (!empty($products_option_head) ? $products_option_head[1]->name_th : '' ) }}">
+                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[{{ (!empty($products_option_head) ? $products_option_head[1]->id : '' ) }}]" value="{{ (!empty($products_option_head) ? $products_option_head[1]->name_th : '' ) }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -371,6 +375,17 @@
                                         </thead>
                                         <tbody>
                                             <!-- Table content will be generated here -->
+                                            @if(!empty($products_option_2_items))
+                                                @foreach($products_option_2_items as $_products_option_2_items)
+                                                    <?php $name_show = explode(' ', $_products_option_2_items->name_th); ?>
+                                                    <tr>
+                                                        <td>{{ array_shift($name_show) }}</td>
+                                                        <td>{{ end($name_show) }}</td>
+                                                        <td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price[{{ array_shift($name_show) }}][{{ end($name_show) }}][]" value="{{ $_products_option_2_items->price }}"></div></td>
+                                                        <td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock[{{ array_shift($name_show) }}][{{ end($name_show) }}][]" placeholder="สต็อค" value="{{ $_products_option_2_items->qty }}"></td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
