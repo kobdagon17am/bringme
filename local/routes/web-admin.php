@@ -41,6 +41,7 @@ Route::get('admin/products_datable', 'Admin\ProductsController@products_datable'
 Route::get('admin/product_add/{id}', 'Admin\ProductsController@product_add')->name('admin/product_add');
 Route::post('admin/product_create', 'Admin\ProductsController@product_create')->name('admin/product_create');
 Route::get('admin/product_edit/{id}', 'Admin\ProductsController@product_edit')->name('admin/product_edit');
+Route::post('admin/product_update', 'Admin\ProductsController@product_update')->name('admin/product_update');
 
 
 Route::get('admin/products-pending-tranfer', 'Admin\ProductsController@products_pending_tranfer')->name('admin/products-pending-tranfer');
@@ -190,6 +191,8 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::get('admin/orders', 'Admin\OrdersController@order_list')->name('admin/orders');
 
   Route::get('admin/genbarcode/{product_id}', 'Admin\ProductsController@genbarcode')->name('admin/genbarcode');
+
+  Route::get('admin/pdf_barcode/{product_id}/{count}', 'Admin\ProductsController@pdf_barcode')->name('admin/pdf_barcode');
 
   Route::get('admin/order-detail/{cart_id}', 'Admin\OrdersController@order_detail')->name('admin/order-detail');
 
