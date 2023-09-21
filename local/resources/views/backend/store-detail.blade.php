@@ -254,7 +254,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} </a>
+                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->product_name_th }} | EN : {{ $_product->product_name_en }} </a>
                                                 <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5"> TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</div>
                                             </td>
                                             <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
@@ -292,7 +292,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} </a>
+                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->product_name_th }} | EN : {{ $_product->product_name_en }} </a>
                                                 <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5"> TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</div>
                                             </td>
                                             <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
@@ -329,7 +329,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} </a>
+                                                <a href="" class="font-medium whitespace-nowrap"> TH : {{ $_product->product_name_th }} | EN : {{ $_product->product_name_en }} </a>
                                                 <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5"> TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</div>
                                             </td>
                                             <td class="text-center">{{ number_format($_product->max_price,2) }}</td>
@@ -369,8 +369,9 @@
                                         @endif
 
                                         <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
-                                            <a href="" class="block font-medium text-base">{{ $_product->product_name_th | $_product->product_name_en }}</a>
-                                            <span class="text-white/90 text-xs mt-3">TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }} &amp; TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</span>
+                                            <a href="" class="block font-medium text-base">{{ $_product->product_name_th }} | {{ $_product->product_name_en }}</a>
+                                            <span class="text-white/90 text-xs mt-3">TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }}
+                                            <br>TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</span>
                                         </div>
                                     </div>
                                     <div class="text-slate-600 dark:text-slate-500 mt-5">
@@ -382,7 +383,7 @@
                                         </div>
                                         <div class="flex items-center mt-2">
                                             <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: {{ ($_product->approve_status == 1 ? 'Active' : 'Deactive') }}
-                                            <a href="{{ url('admin/product_edit') }}/{{ $_product->id }}" style="float: right;margin-left: 46%; cursor: pointer;"><i data-lucide="settings" class="w-4 h-4 mr-2"></i></a>
+                                            <a href="{{ url('admin/product_edit') }}/{{ $_product->id }}" style="float: right;margin-left: 40%; cursor: pointer;"><i data-lucide="settings" class="w-4 h-4 mr-2"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -393,8 +394,9 @@
             </div>
         </div>
         <div id="profile" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-6-tab">
-            <div class="grid grid-cols-12 gap-6">
-
+            <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_update') }}" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="customer_id" value="{{ $id }}">
                 <div class="col-span-12">
                     <!-- BEGIN: Display Information -->
                     <div class="intro-y box lg:mt-5">
@@ -410,13 +412,13 @@
 
                                     <div>
                                         <label for="" class="form-label">ชื่อ-นามสกุล</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->firstname }}">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="firstname" value="{{ $store->firstname }}">
                                     </div>
 
                                     <div>
                                         <label for="" class="form-label">วันเดือนปีเกิด</label>
                                         <div class="relative">
-                                            <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"> <i data-lucide="calendar" class="w-4 h-4"></i> </div> <input type="text" class="datepicker form-control pl-12" data-single-mode="true" value="{{ $store->birthday }}">
+                                            <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"> <i data-lucide="calendar" class="w-4 h-4"></i> </div> <input type="text" class="datepicker form-control pl-12" data-single-mode="true" name="birthday" value="{{ $store->birthday }}">
                                         </div>
                                     </div>
 
@@ -429,17 +431,17 @@
 
                                     <div>
                                         <label for="" class="form-label">อายุ</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $diff->y }}">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" readonly value="{{ $diff->y }}">
                                     </div>
 
                                     <div>
                                         <label for="" class="form-label">อีเมล</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->email }}">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="email" value="{{ $store->email }}">
                                     </div>
 
                                     <div>
                                         <label for="" class="form-label">เบอร์ติดต่อ</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->tel }}">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="tel" value="{{ $store->tel }}">
                                     </div>
 
                                 </div>
@@ -453,12 +455,12 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
                                     <div>
                                         <label for="" class="form-label">ห้อง/บ้านเลขที่</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->address }}">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="address" value="{{ $store->address }}">
                                     </div>
 
                                     <div>
                                         <label for="update-profile-form-8" class="form-label">จังหวัด</label>
-                                        <select id="update-profile-form-8" class="form-select">
+                                        <select id="update-profile-form-8" class="form-select" name="province_id">
                                             <option value="">- เลือกจังหวัด -</option>
                                             @if(!empty($provinces))
                                                 @foreach($provinces as $_provinces)
@@ -470,7 +472,7 @@
 
                                     <div>
                                         <label for="update-profile-form-8" class="form-label">เขต/อำเภอ</label>
-                                        <select id="update-profile-form-8" class="form-select">
+                                        <select id="update-profile-form-8" class="form-select" name="amphures_id">
                                             <option value="">- เลือกเขต -</option>
                                             @if(!empty($amphures))
                                                 @foreach($amphures as $_amphures)
@@ -482,7 +484,7 @@
 
                                     <div>
                                         <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                                        <select id="update-profile-form-8" class="form-select">
+                                        <select id="update-profile-form-8" class="form-select" name="district_id">
                                             <option value="">- เลือกแขวง -</option>
                                             @if(!empty($districts))
                                                 @foreach($districts as $_districts)
@@ -494,7 +496,7 @@
 
                                     <div>
                                         <label for="" class="form-label">รหัสไปรษณีย์</label>
-                                        <input id="" type="text" class="form-control" placeholder="Input text" value="{{ $store->zipcode }}">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="zipcode" value="{{ $store->zipcode }}">
                                     </div>
 
                                 </div>
@@ -512,7 +514,7 @@
                                     </div>
                                     <div class="mx-auto cursor-pointer relative mt-5">
                                         <button type="button" class="btn btn-primary w-full">เปลี่ยนรูป</button>
-                                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 profile_img" name="profile_img">
                                     </div>
                                 </div>
                             </div>
@@ -806,7 +808,7 @@
 
                     <!-- END: Personal Information -->
                 </div>
-            </div>
+            </form>
         </div>
     </div>
     <!-- END: Content -->
