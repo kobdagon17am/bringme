@@ -113,6 +113,7 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
   Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
   Route::get('admin/store-detail/{id}', 'Admin\StoresController@store_detail')->name('admin/store-detail');
+  Route::post('admin/store_update', 'Admin\StoresController@store_update')->name('admin/store_update');
 
 
 
