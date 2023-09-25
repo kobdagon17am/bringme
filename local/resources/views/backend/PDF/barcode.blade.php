@@ -4,7 +4,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 
+
    <style>
+
+
         /* Set the page size to 40x30mm */
         @page {
             size: 90mm 30mm;
@@ -225,11 +228,15 @@
 
 </head>
 <body style=" text-align: center;">
+    <div class="row text-center">
+        <p>N:{{$data['product']->name_th}}({{$data['barcode']->name_th}})</p>
 
-    <b>COD: test  test</b>
-    <div style="margin-left: 20px; margin-top: 10px">
-        {!! DNS1D::getBarcodeHTML("1111111111", 'C128B') !!}
+        <div style="margin-left: 20px; margin-top: 5px">
+            {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B') !!}
+        </div>
+        <p style=" margin-top: 5px">COD:{{$data['barcode']->barcode}}<</p>
     </div>
+
 
 
 </body>
