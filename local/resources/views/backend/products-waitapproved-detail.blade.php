@@ -272,7 +272,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if(!empty($products_option_1))
+                                        @if(!isset($products_option_1))
                                             @foreach($products_option_1 as $_products_option_1)
                                                 <div class="form-inline mt-5 items-start first:mt-0 option_detail" ref="000{{ $_products_option_1->id }}">
                                                     <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
@@ -290,12 +290,30 @@
                                                     </div>
                                                 </div>
                                             @endforeach
+                                        @else
+
+                                        <div class="form-inline mt-5 items-start first:mt-0 option_detail">
+                                            <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
+                                            <div class="flex-1">
+                                                <div class="xl:flex items-center mt-5 first:mt-0">
+                                                    <div class="input-group flex-1">
+                                                        <input type="text" class="form-control generate_table" placeholder="" name="option_detail[]">
+                                                    </div>
+                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
+                                                        <p class="ml-3 xl:ml-5 remove_option_detail">
+                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @endif
                                         <div class="xl:ml-20 xl:pl-5 xl:pr-20 mt-5 first:mt-0">
                                             <button type="button" class="btn btn-outline-primary border-dashed w-full add_option_detail_1">
                                                 <i data-lucide="plus" class="w-4 h-4 mr-2"></i> เพิ่มตัวเลือกใหม่
                                             </button>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -319,7 +337,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if(!empty($products_option_2))
+                                        @if(!isset($products_option_2))
                                             @foreach($products_option_2 as $_products_option_2)
                                                 <div class="form-inline mt-5 items-start first:mt-0 option_detail_2" ref="000{{ $_products_option_2->id }}">
                                                     <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
@@ -337,6 +355,24 @@
                                                     </div>
                                                 </div>
                                             @endforeach
+                                        @else
+
+                                        <div class="form-inline mt-5 items-start first:mt-0 option_detail_2">
+                                            <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
+                                            <div class="flex-1">
+                                                <div class="xl:flex items-center mt-5 first:mt-0">
+                                                    <div class="input-group flex-1">
+                                                        <input type="text" class="form-control generate_table" placeholder="" name="option_detail_2[]">
+                                                    </div>
+                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
+                                                        <p class="ml-3 xl:ml-5 remove_option_detail_2">
+                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         @endif
                                         <div class="xl:ml-20 xl:pl-5 xl:pr-20 mt-5 first:mt-0">
                                             <button type="button" class="btn btn-outline-primary border-dashed w-full add_option_detail_2">
@@ -494,3 +530,159 @@
     </div>
 </div>
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.product').change(function(e) {
+          const files = e.target.files;
+          const imageContainer = $('#image-container');
+
+          // Clear the existing images
+          imageContainer.empty();
+
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+              // Create a new image element for each uploaded file
+              const imgElement = $('<div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">')
+                .append($('<img class="rounded-md product_place" alt="Midone - HTML Admin Template">').attr('src', e.target.result))
+                .append($('<div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2 remove_product">').html('<i data-lucide="x">x</i>'));
+
+              // Append the new image element to the container
+              imageContainer.append(imgElement);
+            };
+
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Handle remove image click
+        $('#image-container').on('click', '.remove_product', function() {
+          $(this).parent().remove();
+        });
+
+        // Ensure that images are displayed when the page loads
+        $(document).ready(function() {
+          const productImages = $('.product');
+          if (productImages.length > 0 && productImages[0].files.length > 0) {
+            // Trigger the change event to display existing images
+            productImages.change();
+          }
+        });
+
+        let optionCounter = 1;
+        let optionCounter_2 = 1;
+
+        // Function to add a new option_detail div for option 1
+        function addOptionDetail_1() {
+            optionCounter++;
+            const optionDetailClone = $('.option_detail:first').clone(true);
+            optionDetailClone.find('input').attr('name', 'option_detail[]');
+            optionDetailClone.find('.add_option_detail_1').removeClass('add_option_detail_1').addClass('remove_option_detail').html('<i data-lucide="trash-2" class="w-4 h-4"></i> ลบตัวเลือก');
+            optionDetailClone.find('.remove_option_detail').on('click', removeOptionDetail(optionCounter));
+            $('.option_detail:last').after(optionDetailClone);
+            $('.option_detail:last').attr('ref', optionCounter);
+            $('.remove_option_detail:last').attr('ref', optionCounter);
+        }
+
+        // Function to add a new option_detail div for option 2
+        function addOptionDetail_2() {
+            optionCounter_2++;
+            const optionDetailClone_2 = $('.option_detail_2:first').clone(true);
+            optionDetailClone_2.find('input').attr('name', 'option_detail_2[]');
+            optionDetailClone_2.find('.add_option_detail_2').removeClass('add_option_detail_2').addClass('remove_option_detail_2').html('<i data-lucide="trash-2" class="w-4 h-4"></i> ลบตัวเลือก');
+            optionDetailClone_2.find('.remove_option_detail_2').on('click', removeOptionDetail_2(optionCounter_2));
+            $('.option_detail_2:last').after(optionDetailClone_2);
+            $('.option_detail_2:last').attr('ref', optionCounter_2);
+            $('.remove_option_detail_2:last').attr('ref', optionCounter_2);
+        }
+
+        // Function to remove the last option_detail div for option 1
+        function removeOptionDetail(optionCounter) {
+            $('.option_detail').each(function () {
+                if ($(this).attr('ref') != null) {
+                    if ($(this).attr('ref') == optionCounter) {
+                        $(this).remove();
+                    }
+                }
+            });
+        }
+
+        // Function to remove the last option_detail div for option 2
+        function removeOptionDetail_2(optionCounter_2) {
+            $('.option_detail_2').each(function () {
+                if ($(this).attr('ref') != null) {
+                    if ($(this).attr('ref') == optionCounter_2) {
+                        $(this).remove();
+                    }
+                }
+            });
+        }
+
+        // Attach click event to add_option_detail_1 button
+        $('.add_option_detail_1').on('click', addOptionDetail_1);
+
+        // Attach click event to add_option_detail_2 button
+        $('.add_option_detail_2').on('click', addOptionDetail_2);
+
+        // Attach click event to remove_option_detail button (for existing options 1)
+        $('.remove_option_detail').click(function () {
+            removeOptionDetail($(this).attr('ref'));
+        });
+
+        // Attach click event to remove_option_detail_2 button (for existing options 2)
+        $('.remove_option_detail_2').click(function () {
+            removeOptionDetail_2($(this).attr('ref'));
+        });
+
+        $('.generate_table').change(function(){
+            generateTable();
+        });
+
+        function generateTable() {
+            const optionTitles = $('input[name="option_title[]"]');
+            const optionDetails = $('input[name="option_detail[]"]');
+            const optionDetails_2 = $('input[name="option_detail_2[]"]');
+            
+            $('#optionTable tbody').empty();
+
+            optionDetails.each(function (index) {
+                const option_1 = [];
+                const option_2 = [];
+
+                optionDetails.each(function () {
+                    option_1.push($(this).val());
+                });
+
+                optionDetails_2.each(function () {
+                    option_2.push($(this).val());
+                });
+                
+                const rowCount = Math.max(option_2.length);
+
+                for (let i = 0; i < rowCount; i++) {
+                    const row = $('<tr>');
+
+                    if (i == 0) {
+                        row.append($('<td rowspan="' + rowCount + '" class="border-r">' + $(this).val() + '</td>'));
+                    }
+
+                    if (option_2[i]) {
+                        row.append($('<td>' + option_2[i] + '</td>'));
+                    } else {
+                        row.append($('<td></td>'));
+                    }
+
+                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price['+$(this).val()+']['+option_2[i]+'][]"></div></td>'));
+
+                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock['+$(this).val()+']['+option_2[i]+'][]" placeholder="สต็อค"></td>'));
+
+                    $('#optionTable tbody').append(row);
+                }
+            });
+        }
+    });
+</script>
