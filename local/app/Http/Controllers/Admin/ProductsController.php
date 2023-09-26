@@ -9,7 +9,7 @@ use DataTables;
 use Storage;
 use File;
 use Hash;
-use Barryvdh\DomPDF\Facade\Pdf;
+
 use App\Models\Store;
 use App\Models\Brands;
 use App\Models\Products;
@@ -34,6 +34,7 @@ use Illuminate\Support\Str;
 use App\Models\CustomerCartProductCutStock;
 use App\Models\ProductsComment;
 use App\Models\CustomerCartAddress;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use Illuminate\Filesystem\Filesystem;
 

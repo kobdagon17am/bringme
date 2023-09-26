@@ -38,6 +38,9 @@ Use App\Models\CustomerCartTrackingItem;
 Use App\Models\ProductsComment;
 Use App\Models\CustomerCartClaim;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
+use Illuminate\Filesystem\Filesystem;
 
 class API2Controller extends  Controller
 {
@@ -2341,6 +2344,39 @@ class API2Controller extends  Controller
             ]);
         }
 
+    }
+
+    //App\Http\Controllers\API2Controller::pdf_barcode($product_id,$item_id,$count); //count = จำนวนที่ต้องการปริ้น
+    public function pdf_barcode($product_id,$item_id,$count)
+    {
+        $file = new Filesystem;
+        $file->cleanDirectory(public_path('pdf/'));
+
+
+        $product = DB::table('products')
+            ->where('id', $product_id)
+            ->first();
+
+        $barcode = DB::table('products_option_2_items')
+            ->where('product_id', $item_id)
+            ->first();
+
+        $data = ['product' => $product, 'barcode' => $barcode];
+
+        // Create a PDF instance using the PDF facade
+        $pdf = PDF::loadView('backend.PDF.barcode', compact('data'));
+
+
+        for ($i = 0; $i < $count; $i++) {
+            $pathfile = public_path('pdf/'.$item_id.'_'.$i.'.pdf');
+            $pdf->save($pathfile);
+
+        }
+
+        $this->merger_pdf();
+        $url =  asset('local/public/pdf/result.pdf');
+
+         return $url;
     }
 
 }
