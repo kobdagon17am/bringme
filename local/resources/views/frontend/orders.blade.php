@@ -23,7 +23,7 @@
                             <option>ส่ง</option>
                             <option>สำเร็จ</option>
                         </select>
-                    </div>                    
+                    </div>
                 </div>
                 <!-- BEGIN: Data List -->
                 <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible">
@@ -72,7 +72,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -156,4 +156,118 @@
             </div>
             <!-- END: Delete Confirmation Modal -->
         </div>
+@endsection
+
+@section('js')
+<script type="text/javascript">
+    $(function() {
+
+
+        table_order = $('#workL').DataTable({
+            // dom: 'Bfrtip',
+            // buttons: ['excel'],
+            searching: true,
+            ordering: false,
+            lengthChange: false,
+            responsive: true,
+            paging: true,
+            pageLength: 100,
+            processing: true,
+            serverSide: true,
+            "language": {
+                "lengthMenu": "แสดง _MENU_ แถว",
+                "zeroRecords": "ไม่พบข้อมูล",
+                "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
+                "search": "ค้นหา",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "หน้าแรก",
+                    "previous": "ย้อนกลับ",
+                    "next": "ถัดไป",
+                    "last": "หน้าสุดท้าย"
+                },
+                'processing': "กำลังโหลดข้อมูล",
+            },
+            ajax: {
+                url: '{{ route('admin/order_datable') }}',
+                data: function(d) {
+                    // d.user_name = $('#user_name').val();
+                    // d.s_date = $('#s_date').val();
+                    // d.e_date = $('#e_date').val();
+                    // d.position = $('#position').val();
+                    // d.type = $('#type').val();
+
+                },
+            },
+
+
+            columns: [
+
+
+
+                // {
+                //     data: "id",
+                //     title: "ลำดับ",
+                //     className: "w-10 text-center",
+                // },
+                {
+                    data: "",
+                    title: 'หมายเลขออเดอร์',
+                    className: "w-10 text-center",
+
+
+
+                },
+                {
+                    data: "product_name",
+                    title: "ชื่อผู้ซื้อ",
+                    className: "w-10",
+                },
+
+                {
+                    data: "stor_name",
+                    title: "สถานะ",
+                    className: "w-10",
+                },
+
+                {
+                    data: "qty",
+                    title: "จำนวน",
+                    className: "w-10",
+                },
+
+                {
+                    data: "approve_status",
+                    title: "สถานะอนุมัติร้านค้า",
+                    className: "w-10 text-center",
+                },
+
+                {
+                    data: "transfer_status",
+                    title: "สถานะการจัดส่ง",
+                    className: "w-10 text-center",
+                },
+
+                {
+                    data: "action",
+                    title: "",
+                    className: "w-5 ",
+
+                },
+
+
+
+            ],
+
+
+
+        });
+        $('#search-form').on('click', function(e) {
+            table_order.draw();
+            e.preventDefault();
+        });
+
+    });
+</script>
 @endsection

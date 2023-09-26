@@ -8,7 +8,7 @@
 
         <div class="grid grid-cols-12 gap-6 mt-5">
             <div class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2">
-                <div class="hidden md:block mx-auto text-slate-500">Showing 1 to 10 of 150 entries</div>
+
                 <div class="flex w-full sm:w-auto">
                     <div class="w-48 relative text-slate-500">
                         <input type="text" class="form-control w-48 box pr-10" placeholder="ค้นหา...">
@@ -26,133 +26,15 @@
             </div>
             <!-- BEGIN: Data List -->
             <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible">
-                <table class="table table-report -mt-2">
-                    <thead>
-                        <tr>
-                            <th class="whitespace-nowrap">#</th>
-                            <th class="whitespace-nowrap">หมายเลขออเดอร์</th>
-                            <th class="whitespace-nowrap">ชื่อผู้ซื้อ</th>
-                            <th class="text-center whitespace-nowrap">หยิบสินค้า</th>
-                            <th class="text-center whitespace-nowrap">สแกนสินค้า</th>
-                            <th class="text-center whitespace-nowrap">จัดส่งสินค้า</th>
-                            <th class="whitespace-nowrap">การชำระเงิน</th>
-                            <th class="text-right whitespace-nowrap">
-                                <div class="pr-16">ราคารวม</div>
-                            </th>
-                            <th class="text-center whitespace-nowrap"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($customer_cart as $cc)
+                <div class="table-responsive">
+                    <table id="workL" class="table table-striped table-hover dt-responsive display nowrap">
 
-                            <tr class="intro-x">
-                                <td class="w-10">
-                                    <input class="form-check-input" type="checkbox">
-                                </td>
-                                <td class="w-40 !py-4">
-                                    <a href=""
-                                        class="underline decoration-dotted whitespace-nowrap">#{{ $cc->order_number }}</a>
-                                </td>
-                                <td class="w-40">
-                                    <a href="" class="font-medium whitespace-nowrap">{{ $cc->cus_name }}</a>
-                                </td>
-                                <td class="text-center">
-                                    <div class="flex items-center justify-center whitespace-nowrap text-success">
-                                        @if ($cc->picking_status == 1)
-                                            <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สำเร็จ
-                                        @else
-                                            รอดำเนินการ
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="flex items-center justify-center whitespace-nowrap text-success">
-                                        @if ($cc->scan_status == 1)
-                                            <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สำเร็จ
-                                        @else
-                                            รอดำเนินการ
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="flex items-center justify-center whitespace-nowrap text-success">
-                                        @if ($cc->transfer_status != 0)
-                                            <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สำเร็จ
-                                        @else
-                                            รอดำเนินการ
-                                        @endif
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="whitespace-nowrap">บัตรเครดิต/บัตรเดบิต</div>
-                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ $cc->action_date }}
-                                    </div>
-                                </td>
-                                <td class="w-40 text-right">
-                                    <div class="pr-16">{{ $cc->grand_total }}</div>
-                                </td>
-                                <td class="table-report__action">
-                                    <div class="flex justify-center items-center">
-                                        <a class="flex items-center whitespace-nowrap mr-5" href="{{route('admin/order-detail',['cart_id'=>$cc->id])}}">
-                                            <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                    </table>
+
+                </div>
             </div>
-            <!-- END: Data List -->
-            <!-- BEGIN: Pagination -->
-            {{-- <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-nowrap items-center">
-                <nav class="w-full sm:w-auto sm:mr-auto">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <i class="w-4 h-4" data-lucide="chevrons-left"></i>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <i class="w-4 h-4" data-lucide="chevron-left"></i>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">...</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">1</a>
-                        </li>
-                        <li class="page-item active">
-                            <a class="page-link" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">3</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">...</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <i class="w-4 h-4" data-lucide="chevron-right"></i>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <i class="w-4 h-4" data-lucide="chevrons-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <select class="w-20 form-select box mt-3 sm:mt-0">
-                    <option>10</option>
-                    <option>25</option>
-                    <option>35</option>
-                    <option>50</option>
-                </select>
-            </div> --}}
-            <!-- END: Pagination -->
+
+
         </div>
 
         <!-- BEGIN: Delete Confirmation Modal -->
@@ -190,5 +72,121 @@
 @endsection
 
 @section('js')
+<script type="text/javascript">
+    $(function() {
 
+
+        table_order = $('#workL').DataTable({
+            // dom: 'Bfrtip',
+            // buttons: ['excel'],
+            searching: true,
+            ordering: false,
+            lengthChange: false,
+            responsive: true,
+            paging: true,
+            pageLength: 100,
+            processing: true,
+            serverSide: true,
+            "language": {
+                "lengthMenu": "แสดง _MENU_ แถว",
+                "zeroRecords": "ไม่พบข้อมูล",
+                "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
+                "search": "ค้นหา",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "หน้าแรก",
+                    "previous": "ย้อนกลับ",
+                    "next": "ถัดไป",
+                    "last": "หน้าสุดท้าย"
+                },
+                'processing': "กำลังโหลดข้อมูล",
+            },
+            ajax: {
+                url: '{{ route('admin/order_datable') }}',
+                data: function(d) {
+                    // d.user_name = $('#user_name').val();
+                    // d.s_date = $('#s_date').val();
+                    // d.e_date = $('#e_date').val();
+                    // d.position = $('#position').val();
+                    // d.type = $('#type').val();
+
+                },
+            },
+
+
+            columns: [
+
+
+                // {
+                //     data: "id",
+                //     title: "ลำดับ",
+                //     className: "w-10 text-center",
+                // },
+                {
+                    data: "order_number",
+                    title: 'หมายเลขออเดอร์',
+                    className: "w-10 text-center",
+
+
+
+                },
+                {
+                    data: "cus_name",
+                    title: "ชื่อผู้ซื้อ",
+                    className: "w-10",
+                },
+
+                {
+                    data: "picking_status",
+                    title: "หยิบสินค้า",
+                    className: "w-10",
+                },
+
+                {
+                    data: "scan_status",
+                    title: "สแกนสินค้า",
+                    className: "w-10",
+                },
+
+                {
+                    data: "transfer_status",
+                    title: "จัดส่งสินค้า",
+                    className: "w-10 text-center",
+                },
+
+                {
+                    data: "transfer",
+                    title: "การชำระเงิน",
+                    className: "w-10 text-center",
+                },
+
+                {
+                    data: "grand_total",
+                    title: "ราคารวม",
+                    className: "w-5 ",
+
+                },
+                {
+                    data: "action",
+                    title: "#",
+                    className: "w-5 ",
+
+                },
+
+
+
+            ],
+
+
+
+        });
+        $('#search-form').on('click', function(e) {
+            table_order.draw();
+            e.preventDefault();
+        });
+
+    });
+</script>
 @endsection
+

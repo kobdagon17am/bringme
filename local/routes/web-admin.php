@@ -191,6 +191,9 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
 
   Route::get('admin/orders', 'Admin\OrdersController@order_list')->name('admin/orders');
 
+  Route::get('admin/order_datable', 'Admin\OrdersController@order_datable')->name('admin/order_datable');
+
+
   Route::get('admin/genbarcode/{product_id}', 'Admin\ProductsController@genbarcode')->name('admin/genbarcode');
 
   Route::post('admin/pdf_barcode', 'Admin\ProductsController@pdf_barcode')->name('admin/pdf_barcode');
