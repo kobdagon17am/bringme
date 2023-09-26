@@ -2628,6 +2628,8 @@ class API1Controller extends Controller
         if($store){
             $products_item = ProductsItem::select('products_item.id',
             'products_item.product_id',
+            'products_item.qty',
+            'products_item.created_at',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
             'products_item.name_th'
