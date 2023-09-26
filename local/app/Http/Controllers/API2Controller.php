@@ -1918,11 +1918,18 @@ class API2Controller extends  Controller
                         }
                     }
 
+                    $follow = DB::table('store_following')
+                    ->where('customer_id',$r->customer_id)
+                    ->where('store_id',$r->store_id)
+                    ->first();
+
                     DB::commit();
                     return response()->json([
                         'message' => $message,
                         'status' => 1,
-                        'data' => '',
+                        'data' => [
+                            'following' => $follow->status,
+                        ],
                     ]);
 
                     }
