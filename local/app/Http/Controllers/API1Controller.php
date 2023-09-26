@@ -2579,7 +2579,7 @@ class API1Controller extends Controller
                     }
 
                 }else{
-                    $products_item = ProductsItem::where('id',$a->id)->first();
+                    $products_item = ProductsItem::where('id',$r->products_item_id)->first();
                     if($products_item){
 
                         $products_transfer = ProductsTransfer::where('product_id',$products_item->product_id)->where('products_item_id',$products_item->id)->first();
