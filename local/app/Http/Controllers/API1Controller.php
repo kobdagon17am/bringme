@@ -2186,6 +2186,16 @@ class API1Controller extends Controller
             // ->orderBy('products.updated_at','desc')
             ->inRandomOrder()->get();
 
+            $following = 0;
+            if(isset($r->customer_id)){
+                $following = DB::table('store_following')->where('customer_id',$r->customer_id)->where('store_id',$store->id)->where('status',1)->first();
+                if($following){
+                    $following = 1;
+                }else{
+                    $following = 0;
+                }
+            }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -2199,6 +2209,8 @@ class API1Controller extends Controller
                     'product_new' => $product_new,
                     'product_good_sale' => $product_good_sale,
                     'product_recome' => $product_recome,
+
+                    'following' => $following,
                 ],
             ]);
         }else{
