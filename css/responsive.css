@@ -1,0 +1,24 @@
+@media (max-width: 767px) {
+  .forest-vector {
+    position: absolute;
+    bottom: 0;
+    right: 2rem;
+    width: 8rem;
+    margin: 0 auto;
+  }
+
+  .wink-center {
+    top: 10%;
+    left: 5%;
+  }
+
+  .wink-left {
+    bottom: 10rem;
+    right: 3%;
+  }
+
+  .wink-right {
+    bottom: 13rem;
+    right: 10%;
+  }
+}

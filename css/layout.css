@@ -1,0 +1,429 @@
+@font-face {
+  font-family: VarelarRound;
+  src: url(../assets/font/VarelarRound-Regular.ttf);
+}
+
+@font-face {
+  font-family: Prompt;
+  src: url(../assets/font/Prompt/Prompt-Regular.ttf);
+}
+
+@font-face {
+  font-family: RedHatDisplay;
+  src: url(../assets/font/RedHatDisplay/RedHatDisplay-Regular.ttf);
+}
+
+:root {
+  --green-1: #aed71d;
+  --green-2: #9ac319;
+  --green-3: #89b116;
+  --green-4: #5a8039;
+  --green-5: #00705f;
+  --bg: #fff9f5;
+}
+
+* {
+  font-family: "VarelarRound", "Prompt";
+}
+
+html {
+  overflow-x: hidden;
+}
+
+p {
+  word-break: break-word;
+}
+
+.gradient-box {
+  background: rgb(174, 215, 29);
+  background: linear-gradient(
+    90deg,
+    rgba(174, 215, 29, 1) 0%,
+    rgba(154, 195, 25, 1) 50%,
+    rgba(137, 177, 22, 1) 100%
+  );
+}
+
+.header {
+  /* width: 100%; */
+  /* padding: 21px 77px 21px 59px; */
+  /* padding-left: 59px;
+  padding-right: 77px; */
+}
+
+.header-menu li a {
+  margin-left: 22px;
+  color: var(--green-4);
+  /* text-transform: uppercase; */
+}
+
+/* .btn-navbar button img {
+  width: 35%;
+} */
+
+.fade-in-from-left {
+  /* opacity: 0; */
+  /* transform: translateX(-100px); */
+}
+
+.body-section {
+  background-color: var(--bg);
+}
+
+.footer-section {
+  background-color: var(--bg);
+}
+
+/* First Section */
+
+.b-group {
+  z-index: 1;
+}
+
+.first-section p {
+  color: var(--green-5);
+}
+
+.first-section p span {
+  color: var(--green-2);
+}
+
+/* Second Section */
+
+.green-circle-1 {
+  /* margin: 331px auto 0 auto; */
+  width: 516px;
+  height: 516px;
+  /* border-radius: 516px; */
+  background: #aed71d;
+  z-index: 4;
+}
+
+.mobile_main {
+  position: relative;
+  /* bottom: 59px; */
+}
+
+.second-section img {
+  margin: 0 auto;
+}
+
+.title-context {
+  font-size: 40px;
+  color: var(--green-5);
+}
+
+.content-2 span {
+  /* font-weight: 600; */
+  color: #ff7527;
+}
+
+.front-items {
+  z-index: 1;
+}
+
+.free-shipping p,
+.good-qual p,
+.easy-order p {
+  /* font-size: 40px; */
+  /* font-weight: 500; */
+  color: #00705f;
+}
+
+.good-qual img {
+  /* width: 146px; */
+  /* height: 146px; */
+}
+
+.snow {
+  position: inherit;
+}
+
+.snow.snow-1 {
+  width: 32.01px;
+  height: 36.34px;
+}
+
+.snow.snow-2 {
+  width: 18.061px;
+  height: 20.568px;
+}
+
+.right-cloud, .left-cloud {
+  z-index: 0;
+}
+
+/* Third Section */
+
+.third-section,
+.categories-box {
+  display: flex;
+}
+
+.categories-box > img {
+  margin: 0 auto;
+  position: relative;
+  top: -36px;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}
+
+.categories-box p {
+  margin-bottom: 24px;
+  color: #555;
+}
+
+.category-name {
+  margin-top: 14px;
+}
+
+.healthy-bakery-box,
+.bakery-box,
+.healthy-food-box,
+.drink-box,
+.pet-stuff-box,
+.snack-box,
+.mom-kids-box,
+.fashion-box {
+  width: 98px;
+}
+
+.healthy-bakery,
+.bakery,
+.healthy-food,
+.drink,
+.pet-stuff,
+.snack,
+.mom-kids,
+.fashion {
+  width: 98px;
+  height: 98px;
+  border-radius: 10rem;
+}
+
+.healthy-bakery {
+  background-color: #afca51;
+}
+
+.bakery-pic,
+.healthy-food-pic,
+.drink-pic,
+.pet-stuff-pic,
+.snack-pic,
+.mom-kids-pic,
+.fashion-pic {
+  width: 70%;
+}
+
+.bakery {
+  background-color: #ff9cb7;
+}
+
+.healthy-food {
+  background-color: #f8e5c8;
+}
+
+.drink {
+  background-color: #ffc672;
+}
+
+.pet-stuff {
+  background-color: #ffe072;
+}
+
+.snack {
+  background-color: #cfe7f5;
+}
+
+.mom-kids {
+  background-color: #c0da75;
+}
+
+.fashion {
+  background-color: #ffb6b6;
+}
+
+/* Slideshow */
+
+.slideshow-section {
+  /* margin-top: 28px; */
+}
+
+.slideshow-section p {
+  /* font-size: 40px; */
+  color: #8bbf00;
+}
+
+.slideshow-section p span {
+  font-family: RedHatDisplay;
+  color: #ff739a;
+}
+
+.third-section.web {
+  /* display: block; */
+}
+
+.third-section.mobile {
+  /* display: none; */
+}
+
+/* Forth Section */
+
+.forth-section {
+  /* margin-top: 6rem; */
+  /* margin-bottom: -2rem; */
+}
+
+.forest-vector {
+  position: absolute;
+  bottom: 0;
+  right: 32rem;
+  margin: 0 auto;
+}
+
+.wink-left,
+.wink-center,
+.wink-right {
+  position: absolute;
+}
+
+.wink-left {
+  bottom: 204px;
+  right: 594px;
+}
+
+.wink-center {
+  bottom: 148px;
+  right: 520px;
+}
+
+.wink-right {
+  bottom: 197px;
+  right: 55px;
+}
+
+.download-box {
+  font-family: "Prompt";
+  position: relative;
+  z-index: 2;
+  margin: 0 auto;
+  /* margin-top: 1rem; */
+  /* padding: 59px 91px; */
+  /* width: 1227px; */
+  /* height: 479px; */
+  flex-shrink: 0;
+  /* border-radius: 97px; */
+  background: linear-gradient(
+    90deg,
+    rgba(174, 215, 29, 1) 0%,
+    rgba(154, 195, 25, 1) 50%,
+    rgba(137, 177, 22, 1) 100%
+  );
+}
+
+.box-left {
+  width: 100%;
+}
+
+.box-left p {
+  color: #0b5f52;
+  font-family: Prompt;
+  /* line-height: 3rem; */
+}
+
+.mobile-download {
+  z-index: 3;
+}
+
+.green-circle-2 {
+  position: relative;
+  /* bottom: 0rem; */
+  /* width: 22rem; */
+  /* height: 22rem; */
+  /* border-radius: 349px; */
+  background: #3e6d07;
+}
+
+.right-bottom-corner {
+  position: absolute;
+}
+
+/* Footer */
+
+.footer-page {
+  position: absolute;
+  margin: 0 auto;
+  width: 100%;
+  /* height: 360px; */
+  /* padding: 101px 190px; */
+  /* border-radius: 150px 150px 0px 0px; */
+  background-color: #003140;
+  color: #fff;
+  z-index: 0;
+}
+
+.address-box {
+  /* width: 45%; */
+}
+
+.address-box p,
+.about-us-box p {
+  /* font-size: 18px; */
+}
+
+.about-us-box {
+  /* width: 25%; */
+}
+
+.address-box img {
+  /* width: 14px; */
+  /* height: 14px; */
+  /* margin: 1px 10px 0px 0px; */
+}
+
+.about-us-box a,
+.address-data p,
+.contact-us-box a {
+  /* color: #fff; */
+  text-decoration: none;
+}
+
+.about-us-box a,
+.address-data p {
+  /* font-size: 12px; */
+}
+
+.contact-us-box {
+  /* font-size: 16px; */
+}
+
+.contact-us-box a:nth-child(1) {
+  /* margin-bottom: 56px */
+}
+
+.right-bottom-corner {
+  /* position: absolute; */
+  /* right: 0; */
+  /* bottom: 0; */
+}
+
+.footer-page.web {
+  /* display: flex; */
+}
+
+.footer-page.mobile {
+  /* display: none; */
+}
+
+.footer-page > div {
+  margin: 0 0.5rem;
+}
+
+.container div:nth-child(2) {
+  right: 0;
+}
+
+.container div:nth-child(3) {
+  bottom: 0;
+}
