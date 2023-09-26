@@ -2638,7 +2638,6 @@ class API1Controller extends Controller
         ->where('products_item.approve_status',1)
         ->get();
 
-        if($cart){
             return response()->json([
                 'message' => 'ทำรายการสำเร็จ',
                 'status' => 1,
@@ -2646,13 +2645,6 @@ class API1Controller extends Controller
                     'products_item' => $products_item,
                 ],
             ]);
-        }else{
-            return response()->json([
-                'message' =>  'ไม่พบข้อมูลสินค้า',
-                'status' => 0,
-                'data' => '',
-            ]);
-        }
     }
 
 }
