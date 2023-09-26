@@ -1423,6 +1423,8 @@ class API1Controller extends Controller
                 }
             }
 
+            $payment_terms = DB::table('payment_terms')->first();
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1434,6 +1436,7 @@ class API1Controller extends Controller
                     'url_img' => $url_img,
                     'shipping_type' => $shipping_type,
                     'period' => $period,
+                    'payment_terms' => $payment_terms,
                 ],
             ]);
         }else{
