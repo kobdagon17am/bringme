@@ -2624,27 +2624,36 @@ class API1Controller extends Controller
 
     public function api_get_products_transfer_list(Request $r)
     {
+        $store = Store::where('customer_id',$r->user_id)->first();
+        if($store){
+            $products_item = ProductsItem::select('products_item.id',
+            'products_item.product_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'products_item.name_th'
+            )
+            ->join('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.store_id',$store->id)
+            ->where('products_item.transfer_status',1)
+            ->where('products_item.approve_status',1)
+            ->get();
 
-        $products_item = ProductsItem::select('products_item.id',
-        'products_item.product_id',
-        'products_gallery.path as gal_path',
-        'products_gallery.name as gal_name',
-        'products_item.name_th'
-        )
-        ->join('products_gallery','products_gallery.product_id','products_item.product_id')
-        ->where('products_gallery.use_profile',1)
-        ->where('products_item.store_id',$r->store_id)
-        ->where('products_item.transfer_status',1)
-        ->where('products_item.approve_status',1)
-        ->get();
-
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'products_item' => $products_item,
+                    ],
+                ]);
+        }else{
             return response()->json([
-                'message' => 'ทำรายการสำเร็จ',
-                'status' => 1,
-                'data' => [
-                    'products_item' => $products_item,
-                ],
+                'message' =>  'ไม่พบข้อมูลผู้ใช้',
+                'status' => 0,
+                'data' => '',
             ]);
+        }
+
     }
 
 }
