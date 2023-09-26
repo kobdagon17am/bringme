@@ -1205,7 +1205,8 @@ class API1Controller extends Controller
             $product_recome = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'store.logo_path','store.logo',
-            'products_gallery.name as gal_name',)
+            'products_gallery.name as gal_name',
+            )
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->join('store','store.id','products.store_id')
@@ -2610,6 +2611,39 @@ class API1Controller extends Controller
                 'status' => 1,
                 'data' => [
                     'cart_status' => $cart->status,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' =>  'ไม่พบข้อมูลสินค้า',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+    }
+
+    public function api_get_products_transfer_list(Request $r)
+    {
+
+        $products_item = ProductsItem::select('products_item.id',
+        'products_item.product_id',
+        'products_gallery.path as gal_path',
+        'products_gallery.name as gal_name',
+        'products_item.name_th'
+        )
+        ->join('products_gallery','products_gallery.product_id','products_item.product_id')
+        ->where('products_gallery.use_profile',1)
+        ->where('products_item.store_id',$r->store_id)
+        ->where('products_item.transfer_status',1)
+        ->where('products_item.approve_status',1)
+        ->get();
+
+        if($cart){
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products_item' => $products_item,
                 ],
             ]);
         }else{
