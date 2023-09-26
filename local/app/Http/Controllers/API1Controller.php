@@ -2536,7 +2536,7 @@ class API1Controller extends Controller
                     $arr = explode(',',$r->arr_pro);
                     foreach($arr as $a){
                         if($a!=''){
-                            $products_item = ProductsItem::where('id',$a->id)->first();
+                            $products_item = ProductsItem::where('id',$a)->first();
                             if($products_item){
 
                                 $products_transfer = ProductsTransfer::where('product_id',$products_item->product_id)->where('products_item_id',$products_item->id)->first();
@@ -2707,6 +2707,31 @@ class API1Controller extends Controller
         }else{
             return response()->json([
                 'message' =>  'ไม่พบข้อมูลผู้ใช้',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+    }
+
+    public function api_get_products_transfer_detail(Request $r)
+    {
+        $products_transfer = ProductsTransfer::where('products_item_id',$r->products_item_id)->first();
+        if($products_transfer){
+
+            $url_img = Storage::disk('public')->url('');
+
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'products_transfer' => $products_transfer,
+                        'url_img' => $url_img,
+                    ],
+                ]);
+        }else{
+            return response()->json([
+                'message' =>  'ไม่พบข้อมูล',
                 'status' => 0,
                 'data' => '',
             ]);

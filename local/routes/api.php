@@ -86,4 +86,4 @@ Route::post('api_get_product_favorite', 'API2Controller@api_get_product_favorite
 Route::post('api_get_order_point_list_store', 'API2Controller@api_get_order_point_list_store');
 Route::post('api_get_report_store', 'API2Controller@api_get_report_store');
 Route::post('api_get_products_transfer_list', 'API1Controller@api_get_products_transfer_list');
-
+Route::post('api_get_products_transfer_detail', 'API1Controller@api_get_products_transfer_detail');
