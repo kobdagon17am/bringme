@@ -16,7 +16,14 @@
 
 
 Auth::routes();
-  Route::get('/', function () {
+Route::get('/', function () {
+
+      return view('index');
+
+  });
+
+
+  Route::get('/login', function () {
 
     // if(session('id')){
     if (Auth::guard('customer')->check()) {
@@ -25,7 +32,7 @@ Auth::routes();
 
       return view('auth/logincustomer');
     }
-  });
+  })->name('login');
 
 
   Route::get('home', 'Customer\HomeController@index')->name('home');

@@ -113,6 +113,7 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::get('admin/stores', 'Admin\StoresController@index')->name('admin/stores');
   Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
   Route::get('admin/store-detail/{id}', 'Admin\StoresController@store_detail')->name('admin/store-detail');
+  Route::post('admin/store_update', 'Admin\StoresController@store_update')->name('admin/store_update');
 
 
 
@@ -192,7 +193,7 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
 
   Route::get('admin/genbarcode/{product_id}', 'Admin\ProductsController@genbarcode')->name('admin/genbarcode');
 
-  Route::get('admin/pdf_barcode/{product_id}/{count}', 'Admin\ProductsController@pdf_barcode')->name('admin/pdf_barcode');
+  Route::post('admin/pdf_barcode', 'Admin\ProductsController@pdf_barcode')->name('admin/pdf_barcode');
 
   Route::get('admin/order-detail/{cart_id}', 'Admin\OrdersController@order_detail')->name('admin/order-detail');
 

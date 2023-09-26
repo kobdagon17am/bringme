@@ -161,6 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Webklex\PDFMerger\Providers\PDFMergerServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -177,6 +178,7 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+
 
     ],
 
@@ -195,6 +197,7 @@ return [
 
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
+        'PDFMerger' => Webklex\PDFMerger\Facades\PDFMergerFacade::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
