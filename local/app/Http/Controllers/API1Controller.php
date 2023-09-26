@@ -2529,56 +2529,109 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
             {
-                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
-                $products_item = ProductsItem::where('id',$r->products_item_id)->first();
-                if($products_item){
 
-                    $products_transfer = ProductsTransfer::where('product_id',$products_item->product_id)->where('products_item_id',$products_item->id)->first();
-                    if(!$products_transfer){
-                        $products_transfer = new ProductsTransfer();
+                if($r->type == 'new'){
+                    // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+
+                    $arr = explode(',',$r->arr_pro);
+                    foreach($arr as $a){
+                        if($a!=''){
+                            $products_item = ProductsItem::where('id',$a->id)->first();
+                            if($products_item){
+
+                                // $products_transfer = ProductsTransfer::where('product_id',$products_item->product_id)->where('products_item_id',$products_item->id)->first();
+                                // if(!$products_transfer){
+                                    $products_transfer = new ProductsTransfer();
+                                // }
+                                $products_transfer->product_id = $products_item->product_id;
+                                $products_transfer->products_item_id = $products_item->id;
+                                $products_transfer->transfer_type = 1;
+                                $products_transfer->shipping_date = $r->shipping_date;
+                                $products_transfer->tracking = $r->tracking;
+                                $products_transfer->shipping_name = $r->shipping_name;
+                                // $products_transfer->qty = $r->qty;
+                                $products_transfer->qty = $products_item->qty;
+                                $products_transfer->save();
+
+                                if($r->img!=''){
+                                    Storage::disk('public')->delete('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $products_transfer->img);
+                                    $image_64 = $r->img;
+                                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                                    // find substring fro replace here eg: data:image/png;base64,
+                                    $image = str_replace($replace, '', $image_64);
+                                    $image = str_replace(' ', '+', $image);
+                                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                                    Storage::disk('public')->put('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $imageName, base64_decode($image));
+                                    $products_transfer->path_img = 'product/'.$products_item->customer_id.'/'.$products_item->id.'/';
+                                    $products_transfer->img = $imageName;
+                                    $products_transfer->save();
+                                    // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                                }
+
+                                $products_item->transfer_status = 2;
+                                $products_item->shipping_date = $r->shipping_date;
+                                $products_item->save();
+
+                            }
+                        }
+
                     }
-                    $products_transfer->product_id = $products_item->product_id;
-                    $products_transfer->products_item_id = $products_item->id;
-                    $products_transfer->transfer_type = 1;
-                    $products_transfer->shipping_date = $r->shipping_date;
-                    $products_transfer->tracking = $r->tracking;
-                    $products_transfer->shipping_name = $r->shipping_name;
-                    $products_transfer->qty = $r->qty;
-                    $products_transfer->save();
-
-                    if($r->img!=''){
-                        Storage::disk('public')->delete('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $products_transfer->img);
-                        $image_64 = $r->img;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                         // find substring fro replace here eg: data:image/png;base64,
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $imageName, base64_decode($image));
-                        $products_transfer->path_img = 'product/'.$products_item->customer_id.'/'.$products_item->id.'/';
-                        $products_transfer->img = $imageName;
-                        $products_transfer->save();
-                        // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
-                    }
-
-                    $products_item->transfer_status = 2;
-                    $products_item->shipping_date = $r->shipping_date;
-                    $products_item->save();
 
                 }else{
-                    return response()->json([
-                        'message' =>  'ไม่พบข้อมูลสินค้า',
-                        'status' => 0,
-                        'data' => '',
-                    ]);
+                    $products_item = ProductsItem::where('id',$a->id)->first();
+                    if($products_item){
+
+                        $products_transfer = ProductsTransfer::where('product_id',$products_item->product_id)->where('products_item_id',$products_item->id)->first();
+                        if(!$products_transfer){
+                            $products_transfer = new ProductsTransfer();
+                        }
+                        $products_transfer->product_id = $products_item->product_id;
+                        $products_transfer->products_item_id = $products_item->id;
+                        $products_transfer->transfer_type = 1;
+                        $products_transfer->shipping_date = $r->shipping_date;
+                        $products_transfer->tracking = $r->tracking;
+                        $products_transfer->shipping_name = $r->shipping_name;
+                        $products_transfer->qty = $r->qty;
+                        // $products_transfer->qty = $products_item->qty;
+                        $products_transfer->save();
+
+                        if($r->img!=''){
+                            Storage::disk('public')->delete('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $products_transfer->img);
+                            $image_64 = $r->img;
+                            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                            // find substring fro replace here eg: data:image/png;base64,
+                            $image = str_replace($replace, '', $image_64);
+                            $image = str_replace(' ', '+', $image);
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->put('product/'.$products_item->customer_id.'/'.$products_item->id.'/' . $imageName, base64_decode($image));
+                            $products_transfer->path_img = 'product/'.$products_item->customer_id.'/'.$products_item->id.'/';
+                            $products_transfer->img = $imageName;
+                            $products_transfer->save();
+                            // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                        }
+
+                        $products_item->transfer_status = 2;
+                        $products_item->shipping_date = $r->shipping_date;
+                        $products_item->save();
+
+                    }
                 }
+
+                // else{
+                //     return response()->json([
+                //         'message' =>  'ไม่พบข้อมูลสินค้า',
+                //         'status' => 0,
+                //         'data' => '',
+                //     ]);
+                // }
 
                 DB::commit();
                 return response()->json([
                     'message' => 'ทำรายการสำเร็จ',
                     'status' => 1,
-                    'data' => $products_item,
+                    'data' => '',
                 ]);
 
                 }
