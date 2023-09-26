@@ -2639,11 +2639,14 @@ class API1Controller extends Controller
             ->where('products_item.approve_status',1)
             ->get();
 
+            $url_img = Storage::disk('public')->url('');
+
                 return response()->json([
                     'message' => 'ทำรายการสำเร็จ',
                     'status' => 1,
                     'data' => [
                         'products_item' => $products_item,
+                        'url_img' => $url_img,
                     ],
                 ]);
         }else{
