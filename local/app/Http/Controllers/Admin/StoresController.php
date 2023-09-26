@@ -5,6 +5,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use App\Models\Customer;
+use App\Models\Brands;
+use App\Models\Store;
+use Storage;
+use File;
+use Illuminate\Support\Str;
+
 class StoresController extends Controller
 {
     /**
@@ -71,6 +78,9 @@ class StoresController extends Controller
     }
 
     public function store_update(Request $request){
+
+        // dd($request->input(), $request->file());
+
         $customer = Customer::where('id',$request->input('customer_id'))->first();
         if($customer){
             
@@ -90,6 +100,16 @@ class StoresController extends Controller
             $customer->firstname = $request->input('firstname');
             $customer->save();
 
+            if(!empty($request->file('profile_img'))){
+                $profile_img = $request->file('profile_img');
+                $extension = $profile_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('upload/profile/', $profile_img, $imageName, 'public');
+                $customer->profile_img_path = 'upload/profile/';
+                $customer->profile_img = $imageName;
+                $customer->save();
+            }
+
             $brands = Brands::where('name_th',$request->input('brand_name'))->first();
             if(!$brands){
                 $brand = new Brands();
@@ -97,104 +117,86 @@ class StoresController extends Controller
                 $brand->name_en = $request->input('brand_name');
                 $brand->has_store = 1;
                 $brand->save();
+            }else{
+                $brand = $brands;
             }
 
-            $store = new Store();
+            $store = Store::find($request->input('store_id'));
             $store->customer_id = $customer->id;
             $store->brands_id = $brand->id;
-            $store->store_name = $request->input('');
             $store->category_id = $request->input('category_id');
-            $store->brand_product_detail = $r->brand_product_detail;
-            $store->product_price = $r->product_price;
-            $store->storage_method_id = $r->storage_method_id;
-            $store->shelf_lift = $r->shelf_lift;
-            $store->qty_sku = $r->qty_sku;
-            $store->shipping_date = $r->shipping_date;
-            $store->social = $r->social;
-            $store->address = $r->address2;
-            $store->province_id = $r->province_id2;
-            $store->amphures_id = $r->amphures_id2;
-            $store->district_id = $r->district_id2;
-            $store->zipcode = $r->zipcode2;
-            $store->bank_id = $r->bank_id;
-            $store->bank_account_name = $r->bank_account_name;
-            $store->bank_account_number = $r->bank_account_number;
+            $store->brand_product_detail = $request->input('brand_product_detail');
+            $store->storage_method_id = $request->input('storage_method_id');
+            $store->shelf_lift = $request->input('shelf_lift');
+            $store->qty_sku = $request->input('qty_sku');
+            $store->shipping_date = date('Y-m-d', strtotime($request->input('shipping_date')));
+            $store->social = $request->input('social');
+            $store->address = $request->input('address2');
+            $store->province_id = $request->input('province_id2');
+            $store->amphures_id = $request->input('amphures_id2');
+            $store->district_id = $request->input('district_id2');
+            $store->zipcode = $request->input('zipcode2');
+            $store->bank_id = $request->input('bank_id');
+            $store->bank_account_name = $request->input('bank_account_name');
+            $store->bank_account_number = $request->input('bank_account_number');
             $store->save();
 
-            if($r->product_ex_img!=''){
-                $image_64 = $r->product_ex_img;
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
+            if($request->file('product_ex_img') !=''){
+                $product_ex_img = $request->file('product_ex_img');
+                $extension = $product_ex_img->getClientOriginalExtension();
                 $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                $store->product_ex_img_path = 'store/'.$store->id.'/';
+                Storage::disk('public')->putFileAs('store/' . $store->id, $product_ex_img, $imageName, 'public');
+                $store->product_ex_img_path = 'store/' . $store->id . '/';
                 $store->product_ex_img = $imageName;
                 $store->save();
             }
 
-            if($r->product_pack_img!=''){
-                $image_64 = $r->product_pack_img;
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
+            if($request->file('product_pack_img') !=''){
+                $product_pack_img = $request->file('product_pack_img');
+                $extension = $product_pack_img->getClientOriginalExtension();
                 $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                $store->product_pack_img_path = 'store/'.$store->id.'/';
+                Storage::disk('public')->putFileAs('store/' . $store->id, $product_pack_img, $imageName, 'public');
+                $store->product_pack_img_path = 'store/' . $store->id . '/';
                 $store->product_pack_img = $imageName;
                 $store->save();
             }
 
-            if($r->certificate!=''){
-                $image_64 = $r->certificate;
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
+            if($request->file('certificate') !=''){
+                $certificate = $request->file('certificate');
+                $extension = $certificate->getClientOriginalExtension();
                 $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                $store->certificate_path = 'store/'.$store->id.'/';
+                Storage::disk('public')->putFileAs('store/' . $store->id, $certificate, $imageName, 'public');
+                $store->certificate_path = 'store/' . $store->id . '/';
                 $store->certificate = $imageName;
                 $store->save();
             }
 
-            if($r->bank_img!=''){
-                $image_64 = $r->bank_img;
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
+            if($request->file('bank_img') !=''){
+                $bank_img = $request->file('bank_img');
+                $extension = $bank_img->getClientOriginalExtension();
                 $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                $store->bank_img_path = 'store/'.$store->id.'/';
+                Storage::disk('public')->putFileAs('store/' . $store->id, $bank_img, $imageName, 'public');
+                $store->bank_img_path = 'store/' . $store->id . '/';
                 $store->bank_img = $imageName;
                 $store->save();
             }
 
-            if($r->id_card_img!=''){
-                $image_64 = $r->id_card_img;
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
+            if($request->file('id_card_img') !=''){
+                $id_card_img = $request->file('id_card_img');
+                $extension = $id_card_img->getClientOriginalExtension();
                 $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                $store->id_card_img_path = 'store/'.$store->id.'/';
+                Storage::disk('public')->putFileAs('store/' . $store->id, $id_card_img, $imageName, 'public');
+                $store->id_card_img_path = 'store/' . $store->id . '/';
                 $store->id_card_img = $imageName;
                 $store->save();
             }
 
-            if($r->company_img!=''){
-                $image_64 = $r->company_img;
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
+            if($request->file('company_img') !=''){
+                $company_img = $request->file('company_img');
+                $extension = $company_img->getClientOriginalExtension();
                 $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                $store->company_img_path = 'store/'.$store->id.'/';
+                Storage::disk('public')->putFileAs('store/' . $store->id, $company_img, $imageName, 'public');
+                $store->company_img_path = 'store/' . $store->id . '/';
                 $store->company_img = $imageName;
                 $store->save();
             }
@@ -202,7 +204,7 @@ class StoresController extends Controller
         }else{
             return redirect('admin/stores')->withError(' Data Is Null');
         }
-        return redirect('admin/stores-detail/'.$request->input('customer_id'));
+        return redirect('admin/store-detail/'.$request->input('customer_id'));
     }
 
 
@@ -223,7 +225,7 @@ class StoresController extends Controller
                 $img = '<div class="flex">
                 <div class="w-10 h-10 image-fit zoom-in">
                     <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="'.(!empty($row->profile_img) ? asset('local/storage/app').'/'.$row->profile_img_path.''.$row->profile_img : asset('backend/dist/images/preview-9.jpg') ). '">
+                        src="'.(!empty($row->profile_img) ? asset('local/storage/app/public').'/'.$row->profile_img_path.''.$row->profile_img : asset('backend/dist/images/preview-9.jpg') ). '">
                 </div>
             </div>';
 

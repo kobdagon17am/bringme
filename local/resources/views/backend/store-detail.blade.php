@@ -26,7 +26,7 @@
                 <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
 
                     @if(!empty($store->profile_img))
-                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{ asset('local/storage/app') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
+                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
                     @else
                     <img alt="Midone - HTML Admin Template" class="rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                     @endif
@@ -397,6 +397,7 @@
             <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_update') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="customer_id" value="{{ $id }}">
+                <input type="hidden" name="store_id" value="{{ $store_detail->id }}">
                 <div class="col-span-12">
                     <!-- BEGIN: Display Information -->
                     <div class="intro-y box lg:mt-5">
@@ -506,11 +507,11 @@
                                 <div class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                                     <div class="h-40 relative image-fit cursor-pointer zoom-in mx-auto">
                                         @if(!empty($store->profile_img))
-                                        <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('local/storage/app') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
+                                        <img alt="Midone - HTML Admin Template" class="profile_show tooltip rounded-full" src="{{ asset('local/storage/app/public') }}/{{ $store->profile_img_path }}{{ $store->profile_img }}">
                                         @else
-                                        <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                        <img alt="Midone - HTML Admin Template" class="profile_show tooltip rounded-full" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                         @endif
-                                        <div title="Remove this profile photo?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                        <div title="Remove this profile photo?" class="remove_profile_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                     </div>
                                     <div class="mx-auto cursor-pointer relative mt-5">
                                         <button type="button" class="btn btn-primary w-full">เปลี่ยนรูป</button>
@@ -535,12 +536,12 @@
 
                             <div>
                                 <label for="" class="form-label">ชื่อแบรนด์</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->store_name : '') }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->store_name : '') }}" name="brand_name">
                             </div>
 
                             <div>
                                 <label for="update-profile-form-8" class="form-label">ประเภทสินค้า</label>
-                                <select id="update-profile-form-8" class="form-select">
+                                <select id="update-profile-form-8" class="form-select" name="category_id">
                                     <option value="">- เลือกประเภทสินค้า -</option>
                                     @if(!empty($category))
                                         @foreach($category as $_category)
@@ -552,12 +553,12 @@
 
                             <div class="md:col-span-2">
                                 <label for="" class="form-label">รายละเอียดเกี่ยวกับแบรนด์และสินค้า</label>
-                                <textarea class="form-control" name="" id="" rows="5">{{ (!empty($store_detail) ? nl2br($store_detail->brand_product_detail) : '') }}</textarea>
+                                <textarea class="form-control" id="" rows="5" name="brand_product_detail">{{ (!empty($store_detail) ? nl2br($store_detail->brand_product_detail) : '') }}</textarea>
                             </div>
 
                             <div>
                                 <label for="update-profile-form-8" class="form-label">วิธีการจัดเก็บสินค้า</label>
-                                <select id="update-profile-form-8" class="form-select">
+                                <select id="update-profile-form-8" class="form-select" name="storage_method_id">
                                     option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
                                     @if(!empty($storage_method))
                                         @foreach($storage_method as $_storage_method)
@@ -569,12 +570,12 @@
 
                             <div>
                                 <label for="" class="form-label">Shelf-life</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->shelf_lift : '') }}">
+                                <input id="" type="text" class="form-control" name="shelf_lift" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->shelf_lift : '') }}">
                             </div>
 
                             <div>
                                 <label for="" class="form-label">จำนวนรายการสินค้า (SKU)</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->qty_sku : '') }}">
+                                <input id="" type="text" class="form-control" name="qty_sku" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->qty_sku : '') }}">
                             </div>
 
                             <div>
@@ -583,13 +584,13 @@
                                     <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
                                         <i data-lucide="calendar" class="w-4 h-4"></i>
                                     </div>
-                                    <input type="text" class="datepicker form-control pl-12" data-single-mode="true" value="{{ (!empty($store_detail) ? $store_detail->shipping_date : '') }}">
+                                    <input type="text" class="datepicker form-control pl-12" data-single-mode="true" name="shipping_date" value="{{ (!empty($store_detail) ? $store_detail->shipping_date : '') }}">
                                 </div>
                             </div>
 
                             <div>
                                 <label for="" class="form-label">ช่องทาง social media</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" name="social" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
                             </div>
 
                         </div>
@@ -603,12 +604,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
                             <div>
                                 <label for="" class="form-label">ห้อง/บ้านเลขที่</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->address : '') }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" name="address2" value="{{ (!empty($store_detail) ? $store_detail->address : '') }}">
                             </div>
 
                             <div>
                                 <label for="update-profile-form-8" class="form-label">จังหวัด</label>
-                                <select id="update-profile-form-8" class="form-select">
+                                <select id="update-profile-form-8" class="form-select" name="province_id2">
                                     <option value="">- เลือกจังหวัด -</option>
                                     @if(!empty($provinces))
                                         @foreach($provinces as $_provinces)
@@ -620,7 +621,7 @@
 
                             <div>
                                 <label for="update-profile-form-8" class="form-label">เขต/อำเภอ</label>
-                                <select id="update-profile-form-8" class="form-select">
+                                <select id="update-profile-form-8" class="form-select" name="amphures_id2">
                                     <option value="">- เลือกเขต -</option>
                                     @if(!empty($amphures))
                                         @foreach($amphures as $_amphures)
@@ -632,7 +633,7 @@
 
                             <div>
                                 <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                                <select id="update-profile-form-8" class="form-select">
+                                <select id="update-profile-form-8" class="form-select" name="district_id2">
                                     <option value="">- เลือกแขวง -</option>
                                     @if(!empty($districts))
                                         @foreach($districts as $_districts)
@@ -644,7 +645,7 @@
 
                             <div>
                                 <label for="" class="form-label">รหัสไปรษณีย์</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->zipcode : '') }}">
+                                <input id="" type="text" class="form-control" placeholder="Input text" name="zipcode2" value="{{ (!empty($store_detail) ? $store_detail->zipcode : '') }}">
                             </div>
 
                             <div class="col-span-1 md:col-span-2">
@@ -653,16 +654,16 @@
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
                                             @if(!empty($store_detail))
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_ex_img_path }}{{ $store_detail->product_ex_img }}">
+                                            <img class="rounded-md detail_show" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_ex_img_path }}{{ $store_detail->product_ex_img }}">
                                             @else
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                            <img class="rounded-md detail_show" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                             @endif
-                                            <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                            <div title="Remove this image?" class="remove_detail_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
                                     <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                         <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                        <input name="product_ex_img" type="file" class="w-full h-full top-0 left-0 absolute opacity-0 detail_img ">
                                     </div>
                                 </div>
                             </div>
@@ -673,16 +674,16 @@
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
                                             @if(!empty($store_detail))
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_pack_img_path }}{{ $store_detail->product_pack_img }}">
+                                            <img class="rounded-md package_show" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_pack_img_path }}{{ $store_detail->product_pack_img }}">
                                             @else
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                            <img class="rounded-md package_show" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                             @endif
-                                            <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                            <div title="Remove this image?" class=" remove_package_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
                                     <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                         <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                        <input  name="product_pack_img" type="file" class="w-full h-full top-0 left-0 absolute opacity-0 package_img">
                                     </div>
                                 </div>
                             </div>
@@ -693,16 +694,16 @@
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
                                             @if(!empty($store_detail))
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->certificate_path }}{{ $store_detail->certificate }}">
+                                            <img class="rounded-md certificate_show " alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->certificate_path }}{{ $store_detail->certificate }}">
                                             @else
-                                            <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                            <img class="rounded-md certificate_show " alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                             @endif
-                                            <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                            <div title="Remove this image?" class="remove_certificate_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                         </div>
                                     </div>
                                     <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                         <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                        <input  name="certificate" type="file" class="w-full h-full top-0 left-0 absolute opacity-0 certificate_img ">
                                     </div>
                                 </div>
                             </div>
@@ -721,7 +722,7 @@
 
                                 <div>
                                     <label for="update-profile-form-bank" class="form-label">ชื่อธนาคาร</label>
-                                    <select id="update-profile-form-bank" class="form-select">
+                                    <select id="update-profile-form-bank" class="form-select" name="bank_id">
                                         <option value="">- เลือกธนาคาร -</option>
                                         @if(!empty($bank))
                                             @foreach($bank as $_bank)
@@ -733,12 +734,12 @@
 
                                 <div>
                                     <label for="" class="form-label">ชื่อบัญชี</label>
-                                    <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->bank_account_name : '') }}">
+                                    <input id="" type="text" class="form-control" placeholder="Input text" name="bank_account_name" value="{{ (!empty($store_detail) ? $store_detail->bank_account_name : '') }}">
                                 </div>
 
                                 <div>
                                     <label for="" class="form-label">เลขบัญชี</label>
-                                    <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->bank_account_number : '') }}">
+                                    <input id="" type="text" class="form-control" placeholder="Input text" name="bank_account_number" value="{{ (!empty($store_detail) ? $store_detail->bank_account_number : '') }}">
                                 </div>
 
                                 <div class="col-span-1 md:col-span-2">
@@ -747,16 +748,16 @@
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
                                                 @if(!empty($store_detail))
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->id_card_img }}">
+                                                <img class="rounded-md idcard_show " alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->id_card_img }}">
                                                 @else
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                <img class="rounded-md idcard_show " alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                                 @endif
-                                                <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                                <div title="Remove this image?" class="remove_idcard_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
                                         <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                             <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                            <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                            <input name="bank_img" type="file" class="idcard_img w-full h-full top-0 left-0 absolute opacity-0">
                                         </div>
                                     </div>
                                 </div>
@@ -767,16 +768,16 @@
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
                                                 @if(!empty($store_detail))
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->bank_img }}">
+                                                <img class="bank_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->bank_img }}">
                                                 @else
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                <img class="bank_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                                 @endif
-                                                <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                                <div title="Remove this image?" class="remove_bank_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
                                         <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                             <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                            <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                            <input name="id_card_img" type="file" class="bank_img w-full h-full top-0 left-0 absolute opacity-0">
                                         </div>
                                     </div>
                                 </div>
@@ -787,16 +788,16 @@
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
                                                 @if(!empty($store_detail))
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->company_img_path }}{{ $store_detail->company_img }}">
+                                                <img class="company_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->company_img_path }}{{ $store_detail->company_img }}">
                                                 @else
-                                                <img class="rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
+                                                <img class="company_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                                 @endif
-                                                <div title="Remove this image?" class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
+                                                <div title="Remove this image?" class="remove_company_show tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"> <i data-lucide="x" class="w-4 h-4"></i> </div>
                                             </div>
                                         </div>
                                         <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                             <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span> หรือลากและวาง
-                                            <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0">
+                                            <input name="company_img" type="file" class="company_img w-full h-full top-0 left-0 absolute opacity-0">
                                         </div>
                                     </div>
                                 </div>
@@ -807,6 +808,11 @@
                     </div>
 
                     <!-- END: Personal Information -->
+
+                    <div class="flex justify-end mt-4 gap-5">
+                        <button type="reset" class="btn btn-outline-danger w-20 ">ย้อนกลับ</button>
+                        <button type="submit" class="btn btn-primary w-20">บันทึก</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -825,5 +831,135 @@
 <script type="text/javascript">
     $(document).ready(function(){
         new DataTable('.datatable');
+
+        // Get the file input element by its class
+        const fileInput = $(".profile_img");
+
+        // Add an event listener to the file input element
+        fileInput.on("change", function () {
+            // Check if a file is selected
+            if (fileInput[0].files && fileInput[0].files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Display the selected image in the profile_show class
+                    $(".profile_show").attr("src", e.target.result);
+                };
+
+                // Read the selected file as a data URL
+                reader.readAsDataURL(fileInput[0].files[0]);
+            }
+        });
+
+        function changeImage(imageElement, fileInputElement) {
+            if (fileInputElement[0].files && fileInputElement[0].files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Display the selected image in the specified image element
+                    imageElement.attr("src", e.target.result);
+                };
+
+                // Read the selected file as a data URL
+                reader.readAsDataURL(fileInputElement[0].files[0]);
+            }
+        }
+
+        function handleImageRemoval(imageElement, fileInputElement) {
+            imageElement.attr("src", "");
+            fileInputElement.val("");
+        }
+
+        const profileShow = $(".profile_show");
+        const removeProfileShow = $(".remove_profile_show");
+        const profilefileInput = $(".profile_img");
+
+        removeProfileShow.on("click", function () {
+            handleImageRemoval(profileShow, profilefileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        profilefileInput.on("change", function () {
+            changeImage(profileShow, profilefileInput);
+        });
+
+        const detailShow = $(".detail_show");
+        const removedetailShow = $(".remove_detail_show");
+        const detailfileInput = $(".detail_img");
+
+        removedetailShow.on("click", function () {
+            handleImageRemoval(detailShow, detailfileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        detailfileInput.on("change", function () {
+            changeImage(detailShow, detailfileInput);
+        });
+
+        const packageShow = $(".package_show");
+        const removepackageShow = $(".remove_package_show");
+        const packagefileInput = $(".package_img");
+
+        removepackageShow.on("click", function () {
+            handleImageRemoval(packageShow, packagefileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        packagefileInput.on("change", function () {
+            changeImage(packageShow, packagefileInput);
+        });
+
+        const certificateShow = $(".certificate_show");
+        const removecertificateShow = $(".remove_certificate_show");
+        const certificatefileInput = $(".certificate_img");
+
+        removecertificateShow.on("click", function () {
+            handleImageRemoval(certificateShow, certificatefileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        certificatefileInput.on("change", function () {
+            changeImage(certificateShow, certificatefileInput);
+        });
+
+        const idcardShow = $(".idcard_show");
+        const removeidcardShow = $(".remove_idcard_show");
+        const idcardfileInput = $(".idcard_img");
+
+        removeidcardShow.on("click", function () {
+            handleImageRemoval(idcardShow, idcardfileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        idcardfileInput.on("change", function () {
+            changeImage(idcardShow, idcardfileInput);
+        });
+
+        const bankShow = $(".bank_show");
+        const removebankShow = $(".remove_bank_show");
+        const bankfileInput = $(".bank_img");
+
+        removebankShow.on("click", function () {
+            handleImageRemoval(bankShow, bankfileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        bankfileInput.on("change", function () {
+            changeImage(bankShow, bankfileInput);
+        });
+
+        const companyShow = $(".company_show");
+        const removecompanyShow = $(".remove_company_show");
+        const companyfileInput = $(".company_img");
+
+        removecompanyShow.on("click", function () {
+            handleImageRemoval(companyShow, companyfileInput);
+        });
+
+        // Add an event listener to the file input to update the displayed image when a file is selected
+        companyfileInput.on("change", function () {
+            changeImage(companyShow, companyfileInput);
+        });
+
     });
 </script>
