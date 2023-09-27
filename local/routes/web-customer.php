@@ -50,6 +50,8 @@ Route::get('/', function () {
   Route::get('store-register', 'Customer\StoreRegisterController@index')->name('store-register');
 
 
+  Route::get('product-edit/{id}', 'Customer\ProductController@product_edit')->name('product-edit');
+
 
 
 

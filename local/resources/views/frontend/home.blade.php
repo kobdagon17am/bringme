@@ -326,7 +326,7 @@
                                         </div>
                                         <div class="flex items-center mt-2">
                                             <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: {{ ($_product->approve_status == 1 ? 'Active' : 'Deactive') }}
-                                            <a href="{{ url('admin/product_edit') }}/{{ $_product->id }}" style="float: right;margin-left: 40%; cursor: pointer;"><i data-lucide="settings" class="w-4 h-4 mr-2"></i></a>
+                                            <a href="{{ url('product_edit') }}/{{ $_product->id }}" style="float: right;margin-left: 40%; cursor: pointer;"><i data-lucide="settings" class="w-4 h-4 mr-2"></i></a>
                                         </div>
                                     </div>
                                 </div>
