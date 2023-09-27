@@ -13,7 +13,7 @@
 |
 */
 
-Route::get('/register_partner', 'PaymentController@register_partner');
+Route::get('/register_partner', 'PaymentController@register_partner')->name('register_partner');
 Route::post('store_create', 'PaymentController@store_create');
 
 Route::get('/get_amphures', 'PaymentController@get_amphures');
