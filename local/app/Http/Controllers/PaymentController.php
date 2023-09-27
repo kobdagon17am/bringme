@@ -212,6 +212,8 @@ class PaymentController extends Controller
             $store->company_img = $imageName;
             $store->save();
         }
+
+        return redirect('admin');
     }
 
     public function payment_form()
