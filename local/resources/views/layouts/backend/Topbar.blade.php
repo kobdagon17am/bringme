@@ -16,6 +16,7 @@
                 </nav>
 
                 <!-- END: Breadcrumb -->
+                @if(!empty(Auth::guard('admin')->user()->name))
                 <!-- BEGIN: Search -->
                 <div class="intro-x relative mr-3 sm:mr-6">
                     <div class="search hidden sm:block">
@@ -221,6 +222,7 @@
                         </ul>
                     </div>
                 </div>
+                @endif
                 <!-- END: Account Menu -->
             </div>
         </div>
