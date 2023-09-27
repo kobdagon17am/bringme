@@ -217,7 +217,7 @@
 
                 <div>
                     <label for="update-profile-form-8" class="form-label">จังหวัด</label>
-                    <select id="update-profile-form-8" class="form-select" name="province_id2">
+                    <select id="province_id2" class="form-select" name="province_id2">
                         <option value="">- เลือกจังหวัด -</option>
                         @if(!empty($provinces))
                             @foreach($provinces as $_provinces)
@@ -229,7 +229,7 @@
 
                 <div>
                     <label for="update-profile-form-8" class="form-label">เขต/อำเภอ</label>
-                    <select id="update-profile-form-8" class="form-select" name="amphures_id2">
+                    <select id="amphures_id2" class="form-select" name="amphures_id2">
                         <option value="">- เลือกเขต -</option>
                         @if(!empty($amphures))
                             @foreach($amphures as $_amphures)
@@ -241,7 +241,7 @@
 
                 <div>
                     <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                    <select id="update-profile-form-8" class="form-select" name="district_id2">
+                    <select id="district_id2" class="form-select" name="district_id2">
                         <option value="">- เลือกแขวง -</option>
                         @if(!empty($districts))
                             @foreach($districts as $_districts)
@@ -253,7 +253,7 @@
 
                 <div>
                     <label for="" class="form-label">รหัสไปรษณีย์</label>
-                    <input id="" type="text" class="form-control" placeholder="Input text" name="zipcode2" value="">
+                    <input id="zipcode2" type="text" class="form-control" placeholder="Input text" name="zipcode2" value="">
                 </div>
 
                 <div class="col-span-1 md:col-span-2">
@@ -442,6 +442,45 @@
               'data': { 'district_id' : district_id },
               'success': function (data){
                     $('#zipcode').val(data);
+              }
+            });
+        });
+
+        $('#province_id2').change(function(){
+            var province_id = $(this).val();
+            $.ajax({
+              'type': 'get', 
+              'url': "{{ url('/get_amphures') }}", 
+              'dataType': 'html',
+              'data': { 'province_id' : province_id },
+              'success': function (data){
+                    $('#amphures_id2').html(data);
+              }
+            });
+        });
+
+        $('#amphures_id2').change(function(){
+            var amphures_id = $(this).val();
+            $.ajax({
+              'type': 'get', 
+              'url': "{{ url('/get_districes') }}", 
+              'dataType': 'html',
+              'data': { 'amphures_id' : amphures_id },
+              'success': function (data){
+                    $('#district_id2').html(data);
+              }
+            });
+        });
+
+        $('#district_id2').change(function(){
+            var district_id = $(this).val();
+            $.ajax({
+              'type': 'get', 
+              'url': "{{ url('/get_zipcode') }}", 
+              'dataType': 'html',
+              'data': { 'district_id' : district_id },
+              'success': function (data){
+                    $('#zipcode2').val(data);
               }
             });
         });
