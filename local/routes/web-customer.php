@@ -34,7 +34,7 @@ Route::get('/', function () {
 
     // if(session('id')){
     if (Auth::guard('customer')->check()) {
-      return redirect('login');
+      return redirect('home');
     }else{
 
       return view('auth/logincustomer');
