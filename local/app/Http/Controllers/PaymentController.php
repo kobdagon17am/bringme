@@ -77,7 +77,7 @@ class PaymentController extends Controller
     }
 
     public function get_districes(Request $request){
-        $data = DB::table('districts')->where('amphure_id',$r->amphure_id)->orderBy('name_th')->get();
+        $data = DB::table('districts')->where('amphure_id',$request->amphures_id)->orderBy('name_th')->get();
         $html = '<option value="">- เลือกแขวง -</option>';
         if(!empty($data)){
             foreach ($data as $key => $_amphures) {
@@ -88,8 +88,8 @@ class PaymentController extends Controller
     }
 
     public function get_zipcode(Request $request){
-        $data = DB::table('districts')->where('id',$r->district_id)->first();
-        $html = $data->zipcode;
+        $data = DB::table('districts')->where('id',$request->district_id)->first();
+        $html = $data->zip_code;
         return $html;
     }
 
