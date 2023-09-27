@@ -205,7 +205,7 @@ class EmployeeController extends Controller
 
                 //     $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Not Active </div>';
                 // } else {
-                //     $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Paning </div>';;
+                //     $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> Pending </div>';;
                 // }
                 $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> กำลังใช้งาน </div>';
                 return $htmml;
