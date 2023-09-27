@@ -58,7 +58,7 @@
                     <a href="#">FAQ</a>
                 </li>
                 <li>
-                    <a href="{{ url('register') }}">Register</a>
+                    <a href="{{ url('register_partner') }}">Register</a>
                 </li>
             </ul>
         </nav>

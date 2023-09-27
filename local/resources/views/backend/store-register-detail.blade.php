@@ -1,3 +1,4 @@
+
 @extends('layouts.backend.app')
 
 @section('content')
@@ -5,7 +6,7 @@
     <h2 class="intro-y text-lg font-medium mt-10">
         ข้อมูลร้านค้า
     </h2>
-    @if(!empty(Auth::user()))
+    @if(!empty(Auth::guard('admin')->user()->name))
     <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_create') }}" enctype="multipart/form-data">
     @else
     <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('store_create') }}" enctype="multipart/form-data">
@@ -405,6 +406,45 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+
+        $('#province_id').change(function(){
+            var province_id = $(this).val();
+            $.ajax({
+              'type': 'get', 
+              'url': "{{ url('/get_amphures') }}", 
+              'dataType': 'html',
+              'data': { 'province_id' : province_id },
+              'success': function (data){
+                    $('#amphures_id').html(data);
+              }
+            });
+        });
+
+        $('#amphures_id').change(function(){
+            var amphures_id = $(this).val();
+            $.ajax({
+              'type': 'get', 
+              'url': "{{ url('/get_districes') }}", 
+              'dataType': 'html',
+              'data': { 'amphures_id' : amphures_id },
+              'success': function (data){
+                    $('#district_id').html(data);
+              }
+            });
+        });
+
+        $('#district_id').change(function(){
+            var district_id = $(this).val();
+            $.ajax({
+              'type': 'get', 
+              'url': "{{ url('/get_zipcode') }}", 
+              'dataType': 'html',
+              'data': { 'district_id' : district_id },
+              'success': function (data){
+                    $('#zipcode').val(data);
+              }
+            });
+        });
 
         $('.day-item').click(function(){
             console.log('Active');

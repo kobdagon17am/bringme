@@ -1,4 +1,4 @@
-@if(!empty(Auth::user()))
+@if(!empty(Auth::guard('admin')->user()->name))
 <nav class="side-nav">
     <ul>
 

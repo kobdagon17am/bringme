@@ -55,6 +55,44 @@ class PaymentController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function register_partner(){$data['customer'] = Customer::all();
+        $data['provinces'] = DB::table('provinces')->get();
+        $data['amphures'] = DB::table('amphures')->get();
+        $data['districts'] = DB::table('districts')->get();
+        $data['category'] = DB::table('category')->get();
+        $data['storage_method'] = DB::table('storage_method')->get();
+        $data['bank'] = DB::table('bank')->get();
+        return view('backend.store-register-detail', $data);
+    }
+
+    public function get_amphures(Request $request){
+        $data = DB::table('amphures')->where('province_id',$request->province_id)->orderBy('name_th')->get();
+        $html = '<option value="">- เลือกเขต -</option>';
+        if(!empty($data)){
+            foreach ($data as $key => $_amphures) {
+                $html .= '<option value="'.$_amphures->id.'">'.$_amphures->name_th.'</option>';
+            }
+        }
+        return $html;
+    }
+
+    public function get_districes(Request $request){
+        $data = DB::table('districts')->where('amphure_id',$r->amphure_id)->orderBy('name_th')->get();
+        $html = '<option value="">- เลือกแขวง -</option>';
+        if(!empty($data)){
+            foreach ($data as $key => $_amphures) {
+                $html .= '<option value="'.$_amphures->id.'">'.$_amphures->name_th.'</option>';
+            }
+        }
+        return $html;
+    }
+
+    public function get_zipcode(Request $request){
+        $data = DB::table('districts')->where('id',$r->district_id)->first();
+        $html = $data->zipcode;
+        return $html;
+    }
+
     public function store_create(Request $request){
         $customer = New Customer();
         $customer->name = $request->input('firstname');

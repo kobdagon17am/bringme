@@ -13,11 +13,12 @@
 |
 */
 
-Route::get('/register_partner', function () {
-    return view('backend.store-register-detail');
-});
+Route::get('/register_partner', 'PaymentController@register_partner');
+Route::post('store_create', 'PaymentController@store_create');
 
-Route::post('store_create', 'Controller@store_create');
+Route::get('/get_amphures', 'PaymentController@get_amphures');
+Route::get('/get_districes', 'PaymentController@get_districes');
+Route::get('/get_zipcode', 'PaymentController@get_zipcode');
 
 Auth::routes();
 Route::get('/', function () {
