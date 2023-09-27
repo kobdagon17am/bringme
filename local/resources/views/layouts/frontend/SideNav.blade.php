@@ -9,7 +9,7 @@
         </li>
 
         <li>
-            <a href="http://www.bringme.asia/" target="_bank" class="side-menu">
+            <a href="{{route('register_partner')}}" target="_bank" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="frontend/dist/images/icons/BringMe_Web_Operate_ICON-04.png" alt=""></div>
                 <div class="side-menu__title"> สมัครสมาชิก </div>
             </a>
