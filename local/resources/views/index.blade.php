@@ -57,6 +57,9 @@
                 <li>
                     <a href="#">FAQ</a>
                 </li>
+                <li>
+                    <a href="{{ url('register') }}">Register</a>
+                </li>
             </ul>
         </nav>
         <!-- Navbar Button -->

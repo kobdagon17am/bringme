@@ -5,7 +5,11 @@
     <h2 class="intro-y text-lg font-medium mt-10">
         ข้อมูลร้านค้า
     </h2>
+    @if(!empty(Auth::user()))
     <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_create') }}" enctype="multipart/form-data">
+    @else
+    <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('store_create') }}" enctype="multipart/form-data">
+    @endif
     @csrf
     <div class="col-span-12">
         <!-- BEGIN: Display Information -->
@@ -19,18 +23,6 @@
             <div class="flex flex-col-reverse xl:flex-row flex-col">
                 <div class="flex-1 mt-6 xl:mt-0">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
-
-                        <!-- <div>
-                            <label for="update-profile-form-8" class="form-label">บัญชีที่ผูกกับร้าน</label>
-                            <select id="update-profile-form-8" class="form-select select_customer" name="customer_id">
-                                <option value="">- เลือกบัญชี -</option>
-                                @if(!empty($customer))
-                                    @foreach($customer as $_customer)
-                                        <option value="{{ $_customer->id }}">{{ $_customer->name }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div> -->
 
                         <div>
                             <label for="" class="form-label">ชื่อ-นามสกุล</label>

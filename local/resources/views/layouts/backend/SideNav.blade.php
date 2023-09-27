@@ -1,3 +1,4 @@
+@if(!empty(Auth::user()))
 <nav class="side-nav">
     <ul>
 
@@ -817,3 +818,5 @@
         </li> -->
     </ul>
 </nav>
+
+@endif

@@ -13,7 +13,11 @@
 |
 */
 
+Route::get('/register_partner', function () {
+    return view('backend.store-register-detail');
+});
 
+Route::post('store_create', 'Controller@store_create');
 
 Auth::routes();
 Route::get('/', function () {
@@ -21,6 +25,8 @@ Route::get('/', function () {
       return view('index');
 
   });
+
+
 
 
   Route::get('/login', function () {
