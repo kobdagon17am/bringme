@@ -24,7 +24,7 @@ class StoreRegisterController extends Controller
 
      public function __construct()
      {
-         $this->middleware('auth');
+         $this->middleware('customer');
      }
     public function index()
     {

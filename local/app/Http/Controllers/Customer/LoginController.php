@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Customer;
 use Hash;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -43,6 +44,34 @@ class LoginController extends Controller
         }
 
     }
+
+    public function customer_login(Request $req)
+    {
+
+
+        $admin = Customer::where('email', $req->email)
+            // ->whereIn('status', [1, 2])
+            ->first();
+
+
+        if ($admin) {
+
+            if (Hash::check($req->password, $admin->password)) {
+                Auth::guard('customer')->login($admin);
+                return redirect('home');
+            } else {
+
+                return redirect('login')->withError(
+                    'Pless check username and password !.'
+                );
+            }
+        }else{
+
+            return redirect('login')->withError('Pless check username and password !.');
+        }
+
+    }
+
 
     public function forceLogin($username)
     {

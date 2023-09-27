@@ -27,12 +27,14 @@ Route::get('/', function () {
 
     // if(session('id')){
     if (Auth::guard('customer')->check()) {
-      return redirect('home');
+      return redirect('login');
     }else{
 
       return view('auth/logincustomer');
     }
   })->name('login');
+
+  Route::post('customer_login', 'Customer\LoginController@customer_login')->name('customer_login');
 
 
   Route::get('home', 'Customer\HomeController@index')->name('home');

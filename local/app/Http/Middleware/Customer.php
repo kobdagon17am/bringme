@@ -19,7 +19,7 @@ class Customer
     {
         // if(session('id')){
 
-        if (Auth::guard('c_user')->check()) {
+        if (Auth::guard('customer')->check()) {
             return $next($request);
         } else {
             return redirect('/');
