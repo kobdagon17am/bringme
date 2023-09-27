@@ -29,16 +29,16 @@
     <!-- END: Head -->
     <body class="py-5 md:py-0">
         <!-- BEGIN: Mobile Menu -->
-        @include('layouts.Customer.MobileMenu')
+        @include('layouts.frontend.MobileMenu')
         <!-- END: Mobile Menu -->
         <!-- BEGIN: Top Bar -->
 
-        @include('layouts.Customer.Topbar')
+        @include('layouts.frontend.Topbar')
         <!-- END: Top Bar -->
         <div class="flex overflow-hidden">
             <!-- BEGIN: Side Menu -->
 
-            @include('layouts.Customer.SideNav')
+            @include('layouts.frontend.SideNav')
             <!-- END: Side Menu -->
             <!-- BEGIN: Content -->
             @yield('content')
