@@ -536,7 +536,7 @@
 
                             <div>
                                 <label for="" class="form-label">ชื่อแบรนด์</label>
-                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->store_name : '') }}" name="brand_name">
+                                <input id="" type="text" class="form-control" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->store_name : '') }}" name="store_name">
                             </div>
 
                             <div>

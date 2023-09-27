@@ -114,6 +114,9 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::get('admin/stores_datable', 'Admin\StoresController@stores_datable')->name('admin/stores_datable');
   Route::get('admin/store-detail/{id}', 'Admin\StoresController@store_detail')->name('admin/store-detail');
   Route::post('admin/store_update', 'Admin\StoresController@store_update')->name('admin/store_update');
+  Route::post('admin/store_create', 'Admin\StoresController@store_create')->name('admin/store_create');
+  Route::get('admin/store-register-detail', 'Admin\StoresController@store_register_detail')->name('admin/store_register_detail');
+  Route::post('admin/get_userdata', 'Admin\StoresController@get_userdata')->name('admin/get_userdata');
 
 
 
@@ -121,18 +124,9 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::get('admin/stores_waitapproved_datable', 'Admin\StoresWaitapprovedController@stores_waitapproved_datable')->name('admin/stores_waitapproved_datable');
 
 
-
   Route::get('admin/stores-waitapproved', function () {
     return view('backend/stores-waitapproved');
   })->name('admin/stores-waitapproved');
-
-
-  Route::get('admin/store-register-detail', function () {
-    return view('backend/store-register-detail');
-  })->name('admin/store-register-detail');
-
-
-
 
 
   Route::get('admin/transaction', function () {

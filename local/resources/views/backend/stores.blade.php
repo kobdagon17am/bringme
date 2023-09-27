@@ -6,6 +6,7 @@
         <h2 class="intro-y text-lg font-medium mt-10">
             ข้อมูลร้านค้า
         </h2>
+        <a href="{{url('admin/store-register-detail')}}" class="btn btn-primary shadow-md mr-2" style="margin-top: 15px; margin-bottom: -15px;">+ เพิ่มร้านค้า</a>
         <div class="grid grid-cols-12 gap-6 mt-5">
 
             <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
