@@ -36,6 +36,7 @@ class StoresController extends Controller
     }
 
     public function store_view($id){
+
         $data['store'] = DB::table('customer')->where('id',$id)->first();
         $data['address'] = DB::table('customer_address')
                                 ->where('customer_id',$id)
@@ -226,7 +227,7 @@ class StoresController extends Controller
 
         $customer = Customer::where('id',$request->input('customer_id'))->first();
         if($customer){
-            
+
             $customer = Customer::find($request->input('customer_id'));
             $customer->name = $request->input('firstname');
             $customer->email = $request->input('email');
