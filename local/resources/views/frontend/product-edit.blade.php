@@ -1,5 +1,5 @@
 
-@extends('layouts.Customer.app')
+@extends('layouts.frontend.app')
 @section('content')
 <div class="content">
     <div class="grid grid-cols-11 gap-x-6 mt-5 pb-20">
@@ -11,7 +11,7 @@
                         อัปโหลดสินค้า
                     </div>
                     <div class="mt-5">
-                        <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('item_gallery') }}" id="item_gallery" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="item_id" value="{{$products_item->item_id}}">
                             <div class="form-inline items-start flex-col xl:flex-row mt-10">
@@ -52,7 +52,7 @@
             </div>
             <!-- END: Uplaod Product -->
             <!-- BEGIN: Product Information -->
-    <form method="POST" action="{{ url('admin/product_update') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url('product_update') }}" enctype="multipart/form-data">
         <input type="hidden" name="store_id" value="{{ $products_item->store_id }}">
         <input type="hidden" name="item_id" value="{{ $products_item->item_id }}">
         @csrf()
@@ -399,13 +399,15 @@
                 <a href="products.php" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ยกเลิก</a>
                 <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
             </div>
+
+            </form>
         </div>
     </div>
 </div>
 
-</form>
 
 @endsection
+@section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript">
@@ -577,7 +579,7 @@
 
             $.ajax({
               'type': 'post',
-              'url': "{{ url('admin/remove_gallery') }}",
+              'url': "{{url('remove_gallery')}}",
               'dataType': 'text',
               'data': { 'gallery_id' : gallery_id,
                         '_token' : "{{csrf_token()}}"
@@ -596,3 +598,4 @@
         })
     }
 </script>
+@endsection

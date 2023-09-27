@@ -1,22 +1,21 @@
 <nav class="side-nav">
     <ul>
-
         <li>
             <a href="{{route('home')}}" class="side-menu">
-                <div class="side-menu__icon"> <img class="w-20" src="frontend/dist/images/icons/BringMe_Web_Operate_ICON-02.png" alt=""></div>
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('frontend/dist/images/icons/BringMe_Web_Operate_ICON-02.png')}}" alt=""></div>
                 <div class="side-menu__title"> Dashboard </div>
             </a>
         </li>
-
+{{--
         <li>
             <a href="{{route('register_partner')}}" target="_bank" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="frontend/dist/images/icons/BringMe_Web_Operate_ICON-04.png" alt=""></div>
                 <div class="side-menu__title"> สมัครสมาชิก </div>
             </a>
-        </li>
+        </li> --}}
 
 
-        <li>
+        {{-- <li>
             <a href="javascript:;" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="frontend/dist/images/icons/BringMe_Web_Operate_ICON-05.png" alt=""></div>
                 <div class="side-menu__title">
@@ -95,7 +94,7 @@
             <div class="side-menu__icon"> <img class="w-20" src="frontend/dist/images/icons/BringMe_Web_Operate_ICON-18.png" alt=""></div>
                 <div class="side-menu__title"> ตรวจสอบสต็อก</div>
             </a>
-        </li>
+        </li> --}}
 
 
     </ul>

@@ -291,7 +291,7 @@
                 <div class="intro-y col-span-12 flex items-center ml-auto mt-2">
                     <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
                         <div class="w-80 relative text-slate-500">
-                            <a href="{{ url('admin/product_add') }}/{{$id}}" targer="_blank"><button type="button" class="btn btn-primary">เพิ่มสินค้าใหม่</button></a>
+                            <a href="{{ url('product_add') }}/{{$id}}" targer="_blank"><button type="button" class="btn btn-primary">เพิ่มสินค้าใหม่</button></a>
                             <input type="text" class="form-control w-56 box pr-10" placeholder="ค้นหา...">
                             <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search">
                             </i>
@@ -326,7 +326,7 @@
                                         </div>
                                         <div class="flex items-center mt-2">
                                             <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> สถานะ: {{ ($_product->approve_status == 1 ? 'Active' : 'Deactive') }}
-                                            <a href="{{ url('product_edit') }}/{{ $_product->id }}" style="float: right;margin-left: 40%; cursor: pointer;"><i data-lucide="settings" class="w-4 h-4 mr-2"></i></a>
+                                            <a href="{{ url('product-edit') }}/{{ $_product->id }}" style="float: right;margin-left: 40%; cursor: pointer;"><i data-lucide="settings" class="w-4 h-4 mr-2"></i></a>
                                         </div>
                                     </div>
                                 </div>

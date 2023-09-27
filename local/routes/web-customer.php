@@ -20,6 +20,7 @@ Route::get('/get_amphures', 'PaymentController@get_amphures');
 Route::get('/get_districes', 'PaymentController@get_districes');
 Route::get('/get_zipcode', 'PaymentController@get_zipcode');
 
+
 Auth::routes();
 Route::get('/', function () {
 
@@ -51,6 +52,12 @@ Route::get('/', function () {
 
 
   Route::get('product-edit/{id}', 'Customer\ProductController@product_edit')->name('product-edit');
+  Route::post('item_gallery', 'Customer\ProductController@item_gallery')->name('item_gallery');
+  Route::post('product_update', 'Customer\ProductController@product_update')->name('product_update');
+  Route::post('remove_gallery', 'Customer\ProductController@remove_gallery')->name('remove_gallery');
+  Route::get('/product_add/{id}', 'Customer\ProductController@product_add')->name('/product_add');
+
+
 
 
 

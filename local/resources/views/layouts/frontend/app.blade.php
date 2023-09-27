@@ -13,16 +13,21 @@
             {{-- <title>Bringme</title> --}}
             <title>@yield('title')</title>
             <!-- BEGIN: CSS Assets-->
-            <link rel="stylesheet" href="{{asset('frontend/dist/css/app.css')}}" />
-            <!-- END: CSS Assets-->
 
-            <!-- BEGIN: JS Assets-->
-            <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+
+
+            <link rel="stylesheet" href="{{asset('frontend/dist/css/app.css')}}" />
+           <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+
+            <link href='//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css' rel='stylesheet'>
+
+
             <script defer src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
             <script defer src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
             <script defer src="{{asset('frontend/dist/js/ckeditor-classic.js')}}"></script>
-            <script defer src="{{asset('frontend/dist/js/app.js')}}"></script>
             <!-- END: JS Assets-->
+
+
             @yield('css')
         </head>
     </head>
@@ -45,6 +50,13 @@
 
             <!-- END: Content -->
         </div>
+        <script src="{{ asset('frontend/dist/js/app.js') }}"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+       <script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+       @include('layouts.backend.flash-message')
+
         @yield('js')
     </body>
 </html>
