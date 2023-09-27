@@ -61,9 +61,6 @@ Route::get('/', function () {
 
 
 
-
-
-
   Route::get('employee-add', function () {
     return view('frontend/employee-add');
   })->name('employee-add');
