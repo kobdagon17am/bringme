@@ -1,4 +1,6 @@
-@extends('layouts.Customer.app')
+
+
+@extends('layouts.frontend.app')
 
 @section('content')
 <div class="content">
@@ -788,8 +790,4 @@
 </div>
 @endsection
 
-@extends('layouts.Customer.app')
 
-@section('content')
-
-@endsection

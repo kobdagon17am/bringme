@@ -33,6 +33,10 @@
                             @endif
                         </div>
                     </div>
+                    <?php
+                    // dd($order_detail['data']);
+
+                    ?>
                     <div class="box p-5 rounded-md mt-5">
                         <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
                             <div class="font-medium text-base truncate">รายละเอียดผู้ซื้อ</div>
@@ -41,14 +45,17 @@
                             </a> --}}
                         </div>
                         <div class="flex items-center">
-                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> ชื่อ: <a href="" class="underline decoration-dotted ml-1">วีรพล อุดมทรัพย์</a>
+                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> ชื่อ: <a href="" class="underline decoration-dotted ml-1"> {{$order_detail['data']['cart']->customer_name}} </a>
                         </div>
                         <div class="flex items-center mt-3">
-                            <i data-lucide="calendar" class="w-4 h-4 text-slate-500 mr-2"></i> หมายเลขโทรศัพท์: +71828273732
+                            <i data-lucide="calendar" class="w-4 h-4 text-slate-500 mr-2"></i> หมายเลขโทรศัพท์: {{$order_detail['data']['customer_address']->tel}}
                         </div>
                         <div class="flex items-center mt-3">
                             <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 mr-2">
-                            </i> ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
+                            </i>
+
+
+                            ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
                         </div>
                     </div>
                     <div class="box p-5 rounded-md mt-5">
