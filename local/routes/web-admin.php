@@ -123,6 +123,11 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::post('admin/stores_confirmation', 'Admin\StoresWaitapprovedController@stores_confirmation')->name('admin/stores_confirmation');
   Route::get('admin/stores_waitapproved_datable', 'Admin\StoresWaitapprovedController@stores_waitapproved_datable')->name('admin/stores_waitapproved_datable');
 
+  Route::get('admin/refund', 'Admin\RefundController@index')->name('admin/refund');
+  Route::get('admin/refund_datatable', 'Admin\RefundController@refund_datatable')->name('admin/refund_datatable');
+  Route::get('admin/refund-view/{id}', 'Admin\RefundController@refund_view')->name('admin/refund-view');
+  Route::get('admin/refund-unapprove/{id}', 'Admin\RefundController@refund_unapprove')->name('admin/refund-unapprove');
+  Route::get('admin/refund-approve/{id}', 'Admin\RefundController@refund_approve')->name('admin/refund-approve');
 
   Route::get('admin/stores-waitapproved', function () {
     return view('backend/stores-waitapproved');
@@ -133,9 +138,7 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
     return view('backend/transaction');
   })->name('admin/transaction');
 
-  Route::get('admin/refund', function () {
-    return view('backend/refund');
-  })->name('admin/refund');
+  
 
   Route::get('admin/campaign', function () {
     return view('backend/campaign');

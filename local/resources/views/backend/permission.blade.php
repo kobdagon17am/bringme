@@ -110,83 +110,83 @@
 @section('js')
 <script type="text/javascript">
 
-    $(function() {
+$(function() {
 
 
-        table_order = $('#workL').DataTable({
-            // dom: 'Bfrtip',
-            // buttons: ['excel'],
-            searching: true,
-            ordering: false,
-            lengthChange: false,
-            responsive: true,
-            paging: true,
-            pageLength: 100,
-            processing: true,
-            serverSide: true,
-            "language": {
-                "lengthMenu": "แสดง _MENU_ แถว",
-                "zeroRecords": "ไม่พบข้อมูล",
-                "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
-                "search": "ค้นหา",
-                "infoEmpty": "",
-                "infoFiltered": "",
-                "paginate": {
-                    "first": "หน้าแรก",
-                    "previous": "ย้อนกลับ",
-                    "next": "ถัดไป",
-                    "last": "หน้าสุดท้าย"
-                },
-                'processing': "กำลังโหลดข้อมูล",
+    table_order = $('#workL').DataTable({
+        // dom: 'Bfrtip',
+        // buttons: ['excel'],
+        searching: true,
+        ordering: false,
+        lengthChange: false,
+        responsive: true,
+        paging: true,
+        pageLength: 100,
+        processing: true,
+        serverSide: true,
+        "language": {
+            "lengthMenu": "แสดง _MENU_ แถว",
+            "zeroRecords": "ไม่พบข้อมูล",
+            "info": "แสดงหน้า _PAGE_ จาก _PAGES_ หน้า",
+            "search": "ค้นหา",
+            "infoEmpty": "",
+            "infoFiltered": "",
+            "paginate": {
+                "first": "หน้าแรก",
+                "previous": "ย้อนกลับ",
+                "next": "ถัดไป",
+                "last": "หน้าสุดท้าย"
             },
+            'processing': "กำลังโหลดข้อมูล",
+        },
 
-            ajax: {
-                url: '{{ url("admin/permission_datatable") }}',
-                data: function(d) {
-                },
+        ajax: {
+            url: '{{ url("admin/permission_datatable") }}',
+            data: function(d) {
             },
+        },
 
-            columns: [
-                {
-                    data: "name",
-                    //title: "ชื่อเจ้าของร้าน",
-                    className: "w-10",
-                },
-                {
-                    data: "view",
-                    //title: "ชื่อเจ้าของร้าน",
-                    className: "w-10",
-                },
-                {
-                    data: "add",
-                    //title: "ชื่อเจ้าของร้าน",
-                    className: "w-10",
-                },
-                {
-                    data: "edit",
-                    // title: "สถานะ",
-                    className: "w-10",
-                },
-                {
-                    data: "delete",
-                    // title: "action",
-                    className: "w-5 ",
+        columns: [
+            {
+                data: "name",
+                //title: "ชื่อเจ้าของร้าน",
+                className: "w-10",
+            },
+            {
+                data: "view",
+                //title: "ชื่อเจ้าของร้าน",
+                className: "w-10",
+            },
+            {
+                data: "add",
+                //title: "ชื่อเจ้าของร้าน",
+                className: "w-10",
+            },
+            {
+                data: "edit",
+                // title: "สถานะ",
+                className: "w-10",
+            },
+            {
+                data: "delete",
+                // title: "action",
+                className: "w-5 ",
 
-                },
-                {
-                    data: "action",
-                    // title: "action",
-                    className: "w-5 ",
+            },
+            {
+                data: "action",
+                // title: "action",
+                className: "w-5 ",
 
-                },
-            ],
-
-        });
-        $('#search-form').on('click', function(e) {
-        table_order.draw();
-        e.preventDefault();
-    });
+            },
+        ],
 
     });
-    </script>
-    @endsection
+    $('#search-form').on('click', function(e) {
+    table_order.draw();
+    e.preventDefault();
+});
+
+});
+</script>
+@endsection
