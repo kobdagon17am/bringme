@@ -1049,6 +1049,7 @@ class API2Controller extends  Controller
                 if($cart){
                     if($cart->picking_status == 1 && $cart->scan_status == 1 && $cart->transfer_status == 1){
                         $cart->transfer_status = 2;
+                        $cart->received_date = date('Y-m-d H:i:s');
                     }
                     $cart->save();
 
