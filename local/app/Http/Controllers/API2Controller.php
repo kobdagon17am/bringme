@@ -1041,7 +1041,7 @@ class API2Controller extends  Controller
         }
     }
 
-    public function api_cart_reciept(Request $r){
+    public function api_cart_receive(Request $r){
         DB::beginTransaction();
         try
         {
