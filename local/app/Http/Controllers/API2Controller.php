@@ -1052,16 +1052,15 @@ class API2Controller extends  Controller
                         $cart->received_date = date('Y-m-d H:i:s');
                     }
                     $cart->save();
-
-                    $cus_products = CustomerCartProduct::where('customer_cart_id',$cart->id)->get();
-                    foreach($cus_products as $cp){
-                        $p = Products::select('store_id')->where('id',$cp->product_id)->first();
-                        if($p){
-                            $store = Store::where('id',$p->store_id)->first();
-                            $store->credit = $store->credit + $cp->total_price;
-                            $store->save();
-                        }
-                    }
+                    // $cus_products = CustomerCartProduct::where('customer_cart_id',$cart->id)->get();
+                    // foreach($cus_products as $cp){
+                    //     $p = Products::select('store_id')->where('id',$cp->product_id)->first();
+                    //     if($p){
+                    //         $store = Store::where('id',$p->store_id)->first();
+                    //         $store->credit = $store->credit + $cp->total_price;
+                    //         $store->save();
+                    //     }
+                    // }
                 }
 
             DB::commit();
