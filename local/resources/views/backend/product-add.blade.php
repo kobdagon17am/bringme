@@ -103,18 +103,14 @@
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row">
-                                <div class="form-check mr-2">
-                                    <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="0">
-                                    <label class="form-check-label" for="radio-switch-4">Ambient</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-5" class="form-check-input" type="radio" name="storage_method_id" value="1">
-                                    <label class="form-check-label" for="radio-switch-5">Chilled</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-6" class="form-check-input" type="radio" name="storage_method_id" value="2">
-                                    <label class="form-check-label" for="radio-switch-6">Frozen</label>
-                                </div>
+                                @if(!empty($storage_method))
+                                    @foreach($storage_method as $_storage_method)
+                                        <div class="form-check mr-2">
+                                            <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="{{ $_storage_method->id }}">
+                                            <label class="form-check-label" for="radio-switch-4">{{ $_storage_method->name_th }}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
 

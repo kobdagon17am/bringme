@@ -99,7 +99,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" multiple="multiple" tabindex="-1" hidden="hidden">
+                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" tabindex="-1" hidden="hidden">
                                 @if(!empty($category))
                                     @foreach($category as $_category)
                                         <option {{ (!empty($products_item) ? ($_category->id == $products_item->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
@@ -116,18 +116,14 @@
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row">
-                                <div class="form-check mr-2">
-                                    <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="0" {{ (!empty($products_item) ? ($products_item->storage_method_id == '0' ? 'checked' : '') : '') }} >
-                                    <label class="form-check-label" for="radio-switch-4">Ambient</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-5" class="form-check-input" type="radio" name="storage_method_id" value="1" {{ (!empty($products_item) ? ($products_item->storage_method_id == '1' ? 'checked' : '') : '') }} >
-                                    <label class="form-check-label" for="radio-switch-5">Chilled</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-6" class="form-check-input" type="radio" name="storage_method_id" value="2" {{ (!empty($products_item) ? ($products_item->storage_method_id == '2' ? 'checked' : '') : '') }} >
-                                    <label class="form-check-label" for="radio-switch-6">Frozen</label>
-                                </div>
+                                @if(!empty($storage_method))
+                                    @foreach($storage_method as $_storage_method)
+                                        <div class="form-check mr-2">
+                                            <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="{{ $_storage_method->id }}" {{ (!empty($products_item) ? ($products_item->storage_method_id == $_storage_method->id ? 'checked' : '') : '') }}>
+                                            <label class="form-check-label" for="radio-switch-4">{{ $_storage_method->name_th }}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
 
@@ -268,11 +264,11 @@
                                             <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[]" value="{{ (!empty($products_option_head) ? $products_option_head[0]->name_th : '' ) }}">
+                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[{{ (!empty($products_option_head) ? $products_option_head[0]->id : '' ) }}]" value="{{ (!empty($products_option_head) ? $products_option_head[0]->name_th : '' ) }}">
                                                 </div>
                                             </div>
                                         </div>
-                                        @if(!isset($products_option_1))
+                                        @if(!empty($products_option_1))
                                             @foreach($products_option_1 as $_products_option_1)
                                                 <div class="form-inline mt-5 items-start first:mt-0 option_detail" ref="000{{ $_products_option_1->id }}">
                                                     <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
@@ -290,30 +286,12 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-                                        @else
-
-                                        <div class="form-inline mt-5 items-start first:mt-0 option_detail">
-                                            <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
-                                            <div class="flex-1">
-                                                <div class="xl:flex items-center mt-5 first:mt-0">
-                                                    <div class="input-group flex-1">
-                                                        <input type="text" class="form-control generate_table" placeholder="" name="option_detail[]">
-                                                    </div>
-                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <p class="ml-3 xl:ml-5 remove_option_detail">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         @endif
                                         <div class="xl:ml-20 xl:pl-5 xl:pr-20 mt-5 first:mt-0">
                                             <button type="button" class="btn btn-outline-primary border-dashed w-full add_option_detail_1">
                                                 <i data-lucide="plus" class="w-4 h-4 mr-2"></i> เพิ่มตัวเลือกใหม่
                                             </button>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -333,11 +311,11 @@
                                             <label class="form-label sm:w-20">หัวข้อ</label>
                                             <div class="flex items-center flex-1 xl:pr-20">
                                                 <div class="input-group flex-1">
-                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[]" value="{{ (!empty($products_option_head) ? $products_option_head[1]->name_th : '' ) }}">
+                                                    <input type="text" class="form-control generate_table" placeholder="" name="option_title[{{ (!empty($products_option_head) ? $products_option_head[1]->id : '' ) }}]" value="{{ (!empty($products_option_head) ? $products_option_head[1]->name_th : '' ) }}">
                                                 </div>
                                             </div>
                                         </div>
-                                        @if(!isset($products_option_2))
+                                        @if(!empty($products_option_2))
                                             @foreach($products_option_2 as $_products_option_2)
                                                 <div class="form-inline mt-5 items-start first:mt-0 option_detail_2" ref="000{{ $_products_option_2->id }}">
                                                     <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
@@ -355,24 +333,6 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-                                        @else
-
-                                        <div class="form-inline mt-5 items-start first:mt-0 option_detail_2">
-                                            <label class="form-label mt-2 sm:w-20">ตัวเลือก</label>
-                                            <div class="flex-1">
-                                                <div class="xl:flex items-center mt-5 first:mt-0">
-                                                    <div class="input-group flex-1">
-                                                        <input type="text" class="form-control generate_table" placeholder="" name="option_detail_2[]">
-                                                    </div>
-                                                    <div class="w-20 flex text-slate-500 mt-3 xl:mt-0">
-                                                        <p class="ml-3 xl:ml-5 remove_option_detail_2">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         @endif
                                         <div class="xl:ml-20 xl:pl-5 xl:pr-20 mt-5 first:mt-0">
                                             <button type="button" class="btn btn-outline-primary border-dashed w-full add_option_detail_2">

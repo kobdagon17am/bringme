@@ -175,6 +175,7 @@ class ProductsController extends Controller
         $data['products_option_1'] = DB::table('products_option_1')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_2'] = DB::table('products_option_2')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id', $data['products_item']->product_id)->get();
+        $data['storage_method'] = DB::table('storage_method')->get();
         $data['id'] = $id;
 
         return view('backend/products-waitapproved-detail', $data);
@@ -188,6 +189,7 @@ class ProductsController extends Controller
 
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
+        $data['storage_method'] = DB::table('storage_method')->get();
         $data['store_id'] = $id;
 
         return view('backend/product-add', $data);
@@ -217,6 +219,7 @@ class ProductsController extends Controller
         $data['products_option_1'] = DB::table('products_option_1')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_2'] = DB::table('products_option_2')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id', $data['products_item']->product_id)->get();
+        $data['storage_method'] = DB::table('storage_method')->get();
 
         return view('backend/product-edit', $data);
     }
@@ -737,7 +740,7 @@ class ProductsController extends Controller
 
 
         $products_item = DB::table('products_item')
-            ->select('products_item.*', 'customer.name as stor_name')
+            ->select('products_item.*', 'customer.name as stor_name', 'products_item.id as item_id')
             // ->where('status','=','success')
             // ->where('customer_type', 2)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
@@ -828,7 +831,7 @@ class ProductsController extends Controller
 
 
                 $html = '<div class="flex justify-center items-center">
-           <a class="flex items-center mr-3 btn btn-sm  btn-outline-primary mr-2 mb-2" href="' . route('admin/products-waitapproved-detail', ['id' => $row->id]) . '"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
+           <a class="flex items-center mr-3 btn btn-sm  btn-outline-primary mr-2 mb-2" href="' . route('admin/products-waitapproved-detail', ['id' => $row->item_id]) . '"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
        </div>';
                 return $html;
             })
