@@ -594,6 +594,18 @@ class API1Controller extends Controller
                         $store->save();
                     }
 
+
+                    DB::table('customer_acc')->insert([
+                        'store_id' => $store->id,
+                        'bank_id' => $r->bank_id,
+                        'acc_name' => $r->bank_account_name,
+                        'acc_number' => $r->bank_account_number,
+                        'acc_path' => $store->bank_img_path,
+                        'acc_img' => $store->bank_img,
+                        'used' => 1,
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ]);
+
                 }
                 DB::commit();
                 $customer = Customer::where('email',$r->email)->first();
@@ -2327,7 +2339,11 @@ class API1Controller extends Controller
                 $products_option_2_items->name_en = '';
                 $products_option_2_items->save();
 
-                $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $new_barcode = $this->generateRandomString(10);
+
+                // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $products_option_2_items->barcode = $new_barcode;
+
                 $products_option_2_items->save();
 
                 $products->min_price = $r->price;
@@ -2468,7 +2484,9 @@ class API1Controller extends Controller
                 $products_option_2_items->name_en = '';
                 $products_option_2_items->save();
 
-                $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $new_barcode = $this->generateRandomString(10);
+                // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $products_option_2_items->barcode = $new_barcode;
 
                 $products->min_price = $r->price;
                 $products->max_price = $r->price;

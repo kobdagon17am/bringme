@@ -13,7 +13,7 @@
                     <div class="mt-5">
                         <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="item_id" value="{{$products_item->item_id}}">
+                            <input type="hidden" name="item_id" value="{{$products_item->product_id}}">
                             <div class="form-inline items-start flex-col xl:flex-row mt-10">
                                 <div class="form-label w-full xl:w-64 xl:!mr-10">
                                     <div class="text-left">
@@ -111,7 +111,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" multiple="multiple" tabindex="-1" hidden="hidden">
+                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" tabindex="-1" hidden="hidden">
                                 @if(!empty($category))
                                     @foreach($category as $_category)
                                         <option {{ (!empty($products_item) ? ($_category->id == $products_item->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
