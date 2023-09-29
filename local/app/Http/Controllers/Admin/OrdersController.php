@@ -108,10 +108,12 @@ class OrdersController extends  Controller
 
             ->addColumn('transfer_status', function ($row) {
 
-                if ($row->transfer_status == 1) {
-                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
-                } else {
-                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
+                if ($row->transfer_status == 2) {
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ได้รับสินค้าแล้ว </div>';
+                } elseif($row->transfer_status == 1) {
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';;
+                }else{
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
                 }
                 return $htmml;
             })
@@ -119,7 +121,7 @@ class OrdersController extends  Controller
             ->addColumn('transfer', function ($row) {
                 //1.cod 2.โอน 3.บัตร
                 if($row->pay_type == 1){
-                    $text = 'ใช้ส่วนลด';
+                    $text = 'COD';
                 }elseif($row->pay_type == 2){
                     $text = 'โอนชำระ';
                 }elseif($row->pay_type == 3){

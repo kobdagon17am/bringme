@@ -249,7 +249,7 @@
 </head>
 <body style=" text-align: center;">
     <div class="row text-center">
-        <p>N:{{$data['product']->name_th}}({{$data['barcode']->name_th}})</p>
+        <p>N:{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
 
         <div style="margin-left: 20px; margin-top: 5px">
             {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B') !!}
