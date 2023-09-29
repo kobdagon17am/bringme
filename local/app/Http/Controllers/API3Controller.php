@@ -59,11 +59,20 @@ class API3Controller extends Controller
      {
         $store = Store::where('customer_id',$r->user_id)->first();
          if($store){
+            $finance_movement = FinanceMovement::where('store_id',$store->id)->orderBy('created_at','desc')->get();
+            $finance_movement_hold_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',1)->where('status',0)->where('ref_type',1)->sum('price');
+            $finance_movement_income_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',1)->sum('price');
+            $finance_movement_withdraw_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',2)->sum('price');
+
              return response()->json([
                  'message' => 'ทำรายการสำเร็จ',
                  'status' => 1,
                  'data' => [
                      'store' => $store,
+                     'finance_movement' => $finance_movement,
+                     'finance_movement_hold_price' => $finance_movement_hold_price,
+                     'finance_movement_income_price' => $finance_movement_income_price,
+                     'finance_movement_withdraw_price' => $finance_movement_withdraw_price,
                  ],
              ]);
          }else{
