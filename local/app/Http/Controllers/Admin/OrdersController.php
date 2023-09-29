@@ -36,6 +36,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\CustomerCartProductCutStock;
 use App\Models\CustomerCartTracking;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
+use Illuminate\Filesystem\Filesystem;
+
 class OrdersController extends  Controller
 {
     /**
@@ -58,18 +62,6 @@ class OrdersController extends  Controller
     {
 
 
-        // $stock_lot = StockLot::select('stock_lot.*','products.products_code','products.name_th as product_name')
-        // ->join('products','products.id','stock_lot.product_id')
-        // ->orderBy('store_id','asc')
-        // ->orderBy('product_id','asc')
-        // ->orderBy('lot_expired_date','asc')
-        // ->get();
-        // $customer_cart = CustomerCart::select('customer_cart.*', 'customer.name as cus_name')
-        //     ->join('customer', 'customer.id', 'customer_cart.customer_id')
-        //     ->where('customer_cart.status', 2)
-        //     ->orderBy('customer_cart.order_number', 'desc')
-        //     ->get();
-        //     dd($customer_cart);
 
 
         return view('backend/orders');
@@ -149,14 +141,22 @@ class OrdersController extends  Controller
 
             ->addColumn('action', function ($row) {
                 $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3 btn btn-sm btn-outline-primary" href="' . route('admin/order-detail', ['cart_id' => $row->id]) . '">  รายละเอียด </a>
+                <a class="flex items-center mr-3 btn btn-sm btn-outline-primary" href="' . route('admin/order-detail', ['cart_id' => $row->id]) . '"> รายละเอียด  </a>
+           </div>';
+                // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
+                return $html;
+            })
+
+            ->addColumn('print', function ($row) {
+                $html = ' <div class="flex justify-center items-center">
+                <button onclick="print_pdf('.$row->id.')" class="flex items-center mr-3 btn btn-sm btn-outline-primary"  >  Print </button>
            </div>';
                 // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
             })
 
 
-            ->rawColumns(['picking_status', 'scan_status', 'transfer_status', 'transfer', 'action'])
+            ->rawColumns(['picking_status', 'scan_status', 'transfer_status', 'transfer', 'action','print'])
             ->make(true);
     }
 
@@ -175,6 +175,73 @@ class OrdersController extends  Controller
             return redirect('admin/orders')->withError('ไม่พบข้อมูลรายการ');
         }
     }
+
+    public function order_print(Request $rs)
+    {
+        $file = new Filesystem;
+        $file->cleanDirectory(public_path('order_list/'));
+
+
+
+
+        // $customer_cart = DB::table('customer_cart')
+        // ->where('id', 3)
+        // ->first();
+        $item_id =1;
+
+
+
+
+        $product = DB::table('products')
+            ->where('id', 3)
+            ->first();
+            $item_id =1;
+
+        $barcode = DB::table('products_option_2_items')
+            ->where('product_id', $item_id)
+            ->first();
+
+        $data = ['product' => $product, 'barcode' => $barcode];
+
+        // Create a PDF instance using the PDF facade
+        $pdf = PDF::loadView('backend.PDF.order', compact('data'));
+
+
+        for ($i = 0; $i < 1; $i++) {
+            $pathfile = public_path('order_list/'.$item_id.'_'.$i.'.pdf');
+            $pdf->save($pathfile);
+
+        }
+
+
+
+        $this->merger_pdf($item_id);
+        $url =  asset('local/public/order/result_'.$item_id.'.pdf');
+        $data = ['status'=>'success','url'=>$url];
+
+         return $data;
+    }
+
+    public function merger_pdf($item_id)
+    {
+
+
+        $pdf = PDFMerger::init();
+        $files = scandir(public_path('order_list'));
+
+        foreach ($files as $val) {
+            if ($val != '.' && $val != '..') {
+                $pdf->addPDF(public_path('order_list/' . $val), 'all');
+            }
+        }
+        $pdf->merge();
+        $fileName = public_path('order/' . 'result_'.$item_id.'.pdf');
+        // return $pdf->stream();
+        $pdf->save(($fileName));
+        // $pdf->save(public_path($path_file));
+        // $data_image = file_get_contents($path);
+    }
+
 
 
 

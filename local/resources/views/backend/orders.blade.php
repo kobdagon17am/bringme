@@ -45,7 +45,6 @@
 <script type="text/javascript">
     $(function() {
 
-
         table_order = $('#workL').DataTable({
             // dom: 'Bfrtip',
             // buttons: ['excel'],
@@ -138,6 +137,12 @@
 
                 },
                 {
+                    data: "print",
+                    title: "#",
+                    className: "w-5 ",
+
+                },
+                {
                     data: "action",
                     title: "#",
                     className: "w-5 ",
@@ -157,6 +162,39 @@
         });
 
     });
+
+    function print_pdf(order_id){
+
+
+        Swal.fire({
+                        title: 'รอสักครู่...',
+                        html: 'ระบบกำลังเตรียมไฟล์ PDF...',
+                        didOpen: () => {
+                            Swal.showLoading()
+                        },
+                    }),
+
+        $.ajax({
+                        url: "{{ route('admin/order_print') }}",
+                        type: 'get',
+                        data: {
+                            '_token': '{{ csrf_token() }}',
+                            'order_id': order_id,
+
+                        },
+                        success: function(data){
+                            Swal.close();
+
+                             const path = data['url'];
+
+                            window.open(path,"_blank");
+
+
+                        }
+                    });
+
+
+    }
 </script>
 @endsection
 
