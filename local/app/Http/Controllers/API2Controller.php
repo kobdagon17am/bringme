@@ -37,6 +37,7 @@ Use App\Models\CustomerCartTracking;
 Use App\Models\CustomerCartTrackingItem;
 Use App\Models\ProductsComment;
 Use App\Models\CustomerCartClaim;
+Use App\Models\FinanceMovement;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
@@ -1052,15 +1053,42 @@ class API2Controller extends  Controller
                         $cart->received_date = date('Y-m-d H:i:s');
                     }
                     $cart->save();
-                    // $cus_products = CustomerCartProduct::where('customer_cart_id',$cart->id)->get();
-                    // foreach($cus_products as $cp){
-                    //     $p = Products::select('store_id')->where('id',$cp->product_id)->first();
-                    //     if($p){
-                    //         $store = Store::where('id',$p->store_id)->first();
-                    //         $store->credit = $store->credit + $cp->total_price;
-                    //         $store->save();
-                    //     }
-                    // }
+                    $store_arr = [];
+                    $cus_products = CustomerCartProduct::select('total_price','store_id')->where('customer_cart_id',$cart->id)->get();
+                    foreach($cus_products as $cp){
+                        // $p = Products::select('store_id')->where('id',$cp->product_id)->first();
+                        // if($p){
+                        //     $store = Store::where('id',$p->store_id)->first();
+                        //     $store->credit = $store->credit + $cp->total_price;
+                        //     $store->save();
+                        // }
+                        if(isset($store_arr[$cp->store_id])){
+                            $store_arr[$cp->store_id] = $store_arr[$cp->store_id]+$cp->total_price;
+                        }else{
+                            $store_arr[$cp->store_id] = $cp->total_price;
+                        }
+                    }
+
+                    $bringme_percent_gp = DB::table('bringme_percent_gp')->where('status',1)->first();
+                    foreach($store_arr as $key => $price){
+                        $income = $price*(100-$bringme_percent_gp->percent)/100;
+                        // $store = Store::select('credit')->where('id',$key)->first();
+                        // $store->credit = $store->credit + $income;
+                        // $store->save();
+                        $finance_movement = new FinanceMovement();
+                        $finance_movement->store_id = $key;
+                        $finance_movement->ref_type = 1;
+                        $finance_movement->ref_id = $cart->id;
+                        $finance_movement->transfer_status = 1;
+                        $finance_movement->name = 'ออเดอร์ '.$cart->order_number;
+                        $finance_movement->price = $income;
+                        $finance_movement->status = 0;
+                        $finance_movement->gp_percent = $bringme_percent_gp->percent;
+                        $finance_movement->price_full = $price;
+                        $finance_movement->save();
+                    }
+
+
                 }
 
             DB::commit();

@@ -30,6 +30,7 @@ Use App\Models\StockLot;
 Use App\Models\StockShelf;
 Use App\Models\StockItems;
 Use App\Models\ProductsGallery;
+Use App\Models\FinanceMovement;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 Use App\Models\CustomerCartProductCutStock;
@@ -76,35 +77,66 @@ class API3Controller extends Controller
 
      public function api_update_finance()
      {
-        echo "Date Diff = ".$this->DateDiff("2023-09-28 13:32:20","2023-09-28 13:32:20")."<br>";
-        echo "Time Diff = ".$this->TimeDiff("00:00","19:00")."<br>";
-        echo "Date Time Diff = ".$this->DateTimeDiff("2008-08-01 00:00","2008-08-01 19:00")."<br>";
-        // $setting_period_finance = DB::table('setting_period_finance')->where('status',1)->first();
-        // if($setting_period_finance){
-        //     $customer_cart = CustomerCart::select('id','received_date')->where('transfer_status',2)->where('on_withdraw',0)->orderBy('received_date','asc')->get();
-        //     foreach($customer_cart as $c){
+        DB::beginTransaction();
+        try
+        {
 
+        $setting_period_finance = DB::table('setting_period_finance')->where('status',1)->first();
+        $bringme_percent_gp = DB::table('bringme_percent_gp')->where('status',1)->first();
 
+            // $customer_cart = CustomerCart::select('id','received_date')->where('transfer_status',2)->where('on_withdraw',0)->orderBy('received_date','asc')->get();
+            // foreach($customer_cart as $c){
 
-        //         echo "Date Diff = ".DateDiff("2008-08-01","2008-08-31")."<br>";
-        //         echo "Time Diff = ".TimeDiff("00:00","19:00")."<br>";
-        //         echo "Date Time Diff = ".DateTimeDiff("2008-08-01 00:00","2008-08-01 19:00")."<br>";
+                $finance_movement = FinanceMovement::select('id','created_at')->where('transfer_status',1)->where('status',0)->where('ref_type',1)->orderBy('created_at','asc')->get();
 
-        //     }
+                foreach($finance_movement as $c){
 
-        //     return response()->json([
-        //         'message' => 'ทำรายการสำเร็จ',
-        //         'status' => 1,
-        //         'data' => [
-        //             'store' => $store,
-        //         ],
-        //     ]);
-        // }else{
-        //     return response()->json([
-        //         'message' =>  'ไม่พบข้อมูลสินค้า',
-        //         'status' => 0,
-        //         'data' => '',
-        //     ]);
-        // }
+                $diff_date = $this->DateDiff($c->created_at,date('Y-m-d H:i:s'));
+                if($diff_date<1){
+                    $diff_date = 0;
+                }
+                if($diff_date<=$setting_period_finance->after_day){
+                    $data = FinanceMovement::select('status','store_id')->where('id',$c->id)->first();
+                    $data->status = 1;
+                    $data->save();
+
+                    $store = Store::select('credit')->where('id',$data->store_id)->first();
+                    $store->credit = $store->credit + $data->price;
+                    $store->save();
+                }else{
+                    dd($diff_date);
+                }
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'setting_period_finance' => $setting_period_finance,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
      }
 }
