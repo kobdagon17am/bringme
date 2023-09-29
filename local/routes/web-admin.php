@@ -12,6 +12,10 @@
 |
 */
 
+Route::get('admin/test', function () {
+    return view('backend.PDF.order');
+  })->name('admin/test');
+
 
 Route::get('admin', function () {
     return view('auth/loginadmin');
@@ -138,7 +142,7 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
     return view('backend/transaction');
   })->name('admin/transaction');
 
-  
+
 
   Route::get('admin/campaign', function () {
     return view('backend/campaign');
@@ -196,6 +200,8 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::post('admin/pdf_barcode', 'Admin\ProductsController@pdf_barcode')->name('admin/pdf_barcode');
 
   Route::get('admin/order-detail/{cart_id}', 'Admin\OrdersController@order_detail')->name('admin/order-detail');
+
+  Route::get('admin/order_print/', 'Admin\OrdersController@order_print')->name('admin/order_print');
 
 
 

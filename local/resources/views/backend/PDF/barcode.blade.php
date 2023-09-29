@@ -3,7 +3,27 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
+    <link href="{{ asset('frontend/dist/css/font.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: 'THSarabunNew,Arial,sans-serif';
+            font-size: 16px;
+            font-weight: normal;
+            line-height: 14px;
+            margin-top: 0px;
+            margin-left: 13px;
+            margin-right: 33px;
+            line-height: 13px;
+        }
 
+        b {
+            font-family: 'THSarabunNew,Arial,sans-serif';
+            font-size: 16px;
+            font-weight: bold;
+
+        }
+
+    </style>
 
    <style>
 
