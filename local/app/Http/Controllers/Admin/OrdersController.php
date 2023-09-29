@@ -190,8 +190,6 @@ class OrdersController extends  Controller
         $item_id =1;
 
 
-
-
         $product = DB::table('products')
             ->where('id', 3)
             ->first();
