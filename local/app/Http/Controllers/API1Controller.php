@@ -2327,7 +2327,11 @@ class API1Controller extends Controller
                 $products_option_2_items->name_en = '';
                 $products_option_2_items->save();
 
-                $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $new_barcode = $this->generateRandomString(10);
+
+                // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $products_option_2_items->barcode = $new_barcode;
+
                 $products_option_2_items->save();
 
                 $products->min_price = $r->price;
@@ -2468,7 +2472,9 @@ class API1Controller extends Controller
                 $products_option_2_items->name_en = '';
                 $products_option_2_items->save();
 
-                $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $new_barcode = $this->generateRandomString(10);
+                // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                $products_option_2_items->barcode = $new_barcode;
 
                 $products->min_price = $r->price;
                 $products->max_price = $r->price;

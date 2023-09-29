@@ -63,6 +63,7 @@ class API3Controller extends Controller
             $finance_movement_hold_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',1)->where('status',0)->where('ref_type',1)->sum('price');
             $finance_movement_income_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',1)->sum('price');
             $finance_movement_withdraw_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',2)->sum('price');
+            $url_img = Storage::disk('public')->url('');
 
              return response()->json([
                  'message' => 'ทำรายการสำเร็จ',
@@ -73,6 +74,7 @@ class API3Controller extends Controller
                      'finance_movement_hold_price' => $finance_movement_hold_price,
                      'finance_movement_income_price' => $finance_movement_income_price,
                      'finance_movement_withdraw_price' => $finance_movement_withdraw_price,
+                     'url_img' => $url_img,
                  ],
              ]);
          }else{
