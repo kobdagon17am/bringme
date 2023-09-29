@@ -95,20 +95,21 @@ class API3Controller extends Controller
                 if($diff_date<1){
                     $diff_date = 0;
                 }
+
                 if($diff_date<=$setting_period_finance->after_day){
-                    $data = FinanceMovement::select('status','store_id')->where('id',$c->id)->first();
+
+                    $data = FinanceMovement::where('id',$c->id)->first();
                     $data->status = 1;
                     $data->save();
 
-                    $store = Store::select('credit')->where('id',$data->store_id)->first();
+                    $store = Store::where('id',$data->store_id)->first();
                     $store->credit = $store->credit + $data->price;
                     $store->save();
-                }else{
-                    dd($diff_date);
                 }
             }
 
             DB::commit();
+
             return response()->json([
                 'message' => 'ทำรายการสำเร็จ',
                 'status' => 1,
