@@ -594,6 +594,18 @@ class API1Controller extends Controller
                         $store->save();
                     }
 
+
+                    DB::table('customer_acc')->insert([
+                        'store_id' => $store->id,
+                        'bank_id' => $r->bank_id,
+                        'acc_name' => $r->bank_account_name,
+                        'acc_number' => $r->bank_account_number,
+                        'acc_path' => $store->bank_img_path,
+                        'acc_img' => $store->bank_img,
+                        'used' => 1,
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ]);
+
                 }
                 DB::commit();
                 $customer = Customer::where('email',$r->email)->first();
