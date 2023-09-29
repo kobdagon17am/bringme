@@ -2048,9 +2048,11 @@ class API1Controller extends Controller
             'products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
+              'store.logo_path','store.logo',
             )
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+              ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status',3)
@@ -2059,9 +2061,11 @@ class API1Controller extends Controller
 
             $product_all = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
+              'store.logo_path','store.logo',
             'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+              ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status',3)
@@ -2070,9 +2074,11 @@ class API1Controller extends Controller
 
             $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
             'products_gallery.path as gal_path',
+              'store.logo_path','store.logo',
             'products_gallery.name as gal_name',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+              ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status','!=',3)
