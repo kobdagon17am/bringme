@@ -99,8 +99,9 @@ class ProductsController extends Controller
             ->where('id', $rs->product_id)
             ->first();
 
+
         $barcode = DB::table('products_option_2_items')
-            ->where('product_id', $rs->item_id)
+            ->where('id', $rs->item_id)
             ->first();
 
         $data = ['product' => $product, 'barcode' => $barcode];
