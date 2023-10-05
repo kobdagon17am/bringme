@@ -9,6 +9,7 @@
                 $url_unapprove = url('admin/approve_payment_unapprove');
                 $url_approve = url('admin/approve_payment_approve');
                 $bank = DB::table('bank')->where('id',$approve_payment_detail->bank_id)->first();
+                echo '<a  href="'.url('admin/approve_payment').'"> <button class="btn btn-warning shadow-md mr-2">ย้อนกลับ</button> </a>';
             ?>
         </div>
     </div>

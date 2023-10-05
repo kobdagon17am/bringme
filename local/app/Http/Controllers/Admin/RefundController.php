@@ -78,6 +78,7 @@ class RefundController extends Controller
 
             return view('backend/refund-detail', [
                 'refund_id' => $id,
+                'refund' => $refund,
                 'order_detail' => $resule
             ]);
         } else {

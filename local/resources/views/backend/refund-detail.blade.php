@@ -103,8 +103,39 @@
                 </div>
             </div>
         </div>
+        <?php $url_img = Storage::disk('public')->url(''); ?>
         <div class="col-span-12 lg:col-span-8 xl:col-span-9">
             <div class="box p-5 rounded-md">
+                <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
+                    <div class="font-medium text-base truncate">รายละเอียดการขอเคลม</div>
+                </div>
+                <div class="overflow-auto lg:overflow-visible -mt-3">
+                    <div class="font-medium text-base truncate">ภาพรายละเอียด</div>
+                    @if(!empty($refund->img1))
+                    <img class="rounded-md" src=" {{($url_img .''. $refund->img_path . '' . $refund->img1)}}">
+                    @endif
+                    @if(!empty($refund->img2))
+                    <img class="rounded-md" src=" {{($url_img .''. $refund->img_path . '' . $refund->img2)}}">
+                    @endif
+                    @if(!empty($refund->img3))
+                    <img class="rounded-md" src=" {{($url_img .''. $refund->img_path . '' . $refund->img3)}}">
+                    @endif
+                </div>
+                <div class="overflow-auto lg:overflow-visible mt-4">
+                    <?php 
+                        if($refund->problem_id == 1){
+                            $problem = 'สินค้ามีปัญหาระหว่างการจัดส่ง';
+                        }elseif($refund->problem_id == 2){
+                            $problem = 'ตรวจสอบสินค้าแล้วพบว่าเกินกำหนดเวลาตามฉลากวันหมดอายุ';
+                        }else{
+                            $problem = 'อื่นๆ '.$refund->other_problem;
+                        }
+                    ?>
+                    <div class="font-medium text-base truncate">ปัญหา : {{ $problem }}</div>
+                </div>
+            </div>
+
+            <div class="box p-5 rounded-md mt-4">
                 <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
                     <div class="font-medium text-base truncate">รายการสินค้า</div>
                 </div>
@@ -119,10 +150,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
-                            <?php
-
-                                $url_img = Storage::disk('public')->url(''); ?>
                             @foreach($order_detail['data']['products'] as $value)
                             <?php 
                                 $products = DB::table('products')->where('id',$value->product_id)->first();
@@ -133,9 +160,6 @@
                                         <div class="w-10 h-10 image-fit zoom-in">
                                             <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip"
                                             src=" {{($url_img .''. $value->img_path . '' . $value->img_name)}}">
-
-
-
                                         </div>
                                         <a href="" class="font-medium whitespace-nowrap ml-4">{{ $products->name_th }}</a>
                                     </div>
