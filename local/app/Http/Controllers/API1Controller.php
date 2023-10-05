@@ -1343,6 +1343,9 @@ class API1Controller extends Controller
             ->where('products_comment.product_id',$r->product_id)
             ->orderBy('products_comment.created_at','desc')->get();
 
+            $stock_lot_all_arr = StockLot::select('id')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->pluck('id')->toArray();
+            $stock_items_sum = StockItems::select('qty_booking')->whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->sum('qty_booking');
+
             $store->visitor_number = $store->visitor_number+1;
             $store->save();
 
@@ -1371,6 +1374,7 @@ class API1Controller extends Controller
                     'lot_expired_date' => $lot_expired_date,
                     'stock_lot_all' => $stock_lot_all,
                     'products_comment' => $products_comment,
+                    'stock_items_sum' => $stock_items_sum,
                     'comment_number' => count($products_comment),
                     'favorite' => $favorite,
                 ],
@@ -2595,6 +2599,8 @@ class API1Controller extends Controller
                                 $products_transfer->shipping_date = $r->shipping_date;
                                 $products_transfer->tracking = $r->tracking;
                                 $products_transfer->shipping_name = $r->shipping_name;
+                                $products_transfer->shipping_type = $r->shipping_type;
+                                $products_transfer->time_period = $r->time_period;
                                 // $products_transfer->qty = $r->qty;
                                 $products_transfer->qty = $products_item->qty;
                                 $products_transfer->save();
