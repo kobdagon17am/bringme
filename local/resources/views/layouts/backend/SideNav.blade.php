@@ -111,6 +111,12 @@
             </a>
         </li>
         <li>
+            <a href="{{route('admin/approve_payment')}}" class="side-menu {{ (request()->is('admin/approve_payment') ) ? 'side-menu--active' : '' }}">
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-07.png')}}" alt=""></div>
+                <div class="side-menu__title"> อนุมัติถอนเงิน </div>
+            </a>
+        </li>
+        <li>
             <a href="{{route('admin/campaign')}}" class="side-menu">
                 <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-08.png')}}" alt=""></div>
                 <div class="side-menu__title"> รายการแคมเปญ </div>
@@ -301,13 +307,8 @@
             </a>
         </li>
 
-        <!--<li>
-            <a href="side-menu-light-point-of-sale.html" class="side-menu">
-                <div class="side-menu__icon"> <i data-lucide="credit-card"></i> </div>
-                <div class="side-menu__title"> Point of Sale </div>
-            </a>
-        </li>
-        <li>
+        
+        <!-- <li>
             <a href="side-menu-light-chat.html" class="side-menu">
                 <div class="side-menu__icon"> <i data-lucide="message-square"></i> </div>
                 <div class="side-menu__title"> Chat </div>

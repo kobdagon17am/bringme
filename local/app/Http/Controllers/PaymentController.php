@@ -94,126 +94,150 @@ class PaymentController extends Controller
     }
 
     public function store_create(Request $request){
-        $customer = New Customer();
-        $customer->name = $request->input('firstname');
-        $customer->email = $request->input('email');
-        $customer->birthday = $request->input('birthday');
-        $customer->tel = $request->input('tel');
-        $customer->password = Hash::make(!empty($request->input('password')) ? $request->input('password') : 'aaaa1111');
-        $customer->customer_type = 2;
-        $customer->select_type = 1;
-        $customer->status = 1;
-        $customer->address = $request->input('address');
-        $customer->province_id = $request->input('province_id');
-        $customer->amphures_id = $request->input('amphures_id');
-        $customer->district_id = $request->input('district_id');
-        $customer->zipcode = $request->input('zipcode');
-        $customer->firstname = $request->input('firstname');
-        $customer->save();
+        $secretKey = '6LdPancoAAAAAHieEzrKOjI1b7Fzd2iP6IzfHRW1';
+        $userResponse = $_POST['g-recaptcha-response'];
+        $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'secret' => $secretKey,
+            'response' => $userResponse,
+        ]);
 
-        if(!empty($request->file('profile_img'))){
-            $profile_img = $request->file('profile_img');
-            $extension = $profile_img->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('upload/profile/', $profile_img, $imageName, 'public');
-            $customer->profile_img_path = 'upload/profile/';
-            $customer->profile_img = $imageName;
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            die('cURL request failed: ' . curl_error($ch));
+        }
+
+        $data = json_decode($response);
+
+        if ($data->success) {
+
+            $customer = New Customer();
+            $customer->name = $request->input('firstname');
+            $customer->email = $request->input('email');
+            $customer->birthday = $request->input('birthday');
+            $customer->tel = $request->input('tel');
+            $customer->password = Hash::make(!empty($request->input('password')) ? $request->input('password') : 'aaaa1111');
+            $customer->customer_type = 2;
+            $customer->select_type = 1;
+            $customer->status = 1;
+            $customer->address = $request->input('address');
+            $customer->province_id = $request->input('province_id');
+            $customer->amphures_id = $request->input('amphures_id');
+            $customer->district_id = $request->input('district_id');
+            $customer->zipcode = $request->input('zipcode');
+            $customer->firstname = $request->input('firstname');
             $customer->save();
-        }
 
-        $brands = Brands::where('name_th',$request->input('brand_name'))->first();
-        if(!$brands){
-            $brand = new Brands();
-            $brand->name_th = $request->input('brand_name');
-            $brand->name_en = $request->input('brand_name');
-            $brand->has_store = 1;
-            $brand->save();
+            if(!empty($request->file('profile_img'))){
+                $profile_img = $request->file('profile_img');
+                $extension = $profile_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('upload/profile/', $profile_img, $imageName, 'public');
+                $customer->profile_img_path = 'upload/profile/';
+                $customer->profile_img = $imageName;
+                $customer->save();
+            }
+
+            $brands = Brands::where('name_th',$request->input('brand_name'))->first();
+            if(!$brands){
+                $brand = new Brands();
+                $brand->name_th = $request->input('brand_name');
+                $brand->name_en = $request->input('brand_name');
+                $brand->has_store = 1;
+                $brand->save();
+            }else{
+                $brand = $brands;
+            }
+
+            $store = New Store();
+            $store->customer_id = $customer->id;
+            $store->brands_id = $brand->id;
+            $store->store_name = $request->input('store_name');
+            $store->category_id = $request->input('category_id');
+            $store->brand_product_detail = $request->input('brand_product_detail');
+            $store->storage_method_id = $request->input('storage_method_id');
+            $store->shelf_lift = $request->input('shelf_lift');
+            $store->qty_sku = $request->input('qty_sku');
+            $store->shipping_date = date('Y-m-d', strtotime($request->input('shipping_date')));
+            $store->social = $request->input('social');
+            $store->address = $request->input('address2');
+            $store->province_id = $request->input('province_id2');
+            $store->amphures_id = $request->input('amphures_id2');
+            $store->district_id = $request->input('district_id2');
+            $store->zipcode = $request->input('zipcode2');
+            $store->bank_id = $request->input('bank_id');
+            $store->bank_account_name = $request->input('bank_account_name');
+            $store->bank_account_number = $request->input('bank_account_number');
+            $store->save();
+
+            if($request->file('product_ex_img') !=''){
+                $product_ex_img = $request->file('product_ex_img');
+                $extension = $product_ex_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('store/' . $store->id, $product_ex_img, $imageName, 'public');
+                $store->product_ex_img_path = 'store/' . $store->id . '/';
+                $store->product_ex_img = $imageName;
+                $store->save();
+            }
+
+            if($request->file('product_pack_img') !=''){
+                $product_pack_img = $request->file('product_pack_img');
+                $extension = $product_pack_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('store/' . $store->id, $product_pack_img, $imageName, 'public');
+                $store->product_pack_img_path = 'store/' . $store->id . '/';
+                $store->product_pack_img = $imageName;
+                $store->save();
+            }
+
+            if($request->file('certificate') !=''){
+                $certificate = $request->file('certificate');
+                $extension = $certificate->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('store/' . $store->id, $certificate, $imageName, 'public');
+                $store->certificate_path = 'store/' . $store->id . '/';
+                $store->certificate = $imageName;
+                $store->save();
+            }
+
+            if($request->file('bank_img') !=''){
+                $bank_img = $request->file('bank_img');
+                $extension = $bank_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('store/' . $store->id, $bank_img, $imageName, 'public');
+                $store->bank_img_path = 'store/' . $store->id . '/';
+                $store->bank_img = $imageName;
+                $store->save();
+            }
+
+            if($request->file('id_card_img') !=''){
+                $id_card_img = $request->file('id_card_img');
+                $extension = $id_card_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('store/' . $store->id, $id_card_img, $imageName, 'public');
+                $store->id_card_img_path = 'store/' . $store->id . '/';
+                $store->id_card_img = $imageName;
+                $store->save();
+            }
+
+            if($request->file('company_img') !=''){
+                $company_img = $request->file('company_img');
+                $extension = $company_img->getClientOriginalExtension();
+                $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                Storage::disk('public')->putFileAs('store/' . $store->id, $company_img, $imageName, 'public');
+                $store->company_img_path = 'store/' . $store->id . '/';
+                $store->company_img = $imageName;
+                $store->save();
+            }
+            return redirect('login');
         }else{
-            $brand = $brands;
+            die('reCAPTCHA verification failed');
+            return redirect('register_partner');
         }
 
-        $store = New Store();
-        $store->customer_id = $customer->id;
-        $store->brands_id = $brand->id;
-        $store->store_name = $request->input('store_name');
-        $store->category_id = $request->input('category_id');
-        $store->brand_product_detail = $request->input('brand_product_detail');
-        $store->storage_method_id = $request->input('storage_method_id');
-        $store->shelf_lift = $request->input('shelf_lift');
-        $store->qty_sku = $request->input('qty_sku');
-        $store->shipping_date = date('Y-m-d', strtotime($request->input('shipping_date')));
-        $store->social = $request->input('social');
-        $store->address = $request->input('address2');
-        $store->province_id = $request->input('province_id2');
-        $store->amphures_id = $request->input('amphures_id2');
-        $store->district_id = $request->input('district_id2');
-        $store->zipcode = $request->input('zipcode2');
-        $store->bank_id = $request->input('bank_id');
-        $store->bank_account_name = $request->input('bank_account_name');
-        $store->bank_account_number = $request->input('bank_account_number');
-        $store->save();
-
-        if($request->file('product_ex_img') !=''){
-            $product_ex_img = $request->file('product_ex_img');
-            $extension = $product_ex_img->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('store/' . $store->id, $product_ex_img, $imageName, 'public');
-            $store->product_ex_img_path = 'store/' . $store->id . '/';
-            $store->product_ex_img = $imageName;
-            $store->save();
-        }
-
-        if($request->file('product_pack_img') !=''){
-            $product_pack_img = $request->file('product_pack_img');
-            $extension = $product_pack_img->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('store/' . $store->id, $product_pack_img, $imageName, 'public');
-            $store->product_pack_img_path = 'store/' . $store->id . '/';
-            $store->product_pack_img = $imageName;
-            $store->save();
-        }
-
-        if($request->file('certificate') !=''){
-            $certificate = $request->file('certificate');
-            $extension = $certificate->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('store/' . $store->id, $certificate, $imageName, 'public');
-            $store->certificate_path = 'store/' . $store->id . '/';
-            $store->certificate = $imageName;
-            $store->save();
-        }
-
-        if($request->file('bank_img') !=''){
-            $bank_img = $request->file('bank_img');
-            $extension = $bank_img->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('store/' . $store->id, $bank_img, $imageName, 'public');
-            $store->bank_img_path = 'store/' . $store->id . '/';
-            $store->bank_img = $imageName;
-            $store->save();
-        }
-
-        if($request->file('id_card_img') !=''){
-            $id_card_img = $request->file('id_card_img');
-            $extension = $id_card_img->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('store/' . $store->id, $id_card_img, $imageName, 'public');
-            $store->id_card_img_path = 'store/' . $store->id . '/';
-            $store->id_card_img = $imageName;
-            $store->save();
-        }
-
-        if($request->file('company_img') !=''){
-            $company_img = $request->file('company_img');
-            $extension = $company_img->getClientOriginalExtension();
-            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-            Storage::disk('public')->putFileAs('store/' . $store->id, $company_img, $imageName, 'public');
-            $store->company_img_path = 'store/' . $store->id . '/';
-            $store->company_img = $imageName;
-            $store->save();
-        }
-
-        return redirect('admin');
     }
 
     public function payment_form()
