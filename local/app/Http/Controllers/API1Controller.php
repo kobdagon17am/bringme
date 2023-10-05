@@ -181,6 +181,17 @@ class API1Controller extends Controller
         $customer = Customer::where('email',$r->email)
         ->whereIn('status',[1,2])
         ->first();
+        if(!$customer){
+            $customer = Customer::where('name',$r->email)
+            ->whereIn('status',[1,2])
+            ->first();
+        }
+        if(!$customer){
+            $customer = Customer::where('tel',$r->email)
+            ->whereIn('status',[1,2])
+            ->first();
+        }
+
         if($customer){
             if (Hash::check($r->password, $customer->password)) {
 
