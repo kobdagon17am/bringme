@@ -33,10 +33,7 @@
                             @endif
                         </div>
                     </div>
-                    <?php
-                    // dd($order_detail['data']);
 
-                    ?>
                     <div class="box p-5 rounded-md mt-5">
                         <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
                             <div class="font-medium text-base truncate">รายละเอียดผู้ซื้อ</div>
@@ -55,7 +52,8 @@
                             </i>
 
 
-                            ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
+                            ที่อยู่: {{$order_detail['data']['customer_address']->address_number}} อ.{{$order_detail['data']['customer_address']->amphures_name}} ต.{{$order_detail['data']['customer_address']->districts_name}}
+                             จ.{{$order_detail['data']['customer_address']->provinces_name}} {{$order_detail['data']['customer_address']->zipcode}}
                         </div>
                     </div>
                     <div class="box p-5 rounded-md mt-5">
@@ -64,18 +62,19 @@
                         </div>
                         <div class="flex items-center">
                             <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2">
-                            </i> วิธีการชำระเงิน: <div class="ml-auto">โอนเงินผ่านธนาคารโดยตรง</div>
+
+                            </i> วิธีการชำระเงิน: <div class="ml-auto">{{$order_detail['data']['cart']->pay_type_name}} </div>
                         </div>
                         <div class="flex items-center mt-3">
                             <i data-lucide="credit-card" class="w-4 h-4 text-slate-500 mr-2">
-                            </i> ราคารวม: <div class="ml-auto">฿12,500.00</div>
+                            </i> ราคารวม: <div class="ml-auto">{{number_format($order_detail['data']['cart']->total_price,2)}}</div>
                         </div>
                         <div class="flex items-center mt-3">
                             <i data-lucide="credit-card" class="w-4 h-4 text-slate-500 mr-2">
-                            </i> ค่าจัดส่งทั้งหมด : <div class="ml-auto">฿1,500.00</div>
+                            </i> ค่าจัดส่งทั้งหมด : <div class="ml-auto">{{number_format($order_detail['data']['cart']->shipping_price,2)}}</div>
                         </div>
                         <div class="flex items-center border-t border-slate-200/60 dark:border-darkmode-400 pt-5 mt-5 font-medium">
-                            <i data-lucide="credit-card" class="lucide lucide-credit-card w-4 h-4 text-slate-500 mr-2"></i> รวมทั้งสิ้น: <div class="ml-auto">฿14,000.00</div>
+                            <i data-lucide="credit-card" class="lucide lucide-credit-card w-4 h-4 text-slate-500 mr-2"></i> รวมทั้งสิ้น: <div class="ml-auto">{{number_format($order_detail['data']['cart']->grand_total,2)}}</div>
                         </div>
                     </div>
                     <div class="box p-5 rounded-md mt-5">
@@ -83,16 +82,34 @@
                             <div class="font-medium text-base truncate">ข้อมูลการจัดส่ง</div>
                         </div>
                         <div class="flex items-center">
-                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> บริการจัดส่ง: j&t express
+                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> บริการจัดส่ง: {{$order_detail['data']['cart']->delivery_type_name}}
                         </div>
                         <div class="flex items-center mt-3">
-                            <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2">
-                            </i> หมายเลขพัสดุ: 003005580322 <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
+
+                                @if($order_detail['data']['tracking_no1'])
+                                <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2"></i> หมายเลขพัสดุ: {{$order_detail['data']['tracking_no1']}} <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
+                                @endif
+
+                                @if($order_detail['data']['tracking_no2'])
+                                <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2"> </i> หมายเลขพัสดุ: {{$order_detail['data']['tracking_no2']}} <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
+                                @endif
+
+                                @if($order_detail['data']['tracking_no3'])
+                                <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2"></i> หมายเลขพัสดุ: {{$order_detail['data']['tracking_no3']}} <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
+                                @endif
+
+                                @if($order_detail['data']['tracking_no4'])
+                                <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2"></i> หมายเลขพัสดุ: {{$order_detail['data']['tracking_no4']}} <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
+                                @endif
+
+
+
+
                         </div>
-                        <div class="flex items-center mt-3">
+                        {{-- <div class="flex items-center mt-3">
                             <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 mr-2">
                             </i> ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="col-span-12 lg:col-span-8 xl:col-span-9">
@@ -116,6 +133,7 @@
 
                                         $url_img = Storage::disk('public')->url(''); ?>
                                     @foreach($order_detail['data']['products'] as $value)
+
                                     <tr>
                                         <td class="!py-4">
                                             <div class="flex items-center">
@@ -126,7 +144,7 @@
 
 
                                                 </div>
-                                                <a href="" class="font-medium whitespace-nowrap ml-4">Oppo Find X2 Pro</a>
+                                                <a href="" class="font-medium whitespace-nowrap ml-4">{{$value->product_name}} </a>
                                             </div>
                                         </td>
                                         <td class="text-right">{{$value->price}}</td>
