@@ -181,6 +181,17 @@ class API1Controller extends Controller
         $customer = Customer::where('email',$r->email)
         ->whereIn('status',[1,2])
         ->first();
+        if(!$customer){
+            $customer = Customer::where('name',$r->email)
+            ->whereIn('status',[1,2])
+            ->first();
+        }
+        if(!$customer){
+            $customer = Customer::where('tel',$r->email)
+            ->whereIn('status',[1,2])
+            ->first();
+        }
+
         if($customer){
             if (Hash::check($r->password, $customer->password)) {
 
@@ -506,11 +517,22 @@ class API1Controller extends Controller
                     $store->qty_sku = $r->qty_sku;
                     $store->shipping_date = $r->shipping_date;
                     $store->social = $r->social;
-                    $store->address = $r->address2;
-                    $store->province_id = $r->province_id2;
-                    $store->amphures_id = $r->amphures_id2;
-                    $store->district_id = $r->district_id2;
-                    $store->zipcode = $r->zipcode2;
+                    $store->store_type = $r->store_type;
+
+                    if($r->store_type == '1'){
+                        $store->address = $r->address;
+                        $store->province_id = $r->province_id;
+                        $store->amphures_id = $r->amphures_id;
+                        $store->district_id = $r->district_id;
+                        $store->zipcode = $r->zipcode;
+                    }else{
+                        $store->address = $r->address2;
+                        $store->province_id = $r->province_id2;
+                        $store->amphures_id = $r->amphures_id2;
+                        $store->district_id = $r->district_id2;
+                        $store->zipcode = $r->zipcode2;
+                    }
+
                     $store->bank_id = $r->bank_id;
                     $store->bank_account_name = $r->bank_account_name;
                     $store->bank_account_number = $r->bank_account_number;
@@ -1321,6 +1343,9 @@ class API1Controller extends Controller
             ->where('products_comment.product_id',$r->product_id)
             ->orderBy('products_comment.created_at','desc')->get();
 
+            $stock_lot_all_arr = StockLot::select('id')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->pluck('id')->toArray();
+            $stock_items_sum = StockItems::select('qty_booking')->whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->sum('qty_booking');
+
             $store->visitor_number = $store->visitor_number+1;
             $store->save();
 
@@ -1349,6 +1374,7 @@ class API1Controller extends Controller
                     'lot_expired_date' => $lot_expired_date,
                     'stock_lot_all' => $stock_lot_all,
                     'products_comment' => $products_comment,
+                    'stock_items_sum' => $stock_items_sum,
                     'comment_number' => count($products_comment),
                     'favorite' => $favorite,
                 ],
@@ -2573,6 +2599,8 @@ class API1Controller extends Controller
                                 $products_transfer->shipping_date = $r->shipping_date;
                                 $products_transfer->tracking = $r->tracking;
                                 $products_transfer->shipping_name = $r->shipping_name;
+                                $products_transfer->shipping_type = $r->shipping_type;
+                                $products_transfer->time_period = $r->time_period;
                                 // $products_transfer->qty = $r->qty;
                                 $products_transfer->qty = $products_item->qty;
                                 $products_transfer->save();
