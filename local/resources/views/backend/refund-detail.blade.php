@@ -6,8 +6,8 @@
         <h2 class="text-lg font-medium mr-auto">รายละเอียดขอคืนเงิน</h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
             <?php 
-                $url_unapprove = url('admin/approve_payment-unapprove',['id'=>$refund_id]);
-                $url_approve = url('admin/approve_payment-approve',['id'=>$refund_id]);
+                $url_unapprove = url('admin/approve_payment_unapprove',['id'=>$refund_id]);
+                $url_approve = url('admin/approve_payment_approve',['id'=>$refund_id]);
 
                 echo '<a  href="'.$url_unapprove.'"> <button class="btn btn-outline-danger shadow-md mr-2">ปฏิเสธ</button> </a>';
                 echo '<a  href="'.$url_approve.'"> <button class="btn btn-primary shadow-md mr-2">อนุมัติ</button> </a>';
