@@ -48,7 +48,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </div> -->
 
             <div class="hidden xl:flex flex-col min-h-screen">
-                <img alt="Midone - HTML Admin Template" class="w-11/12 xl:w-9/12 xl:h-screen" src="{{ asset('backend/dist/images/BringMe_Web_Operate_BG_LOGIN.png') }}">
+                <img alt="Midone - HTML Admin Template" class="w-11/12 xl:w-9/12 xl:h-screen" src="{{ asset('backend/dist/images/BringMe_Web_Operate_BG_LOGIN_.png') }}">
             </div>
             <!-- END: Login Info -->
             <!-- BEGIN: Login Form -->

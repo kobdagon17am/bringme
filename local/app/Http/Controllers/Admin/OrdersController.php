@@ -204,12 +204,17 @@ class OrdersController extends  Controller
         $data = ['product' => $product, 'barcode' => $barcode];
 
         // Create a PDF instance using the PDF facade
-        $pdf = PDF::loadView('backend.PDF.order', compact('data'));
+        $pdf = PDF::loadView('backend.PDF.order_address', compact('data'));
+
+        $pdf2 = PDF::loadView('backend.PDF.order_detail', compact('data'));
 
 
         for ($i = 0; $i < 1; $i++) {
             $pathfile = public_path('order_list/'.$item_id.'_'.$i.'.pdf');
             $pdf->save($pathfile);
+
+            $pathfile = public_path('order_list/'.$item_id.'_detail_'.$i.'.pdf');
+            $pdf2->save($pathfile);
 
         }
 

@@ -30,7 +30,7 @@
 
         /* Set the page size to 40x30mm */
         @page {
-            size: 90mm 30mm;
+            size: 85mm 25mm;
             margin: 0; /* Set margins to 0 if you want no margins */
         }
 
@@ -249,12 +249,15 @@
 </head>
 <body style=" text-align: center;">
     <div class="row text-center">
-        <p>N:{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
+        <p style="font-size: 14px">N:{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
 
-        <div style="margin-left: 20px; margin-top: 5px">
-            {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B') !!}
+        <div style="margin-left: 10px; margin-top: 5px;text-align: center;">
+          {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B') !!}
+            {{-- {!! DNS1D::getBarcodeHTML('1234567', 'C128B') !!} --}}
+
+
         </div>
-        <p style=" margin-top: 5px">COD:{{$data['barcode']->barcode}}<</p>
+        <p style="font-size: 14px">COD:{{$data['barcode']->barcode}}<</p>
     </div>
 
 
