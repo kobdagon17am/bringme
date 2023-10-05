@@ -133,6 +133,12 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
   Route::get('admin/refund-unapprove/{id}', 'Admin\RefundController@refund_unapprove')->name('admin/refund-unapprove');
   Route::get('admin/refund-approve/{id}', 'Admin\RefundController@refund_approve')->name('admin/refund-approve');
 
+  Route::get('admin/approve_payment', 'Admin\ApprovePaymentController@index')->name('admin/approve_payment');
+  Route::get('admin/approve_payment_datatable', 'Admin\ApprovePaymentController@approve_payment_datatable')->name('admin/approve_payment_datatable');
+  Route::get('admin/approve_payment_view/{id}', 'Admin\ApprovePaymentController@approve_payment_view')->name('admin/approve_payment_view');
+  Route::get('admin/approve_payment_unapprove/{id}', 'Admin\ApprovePaymentController@approve_payment_unapprove')->name('admin/approve_payment_unapprove');
+  Route::get('admin/approve_payment-approve/{id}', 'Admin\ApprovePaymentController@approve_payment_approve')->name('admin/approve_payment-approve');
+
   Route::get('admin/stores-waitapproved', function () {
     return view('backend/stores-waitapproved');
   })->name('admin/stores-waitapproved');

@@ -392,6 +392,9 @@
         </div>
 
         <div class="flex justify-end mt-4 gap-5">
+            @if(empty(Auth::guard('admin')->user()->name))
+            <div class="g-recaptcha" data-sitekey="6LdPancoAAAAANOFuIjXKOAy2MWoDrCoyp4SFglB"></div>
+            @endif
             <button type="reset" class="btn btn-outline-danger w-20 ">ย้อนกลับ</button>
             <button type="submit" class="btn btn-primary w-20">บันทึก</button>
         </div>
@@ -403,6 +406,7 @@
 @endsection
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
