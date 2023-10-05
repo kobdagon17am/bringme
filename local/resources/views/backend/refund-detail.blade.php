@@ -9,8 +9,8 @@
                 $url_unapprove = url('admin/approve_payment-unapprove',['id'=>$refund_id]);
                 $url_approve = url('admin/approve_payment-approve',['id'=>$refund_id]);
 
-                echo '<a  href="'.$url_unapprove.'" class="btn btn-sm mr-2 mb-2"> <button class="btn btn-outline-danger shadow-md mr-2">ปฏิเสธ</button> </a>';
-                echo '<a  href="'.$url_approve.'" class="btn btn-sm mr-2 mb-2"> <button class="btn btn-primary shadow-md mr-2">อนุมัติ</button> </a>';
+                echo '<a  href="'.$url_unapprove.'"> <button class="btn btn-outline-danger shadow-md mr-2">ปฏิเสธ</button> </a>';
+                echo '<a  href="'.$url_approve.'"> <button class="btn btn-primary shadow-md mr-2">อนุมัติ</button> </a>';
             ?>
         </div>
     </div>
@@ -63,8 +63,7 @@
                     <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 mr-2">
                     </i>
 
-
-                    ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
+                    ที่อยู่: {{ $order_detail['data']['customer_address']->address_number }} แขวง {{ $order_detail['data']['customer_address']->amphures_name }} เขต {{ $order_detail['data']['customer_address']->districts_name }} {{ $order_detail['data']['customer_address']->provinces_name }} {{ $order_detail['data']['customer_address']->zipcode }}
                 </div>
             </div>
             <div class="box p-5 rounded-md mt-5">
@@ -73,18 +72,18 @@
                 </div>
                 <div class="flex items-center">
                     <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2">
-                    </i> วิธีการชำระเงิน: <div class="ml-auto">โอนเงินผ่านธนาคารโดยตรง</div>
+                    </i> วิธีการชำระเงิน: <div class="ml-auto">{{ $order_detail['data']['cart']->pay_type_name }}</div>
                 </div>
                 <div class="flex items-center mt-3">
                     <i data-lucide="credit-card" class="w-4 h-4 text-slate-500 mr-2">
-                    </i> ราคารวม: <div class="ml-auto">฿12,500.00</div>
+                    </i> ราคารวม: <div class="ml-auto">฿{{ number_format($order_detail['data']['cart']->total_price,2,'.',',') }}</div>
                 </div>
                 <div class="flex items-center mt-3">
                     <i data-lucide="credit-card" class="w-4 h-4 text-slate-500 mr-2">
-                    </i> ค่าจัดส่งทั้งหมด : <div class="ml-auto">฿1,500.00</div>
+                    </i> ค่าจัดส่งทั้งหมด : <div class="ml-auto">฿{{ number_format($order_detail['data']['cart']->shipping_price,2,'.',',') }}</div>
                 </div>
                 <div class="flex items-center border-t border-slate-200/60 dark:border-darkmode-400 pt-5 mt-5 font-medium">
-                    <i data-lucide="credit-card" class="lucide lucide-credit-card w-4 h-4 text-slate-500 mr-2"></i> รวมทั้งสิ้น: <div class="ml-auto">฿14,000.00</div>
+                    <i data-lucide="credit-card" class="lucide lucide-credit-card w-4 h-4 text-slate-500 mr-2"></i> รวมทั้งสิ้น: <div class="ml-auto">฿{{ number_format($order_detail['data']['cart']->grand_total,2,'.',',') }}</div>
                 </div>
             </div>
             <div class="box p-5 rounded-md mt-5">
@@ -92,15 +91,15 @@
                     <div class="font-medium text-base truncate">ข้อมูลการจัดส่ง</div>
                 </div>
                 <div class="flex items-center">
-                    <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> บริการจัดส่ง: j&t express
+                    <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> บริการจัดส่ง: {{ $order_detail['data']['cart']->delivery_type_name }}
                 </div>
                 <div class="flex items-center mt-3">
                     <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2">
-                    </i> หมายเลขพัสดุ: 003005580322 <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
+                    </i> หมายเลขพัสดุ: {{ $order_detail['data']['tracking_no1'] }} <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
                 </div>
                 <div class="flex items-center mt-3">
                     <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 mr-2">
-                    </i> ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
+                    </i> ที่อยู่: {{ $order_detail['data']['customer_address']->address_number }} แขวง {{ $order_detail['data']['customer_address']->amphures_name }} เขต {{ $order_detail['data']['customer_address']->districts_name }} {{ $order_detail['data']['customer_address']->provinces_name }} {{ $order_detail['data']['customer_address']->zipcode }}
                 </div>
             </div>
         </div>

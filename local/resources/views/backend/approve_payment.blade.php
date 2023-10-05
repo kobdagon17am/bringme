@@ -3,7 +3,7 @@
 @section('content')
 <div class="content">
             <h2 class="intro-y text-lg font-medium mt-10">
-                ข้อมูลขอคืนเงิน
+                ข้อมูลขอถอนเงิน
             </h2>
             <div class="grid grid-cols-12 gap-6 mt-5">
                 <!-- BEGIN: Data List -->
@@ -12,8 +12,8 @@
                         <thead>
                             <tr>
                                 <th class="whitespace-nowrap">#</th>
-                                <th class="whitespace-nowrap">หมายเลขออเดอร์</th>
-                                <th class="whitespace-nowrap">ชื่อผู้ซื้อ</th>
+                                <th class="whitespace-nowrap">ชื่อผู้ถอน</th>
+                                <th class="whitespace-nowrap">ยอดถอน</th>
                                 <th class="text-center whitespace-nowrap">สถานะ</th>
                                 <th class="text-center whitespace-nowrap"></th>
                             </tr>
@@ -61,7 +61,7 @@ $(function() {
         },
 
         ajax: {
-            url: '{{ url("admin/refund_datatable") }}',
+            url: '{{ url("admin/approve_payment_datatable") }}',
             data: function(d) {
             },
         },
@@ -73,12 +73,12 @@ $(function() {
                 className: "w-10",
             },
             {
-                data: "customer_cart_id",
+                data: "store_id",
                 //title: "ชื่อเจ้าของร้าน",
                 className: "w-10",
             },
             {
-                data: "customer_id",
+                data: "price",
                 //title: "ชื่อเจ้าของร้าน",
                 className: "w-10",
             },

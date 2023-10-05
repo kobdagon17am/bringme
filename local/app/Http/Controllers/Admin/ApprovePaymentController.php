@@ -5,6 +5,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Storage;
+use File;
+use Hash;
+use Illuminate\Support\Str;
 
 class ApprovePaymentController extends Controller
 {
@@ -30,18 +34,17 @@ class ApprovePaymentController extends Controller
     }
 
     public function approve_payment_datatable(){
-        $approve_payment = DB::table('customer_cart_claim');
+        $approve_payment = DB::table('withdraw');
         $sQuery = Datatables::of($approve_payment);
         return $sQuery
 
-        ->addColumn('customer_cart_id', function ($row) {
-            $order = DB::table('customer_cart')->where('id',$row->customer_cart_id)->first();
-            return $order->order_number;
+        ->addColumn('store_id', function ($row) {
+            $store = DB::table('store')->where('id',$row->store_id)->first();
+            return $store->store_name;
         })
 
-        ->addColumn('customer_id', function ($row) {
-            $customer = DB::table('customer')->where('id',$row->customer_id)->first();
-            return $customer->name;
+        ->addColumn('price', function ($row) {
+            return $row->price;
          })
 
          ->addColumn('status', function ($row) {
@@ -58,34 +61,56 @@ class ApprovePaymentController extends Controller
 
          ->addColumn('action', function ($row) {
             $url = url('admin/approve_payment_view',['id'=>$row->id]);
-            $url_unapprove = url('admin/approve_payment-unapprove',['id'=>$row->id]);
-            $url_approve = url('admin/approve_payment-approve',['id'=>$row->id]);
 
             $html = '<a  href="'.$url.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ตรวจสอบ</font> </a>';
-            $html .= '<a  href="'.$url_unapprove.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: red;">ไม่อนุมัติ</font> </a>';
-            $html .= '<a  href="'.$url_approve.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: green;">อนุมัติ</font> </a>';
             return $html;
          })
 
-        ->rawColumns(['customer_cart_id','customer_id', 'status', 'action'])
+        ->rawColumns(['store_id','price', 'status', 'action'])
         ->make(true);
     }
 
     public function approve_payment_view($id){
-        return view('backend/approve_payment_detail');
+        $approve_payment = DB::table('withdraw')->where('id',$id)->first();
+        if (!empty($approve_payment)) {
+            return view('backend/approve_payment_detail', [
+                'approve_payment_id' => $id,
+                'approve_payment_detail' => $approve_payment
+            ]);
+        } else {
+            return redirect('admin/approve_payment')->withError('ไม่พบข้อมูลรายการ');
+        }
     }
 
-    public function approve_payment_unapprove($id){
+    public function approve_payment_unapprove(Request $request){
+        if($request->file('slip') !=''){
+            $slip = $request->file('slip');
+            $extension = $slip->getClientOriginalExtension();
+            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+            Storage::disk('public')->putFileAs('slip/' . $request->input('id'), $slip, $imageName, 'public');
+            $data['slip_path'] = 'slip/' . $request->input('id') . '/';
+            $data['slip'] = $imageName;
+        }
         $data['status'] = 2;
+        $data['remark'] = $request->input('remark');
         $data['updated_at'] = date('Y-m-d H:i:s');
-        DB::Table('customer_cart_claim')->where('id',$id)->update($data);
+        DB::Table('withdraw')->where('id',$request->input('id'))->update($data);
         return redirect('admin/approve_payment');
     }
 
-    public function approve_payment_approve($id){
+    public function approve_payment_approve(Request $request){
+        if($request->file('slip') !=''){
+            $slip = $request->file('slip');
+            $extension = $slip->getClientOriginalExtension();
+            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+            Storage::disk('public')->putFileAs('slip/' . $request->input('id'), $slip, $imageName, 'public');
+            $data['slip_path'] = 'slip/' . $request->input('id') . '/';
+            $data['slip'] = $imageName;
+        }
         $data['status'] = 1;
+        $data['remark'] = $request->input('remark');
         $data['updated_at'] = date('Y-m-d H:i:s');
-        DB::Table('customer_cart_claim')->where('id',$id)->update($data);
+        DB::Table('withdraw')->where('id',$request->input('id'))->update($data);
         return redirect('admin/approve_payment');
     }
 
