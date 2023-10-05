@@ -506,11 +506,22 @@ class API1Controller extends Controller
                     $store->qty_sku = $r->qty_sku;
                     $store->shipping_date = $r->shipping_date;
                     $store->social = $r->social;
-                    $store->address = $r->address2;
-                    $store->province_id = $r->province_id2;
-                    $store->amphures_id = $r->amphures_id2;
-                    $store->district_id = $r->district_id2;
-                    $store->zipcode = $r->zipcode2;
+                    $store->store_type = $r->store_type;
+
+                    if($r->store_type == '1'){
+                        $store->address = $r->address;
+                        $store->province_id = $r->province_id;
+                        $store->amphures_id = $r->amphures_id;
+                        $store->district_id = $r->district_id;
+                        $store->zipcode = $r->zipcode;
+                    }else{
+                        $store->address = $r->address2;
+                        $store->province_id = $r->province_id2;
+                        $store->amphures_id = $r->amphures_id2;
+                        $store->district_id = $r->district_id2;
+                        $store->zipcode = $r->zipcode2;
+                    }
+
                     $store->bank_id = $r->bank_id;
                     $store->bank_account_name = $r->bank_account_name;
                     $store->bank_account_number = $r->bank_account_number;
