@@ -496,8 +496,8 @@ class API1Controller extends Controller
                     //
                     $customer->save();
 
-                    $brands = Brands::where('name_th',$r->brands)->first();
-                    if(!$brands){
+                    $brand = Brands::where('name_th',$r->brands)->first();
+                    if(!$brand){
                         $brand = new Brands();
                         $brand->name_th = $r->brands;
                         $brand->name_en = $r->brands;
@@ -1541,7 +1541,11 @@ class API1Controller extends Controller
          $cart->pay_type = $r->pay_type;
          $cart->status = 0;
          $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
-         $cart->shipping_date = date('Y-m-d');
+         if($r->shipping_date != ''){
+            $cart->shipping_date =$r->shipping_date;
+        }else{
+            $cart->shipping_date = date('Y-m-d');
+        }
          $cart->period = 2;
          $cart->customer_name = $customer->name;
          // เพิ่มมา
@@ -1611,7 +1615,13 @@ class API1Controller extends Controller
                     $cart->status = 1;
                 }
                 $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
-                $cart->shipping_date = date('Y-m-d');
+
+                if($r->shipping_date != ''){
+                    $cart->shipping_date =$r->shipping_date;
+                }else{
+                    $cart->shipping_date = date('Y-m-d');
+                }
+
                 $cart->period = 2;
                 $cart->customer_name = $customer->name;  $cart->shipping_type_id = $r->shipping_type_id;
                 $cart->shipping_price = $r->shipping_price_total;
@@ -1620,7 +1630,7 @@ class API1Controller extends Controller
                 $cart->cart_products_id_arr = $r->cart_products_id;
                 $cart->save();
 
-                 // บันทึกที่อยู่
+                 // บันทึกที่อยู่ shipping_date
                 $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
                 if(!$customer_cart_address){
                     $customer_cart_address = new CustomerCartAddress();
@@ -2644,6 +2654,8 @@ class API1Controller extends Controller
                         $products_transfer->shipping_date = $r->shipping_date;
                         $products_transfer->tracking = $r->tracking;
                         $products_transfer->shipping_name = $r->shipping_name;
+                        $products_transfer->shipping_type = $r->shipping_type;
+                        $products_transfer->time_period = $r->time_period;
                         $products_transfer->qty = $r->qty;
                         // $products_transfer->qty = $products_item->qty;
                         $products_transfer->save();
