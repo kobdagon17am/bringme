@@ -1,7 +1,7 @@
 @extends('layouts.frontend.app')
 
 @section('content')
-<form method="POST" action="{{ url('admin/product_create') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ url('product_create') }}" enctype="multipart/form-data">
     <input type="hidden" name="store_id" value="{{ $store_id }}">
 @csrf()
 <div class="content">
@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" multiple="multiple" tabindex="-1" hidden="hidden">
+                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" tabindex="-1" hidden="hidden">
                                 @if(!empty($category))
                                     @foreach($category as $_category)
                                         <option {{ (!empty($product_detail) ? ($_category->id == $product_detail->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
@@ -103,18 +103,14 @@
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row">
-                                <div class="form-check mr-2">
-                                    <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="0">
-                                    <label class="form-check-label" for="radio-switch-4">Ambient</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-5" class="form-check-input" type="radio" name="storage_method_id" value="1">
-                                    <label class="form-check-label" for="radio-switch-5">Chilled</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-6" class="form-check-input" type="radio" name="storage_method_id" value="2">
-                                    <label class="form-check-label" for="radio-switch-6">Frozen</label>
-                                </div>
+                                @if(!empty($storage_method))
+                                    @foreach($storage_method as $_storage_method)
+                                        <div class="form-check mr-2">
+                                            <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="{{ $_storage_method->id }}">
+                                            <label class="form-check-label" for="radio-switch-4">{{ $_storage_method->name_th }}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
 
@@ -129,7 +125,7 @@
                             </div>
                             <input id="product-name" type="text" class="w-full" name="shelf_lift" placeholder="" required>
                         </div>
-                        <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                        <!-- <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
                                 <div class="text-left">
                                     <div class="flex items-center">
@@ -137,9 +133,9 @@
                                         <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
                                     </div>
                                 </div>
-                            </div>
-                            <input id="product-name" type="text" class="w-full" name="product_price" placeholder="" required>
-                        </div>
+                            </div> -->
+                            <!-- <input id="product_price" type="hidden" class="w-full" name="product_price" placeholder="" required> -->
+                        <!-- </div> -->
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
                                 <div class="text-left">
@@ -357,6 +353,7 @@
     </div>
 </div>
 
+
 </form>
 
 @endsection
@@ -507,9 +504,9 @@
                         row.append($('<td></td>'));
                     }
 
-                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price['+$(this).val()+']['+option_2[i]+'][]"></div></td>'));
+                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price['+index+']['+i+'][]"></div></td>'));
 
-                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock['+$(this).val()+']['+option_2[i]+'][]" placeholder="สต็อค"></td>'));
+                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock['+index+']['+i+'][]" placeholder="สต็อค"></td>'));
 
                     $('#optionTable tbody').append(row);
                 }

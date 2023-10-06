@@ -57,6 +57,7 @@ Route::get('/', function () {
   Route::post('remove_gallery', 'Customer\ProductController@remove_gallery')->name('remove_gallery');
   Route::get('/product_add/{id}', 'Customer\ProductController@product_add')->name('/product_add');
 
+  Route::post('product_create', 'Customer\ProductController@product_create')->name('product_create');
 
 
 

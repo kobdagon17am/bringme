@@ -6,6 +6,13 @@
                 <div class="side-menu__title"> Dashboard </div>
             </a>
         </li>
+        <li class="mt-10">
+
+            <a href="{{url('product_add/'.Auth::guard('customer')->user()->id)}}" class="side-menu">
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('frontend/dist/images/icons/BringMe_Web_Operate_ICON-10.png')}}" alt=""></div>
+                <div class="side-menu__title"> เพิ่มสินค้าใหม่ </div>
+            </a>
+        </li>
 {{--
         <li>
             <a href="{{route('register_partner')}}" target="_bank" class="side-menu">

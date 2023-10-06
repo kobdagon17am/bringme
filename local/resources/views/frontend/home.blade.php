@@ -311,13 +311,17 @@
                                         <img alt="Midone - HTML Admin Template" class="rounded-md" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
                                         @endif
 
-                                        <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
+                                        {{-- <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
                                             <a href="" class="block font-medium text-base">{{ $_product->product_name_th }} | {{ $_product->product_name_en }}</a>
                                             <span class="text-white/90 text-xs mt-3">TH : {{ $_product->category_name_th }} | EN : {{ $_product->category_name_en }}
                                             <br>TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</span>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     <div class="text-slate-600 dark:text-slate-500 mt-5">
+
+                                        <p>{{ $_product->product_name_th }} | {{ $_product->product_name_en }} <br>
+                                            TH : {{ $_product->brands_name_th }} | EN : {{ $_product->brands_name_en }}</p>
+
                                         <div class="flex items-center">
                                             <i data-lucide="link" class="w-4 h-4 mr-2"></i> ราคา: ฿ {{ number_format($_product->max_price,2) }}
                                         </div>
@@ -340,7 +344,7 @@
             <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_update') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="customer_id" value="{{ $id }}">
-                <input type="hidden" name="store_id" value="{{ $store_detail->id }}">
+                <input type="hidden" name="store_id" value="{{ @$store_detail->id }}">
                 <div class="col-span-12">
                     <!-- BEGIN: Display Information -->
                     <div class="intro-y box lg:mt-5">

@@ -251,6 +251,10 @@ class ProductsController extends Controller
         $products->detail_en = $request->input('detail_en');
         $products->category_id = $request->input('category_id');
         $products->brands_id = $brands_id;
+        $products->min_price = 0;
+        $products->max_price = 0;
+        $products->shipping_price = 0;
+
         $products->storage_method_id = $request->input('storage_method_id');
         $products->store_id = $store->id;
         $products->customer_id = $store->customer_id;
@@ -265,6 +269,7 @@ class ProductsController extends Controller
         // เพิ่ม item สินค้า storage_method_id brands_id
         $products_item = new ProductsItem();
         $products_item->product_id = $products->id;
+        $products_item->rate = 0;
         $products_item->customer_id = $store->customer_id;
         $products_item->name_th = $request->input('name_th');
         $products_item->name_en = $request->input('name_en');
@@ -329,8 +334,8 @@ class ProductsController extends Controller
                             $products_option_2_items->products_item_id = $products_item->id;
                             $products_option_2_items->option_1_id = $id_option_1[$key_1];
                             $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                            $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                            $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                            $products_option_2_items->price = @$request->input('price')[$key_1][$key_2][0];
+                            $products_option_2_items->qty = @$request->input('stock')[$key_1][$key_2][0];
                             $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->save();
@@ -350,8 +355,8 @@ class ProductsController extends Controller
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
                     $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                    $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                    $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                    $products_option_2_items->price = @$request->input('price')[$key_1][$key_2][0];
+                    $products_option_2_items->qty = @$request->input('stock')[$key_1][$key_2][0];
                     $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->save();
@@ -366,8 +371,8 @@ class ProductsController extends Controller
             }
         }
 
-        $products->min_price = min($array_max_min);
-        $products->max_price = max($array_max_min);
+        $products->min_price = @min($array_max_min);
+        $products->max_price = @max($array_max_min);
         $products->save();
 
         if (!empty($request->file('produc_gallery'))) {
@@ -397,6 +402,7 @@ class ProductsController extends Controller
             return redirect('backend/store-detail/' . $request->input('store_id'));
         }
     }
+
 
     public function product_update(Request $request)
     {
@@ -458,15 +464,16 @@ class ProductsController extends Controller
         ProductsOption1::where('product_id',$products_item->product_id)->delete();
         ProductsOption2::where('product_id',$products_item->product_id)->delete();
         ProductsOption2Items::where('product_id',$products_item->product_id)->delete();
-
+        $option_type = 1;
         if (!empty($request->input('option_title'))) {
             foreach ($request->input('option_title') as $key => $_option_title) {
                 $products_option_head1 = new ProductsOptionHead();
                 $products_option_head1->product_id = $products->id;
-                $products_option_head1->option_type = $key + 1;
+                $products_option_head1->option_type = $option_type;
                 $products_option_head1->name_th = $_option_title;
                 $products_option_head1->name_en = $_option_title;
                 $products_option_head1->save();
+                $option_type++;
             }
         }
 
@@ -508,8 +515,8 @@ class ProductsController extends Controller
                             $products_option_2_items->products_item_id = $products_item->id;
                             $products_option_2_items->option_1_id = $id_option_1[$key_1];
                             $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                            $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                            $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                            $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                            $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                             $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->save();
@@ -517,8 +524,8 @@ class ProductsController extends Controller
                             $products_option_2_items->barcode = $products->barcode . $products_option_2_items->id;
                             $products_option_2_items->save();
 
-                            if (!in_array($request->input('price')[$key_1][$key_2][0], $array_max_min)) {
-                                array_push($array_max_min, $request->input('price')[$key_1][$key_2][0]);
+                            if (!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)) {
+                                array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                             }
                         }
                     }
@@ -529,8 +536,8 @@ class ProductsController extends Controller
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
                     $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                    $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                    $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                    $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                    $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                     $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->save();
@@ -538,8 +545,8 @@ class ProductsController extends Controller
                     $products_option_2_items->barcode = $products->barcode . $products_option_2_items->id;
                     $products_option_2_items->save();
 
-                    if (!in_array($request->input('price')[$key_1][$key_2][0], $array_max_min)) {
-                        array_push($array_max_min, $request->input('price')[$key_1][$key_2][0]);
+                    if (!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)) {
+                        array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                     }
                 }
             }
