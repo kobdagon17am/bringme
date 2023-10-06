@@ -13,7 +13,7 @@
                     <div class="mt-5">
                         <form method="POST" action="{{ route('item_gallery') }}" id="item_gallery" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="item_id" value="{{$products_item->item_id}}">
+                            <input type="hidden" name="item_id" value="{{$products_item->product_id}}">
                             <div class="form-inline items-start flex-col xl:flex-row mt-10">
                                 <div class="form-label w-full xl:w-64 xl:!mr-10">
                                     <div class="text-left">
@@ -111,7 +111,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" multiple="multiple" tabindex="-1" hidden="hidden">
+                            <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" tabindex="-1" hidden="hidden">
                                 @if(!empty($category))
                                     @foreach($category as $_category)
                                         <option {{ (!empty($products_item) ? ($_category->id == $products_item->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
@@ -128,18 +128,14 @@
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row">
-                                <div class="form-check mr-2">
-                                    <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="0" {{ (!empty($products_item) ? ($products_item->storage_method_id == '0' ? 'checked' : '') : '') }} >
-                                    <label class="form-check-label" for="radio-switch-4">Ambient</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-5" class="form-check-input" type="radio" name="storage_method_id" value="1" {{ (!empty($products_item) ? ($products_item->storage_method_id == '1' ? 'checked' : '') : '') }} >
-                                    <label class="form-check-label" for="radio-switch-5">Chilled</label>
-                                </div>
-                                <div class="form-check mr-2 mt-2 sm:mt-0">
-                                    <input name="storage_method_id" id="radio-switch-6" class="form-check-input" type="radio" name="storage_method_id" value="2" {{ (!empty($products_item) ? ($products_item->storage_method_id == '2' ? 'checked' : '') : '') }} >
-                                    <label class="form-check-label" for="radio-switch-6">Frozen</label>
-                                </div>
+                                @if(!empty($storage_method))
+                                    @foreach($storage_method as $_storage_method)
+                                        <div class="form-check mr-2">
+                                            <input name="storage_method_id" id="radio-switch-4" class="form-check-input" type="radio" name="storage_method_id" value="{{ $_storage_method->id }}" {{ (!empty($products_item) ? ($products_item->storage_method_id == $_storage_method->id ? 'checked' : '') : '') }}>
+                                            <label class="form-check-label" for="radio-switch-4">{{ $_storage_method->name_th }}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
 
@@ -399,12 +395,11 @@
                 <a href="products.php" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ยกเลิก</a>
                 <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
             </div>
-
-            </form>
         </div>
     </div>
 </div>
 
+</form>
 
 @endsection
 @section('js')
@@ -579,7 +574,7 @@
 
             $.ajax({
               'type': 'post',
-              'url': "{{url('remove_gallery')}}",
+              'url': "{{ url('remove_gallery') }}",
               'dataType': 'text',
               'data': { 'gallery_id' : gallery_id,
                         '_token' : "{{csrf_token()}}"

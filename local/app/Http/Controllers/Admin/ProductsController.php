@@ -404,10 +404,6 @@ class ProductsController extends Controller
     }
 
 
-
-
-
-
     public function product_update(Request $request)
     {
 
