@@ -117,9 +117,10 @@ class ProductController extends Controller
     }
 
 
-
     public function product_update(Request $request)
     {
+
+        // dd($request->input() , $request->file());
 
         $products_item = DB::table('products_item')->where('id', $request->input('item_id'))->first();
         $store = DB::table('store')->where('id', $products_item->store_id)->first();
@@ -176,6 +177,7 @@ class ProductController extends Controller
         ProductsOption1::where('product_id',$products_item->product_id)->delete();
         ProductsOption2::where('product_id',$products_item->product_id)->delete();
         ProductsOption2Items::where('product_id',$products_item->product_id)->delete();
+        $option_type = 1;
         if (!empty($request->input('option_title'))) {
             foreach ($request->input('option_title') as $key => $_option_title) {
                 $products_option_head1 = new ProductsOptionHead();
@@ -226,8 +228,8 @@ class ProductController extends Controller
                             $products_option_2_items->products_item_id = $products_item->id;
                             $products_option_2_items->option_1_id = $id_option_1[$key_1];
                             $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                            $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                            $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                            $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                            $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                             $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->save();
@@ -235,8 +237,8 @@ class ProductController extends Controller
                             $products_option_2_items->barcode = $products->barcode . $products_option_2_items->id;
                             $products_option_2_items->save();
 
-                            if (!in_array($request->input('price')[$key_1][$key_2][0], $array_max_min)) {
-                                array_push($array_max_min, $request->input('price')[$key_1][$key_2][0]);
+                            if (!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)) {
+                                array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                             }
                         }
                     }
@@ -247,8 +249,8 @@ class ProductController extends Controller
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
                     $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                    $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                    $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                    $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                    $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                     $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->save();
@@ -256,8 +258,8 @@ class ProductController extends Controller
                     $products_option_2_items->barcode = $products->barcode . $products_option_2_items->id;
                     $products_option_2_items->save();
 
-                    if (!in_array($request->input('price')[$key_1][$key_2][0], $array_max_min)) {
-                        array_push($array_max_min, $request->input('price')[$key_1][$key_2][0]);
+                    if (!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)) {
+                        array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                     }
                 }
             }
@@ -269,9 +271,15 @@ class ProductController extends Controller
 
 
         DB::commit();
-        return redirect('product-edit/' . $products_item->id);
-
+        return redirect('product-edit/' .$products_item->product_id);
+        // if(!empty(Auth::guard('admin')->user()->name)){
+        //     return redirect('admin/store-detail/' . $products_item->customer_id);
+        // }else{
+        //     return redirect('backend/store-detail/' . $products_item->customer_id);
+        // }
     }
+
+
 
 
 
@@ -280,7 +288,7 @@ class ProductController extends Controller
     public function product_create(Request $request)
     {
 
-        dd($request->input() , $request->file() );
+        // dd($request->input() , $request->file() );
 
         $store = DB::table('store')->where('customer_id', $request->input('store_id'))->first();
         $brands = DB::table('brands')->where('name_th', 'LIKE', $request->input('brands_id'))->first();
