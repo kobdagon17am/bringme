@@ -1,5 +1,35 @@
 @extends('layouts.backend.app')
+<style type="text/css">
+    /* Styles for the modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding: 20px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.9);
+    }
 
+    .modal-content {
+        max-width: 100%;
+        max-height: 80%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+</style>
 @section('content')
 <div class="content">
     <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
@@ -103,22 +133,22 @@
                 </div>
             </div>
         </div>
-        <?php $url_img = Storage::disk('public')->url(''); ?>
+        <?php $url_img = asset('local/storage/app/public'); ?>
         <div class="col-span-12 lg:col-span-8 xl:col-span-9">
             <div class="box p-5 rounded-md">
                 <div class="flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5 mb-5">
                     <div class="font-medium text-base truncate">รายละเอียดการขอเคลม</div>
                 </div>
-                <div class="overflow-auto lg:overflow-visible -mt-3">
-                    <div class="font-medium text-base truncate">ภาพรายละเอียด</div>
+                <div class="grid grid-cols-12 -mt-3">
+                    <div class="font-medium text-base truncate col-span-12 lg:col-span-12 xl:col-span-12">ภาพรายละเอียด</div>
                     @if(!empty($refund->img1))
-                    <img class="rounded-md" src=" {{($url_img .''. $refund->img_path . '' . $refund->img1)}}">
+                    <img style="height: 200px; cursor: pointer;" class="image rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img1)}}">
                     @endif
                     @if(!empty($refund->img2))
-                    <img class="rounded-md" src=" {{($url_img .''. $refund->img_path . '' . $refund->img2)}}">
+                    <img style="height: 200px; cursor: pointer;" class="image rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img2)}}">
                     @endif
                     @if(!empty($refund->img3))
-                    <img class="rounded-md" src=" {{($url_img .''. $refund->img_path . '' . $refund->img3)}}">
+                    <img style="height: 200px; cursor: pointer;" class="image rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img3)}}">
                     @endif
                 </div>
                 <div class="overflow-auto lg:overflow-visible mt-4">
@@ -159,7 +189,7 @@
                                     <div class="flex items-center">
                                         <div class="w-10 h-10 image-fit zoom-in">
                                             <img alt="Midone - HTML Admin Template" class="rounded-lg border-2 border-white shadow-md tooltip"
-                                            src=" {{($url_img .''. $value->img_path . '' . $value->img_name)}}">
+                                            src=" {{($url_img .'/'. $value->img_path . '' . $value->img_name)}}">
                                         </div>
                                         <a href="" class="font-medium whitespace-nowrap ml-4">{{ $products->name_th }}</a>
                                     </div>
@@ -178,4 +208,31 @@
     </div>
 
 </div>
+
+<div class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modal-image">
+</div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script type="text/javascript">
+    // When an image is clicked, display it in the modal
+    $(".image").click(function() {
+        var imgSrc = $(this).attr("src");
+        console.log(imgSrc);
+        $("#modal-image").attr("src", imgSrc);
+        $(".modal").css("display", "block");
+    });
+
+    // Close the modal when the close button or outside the modal is clicked
+    $(".close, .modal").click(function() {
+        $(".modal").css("display", "none");
+    });
+
+    // Prevent modal from closing when clicking on the image itself
+    $(".modal-content").click(function(event) {
+        event.stopPropagation();
+    });
+
+</script>
