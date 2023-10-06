@@ -334,8 +334,8 @@ class ProductsController extends Controller
                             $products_option_2_items->products_item_id = $products_item->id;
                             $products_option_2_items->option_1_id = $id_option_1[$key_1];
                             $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                            $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                            $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                            $products_option_2_items->price = @$request->input('price')[$key_1][$key_2][0];
+                            $products_option_2_items->qty = @$request->input('stock')[$key_1][$key_2][0];
                             $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->save();
@@ -355,8 +355,8 @@ class ProductsController extends Controller
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
                     $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                    $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                    $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                    $products_option_2_items->price = @$request->input('price')[$key_1][$key_2][0];
+                    $products_option_2_items->qty = @$request->input('stock')[$key_1][$key_2][0];
                     $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->save();
@@ -371,8 +371,8 @@ class ProductsController extends Controller
             }
         }
 
-        $products->min_price = min($array_max_min);
-        $products->max_price = max($array_max_min);
+        $products->min_price = @min($array_max_min);
+        $products->max_price = @max($array_max_min);
         $products->save();
 
         if (!empty($request->file('produc_gallery'))) {
@@ -464,15 +464,16 @@ class ProductsController extends Controller
         ProductsOption1::where('product_id',$products_item->product_id)->delete();
         ProductsOption2::where('product_id',$products_item->product_id)->delete();
         ProductsOption2Items::where('product_id',$products_item->product_id)->delete();
-
+        $option_type = 1;
         if (!empty($request->input('option_title'))) {
             foreach ($request->input('option_title') as $key => $_option_title) {
                 $products_option_head1 = new ProductsOptionHead();
                 $products_option_head1->product_id = $products->id;
-                $products_option_head1->option_type = $key + 1;
+                $products_option_head1->option_type = $option_type;
                 $products_option_head1->name_th = $_option_title;
                 $products_option_head1->name_en = $_option_title;
                 $products_option_head1->save();
+                $option_type++;
             }
         }
 
@@ -514,8 +515,8 @@ class ProductsController extends Controller
                             $products_option_2_items->products_item_id = $products_item->id;
                             $products_option_2_items->option_1_id = $id_option_1[$key_1];
                             $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                            $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                            $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                            $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                            $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                             $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->save();
@@ -523,8 +524,8 @@ class ProductsController extends Controller
                             $products_option_2_items->barcode = $products->barcode . $products_option_2_items->id;
                             $products_option_2_items->save();
 
-                            if (!in_array($request->input('price')[$key_1][$key_2][0], $array_max_min)) {
-                                array_push($array_max_min, $request->input('price')[$key_1][$key_2][0]);
+                            if (!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)) {
+                                array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                             }
                         }
                     }
@@ -535,8 +536,8 @@ class ProductsController extends Controller
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
                     $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                    $products_option_2_items->price = $request->input('price')[$key_1][$key_2][0];
-                    $products_option_2_items->qty = $request->input('stock')[$key_1][$key_2][0];
+                    $products_option_2_items->price = $request->input('price')[$_option_detail][$_option_detail_2][0];
+                    $products_option_2_items->qty = $request->input('stock')[$_option_detail][$_option_detail_2][0];
                     $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->save();
@@ -544,8 +545,8 @@ class ProductsController extends Controller
                     $products_option_2_items->barcode = $products->barcode . $products_option_2_items->id;
                     $products_option_2_items->save();
 
-                    if (!in_array($request->input('price')[$key_1][$key_2][0], $array_max_min)) {
-                        array_push($array_max_min, $request->input('price')[$key_1][$key_2][0]);
+                    if (!in_array($request->input('price')[$_option_detail][$_option_detail_2][0], $array_max_min)) {
+                        array_push($array_max_min, $request->input('price')[$_option_detail][$_option_detail_2][0]);
                     }
                 }
             }

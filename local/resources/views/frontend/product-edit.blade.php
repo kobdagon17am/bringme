@@ -375,10 +375,10 @@
                                                 @foreach($products_option_2_items as $_products_option_2_items)
                                                     <?php $name_show = explode(' ', $_products_option_2_items->name_th); ?>
                                                     <tr>
-                                                        <td>{{ array_shift($name_show) }}</td>
-                                                        <td>{{ end($name_show) }}</td>
-                                                        <td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price[{{ array_shift($name_show) }}][{{ end($name_show) }}][]" value="{{ $_products_option_2_items->price }}"></div></td>
-                                                        <td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock[{{ array_shift($name_show) }}][{{ end($name_show) }}][]" placeholder="สต็อค" value="{{ $_products_option_2_items->qty }}"></td>
+                                                        <td>{{ $name_show[0] }}</td>
+                                                        <td>{{ (array_key_exists('1', $name_show) ? $name_show[1] : '') }}</td>
+                                                        <td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price[{{ $name_show[0] }}][{{ (array_key_exists('1', $name_show) ? $name_show[1] : '') }}][]" value="{{ $_products_option_2_items->price }}"></div></td>
+                                                        <td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock[{{ $name_show[0] }}][{{ (array_key_exists('1', $name_show) ? $name_show[1] : '') }}][]" placeholder="สต็อค" value="{{ $_products_option_2_items->qty }}"></td>
                                                     </tr>
                                                 @endforeach
                                             @endif
