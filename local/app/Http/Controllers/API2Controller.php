@@ -956,7 +956,7 @@ class API2Controller extends  Controller
                 }
 
                 if($r->tracking_no2 != ''){
-                    $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',2)->first();
+                    $tracking_no2 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',2)->first();
                     if(!$tracking_no2){
                         $tracking_no2 = new CustomerCartTracking();
                     }
@@ -994,7 +994,7 @@ class API2Controller extends  Controller
                     $tracking_no4->transfer_type = 1;
                     $tracking_no4->cod = 0;
                     $tracking_no4->no = 4;
-                    $track4g_no1->save();
+                    $tracking_no4->save();
                 }
 
                 if($r->tracking_no5 != ''){
@@ -1008,7 +1008,7 @@ class API2Controller extends  Controller
                     $tracking_no5->transfer_type = 1;
                     $tracking_no5->cod = 0;
                     $tracking_no5->no = 5;
-                    $tracking_no1->save();
+                    $tracking_no5->save();
                 }
 
             DB::commit();
