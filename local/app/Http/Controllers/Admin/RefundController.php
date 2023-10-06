@@ -62,8 +62,8 @@ class RefundController extends Controller
             $url_approve = url('admin/refund-approve',['id'=>$row->id]);
 
             $html = '<a  href="'.$url.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ตรวจสอบ</font> </a>';
-            $html .= '<a  href="'.$url_unapprove.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: red;">ไม่อนุมัติ</font> </a>';
-            $html .= '<a  href="'.$url_approve.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: green;">อนุมัติ</font> </a>';
+            // $html .= '<a  href="'.$url_unapprove.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: red;">ไม่อนุมัติ</font> </a>';
+            // $html .= '<a  href="'.$url_approve.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: green;">อนุมัติ</font> </a>';
             return $html;
          })
 

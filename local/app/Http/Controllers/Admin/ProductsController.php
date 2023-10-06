@@ -99,8 +99,9 @@ class ProductsController extends Controller
             ->where('id', $rs->product_id)
             ->first();
 
+
         $barcode = DB::table('products_option_2_items')
-            ->where('product_id', $rs->item_id)
+            ->where('id', $rs->item_id)
             ->first();
 
         $data = ['product' => $product, 'barcode' => $barcode];
@@ -227,7 +228,7 @@ class ProductsController extends Controller
     public function product_create(Request $request)
     {
 
-        // dd($request->input() , $request->file(), !empty($request->input('option_detail_2')) );
+        // dd($request->input() , $request->file(), max(array(1)) );
 
         $store = DB::table('store')->where('customer_id', $request->input('store_id'))->first();
         $brands = DB::table('brands')->where('name_th', 'LIKE', $request->input('brands_id'))->first();
@@ -365,8 +366,7 @@ class ProductsController extends Controller
             }
         }
 
-        // dd($array_max_min);
-        $products->min_price = array_shift($array_max_min);
+        $products->min_price = min($array_max_min);
         $products->max_price = max($array_max_min);
         $products->save();
 
@@ -545,8 +545,7 @@ class ProductsController extends Controller
             }
         }
 
-        // dd($array_max_min);
-        $products->min_price = array_shift($array_max_min);
+        $products->min_price = min($array_max_min);
         $products->max_price = max($array_max_min);
         $products->save();
 
