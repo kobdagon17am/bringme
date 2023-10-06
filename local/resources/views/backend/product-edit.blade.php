@@ -392,7 +392,7 @@
             </div>
 
             <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-                <a href="products.php" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ยกเลิก</a>
+                <a onclick="history.back()" class="btn py-3 border-slate-300 dark:border-darkmode-400 text-slate-500">ย้อนกลับ</a>
                 <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
             </div>
         </div>
