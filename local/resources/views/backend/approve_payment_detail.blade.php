@@ -26,7 +26,8 @@
                 <div class="md:col-span-2 mt-4">
                     <label for="" class="form-label">ชื่อบัญชี : {{ (!empty($approve_payment_detail) ? $approve_payment_detail->acc_name : '') }}</label><br>
                     <label for="" class="form-label">เลขบัญชี : {{ (!empty($approve_payment_detail) ? $approve_payment_detail->acc_number : '') }}</label><br>
-                    <label for="" class="form-label">ธนาคาร : {{ (!empty($bank) ? $bank->txt_desc : '') }}</label><br><br>
+                    <label for="" class="form-label">ธนาคาร : {{ (!empty($bank) ? $bank->txt_desc : '') }}</label><br>
+                    <label for="" class="form-label">ยอดที่ถอน : {{ number_format($approve_payment_detail->price,2,'.',',') }}</label><br><br>
                 </div>
 
                 <div class="col-span-1 mt-4 md:col-span-2">
