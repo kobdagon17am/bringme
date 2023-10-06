@@ -337,7 +337,7 @@ class API2Controller extends  Controller
     public function api_get_picking_list(Request $r)
     {
         $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',0)->orderBy('shipping_date','asc')->get();
-        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -351,7 +351,7 @@ class API2Controller extends  Controller
     public function api_get_scan_list(Request $r)
     {
         $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
-        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -365,7 +365,7 @@ class API2Controller extends  Controller
     public function api_get_shipping_list(Request $r)
     {
         $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
-        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->where('transfer_status',1)->orderBy('shipping_date','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->where('transfer_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
