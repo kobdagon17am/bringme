@@ -340,7 +340,7 @@
             <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_update') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="customer_id" value="{{ $id }}">
-                <input type="hidden" name="store_id" value="{{ $store_detail->id }}">
+                <input type="hidden" name="store_id" value="{{ @$store_detail->id }}">
                 <div class="col-span-12">
                     <!-- BEGIN: Display Information -->
                     <div class="intro-y box lg:mt-5">

@@ -251,6 +251,10 @@ class ProductsController extends Controller
         $products->detail_en = $request->input('detail_en');
         $products->category_id = $request->input('category_id');
         $products->brands_id = $brands_id;
+        $products->min_price = 0;
+        $products->max_price = 0;
+        $products->shipping_price = 0;
+
         $products->storage_method_id = $request->input('storage_method_id');
         $products->store_id = $store->id;
         $products->customer_id = $store->customer_id;
@@ -265,6 +269,7 @@ class ProductsController extends Controller
         // เพิ่ม item สินค้า storage_method_id brands_id
         $products_item = new ProductsItem();
         $products_item->product_id = $products->id;
+        $products_item->rate = 0;
         $products_item->customer_id = $store->customer_id;
         $products_item->name_th = $request->input('name_th');
         $products_item->name_en = $request->input('name_en');
@@ -397,6 +402,11 @@ class ProductsController extends Controller
             return redirect('backend/store-detail/' . $request->input('store_id'));
         }
     }
+
+
+
+
+
 
     public function product_update(Request $request)
     {
