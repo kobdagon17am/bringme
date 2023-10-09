@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Auth;
 
 class RefundController extends Controller
 {
@@ -16,7 +17,7 @@ class RefundController extends Controller
     public function __construct()
     {
 
-        $this->middleware('admin');
+        $this->middleware('customer');
     }
 
     /**
@@ -26,11 +27,11 @@ class RefundController extends Controller
      */
     public function index()
     {
-        return view('backend/refund');
+        return view('frontend/refund');
     }
 
     public function refund_datatable(){
-        $refund = DB::table('customer_cart_claim');
+        $refund = DB::table('customer_cart_claim')->where('customer_id',Auth::guard('customer')->user()->id);
         $sQuery = Datatables::of($refund);
         return $sQuery
 
@@ -63,9 +64,9 @@ class RefundController extends Controller
          })
 
          ->addColumn('action', function ($row) {
-            $url = url('admin/refund_view',['id'=>$row->id]);
-            $url_unapprove = url('admin/refund_unapprove',['id'=>$row->id]);
-            $url_approve = url('admin/refund_approve',['id'=>$row->id]);
+            $url = url('refund_view',['id'=>$row->id]);
+            $url_unapprove = url('refund_unapprove',['id'=>$row->id]);
+            $url_approve = url('refund_approve',['id'=>$row->id]);
 
             $html = '<a  href="'.$url.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ตรวจสอบ</font> </a>';
             // $html .= '<a  href="'.$url_unapprove.'" class="btn btn-sm  btn-outline-primary mr-2 mb-2 confirm_action"> <font style="color: red;">ไม่อนุมัติ</font> </a>';
@@ -82,38 +83,38 @@ class RefundController extends Controller
         $resule =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($refund->customer_cart_id);
         if ($resule['status'] == 1) {
 
-            return view('backend/refund-detail', [
+            return view('frontend/refund-detail', [
                 'refund_id' => $id,
                 'refund' => $refund,
                 'order_detail' => $resule
             ]);
         } else {
-            return redirect('admin/refund')->withError('ไม่พบข้อมูลรายการ');
+            return redirect('refund')->withError('ไม่พบข้อมูลรายการ');
         }
     }
 
     public function refund_unapprove($id){
         $data['status'] = 2;
-        $data['status_assign'] = 'N';
+        $data['status_assign'] = 'Y';
         $data['updated_at'] = date('Y-m-d H:i:s');
         DB::Table('customer_cart_claim')->where('id',$id)->update($data);
-        return redirect('admin/refund');
+        return redirect('refund');
     }
 
     public function refund_approve($id){
         $data['status'] = 1;
-        $data['status_assign'] = 'N';
+        $data['status_assign'] = 'Y';
         $data['updated_at'] = date('Y-m-d H:i:s');
         DB::Table('customer_cart_claim')->where('id',$id)->update($data);
-        return redirect('admin/refund');
+        return redirect('refund');
     }
 
     public function refund_assign($id){
         $data['status'] = 0;
-        $data['status_assign'] = 'Y';
+        $data['status_assign'] = 'N';
         $data['updated_at'] = date('Y-m-d H:i:s');
         DB::Table('customer_cart_claim')->where('id',$id)->update($data);
-        return redirect('admin/refund');
+        return redirect('refund');
     }
 
 }
