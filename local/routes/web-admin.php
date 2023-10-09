@@ -129,9 +129,10 @@ Route::post('admin/approve_user', 'Admin\CustomersController@approve_user')->nam
 
   Route::get('admin/refund', 'Admin\RefundController@index')->name('admin/refund');
   Route::get('admin/refund_datatable', 'Admin\RefundController@refund_datatable')->name('admin/refund_datatable');
-  Route::get('admin/refund-view/{id}', 'Admin\RefundController@refund_view')->name('admin/refund-view');
-  Route::get('admin/refund-unapprove/{id}', 'Admin\RefundController@refund_unapprove')->name('admin/refund-unapprove');
-  Route::get('admin/refund-approve/{id}', 'Admin\RefundController@refund_approve')->name('admin/refund-approve');
+  Route::get('admin/refund_view/{id}', 'Admin\RefundController@refund_view')->name('admin/refund_view');
+  Route::get('admin/refund_unapprove/{id}', 'Admin\RefundController@refund_unapprove')->name('admin/refund_unapprove');
+  Route::get('admin/refund_approve/{id}', 'Admin\RefundController@refund_approve')->name('admin/refund_approve');
+  Route::get('admin/refund_assign/{id}', 'Admin\RefundController@refund_assign')->name('admin/refund_assign');
 
   Route::get('admin/approve_payment', 'Admin\ApprovePaymentController@index')->name('admin/approve_payment');
   Route::get('admin/approve_payment_datatable', 'Admin\ApprovePaymentController@approve_payment_datatable')->name('admin/approve_payment_datatable');

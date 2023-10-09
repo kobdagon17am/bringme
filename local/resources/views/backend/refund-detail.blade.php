@@ -36,11 +36,9 @@
         <h2 class="text-lg font-medium mr-auto">รายละเอียดขอคืนเงิน</h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
             <?php 
-                $url_unapprove = url('admin/approve_payment_unapprove',['id'=>$refund_id]);
-                $url_approve = url('admin/approve_payment_approve',['id'=>$refund_id]);
-
-                echo '<a  href="'.$url_unapprove.'"> <button class="btn btn-outline-danger shadow-md mr-2">ปฏิเสธ</button> </a>';
-                echo '<a  href="'.$url_approve.'"> <button class="btn btn-primary shadow-md mr-2">อนุมัติ</button> </a>';
+                $url_assign = url('admin/refund_assign',['id'=>$refund_id]);
+                $url_unapprove = url('admin/refund_unapprove',['id'=>$refund_id]);
+                $url_approve = url('admin/refund_approve',['id'=>$refund_id]);
             ?>
         </div>
     </div>
@@ -142,13 +140,13 @@
                 <div class="grid grid-cols-12 -mt-3">
                     <div class="font-medium text-base truncate col-span-12 lg:col-span-12 xl:col-span-12">ภาพรายละเอียด</div>
                     @if(!empty($refund->img1))
-                    <img style="height: 200px; cursor: pointer;" class="image rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img1)}}">
+                    <img style="height: 200px; cursor: pointer;" class="image_show rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img1)}}">
                     @endif
                     @if(!empty($refund->img2))
-                    <img style="height: 200px; cursor: pointer;" class="image rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img2)}}">
+                    <img style="height: 200px; cursor: pointer;" class="image_show rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img2)}}">
                     @endif
                     @if(!empty($refund->img3))
-                    <img style="height: 200px; cursor: pointer;" class="image rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img3)}}">
+                    <img style="height: 200px; cursor: pointer;" class="image_show rounded-md col-span-4 lg:col-span-4 xl:col-span-4" src=" {{($url_img .'/'. $refund->img_path . '' . $refund->img3)}}">
                     @endif
                 </div>
                 <div class="overflow-auto lg:overflow-visible mt-4">
@@ -162,6 +160,21 @@
                         }
                     ?>
                     <div class="font-medium text-base truncate">ปัญหา : {{ $problem }}</div>
+
+                    <div style="text-align: right;">
+                        <a href="{{ $url_assign }}" class="sweet-alert-link" data-confirm-message="ยืนยันการส่งต่อไปยังร้านค้า ?"> 
+                          <button type="button" class="btn btn-info shadow-md mr-2 mt-3">ส่งต่อไปยังร้านค้า</button>
+                        </a>
+
+                        <a href="{{ $url_unapprove }}" class="sweet-alert-link" data-confirm-message="ยืนยันการปฏิเสธการเคลม ?">
+                          <button type="button" class="btn btn-danger shadow-md mr-2 mt-3">ปฏิเสธ</button>
+                        </a>
+
+                        <a href="{{ $url_approve }}" class="sweet-alert-link" data-confirm-message="ยืนยันการอนุมัติการเคลม ?">
+                          <button type="button" class="btn btn-primary shadow-md mr-2">อนุมัติ</button>
+                        </a>
+                    </div>
+
                 </div>
             </div>
 
@@ -216,23 +229,51 @@
 @endsection
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script type="text/javascript">
-    // When an image is clicked, display it in the modal
-    $(".image").click(function() {
-        var imgSrc = $(this).attr("src");
-        console.log(imgSrc);
-        $("#modal-image").attr("src", imgSrc);
-        $(".modal").css("display", "block");
+    $(document).ready(function(){
+        $(".image_show").click(function() {
+            var imgSrc = $(this).attr("src");
+            console.log(imgSrc);
+            Swal.fire({
+              imageUrl: imgSrc,
+              imageHeight: 500,
+            });
+        });
+
+        $(".close, .modal").click(function() {
+            $(".modal").css("display", "none");
+        });
+
+        $(".modal-content").click(function(event) {
+            event.stopPropagation();
+        });
     });
 
-    // Close the modal when the close button or outside the modal is clicked
-    $(".close, .modal").click(function() {
-        $(".modal").css("display", "none");
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+      const links = document.querySelectorAll('.sweet-alert-link');
 
-    // Prevent modal from closing when clicking on the image itself
-    $(".modal-content").click(function(event) {
-        event.stopPropagation();
+      links.forEach(link => {
+        link.addEventListener('click', function(event) {
+          event.preventDefault();
+          const confirmMessage = this.getAttribute('data-confirm-message');
+          
+          Swal.fire({
+            title: 'Confirmation',
+            text: confirmMessage,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // If the user confirms, navigate to the link's href
+              window.location.href = this.getAttribute('href');
+            }
+          });
+        });
+      });
     });
 
 </script>
