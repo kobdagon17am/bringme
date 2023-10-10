@@ -37,6 +37,7 @@ Use App\Models\CustomerCartProductCutStock;
 Use App\Models\ProductsComment;
 use App\Models\CustomerCartAddress;
 use App\Models\CustomerAcc;
+use App\Models\Withdraw;
 
 class API3Controller extends Controller
 {
@@ -282,9 +283,60 @@ class API3Controller extends Controller
         DB::beginTransaction();
         try
         {
+            $store = Store::where('customer_id',$r->user_id)->first();
+            if($store){
+                if($store->credit< $r->price){
+                    return response()->json([
+                        'message' =>  'จำนวนยอดที่ถอนได้ของท่านไม่เพียงพอ',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }else{
+                    $customer_acc = CustomerAcc::where('id',$r->acc_id)->where('store_id',$store->id)->first();
+                    if($customer_acc){
+                        $withdraw = new Withdraw();
+                        $withdraw->store_id = $store->id;
+                        $withdraw->price = $r->price;
+                        $withdraw->bank_id = $customer_acc->bank_id;
+                        $withdraw->acc_name = $customer_acc->acc_name;
+                        $withdraw->acc_number = $customer_acc->acc_number;
+                        $withdraw->status = 0;
+                        $withdraw->save();
+
+                        $movement = new FinanceMovement();
+                        $movement->store_id = $store->id;
+                        $movement->ref_type = 2;
+                        $movement->ref_id = $withdraw->id;
+
+                        $movement->transfer_status = 2;
+                        $movement->name = 'ถอนเงินไปที่บัญชี ('.$customer_acc->acc_number.')';
+                        $movement->price = $r->price;
+                        $movement->status = 0;
+                        $movement->gp_percent = 0;
+                        $movement->price_full = $r->price;
+                        $movement->save();
+
+                        // บันทึกยอดล่าสุด
+                        $store->credit = $store->credit-$r->price;
+                        $store->save();
+
+                    }else{
+                        return response()->json([
+                            'message' =>  'ไม่พบข้อมูล2',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+                }
 
 
-
+            }else{
+                return response()->json([
+                    'message' =>  'ไม่พบข้อมูล',
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
 
             DB::commit();
 
