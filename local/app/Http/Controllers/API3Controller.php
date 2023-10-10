@@ -66,6 +66,8 @@ class API3Controller extends Controller
             $finance_movement_withdraw_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',2)->sum('price');
             $url_img = Storage::disk('public')->url('');
 
+            $customer_acc = CustomerAcc::select('customer_acc.*','bank.txt_desc')->join('bank','bank.id','customer_acc.bank_id')->where('customer_acc.used',1)->where('customer_acc.store_id',$store->id)->first();
+
              return response()->json([
                  'message' => 'ทำรายการสำเร็จ',
                  'status' => 1,
@@ -76,6 +78,7 @@ class API3Controller extends Controller
                      'finance_movement_income_price' => $finance_movement_income_price,
                      'finance_movement_withdraw_price' => $finance_movement_withdraw_price,
                      'url_img' => $url_img,
+                     'customer_acc' => $customer_acc,
                  ],
              ]);
          }else{
@@ -153,7 +156,7 @@ class API3Controller extends Controller
 
      }
 
-     public function api_customer_acc_add()
+     public function api_customer_acc_add(Request $r)
      {
         DB::beginTransaction();
         try
@@ -198,6 +201,98 @@ class API3Controller extends Controller
                 'status' => 1,
                 'data' => [
                     'customer_acc' => $customer_acc,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
+
+     public function api_get_acc_list(Request $r)
+     {
+        $store = Store::where('customer_id',$r->user_id)->first();
+        if($store){
+            $customer_acc = CustomerAcc::select('customer_acc.*','bank.txt_desc')->join('bank','bank.id','customer_acc.bank_id')->where('customer_acc.store_id',$store->id)->orderBy('customer_acc.id','desc')->get();
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบช้อมูลผู้ใช้',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+             return response()->json([
+                 'message' => 'สำเร็จ',
+                 'status' => 1,
+                 'data' => [
+                     'customer_acc' => $customer_acc,
+                 ],
+             ]);
+     }
+
+     public function api_select_customer_acc(Request $r)
+     {
+        $store = Store::where('customer_id',$r->user_id)->first();
+        if($store){
+            $customer_acc = DB::table('customer_acc')->where('store_id',$store->id)->update([
+                'used' => '0'
+            ]);
+            $customer_acc = DB::table('customer_acc')->where('store_id',$store->id)->where('id',$r->acc_id)->update([
+                'used' => '1'
+            ]);
+            $customer_acc = DB::table('customer_acc')->where('store_id',$store->id)->where('id',$r->acc_id)->first();
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบช้อมูลผู้ใช้',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+             return response()->json([
+                 'message' => 'สำเร็จ',
+                 'status' => 1,
+                 'data' => [
+                     'customer_acc' => $customer_acc,
+                 ],
+             ]);
+     }
+
+     public function api_add_withdraw()
+     {
+        DB::beginTransaction();
+        try
+        {
+
+
+
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'setting_period_finance' => $setting_period_finance,
                 ],
             ]);
 

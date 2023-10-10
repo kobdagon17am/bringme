@@ -89,3 +89,6 @@ Route::post('api_get_products_transfer_list', 'API1Controller@api_get_products_t
 Route::post('api_get_products_transfer_detail', 'API1Controller@api_get_products_transfer_detail');
 Route::post('api_get_finance', 'API3Controller@api_get_finance');
 Route::get('api_update_finance', 'API3Controller@api_update_finance');
+Route::post('api_customer_acc_add', 'API3Controller@api_customer_acc_add');
+Route::post('api_get_acc_list', 'API3Controller@api_get_acc_list');
+Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc');
