@@ -61,7 +61,20 @@ class API3Controller extends Controller
      {
         $store = Store::where('customer_id',$r->user_id)->first();
          if($store){
-            $finance_movement = FinanceMovement::where('store_id',$store->id)->orderBy('created_at','desc')->get();
+
+            $date_start = date('Y-m').'-01 00:00:01';
+            $date_end = date('Y-m').'-31 23:59:59';
+
+            if(isset($r->year)){
+                if($r->year!=''){
+                    $date_start = $r->year.'-'.$r->month.'-01 00:00:01';
+                    $date_end = $r->year.'-'.$r->month.'-31 23:59:59';
+                }
+            }
+
+            $finance_movement = FinanceMovement::where('store_id',$store->id)
+            ->whereBetween('created_at', [$date_start,$date_end])
+            ->orderBy('created_at','desc')->get();
             $finance_movement_hold_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',1)->where('status',0)->where('ref_type',1)->sum('price');
             $finance_movement_income_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',1)->sum('price');
             $finance_movement_withdraw_price = FinanceMovement::select('price')->where('store_id',$store->id)->where('transfer_status',2)->sum('price');
@@ -278,7 +291,7 @@ class API3Controller extends Controller
              ]);
      }
 
-     public function api_add_withdraw()
+     public function api_add_withdraw(Request $r)
      {
         DB::beginTransaction();
         try
@@ -344,7 +357,7 @@ class API3Controller extends Controller
                 'message' => 'ทำรายการสำเร็จ',
                 'status' => 1,
                 'data' => [
-                    'setting_period_finance' => $setting_period_finance,
+                    // 'setting_period_finance' => $setting_period_finance,
                 ],
             ]);
 
