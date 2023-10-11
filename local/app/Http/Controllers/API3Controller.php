@@ -106,7 +106,7 @@ class API3Controller extends Controller
                      'finance_movement_withdraw_price' => $finance_movement_withdraw_price,
                      'url_img' => $url_img,
                      'customer_acc' => $customer_acc,
-                     'period_withdraw' => $period_withdraw,
+                     'period_withdraw_status' => $period_withdraw_status,
                  ],
              ]);
          }else{
