@@ -49,6 +49,7 @@ Route::get('/', function () {
   Route::get('employee', 'Customer\EmployeeController@index')->name('employee');
 
   Route::get('store-register', 'Customer\StoreRegisterController@index')->name('store-register');
+  Route::post('store_update', 'Customer\StoresController@store_update')->name('store_update');
 
 
   Route::get('product-edit/{id}', 'Customer\ProductController@product_edit')->name('product-edit');

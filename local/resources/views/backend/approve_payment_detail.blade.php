@@ -55,10 +55,12 @@
                     <textarea rows="3" class="form-control" id="" rows="5" name="remark">{{ (!empty($approve_payment_detail) ? nl2br($approve_payment_detail->remark) : '') }}</textarea>
                 </div>
 
+                @if(!empty($approve_payment_detail) && $approve_payment_detail->status == 0)
                 <div class="flex justify-end mt-4 gap-5">
                     <button type="button" class="btn btn-outline-danger w-20 cancel_approve_payment" url="{{ $url_unapprove }}">ปฏิเสธ</button>
                     <button type="button" class="btn btn-primary w-20 approve_payment" url="{{ $url_approve }}">อนุมัติ</button>
                 </div>
+                @endif
 
             </div>
         </div>
