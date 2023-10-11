@@ -1007,13 +1007,25 @@ class API1Controller extends Controller
             if( $product_datail){
                 $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
                 $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
                 if(!$stock_lot){
                     return response()->json([
-                        'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                        'message' =>  'จำนวนสินค้าหมดแล้ว',
                         'status' => 0,
                         'data' => '',
                     ]);
+                }else{
+                    $qty_booking_sum = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                    ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
+
+                    if($qty_booking_sum<$r->qty){
+                        return response()->json([
+                            'message' =>  'จำนวนสินค้าไม่เพียงพอ กรุณาลดจำนวนสินค้าลง',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+
                 }
                 $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
                 if($product){
@@ -1677,7 +1689,7 @@ class API1Controller extends Controller
                         }
 
                         $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                        ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                        ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
                         if(!$stock_lot){
                             DB::rollback();
                             return response()->json([
@@ -1696,7 +1708,7 @@ class API1Controller extends Controller
                         $qty_mis_total = $p->qty;
                         if($qty_mis_total>0){
                             $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                            ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+                            ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
 
                             foreach($stock_lot_arr as $st_arr){
                                 if($qty_mis_total > 0){

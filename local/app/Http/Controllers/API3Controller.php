@@ -82,11 +82,13 @@ class API3Controller extends Controller
 
             $customer_acc = CustomerAcc::select('customer_acc.*','bank.txt_desc')->join('bank','bank.id','customer_acc.bank_id')->where('customer_acc.used',1)->where('customer_acc.store_id',$store->id)->first();
             $period_withdraw = DB::table('period_withdraw')->first();
-            $withdraw_last = Withdraw::select('created_at')->where('store_id',$store->id)->where('status','!=',2)->oderBy('created_at','desc')->first();
+            $withdraw_last = Withdraw::select('created_at')->where('store_id',$store->id)->where('status','!=',2)->orderBy('created_at','desc')->first();
 
-            $date_check = date('Y-m'.'-'.$period_withdraw->day.' 00::00:01');
+            $date_check = date('Y-m'.'-'.str_pad($period_withdraw->day, 2, '0', STR_PAD_LEFT));
+
             if($withdraw_last){
-                if($withdraw_last->created_at < $date_check){
+                if(date_format($withdraw_last->created_at,'Y-m-d') < $date_check){
+
                     $period_withdraw_status = 1;
                 }else{
                     $period_withdraw_status = 0;
@@ -107,6 +109,8 @@ class API3Controller extends Controller
                      'url_img' => $url_img,
                      'customer_acc' => $customer_acc,
                      'period_withdraw_status' => $period_withdraw_status,
+                     'withdraw_last' => $withdraw_last,
+                     'w_day' => $period_withdraw->day,
                  ],
              ]);
          }else{
