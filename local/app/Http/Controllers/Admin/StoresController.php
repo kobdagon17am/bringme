@@ -140,6 +140,7 @@ class StoresController extends Controller
             $store->customer_id = $customer->id;
             $store->brands_id = $brand->id;
             $store->store_name = $request->input('store_name');
+            $store->store_type = $request->input('store_type');
             $store->category_id = $request->input('category_id');
             $store->brand_product_detail = $request->input('brand_product_detail');
             $store->storage_method_id = $request->input('storage_method_id');
@@ -270,6 +271,7 @@ class StoresController extends Controller
             $store->brands_id = $brand->id;
             $store->category_id = $request->input('category_id');
             $store->store_name = $request->input('store_name');
+            $store->store_type = $request->input('store_type');
             $store->brand_product_detail = $request->input('brand_product_detail');
             $store->storage_method_id = $request->input('storage_method_id');
             $store->shelf_lift = $request->input('shelf_lift');
