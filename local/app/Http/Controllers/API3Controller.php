@@ -81,6 +81,19 @@ class API3Controller extends Controller
             $url_img = Storage::disk('public')->url('');
 
             $customer_acc = CustomerAcc::select('customer_acc.*','bank.txt_desc')->join('bank','bank.id','customer_acc.bank_id')->where('customer_acc.used',1)->where('customer_acc.store_id',$store->id)->first();
+            $period_withdraw = DB::table('period_withdraw')->first();
+            $withdraw_last = Withdraw::select('created_at')->where('store_id',$store->id)->where('status','!=',2)->oderBy('created_at','desc')->first();
+
+            $date_check = date('Y-m'.'-'.$period_withdraw->day.' 00::00:01');
+            if($withdraw_last){
+                if($withdraw_last->created_at < $date_check){
+                    $period_withdraw_status = 1;
+                }else{
+                    $period_withdraw_status = 0;
+                }
+            }else{
+                $period_withdraw_status = 1;
+            }
 
              return response()->json([
                  'message' => 'ทำรายการสำเร็จ',
@@ -93,6 +106,7 @@ class API3Controller extends Controller
                      'finance_movement_withdraw_price' => $finance_movement_withdraw_price,
                      'url_img' => $url_img,
                      'customer_acc' => $customer_acc,
+                     'period_withdraw' => $period_withdraw,
                  ],
              ]);
          }else{
