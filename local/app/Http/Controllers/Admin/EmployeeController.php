@@ -213,14 +213,11 @@ class EmployeeController extends Controller
 
             ->addColumn('action', function ($row) {
 
-                $้html = '
-                <div class="flex justify-center items-center">
-                                <a class="flex items-center mr-3" href="employee-edit/'.$row->id.'"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i>  แก้ไข </a>
+                $html = '<a href="' . route('admin/employee-edit', ['id' => $row->id]) . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">แก้ไข</font> </a>';
 
-                            </div>
-                 ';
+
                 //<a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"><i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>  ลบ </a>
-                return $้html;
+                return $html;
             })
 
 

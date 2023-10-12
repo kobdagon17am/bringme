@@ -142,17 +142,17 @@ class OrdersController extends  Controller
 
 
             ->addColumn('action', function ($row) {
-                $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3 btn btn-sm btn-outline-primary" href="' . route('admin/order-detail', ['cart_id' => $row->id]) . '"> รายละเอียด  </a>
-           </div>';
+
+
+       $html = '<a href="'.route('admin/order-detail', ['cart_id' => $row->id]).'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียด</font> </a>';
+
                 // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
             })
 
             ->addColumn('print', function ($row) {
-                $html = ' <div class="flex justify-center items-center">
-                <button onclick="print_pdf('.$row->id.')" class="flex items-center mr-3 btn btn-sm btn-outline-primary"  >  Print </button>
-           </div>';
+
+           $html = '<button onclick="print_pdf('.$row->id.')" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">Print</font> </button>';
                 // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
             })
@@ -208,15 +208,15 @@ class OrdersController extends  Controller
         // Create a PDF instance using the PDF facade
         $pdf = PDF::loadView('backend.PDF.order_address', compact('data'));
 
-        $pdf2 = PDF::loadView('backend.PDF.order_detail', compact('data'));
+        // $pdf2 = PDF::loadView('backend.PDF.order_detail', compact('data'));
 
 
         for ($i = 0; $i < 1; $i++) {
             $pathfile = public_path('order_list/'.$item_id.'_'.$i.'.pdf');
             $pdf->save($pathfile);
 
-            $pathfile = public_path('order_list/'.$item_id.'_detail_'.$i.'.pdf');
-            $pdf2->save($pathfile);
+            // $pathfile = public_path('order_list/'.$item_id.'_detail_'.$i.'.pdf');
+            // $pdf2->save($pathfile);
 
         }
 
