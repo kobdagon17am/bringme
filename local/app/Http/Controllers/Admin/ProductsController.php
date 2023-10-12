@@ -836,9 +836,9 @@ class ProductsController extends Controller
             ->addColumn('action', function ($row) {
 
 
-                $html = '<div class="flex justify-center items-center">
-           <a class="flex items-center mr-3 btn btn-sm  btn-outline-primary mr-2 mb-2" href="' . route('admin/products-waitapproved-detail', ['id' => $row->item_id]) . '"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> รายละเอียด </a>
-       </div>';
+
+       $html = '<a href="'.route('admin/products-waitapproved-detail', ['id' => $row->item_id]).'" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียด</font> </a>';
+
                 return $html;
             })
 
@@ -952,9 +952,9 @@ class ProductsController extends Controller
             })
 
             ->addColumn('action', function ($row) {
-                $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3 btn btn-sm btn-outline-primary" href="' . route('admin/product-edit', ['id' => $row->id]) . '">  แก้ไข </a>
-           </div>';
+
+           $html = '<a href="'. route('admin/product-edit', ['id' => $row->id]) . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">แก้ไข</font> </a>';
+
                 // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
             })
@@ -1053,12 +1053,8 @@ class ProductsController extends Controller
             })
 
             ->addColumn('action', function ($row) {
+                 $html = '<a href="'. route('admin/product-panding-tranfer-detail', ['id' => $row->products_transfer_id])  . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">อนุมัติรายการ</font> </a>';
 
-                $html = ' <div class="flex justify-center items-center">
-                <a class="flex items-center mr-3" href="' . route('admin/product-panding-tranfer-detail', ['id' => $row->products_transfer_id]) . '"> <i data-lucide="check-square" class="w-4 h-4 mr-1"></i> อนุมัติรายการ </a>
-
-           </div>';
-                // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
             })
 
