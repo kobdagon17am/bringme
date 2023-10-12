@@ -445,6 +445,7 @@ class API3Controller extends Controller
                 'data' => [
                     'brands' => $brands,
                     'brands_store' => $brands_store,
+                    'brands_new' => $brands_new,
                 ],
             ]);
 
