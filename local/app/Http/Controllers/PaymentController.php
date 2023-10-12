@@ -334,7 +334,7 @@ class PaymentController extends Controller
                                     }
 
                                     $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                                    ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                                    ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
                                     if(!$stock_lot){
                                         DB::rollback();
                                         return response()->json([
@@ -347,7 +347,7 @@ class PaymentController extends Controller
                                     $qty_mis_total = $p->qty;
                                     if($qty_mis_total>0){
                                         $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                                        ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+                                        ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
 
                                         foreach($stock_lot_arr as $st_arr){
                                             if($qty_mis_total > 0){

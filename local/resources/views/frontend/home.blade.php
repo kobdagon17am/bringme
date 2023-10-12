@@ -341,7 +341,7 @@
             </div>
         </div>
         <div id="profile" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-6-tab">
-            <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_update') }}" enctype="multipart/form-data">
+            <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('store_update') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="customer_id" value="{{ $id }}">
                 <input type="hidden" name="store_id" value="{{ @$store_detail->id }}">
@@ -538,6 +538,12 @@
                             <div>
                                 <label for="" class="form-label">ช่องทาง social media</label>
                                 <input id="" type="text" class="form-control" placeholder="Input text" name="social" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
+                            </div>
+
+                            <div>
+                                <label for="" class="form-label">รูปแบบธุรกิจ</label><br>
+                                <input id="" type="radio" name="store_type" value="1" {{ (!empty($store_detail) ? ($store_detail->store_type == 1 ? 'checked' : '') : '') }}>&nbsp;&nbsp;บุคคลธรรมดา&nbsp;&nbsp;
+                                <input id="" type="radio" name="store_type" value="2" {{ (!empty($store_detail) ? ($store_detail->store_type == 2 ? 'checked' : '') : '') }}>&nbsp;&nbsp;นิติบุคคล
                             </div>
 
                         </div>

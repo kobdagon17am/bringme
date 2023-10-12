@@ -95,6 +95,18 @@ class ApprovePaymentController extends Controller
         $data['remark'] = $request->input('remark');
         $data['updated_at'] = date('Y-m-d H:i:s');
         DB::Table('withdraw')->where('id',$request->input('id'))->update($data);
+
+        $finance_movement = DB::Table('finance_movement')->where('ref_id',$request->input('id'))->first();
+        $data_financial['status'] = 2;
+        $data_financial['updated_at'] = date('Y-m-d H:i:s');
+        DB::Table('finance_movement')->where('ref_id',$request->input('id'))->update($data_financial);
+
+        $store = DB::Table('store')->where('id',$finance_movement->store_id)->first();
+        $data_store['credit'] = $store->credit + $finance_movement->price;
+        $data_store['updated_at'] = date('Y-m-d H:i:s');
+        DB::Table('store')->where('id',$store->id)->update($data_store);
+
+        
         return redirect('admin/approve_payment');
     }
 
@@ -111,6 +123,10 @@ class ApprovePaymentController extends Controller
         $data['remark'] = $request->input('remark');
         $data['updated_at'] = date('Y-m-d H:i:s');
         DB::Table('withdraw')->where('id',$request->input('id'))->update($data);
+
+        $data_financial['status'] = 1;
+        $data_financial['updated_at'] = date('Y-m-d H:i:s');
+        DB::Table('finance_movement')->where('ref_id',$request->input('id'))->update($data_financial);
         return redirect('admin/approve_payment');
     }
 

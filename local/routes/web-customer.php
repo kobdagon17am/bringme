@@ -49,6 +49,7 @@ Route::get('/', function () {
   Route::get('employee', 'Customer\EmployeeController@index')->name('employee');
 
   Route::get('store-register', 'Customer\StoreRegisterController@index')->name('store-register');
+  Route::post('store_update', 'Customer\StoresController@store_update')->name('store_update');
 
 
   Route::get('product-edit/{id}', 'Customer\ProductController@product_edit')->name('product-edit');
@@ -58,6 +59,13 @@ Route::get('/', function () {
   Route::get('/product_add/{id}', 'Customer\ProductController@product_add')->name('/product_add');
 
   Route::post('product_create', 'Customer\ProductController@product_create')->name('product_create');
+
+  Route::get('refund', 'Customer\RefundController@index')->name('refund');
+  Route::get('refund_datatable', 'Customer\RefundController@refund_datatable')->name('refund_datatable');
+  Route::get('refund_view/{id}', 'Customer\RefundController@refund_view')->name('refund_view');
+  Route::get('refund_unapprove/{id}', 'Customer\RefundController@refund_unapprove')->name('refund_unapprove');
+  Route::get('refund_approve/{id}', 'Customer\RefundController@refund_approve')->name('refund_approve');
+  Route::get('refund_assign/{id}', 'Customer\RefundController@refund_assign')->name('refund_assign');
 
 
 

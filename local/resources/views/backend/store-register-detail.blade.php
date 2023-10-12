@@ -201,6 +201,12 @@
                     <input id="" type="text" class="form-control" placeholder="Input text" name="social" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
                 </div>
 
+                <div>
+                    <label for="" class="form-label">รูปแบบธุรกิจ</label><br>
+                    <input id="" type="radio" name="store_type" value="1" {{ (!empty($store_detail) ? ($store_detail->store_type == 1 ? 'checked' : '') : '') }}>&nbsp;&nbsp;บุคคลธรรมดา&nbsp;&nbsp;
+                    <input id="" type="radio" name="store_type" value="2" {{ (!empty($store_detail) ? ($store_detail->store_type == 2 ? 'checked' : '') : '') }}>&nbsp;&nbsp;นิติบุคคล
+                </div>
+
             </div>
 
             <div class="flex items-center p-5">

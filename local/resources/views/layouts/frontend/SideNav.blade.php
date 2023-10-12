@@ -13,6 +13,12 @@
                 <div class="side-menu__title"> เพิ่มสินค้าใหม่ </div>
             </a>
         </li>
+        <li>
+            <a href="{{route('refund')}}" class="side-menu">
+                <div class="side-menu__icon"> <img class="w-20" src="{{asset('backend/dist/images/icons/BringMe_Web_Operate_ICON-07.png')}}" alt=""></div>
+                <div class="side-menu__title"> รายการขอคืนเงิน </div>
+            </a>
+        </li>
 {{--
         <li>
             <a href="{{route('register_partner')}}" target="_bank" class="side-menu">
