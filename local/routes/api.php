@@ -93,3 +93,4 @@ Route::post('api_customer_acc_add', 'API3Controller@api_customer_acc_add');
 Route::post('api_get_acc_list', 'API3Controller@api_get_acc_list');
 Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc');
 Route::post('api_add_withdraw', 'API3Controller@api_add_withdraw');
+Route::post('api_add_brands', 'API3Controller@api_add_brands');

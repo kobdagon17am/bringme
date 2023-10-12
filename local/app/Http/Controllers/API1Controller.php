@@ -1006,8 +1006,24 @@ class API1Controller extends Controller
             $product_datail = Products::where('id',$r->product_id)->first();
             if( $product_datail){
                 $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+
+                if($product){
+                    if(isset($r->remove_one)){
+                        if($r->remove_one == 1){
+                            $product->qty = 0;
+                            $product->save();
+                        }else{
+                            $product->qty = 0;
+                            $product->save();
+                        }
+                    }
+                }
+
                 $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
                 ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                $qty_booking_sum = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
+
                 if(!$stock_lot){
                     return response()->json([
                         'message' =>  'จำนวนสินค้าหมดแล้ว',
@@ -1015,23 +1031,25 @@ class API1Controller extends Controller
                         'data' => '',
                     ]);
                 }else{
-                    $qty_booking_sum = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                    ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
-
                     if($qty_booking_sum<$r->qty){
                         return response()->json([
-                            'message' =>  'จำนวนสินค้าไม่เพียงพอ กรุณาลดจำนวนสินค้าลง',
+                            'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }
+                }
+                $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                if($product){
+                    // ตรวจว่าในตะกร้าเกินหรือยัง
+                    if(($r->qty+$product->qty) > $qty_booking_sum){
+                        return response()->json([
+                            'message' =>  'ท่านหยิบสินค้าเกินจำนวนแล้ว',
                             'status' => 0,
                             'data' => '',
                         ]);
                     }
 
-                }
-                $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                if($product){
-                    // $product->customer_cart_id = $cart->id;
-                    // $product->customer_id = $r->user_id;
-                    // $product->product_id = $r->product_id;
                     $product->price = $stock_items->price;
                     if($r->type=='new'){
                         $product->total_price = ($stock_items->price*$r->qty);
@@ -1042,45 +1060,6 @@ class API1Controller extends Controller
                     }
 
                     $product->save();
-
-                    // $qty_mis_total = $product->qty;
-                    // if($qty_mis_total>0){
-                    //     $stock_lot_arr = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                    //     ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-                    //     foreach($stock_lot_arr as $st_arr){
-                    //         if($qty_mis_total > 0){
-                    //             $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$st_arr->id)->first();
-
-                    //             $customer_cart_product_cut_stock = CustomerCartProductCutStock::select('id')->where('customer_cart_product_id',$product->id)->where('product_id',$r->product_id)->get();
-                    //             if(count($customer_cart_product_cut_stock) > 1){
-                    //                 CustomerCartProductCutStock::select('id')->where('customer_cart_product_id',$product->id)->where('product_id',$r->product_id)->delete();
-                    //                 $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
-                    //             }else{
-                    //                 $customer_cart_product_cut_stock = CustomerCartProductCutStock::where('customer_cart_product_id',$product->id)->where('product_id',$r->product_id)->first();
-                    //             }
-                    //             $customer_cart_product_cut_stock->customer_cart_product_id = $product->id;
-                    //             $customer_cart_product_cut_stock->customer_cart_id = $cart->id;
-                    //             $customer_cart_product_cut_stock->customer_id = $r->user_id;
-                    //             $customer_cart_product_cut_stock->product_id = $r->product_id;
-                    //             $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
-                    //             $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
-                    //             $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
-                    //             if($stock_items->qty<$qty_mis_total){
-                    //                 $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
-                    //             }else{
-                    //                 $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
-                    //             }
-
-                    //             $qty_mis_total = ($qty_mis_total-$stock_items->qty);
-                    //             if($qty_mis_total < 0){
-                    //                 $qty_mis_total = 0;
-                    //             }
-
-                    //             $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
-                    //             $customer_cart_product_cut_stock->save();
-                    //         }
-                    //     }
-                    // }
 
                     if($r->qty == 0){
                         CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->delete();
@@ -1097,38 +1076,6 @@ class API1Controller extends Controller
                     $product->qty = $r->qty;
                     $product->save();
 
-                    // $qty_mis_total = $r->qty;
-                    //     if($qty_mis_total>0){
-                    //         $stock_lot_arr = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                    //         ->where('qty','>',0)->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-                    //         foreach($stock_lot_arr as $st_arr){
-                    //             if($qty_mis_total > 0){
-                    //                 $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$st_arr->id)->first();
-
-                    //                 $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
-                    //                 $customer_cart_product_cut_stock->customer_cart_product_id = $product->id;
-                    //                 $customer_cart_product_cut_stock->customer_cart_id = $cart->id;
-                    //                 $customer_cart_product_cut_stock->customer_id = $r->user_id;
-                    //                 $customer_cart_product_cut_stock->product_id = $r->product_id;
-                    //                 $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
-                    //                 $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
-                    //                 $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
-                    //                 if($stock_items->qty<$qty_mis_total){
-                    //                     $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
-                    //                 }else{
-                    //                     $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
-                    //                 }
-
-                    //                 $qty_mis_total = ($qty_mis_total-$stock_items->qty);
-                    //                 if($qty_mis_total < 0){
-                    //                     $qty_mis_total = 0;
-                    //                 }
-
-                    //                 $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
-                    //                 $customer_cart_product_cut_stock->save();
-                    //             }
-                    //         }
-                    //     }
                 }
 
                 $product_cart = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->get();
@@ -1190,6 +1137,17 @@ class API1Controller extends Controller
             // ->orderBy('sale_number','desc')
             // ->inRandomOrder()->get();
 
+            $product_all = Products::select('id')->where('products.display_status',1)->get();
+            $p_arr_not = [];
+            foreach($product_all as $p){
+                $qty_booking_sum = StockLot::where('product_id',$p->id)->where('lot_expired_date','>',date('Y-m-d'))
+                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
+
+                if($qty_booking_sum < 1){
+                    array_push($p_arr_not,$p->id);
+                }
+            }
+
             $product_good_sale = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
@@ -1201,6 +1159,7 @@ class API1Controller extends Controller
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
+            ->whereNotIn('products.id',$p_arr_not)
             ->orderBy('products.sale_number','desc')
             ->inRandomOrder()->get();
 
@@ -1219,6 +1178,7 @@ class API1Controller extends Controller
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
+            ->whereNotIn('products.id',$p_arr_not)
             // ->orderBy('products.sale_number','desc')
             ->inRandomOrder()->get();
 
@@ -1259,6 +1219,7 @@ class API1Controller extends Controller
             ->where('products_gallery.use_profile',1)
             ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
+            ->whereNotIn('products.id',$p_arr_not)
             ->orderBy('products.updated_at','desc')
             ->inRandomOrder()->get();
 
@@ -1404,6 +1365,7 @@ class API1Controller extends Controller
     {
         $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
         $product_qty = 0;
+        $product_qty_all = 0;
         $cold = 0;
         if($cart){
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
@@ -1418,8 +1380,35 @@ class API1Controller extends Controller
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            // เช็คจำนวนอีกครั้ง
             foreach($products as $pro){
-                $product_qty+=$pro->qty;
+                $qty_booking_sum = StockLot::where('product_id',$pro->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
+                if($qty_booking_sum<$pro->qty){
+                    $update_cart_product = CustomerCartProduct::where('id',$pro->id)->first();
+                    $update_cart_product->qty = $qty_booking_sum;
+                    $update_cart_product->save();
+                    if($qty_booking_sum < 1){
+                        CustomerCartProduct::where('id',$pro->id)->delete();
+                    }
+                }
+            }
+
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'products.storage_method_id',
+            )
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            // เช็คจัดส่งเย็น
+            foreach($products as $pro){
+                $product_qty_all++;
                 if($pro->storage_method_id == 2){
                     $cold++;
                 }
@@ -1482,6 +1471,7 @@ class API1Controller extends Controller
                 'data' => [
                     'products' => $products,
                     'product_qty' => $product_qty,
+                    'product_qty_all' => $product_qty_all,
                     'cart' => $cart,
                     'customer_address' => $customer_address,
                     'url_img' => $url_img,
