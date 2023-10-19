@@ -167,7 +167,7 @@ class ProductsController extends Controller
             ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
             ->first();
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id', $id)->get();
+        $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->product_id)->get();
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
         $data['brands_select'] = DB::table('brands')->where('id', $data['products_item']->brands_id)->first();

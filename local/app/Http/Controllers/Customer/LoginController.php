@@ -49,15 +49,26 @@ class LoginController extends Controller
     {
 
 
-        $admin = Customer::where('email', $req->email)
-            // ->whereIn('status', [1, 2])
+
+
+            $customer = Customer::where('email',$req->email)
+            ->whereIn('status',[1,2])
             ->first();
 
+            if(!$customer){
+                $customer = Customer::where('name',$req->email)
+                ->whereIn('status',[1,2])
+                ->first();
+            }
+            if(!$customer){
+                $customer = Customer::where('tel',$req->email)
+                ->whereIn('status',[1,2])
+                ->first();
+            }
 
-        if ($admin) {
-
-            if (Hash::check($req->password, $admin->password)) {
-                Auth::guard('customer')->login($admin);
+        if ($customer) {
+            if (Hash::check($req->password, $customer->password)) {
+                Auth::guard('customer')->login($customer);
                 return redirect('home');
             } else {
 
