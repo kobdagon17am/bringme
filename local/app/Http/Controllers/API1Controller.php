@@ -1333,6 +1333,8 @@ class API1Controller extends Controller
                 $favorite = 0;
             }
 
+            $brand = Brands::where('id',$product_detail->brands_id)->first();
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1350,6 +1352,7 @@ class API1Controller extends Controller
                     'stock_items_sum' => $stock_items_sum,
                     'comment_number' => count($products_comment),
                     'favorite' => $favorite,
+                    'brand' => $brand,
                 ],
             ]);
         }else{
