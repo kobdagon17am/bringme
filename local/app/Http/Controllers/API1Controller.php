@@ -1023,36 +1023,44 @@ class API1Controller extends Controller
                         }
                     }
                 }
-
-                $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
-                $qty_booking_sum = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
-
-                if(!$stock_lot){
-                    return response()->json([
-                        'message' =>  'จำนวนสินค้าหมดแล้ว',
-                        'status' => 0,
-                        'data' => '',
-                    ]);
+                if($product_datail->preorder_active == 0){
+                    $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                    ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                    $qty_booking_sum = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                    ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
                 }else{
-                    if($qty_booking_sum<$r->qty){
+                    $stock_lot = StockLot::where('product_id',$r->product_id)->first();
+                    $qty_booking_sum = StockLot::where('product_id',$r->product_id)->sum('qty_booking');
+                }
+
+                if($product_datail->preorder_active == 0){
+                    if(!$stock_lot){
                         return response()->json([
-                            'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                            'message' =>  'จำนวนสินค้าหมดแล้ว',
                             'status' => 0,
                             'data' => '',
                         ]);
+                    }else{
+                        if($qty_booking_sum<$r->qty){
+                            return response()->json([
+                                'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
                     }
                 }
                 $stock_items = StockItems::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
                 if($product){
                     // ตรวจว่าในตะกร้าเกินหรือยัง
-                    if(($r->qty+$product->qty) > $qty_booking_sum){
-                        return response()->json([
-                            'message' =>  'ท่านหยิบสินค้าเกินจำนวนแล้ว',
-                            'status' => 0,
-                            'data' => '',
-                        ]);
+                    if($product_datail->preorder_active == 0){
+                        if(($r->qty+$product->qty) > $qty_booking_sum){
+                            return response()->json([
+                                'message' =>  'ท่านหยิบสินค้าเกินจำนวนแล้ว',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
                     }
 
                     $product->price = $stock_items->price;
