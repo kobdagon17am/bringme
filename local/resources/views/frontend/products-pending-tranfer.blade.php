@@ -1,4 +1,6 @@
-@extends('layouts.backend.app')
+
+@extends('layouts.frontend.app')
+<title>รายการรอรับสินค้า</title>
 
 @section('content')
 <div class="content">
@@ -87,7 +89,7 @@
                 'processing': "กำลังโหลดข้อมูล",
             },
             ajax: {
-                url: '{{ route('admin/products_pending_tranfer_datatable') }}',
+                url: '{{ route('products_pending_tranfer_datatable') }}',
                 data: function(d) {
                     // d.user_name = $('#user_name').val();
                     // d.s_date = $('#s_date').val();
@@ -121,11 +123,11 @@
                     className: "w-10",
                 },
 
-                {
-                    data: "stor_name",
-                    title: "ชื่อร้านค้า",
-                    className: "w-10",
-                },
+                // {
+                //     data: "stor_name",
+                //     title: "ชื่อร้านค้า",
+                //     className: "w-10",
+                // },
 
                 {
                     data: "qty",
@@ -148,7 +150,7 @@
                 {
                     data: "action",
                     title: "",
-                    className: "w-5 ",
+                    className: "w-5 text-right",
 
                 },
 

@@ -169,7 +169,6 @@ class OrdersController extends  Controller
 
         $resule =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($cart_id);
 
-
         if ($resule['status'] == 1) {
 
             return view('backend/order-detail', [

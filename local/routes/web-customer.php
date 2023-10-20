@@ -67,6 +67,11 @@ Route::get('/', function () {
   Route::get('refund_approve/{id}', 'Customer\RefundController@refund_approve')->name('refund_approve');
   Route::get('refund_assign/{id}', 'Customer\RefundController@refund_assign')->name('refund_assign');
 
+  Route::get('products-pending-tranfer', 'Customer\ProductController@products_pending_tranfer')->name('products-pending-tranfer');
+  Route::get('products_pending_tranfer_datatable', 'Customer\ProductController@products_pending_tranfer_datatable')->name('products_pending_tranfer_datatable');
+
+  Route::get('product-detail/{id}', 'Customer\ProductController@product_detail')->name('product-detail');
+
 
 
 

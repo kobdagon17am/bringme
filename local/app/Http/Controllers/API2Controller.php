@@ -38,6 +38,7 @@ Use App\Models\CustomerCartTrackingItem;
 Use App\Models\ProductsComment;
 Use App\Models\CustomerCartClaim;
 Use App\Models\FinanceMovement;
+Use App\Models\CustomerCartAddress;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
@@ -478,6 +479,16 @@ class API2Controller extends  Controller
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
         ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
         ->where('customer_cart.id',$cart_id)->first();
+
+        $customer_cart_address = CustomerCartAddress::
+        select('customer_cart_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+        ->join('districts','districts.id','customer_cart_address.district_id')
+        ->join('amphures','amphures.id','customer_cart_address.amphures_id')
+        ->join('provinces','provinces.id','customer_cart_address.province_id')
+        ->where('customer_cart_address.customer_cart_id',$cart->id)
+        ->first();
+
+
         $product_qty = 0;
         if($cart){
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
@@ -547,6 +558,7 @@ class API2Controller extends  Controller
                     'customer_address' => $customer_address,
                     'url_img' => $url_img,
                     'arr_lot' => $arr_lot,
+                    'customer_cart_address'=>$customer_cart_address,
                     'tracking_no1' => $tracking_no1,
                     'tracking_no2' => $tracking_no2,
                     'tracking_no3' => $tracking_no3,

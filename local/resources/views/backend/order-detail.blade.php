@@ -84,7 +84,13 @@
                         <div class="flex items-center">
                             <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> บริการจัดส่ง: {{$order_detail['data']['cart']->delivery_type_name}}
                         </div>
-                        <div class="flex items-center mt-3">
+                        <div class="flex items-center">
+                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i> ขนส่ง: {{$order_detail['data']['cart']->shipping_name_name}}<br>
+                            {{-- <img class="rounded-md" alt="Midone - HTML Admin Template" src="http://localhost/bringme/frontend/dist/images/profile-1.jpg"> --}}
+                        </div>
+
+
+                        <div class="flex items-center mt-2">
 
                                 @if($order_detail['data']['tracking_no1'])
                                 <i xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" icon-name="calendar" data-lucide="calendar" class="lucide lucide-calendar w-4 h-4 text-slate-500 mr-2"></i> หมายเลขพัสดุ: {{$order_detail['data']['tracking_no1']}} <i data-lucide="copy" class="w-4 h-4 text-slate-500 ml-2"></i>
@@ -103,13 +109,13 @@
                                 @endif
 
 
-
-
                         </div>
-                        {{-- <div class="flex items-center mt-3">
+
+                        <div class="flex items-center mt-3">
                             <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 mr-2">
-                            </i> ที่อยู่: 782 ถนน วิภาวดีรังสิต แขวง สนามบิน เขตดอนเมือง กรุงเทพมหานคร 10900
-                        </div> --}}
+                            </i>   ที่อยู่: {{$order_detail['data']['customer_cart_address']->address_number}} อ.{{$order_detail['data']['customer_cart_address']->amphures_name}} ต.{{$order_detail['data']['customer_cart_address']->districts_name}}
+                             จ.{{$order_detail['data']['customer_cart_address']->provinces_name}} {{$order_detail['data']['customer_cart_address']->zipcode}}
+                        </div>
                     </div>
                 </div>
                 <div class="col-span-12 lg:col-span-8 xl:col-span-9">

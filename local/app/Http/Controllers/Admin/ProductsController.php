@@ -582,6 +582,7 @@ class ProductsController extends Controller
                 'brands.name_th as brand_name',
                 'products_transfer.shipping_name',
                 'customer.tel',
+                'products.category_id as category_id',
 
                 'products_transfer.path_img',
                 'products_transfer.img',
@@ -596,7 +597,7 @@ class ProductsController extends Controller
 
 
         $data['gallery'] = DB::table('products_gallery')->where('product_id', @$data['data']->product_id)->get();
-
+        $data['category'] = DB::table('category')->get();
         $data['shelf'] = DB::table('dataset_shelf')->get();
 
         return view('backend/product-panding-tranfer-detail', $data);
@@ -953,7 +954,7 @@ class ProductsController extends Controller
 
             ->addColumn('action', function ($row) {
 
-           $html = '<a href="'. route('admin/product-edit', ['id' => $row->id]) . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">แก้ไข</font> </a>';
+           $html = '<a href="'. route('admin/product-edit', ['id' => $row->product_id]) . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">แก้ไข</font> </a>';
 
                 // <a class="flex items-center text-danger" href="javascript:;" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal"> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>ลบ </a>
                 return $html;
