@@ -1267,6 +1267,22 @@ class API1Controller extends Controller
             $category2 = Category::where('status',1)->whereIn('id',$c_arr2)->orderBy('name_th','asc')->get();
             $url_img = Storage::disk('public')->url('');
 
+            $product_preorder = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'store.logo_path','store.logo',
+            )
+            ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('store','store.id','products.store_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.transfer_status',3)
+            ->where('products.display_status',1)
+            // ->whereNotIn('products.id',$p_arr_not)
+            ->where('products.preorder_active',1)
+            ->orderBy('products.sale_number','desc')
+            ->inRandomOrder()->get();
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1279,6 +1295,7 @@ class API1Controller extends Controller
                     'url_img' => $url_img,
                     'category1' => $category1,
                     'category2' => $category2,
+                    'product_preorder' => $product_preorder,
                 ],
             ]);
     }
@@ -1349,7 +1366,11 @@ class API1Controller extends Controller
             }
 
             $brand = Brands::where('id',$product_detail->brands_id)->first();
-            $stock_items = StockItems::whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->get();
+            if($product_detail->preorder_active=='0'){
+                $stock_items = StockItems::whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->get();
+            }else{
+                $stock_items = StockItems::where('product_id',$r->product_id)->get();
+            }
             $stock_items_count = count($stock_items);
 
             return response()->json([
@@ -1416,16 +1437,32 @@ class API1Controller extends Controller
                 }
             }
 
+            // $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            // 'customer_cart_product.price as product_price',
+            // 'brands.name_th as brand_name',
+            // 'products_gallery.path as gal_path',
+            // 'products_gallery.name as gal_name',
+            // 'products.storage_method_id',
+            // )
+            // ->join('products','products.id','customer_cart_product.product_id')
+            // ->join('brands','brands.id','products.brands_id')
+            // ->join('products_gallery','products_gallery.product_id','products.id')
+            // ->where('products_gallery.use_profile',1)
+            // ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+
+            // เพิ่ม option
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
             'customer_cart_product.price as product_price',
             'brands.name_th as brand_name',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
             'products.storage_method_id',
+            'products_option_2_items.name_th as items_name',
             )
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('products_option_2_items','products_option_2_items.id','customer_cart_product.products_option_2_items_id')
             ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
             // เช็คจัดส่งเย็น
@@ -2341,6 +2378,7 @@ class API1Controller extends Controller
                 // $products->stock_cut_off = $r->stock_cut_off;
                 // $products->production_date = $r->production_date;
                 // $products->shipping_date = $r->shipping_date;
+                $products->preorder_active = $r->preorder_active;
                 $products->save();
 
                 $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
@@ -2372,7 +2410,7 @@ class API1Controller extends Controller
                 $products_item->save();
                 $price_arr = [];
                 $qty_all = 0;
-                if($r->products_option_1 != ''){
+                if($r->yes_option == '1'){
                    $products_option_1_arr = json_decode($r->products_option_1);
                    $products_option_head1 = new ProductsOptionHead();
                    $products_option_head1->product_id = $products->id;
@@ -2427,11 +2465,17 @@ class API1Controller extends Controller
                         array_push($price_arr, $pr_list->price);
                         $qty_all += $pr_list->qty;
 
+                        $new_barcode = $this->generateRandomString(10);
+                        // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
+                        $products_option_2_items->barcode = $new_barcode;
+                        $products_option_2_items->save();
                         }
                     }
 
                     $products_item->qty = $qty_all;
                     $products_item->save();
+
+
                 }else{
                     $products_option_head1 = new ProductsOptionHead();
                     $products_option_head1->product_id = $products->id;
@@ -2477,9 +2521,14 @@ class API1Controller extends Controller
                     $products_option_2_items->barcode = $new_barcode;
                     $products_option_2_items->save();
                 }
+                if(count($price_arr) > 1){
+                    $products->min_price = min($price_arr);
+                    $products->max_price = max($price_arr);
+                }else{
+                    $products->min_price = $r->price;
+                    $products->max_price = $r->price;
+                }
 
-                $products->min_price = min($price_arr);
-                $products->max_price = max($price_arr);
                 $products->save();
 
                     $gal = explode('|',$r->images);
@@ -2845,9 +2894,11 @@ class API1Controller extends Controller
             'products_item.created_at',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
+            'products.preorder_active',
             'products_item.name_th'
             )
             ->join('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->join('products','products.id','products_item.product_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.store_id',$store->id)
             ->where('products_item.transfer_status',1)
