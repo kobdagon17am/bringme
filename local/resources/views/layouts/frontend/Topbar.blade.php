@@ -21,7 +21,7 @@
                 </div>
                 <!-- END: Search -->
                 <!-- BEGIN: Notifications -->
-                <div class="intro-x dropdown mr-4 sm:mr-6">
+                {{-- <div class="intro-x dropdown mr-4 sm:mr-6">
                     <div class="dropdown-toggle notification notification--bullet cursor-pointer" role="button" aria-expanded="false" data-tw-toggle="dropdown"> <i data-lucide="bell" class="notification__icon dark:text-slate-500"></i> </div>
                     <div class="notification-content pt-2 dropdown-menu">
                         <div class="notification-content__box dropdown-content">
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- END: Notifications -->
                 <!-- BEGIN: Account Menu -->
                 <div class="intro-x dropdown w-8 h-8">
@@ -53,7 +53,7 @@
                     </div>
                     <div class="dropdown-menu w-56">
                         <ul class="dropdown-content bg-primary/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white">
-                            <li class="p-2">
+                            {{-- <li class="p-2">
                                 <div class="font-medium">Al Pacino</div>
                                 <div class="text-xs text-white/60 mt-0.5 dark:text-slate-500">Backend Engineer</div>
                             </li>
@@ -74,10 +74,8 @@
                             </li>
                             <li>
                                 <hr class="dropdown-divider border-white/[0.08]">
-                            </li>
+                            </li> --}}
                             <li>
-
-
                                 <a  href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                               document.getElementById('logout-form').submit();"  class="dropdown-item hover:bg-white/5"> <i data-lucide="toggle-right" class="w-4 h-4 mr-2"></i> ออกจากระบบ </a>

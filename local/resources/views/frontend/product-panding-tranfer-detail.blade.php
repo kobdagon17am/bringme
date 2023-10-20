@@ -222,8 +222,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" required
-                                        value="">
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" required value="">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -234,7 +233,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 " readonly placeholder="เบอร์โทรศัพท์" name="tel" value="{{$data->tel}}">
+                                    <input type="text" class="form-control w-56" readonly placeholder="เบอร์โทรศัพท์" name="tel" value="{{$data->tel}}">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
