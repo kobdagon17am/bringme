@@ -50,10 +50,12 @@
                                     </div>
                                 </div>
                                 <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <select id="category" data-placeholder="" class="tom-select w-full tomselected"
-                                        multiple="multiple" tabindex="-1" hidden="hidden">
-                                        <option value="Electronic" selected="true">Electronic</option>
-                                        <option value="Photography" selected="true">Photography</option>
+                                    <select id="category" data-placeholder="" class="tom-select w-full tomselected" name="category_id" tabindex="-1" hidden="hidden">
+                                        @if(!empty($category))
+                                            @foreach($category as $_category)
+                                                <option {{ (!empty($data) ? ($_category->id == $data->category_id ? 'selected' : '') : '') }} value="{{ $_category->id }}">{{ $_category->name_th }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
