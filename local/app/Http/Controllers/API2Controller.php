@@ -195,8 +195,6 @@ class API2Controller extends  Controller
 
     public static function api_products_transfer_approve_back($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number,$shelf_id,$floor,$r)
     {
-
-
         DB::beginTransaction();
         try
             {
@@ -204,11 +202,15 @@ class API2Controller extends  Controller
 
                 $products_item = ProductsItem::where('id',@$products_transfer->products_item_id)->first();
                 if($products_item){
-                    $stock = new Stock();
-                    $stock->product_id = $products_item->product_id;
-                    $stock->store_id = $products_item->store_id;
-                    $stock->customer_id = $products_item->customer_id;
-                    $stock->save();
+                    $stock = Stock::where('product_id',$products_item->product_id)->where('store_id',$products_item->store_id)
+                    ->where('customer_id',$products_item->customer_id)->first();
+                    if(!$stock){
+                        $stock = new Stock();
+                        $stock->product_id = $products_item->product_id;
+                        $stock->store_id = $products_item->store_id;
+                        $stock->customer_id = $products_item->customer_id;
+                        $stock->save();
+                    }
 
                     $stock_lot = new StockLot();
                     $stock_lot->stock_id = $stock->id;
@@ -220,7 +222,7 @@ class API2Controller extends  Controller
                     $stock_lot->lot_number = $lot_number;
                     $stock_lot->save();
 
-                    $shelf = DB::table('dataset_shelf')->where('id',$shelf_id)->first();
+                    $shelf = DB::table('dataset_shelf')->where('id',$r->shelf)->first();
 
 
                     $stock_shelf = new StockShelf();
@@ -241,7 +243,7 @@ class API2Controller extends  Controller
                     $stock_floor->product_id = $stock_shelf->product_id;
                     $stock_floor->customer_id = $stock_shelf->customer_id;
                     $stock_floor->stock_lot_id = $stock_lot->id;
-                    $stock_floor->floor = $floor;
+                    $stock_floor->floor = $r->floor;
                     $stock_floor->save();
 
                     $products_option_2_items = ProductsOption2Items::where('products_item_id',$products_transfer->products_item_id)
