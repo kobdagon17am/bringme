@@ -74,6 +74,7 @@ Route::get('/', function () {
 
   Route::get('product-panding-tranfer-detail/{id}', 'Customer\ProductController@product_panding_tranfer_detail')->name('product-panding-tranfer-detail');
 
+  Route::post('item_sand_tranfer', 'Customer\ProductController@item_sand_tranfer')->name('item_sand_tranfer');
 
 
 

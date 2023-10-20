@@ -104,10 +104,8 @@
                                         </div> --}}
                                     </div>
                                 </div>
-                                {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-                                    <button type="submit" class="btn py-3 btn-primary">บันทึก</button>
-                                </div> --}}
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -131,7 +129,7 @@
                                     </div>
                                 </div>
                                 <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <textarea class="form-control" readonly>{{ $data->detail_th }}</textarea>
+                                     {!!$data->detail_th!!}
                                 </div>
                             </div>
 
@@ -150,15 +148,12 @@
                             class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
                             อนุมัติรายการรอรับสินค้า
                         </div>
-                        <form method="POST" action="{{ route('admin/item_confirmation') }}" id="item_confirmation">
+                        <form action="{{ route('item_sand_tranfer') }}" method="POST" id="item_confirmation" enctype="multipart/form-data">
                             @csrf
 
                             <input type="hidden" name="item_id" value="{{ $data->id }}">
 
-
                             <div class="mt-5">
-
-
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -204,7 +199,12 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="date" value=""
+                                        <?php
+                                        $currentDate = date('Y-m-d'); // วันปัจจุบันในรูปแบบ 'Y-m-d'
+                                        $daysToAdd = 30;
+                                        $newDate = date('Y-m-d', strtotime($currentDate . ' + ' . $daysToAdd . ' days'));
+                                     ?>
+                                        <input type="date" value="{{$newDate}}""
                                             class="form-control w-56 block mx-auto" name="lot_expired_date"
                                             data-single-mode="true">
                                     </div>
@@ -292,49 +292,19 @@
                                                 </div>
                                                 <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                                   <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                                                  <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="produc_gallery[]" multiple>
+                                                  <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="file_data[]" required multiple>
                                                 </div>
                                               </div>
                                         </div>
                                     </div>
                                 </div>
 
-
-
-
                                 <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
 
-                                    <button type="button" data-tw-toggle="modal"
-                                        data-tw-target="#confirm-confirmation-modal"
-                                        class="btn py-3 btn-primary">บันทึก</button>
+                                    <button type="submit" class="btn py-3 btn-primary">บันทึกจัดส่ง</button>
                                 </div>
 
-                                <div id="confirm-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
 
-                                        <div class="modal-content">
-                                            <div class="modal-body p-0">
-                                                <div class="p-5 text-center">
-
-
-
-                                                    <div class="text-3xl mt-5">Are you sure?</div>
-                                                    <div class="text-slate-500 mt-2">
-                                                        ยืนยันการบันทึกข้อมูล
-                                                    </div>
-                                                </div>
-                                                <div class="px-5 pb-8 text-center">
-                                                    <button type="button" data-tw-dismiss="modal"
-                                                        class="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-                                                    <button type="submit" class="btn btn-primary w-24"
-                                                        form="item_confirmation" name="type"
-                                                        value="confirm">Confirm</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
                             </div>
                         </form>
                     </div>

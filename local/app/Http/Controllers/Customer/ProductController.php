@@ -148,6 +148,13 @@ class ProductController extends Controller
     }
 
 
+
+    public function item_sand_tranfer(Request $request)
+    {
+        dd($request->all());
+
+    }
+
     public function item_gallery(Request $request)
     {
 
