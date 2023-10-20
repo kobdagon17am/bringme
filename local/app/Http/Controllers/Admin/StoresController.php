@@ -218,6 +218,12 @@ class StoresController extends Controller
                 $store->save();
             }
 
+            $gp_data['store_id'] = $store->id;
+            $gp_data['percent'] = $request->input('percent');
+            $gp_data['status'] = '1';
+            $gp_data['created_at'] = date('Y-m-d H:i:s');
+            $gp = DB::table('bringme_percent_gp')->insert($gp_data);
+
         // }else{
         //     return redirect('admin/stores')->withError(' Data Is Null');
         // }
@@ -346,6 +352,18 @@ class StoresController extends Controller
                 $store->company_img_path = 'store/' . $store->id . '/';
                 $store->company_img = $imageName;
                 $store->save();
+            }
+
+            $gp = DB::table('bringme_percent_gp')->where('store_id',$request->input('store_id'))->first();
+            $gp_data['store_id'] = $request->input('store_id');
+            $gp_data['percent'] = $request->input('percent');
+            $gp_data['status'] = '1';
+            if(!empty($gp)){
+                $gp_data['updated_at'] = date('Y-m-d H:i:s');
+                $gp = DB::table('bringme_percent_gp')->where('id',$gp->id)->update($gp_data);
+            }else{
+                $gp_data['created_at'] = date('Y-m-d H:i:s');
+                $gp = DB::table('bringme_percent_gp')->insert($gp_data);
             }
 
         }else{

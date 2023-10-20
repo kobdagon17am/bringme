@@ -428,6 +428,7 @@
                                         $dob = new DateTime($dateOfBirth);
                                         $now = new DateTime();
                                         $diff = $now->diff($dob);
+                                        $gp = DB::table('bringme_percent_gp')->where('store_id',$store_detail->id)->where('status','1')->first();
                                     ?>
 
                                     <div>
@@ -443,6 +444,11 @@
                                     <div>
                                         <label for="" class="form-label">เบอร์ติดต่อ</label>
                                         <input id="" type="text" class="form-control" placeholder="Input text" name="tel" value="{{ $store->tel }}">
+                                    </div>
+
+                                    <div>
+                                        <label for="" class="form-label">เปอร์เซ็นต์ GP</label>
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="percent" value="{{ (!empty($gp) ? $gp->percent : 10) }}">
                                     </div>
 
                                 </div>

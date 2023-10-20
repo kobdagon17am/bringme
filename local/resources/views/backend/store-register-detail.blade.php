@@ -57,6 +57,13 @@
                             <input id="tel" type="text" class="form-control" placeholder="Input text" name="tel" value="">
                         </div>
 
+                         @if(!empty(Auth::guard('admin')->user()->name))
+                        <div>
+                            <label for="" class="form-label">เปอร์เซ็นต์ GP</label>
+                            <input id="" type="text" class="form-control" placeholder="Input text" name="percent" value="">
+                        </div>
+                        @endif
+
                     </div>
 
                     <div class="flex items-center p-5">
