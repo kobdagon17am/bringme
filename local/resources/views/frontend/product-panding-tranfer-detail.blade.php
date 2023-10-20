@@ -234,13 +234,7 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-                                        <input type="text" class="form-control w-56 " readonly placeholder="เบอร์โทรศัพท์" name="tel" value="{{$data->tel}}">
-
-
-
-
+                                    <input type="text" class="form-control w-56 " readonly placeholder="เบอร์โทรศัพท์" name="tel" value="{{$data->tel}}">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -269,8 +263,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_remark"
-                                        value="">
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_remark" value="">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 mb-0 first:mt-0 first:pt-0">
@@ -278,14 +271,11 @@
                                         <div class="text-left">
                                             <div class="flex items-center">
                                                 <div class="font-medium">หลักฐานการจัดส่ง</div>
-
                                             </div>
                                         </div>
                                     </div>
                                     <div class="w-full mt-3 xl:mt-0 flex-1">
                                         <div class="h-64 w-3/5 mr-6 image-fit">
-
-
                                               <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                                 <div class="flex flex-wrap px-4" id="image-container">
                                                   <!-- Images will be added here dynamically -->
@@ -300,10 +290,8 @@
                                 </div>
 
                                 <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-
                                     <button type="submit" class="btn py-3 btn-primary">บันทึกจัดส่ง</button>
                                 </div>
-
 
                             </div>
                         </form>
