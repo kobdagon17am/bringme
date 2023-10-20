@@ -90,6 +90,35 @@ class ProductController extends Controller
         return view('frontend/product-edit', $data);
     }
 
+    public function product_detail($id)
+    {
+
+        if (empty($id)) {
+            return redirect()->back()->withError('กรุณาเลือกสินค้า');
+        }
+
+        $data['products_item'] = DB::table('products_item')
+            ->select('products_item.*', 'products_item.id as item_id', 'customer.name as store_name', 'products_transfer.id as transfer_id', 'products.category_id', 'products.brands_id', 'products.store_id as store_id', 'products.storage_method_id')
+            ->where('products_item.product_id', $id)
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
+            ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+            ->first();
+
+        $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->item_id)->get();
+        $data['category'] = DB::table('category')->get();
+        $data['brands'] = DB::table('brands')->get();
+        $data['brands_select'] = DB::table('brands')->where('id', $data['products_item']->brands_id)->first();
+
+        $data['products_option_head'] = DB::table('products_option_head')->where('product_id', $data['products_item']->product_id)->get();
+        $data['products_option_1'] = DB::table('products_option_1')->where('product_id', $data['products_item']->product_id)->get();
+        $data['products_option_2'] = DB::table('products_option_2')->where('product_id', $data['products_item']->product_id)->get();
+        $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id', $data['products_item']->product_id)->get();
+
+        return view('frontend/product-detail', $data);
+    }
+
+
     public function item_gallery(Request $request)
     {
 
@@ -285,7 +314,110 @@ class ProductController extends Controller
 
     public function products_pending_tranfer()
     {
-        return view('backend/products-pending-tranfer');
+        // $products_item = DB::table('products_item')
+        // ->select('products_item.*', 'customer.name as stor_name')
+        // ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        // ->wherein('products_item.transfer_status', [0,1])
+        // ->where('customer.id',Auth::guard('customer')->user()->id)->get();
+        // dd($products_item );
+        return view('frontend/products-pending-tranfer');
+    }
+
+    public function products_pending_tranfer_datatable(Request $request)
+    {
+
+
+        $products_item = DB::table('products_item')
+        ->select('products_item.*', 'customer.name as stor_name')
+        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->wherein('products_item.transfer_status', [0,1])
+        ->where('customer.id',Auth::guard('customer')->user()->id);
+
+
+        $sQuery = Datatables::of($products_item);
+        return $sQuery
+
+
+            ->addColumn('img', function ($row) {
+
+                $img = '<div class="flex">
+                <div class="w-10 h-10 image-fit zoom-in">
+                    <img alt="Midone - HTML Admin Template" class=" rounded-full"
+                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                </div>
+            </div>';
+
+                return $img;
+            })
+
+
+            ->addColumn('product_name', function ($row) {
+
+                $name = '<div class="font-medium whitespace-nowrap">TH: ' . $row->name_th . '</div>
+                <div class="font-medium whitespace-nowrap">EN: ' . $row->name_en . '</div>';
+
+                return $name;
+            })
+
+
+            ->addColumn('qty', function ($row) {
+
+
+                return number_format($row->qty, 2);
+            })
+
+
+            ->addColumn('approve_status', function ($row) {
+
+                if ($row->approve_status == 1) {
+                    $htmml = '<div class="flex text-success"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> อนุมัติ </div>';
+                } elseif ($row->approve_status == 2) {
+
+                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
+                } else {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอตรวจสอบ </div>';;
+                }
+                return $htmml;
+            })
+
+
+            ->addColumn('transfer_status', function ($row) {
+
+                if ($row->transfer_status == 0) {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
+                } elseif ($row->transfer_status == 1) {
+
+                    $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอจัดส่ง </div>';
+                } elseif ($row->transfer_status == 2) {
+
+                    $htmml =  '<div class="flex text-primary"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รอรับสินค้า </div>';
+                } elseif ($row->transfer_status == 3) {
+
+                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รับสินค้าแล้ว </div>';
+                } elseif ($row->transfer_status == 9) {
+
+                        $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
+
+                } else {
+                    $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
+                }
+                return $htmml;
+            })
+
+            ->addColumn('action', function ($row) {
+                if($row->transfer_status == 1){
+                    $html = '<a href="'.  route('admin/product-panding-tranfer-detail', ['id' => $row->id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
+                }else{
+                    $html = '<a href="'.route('product-detail', ['id' => $row->product_id]). '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียดสินค้า</font> </a>';
+                }
+
+
+                return $html;
+            })
+
+
+            ->rawColumns(['product_name', 'approve_status', 'transfer_status', 'action', 'img'])
+            ->make(true);
     }
 
     public function product_create(Request $request)
@@ -333,6 +465,7 @@ class ProductController extends Controller
         $products_item = new ProductsItem();
         $products_item->product_id = $products->id;
         $products_item->rate = 0;
+
         $products_item->customer_id = $store->customer_id;
         $products_item->name_th = $request->input('name_th');
         $products_item->name_en = $request->input('name_en');
@@ -511,6 +644,8 @@ class ProductController extends Controller
 
         return view('frontend/product-add', $data);
     }
+
+
 
 
 
