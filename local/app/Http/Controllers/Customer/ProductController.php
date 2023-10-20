@@ -118,6 +118,35 @@ class ProductController extends Controller
         return view('frontend/product-detail', $data);
     }
 
+    public function product_panding_tranfer_detail($id = '')
+    {
+        if (empty($id)) {
+            return redirect()->back()->withError('กรุณาเลือกสินค้า');
+        }
+
+        $data['data'] = DB::table('products_item')
+            ->select(
+                'products_item.*',
+                'customer.name as stor_name',
+                'brands.name_th as brand_name',
+                'customer.tel',
+                'products.category_id as category_id',
+
+            )
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+            ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
+            ->where('products_item.product_id', '=', $id)
+            ->first();
+
+
+        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['category'] = DB::table('category')->get();
+        $data['shelf'] = DB::table('dataset_shelf')->get();
+
+        return view('frontend/product-panding-tranfer-detail', $data);
+    }
+
 
     public function item_gallery(Request $request)
     {
@@ -406,7 +435,7 @@ class ProductController extends Controller
 
             ->addColumn('action', function ($row) {
                 if($row->transfer_status == 1){
-                    $html = '<a href="'.  route('admin/product-panding-tranfer-detail', ['id' => $row->id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
+                    $html = '<a href="'.  route('product-panding-tranfer-detail', ['id' => $row->product_id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
                 }else{
                     $html = '<a href="'.route('product-detail', ['id' => $row->product_id]). '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียดสินค้า</font> </a>';
                 }
