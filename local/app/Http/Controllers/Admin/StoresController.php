@@ -37,7 +37,7 @@ class StoresController extends Controller
 
     public function store_view($id){
 
-        $data['store'] = DB::table('customer')->where('id',$id)->first();
+        $data['store'] = DB::table('customer')->orderBy('name','ASC')->where('id',$id)->first();
         $data['address'] = DB::table('customer_address')
                                 ->where('customer_id',$id)
                                 ->select('provinces.name_th as provinces_name', 'amphures.name_th as amphures_name', 'districts.name_th as districts_name', 'zipcode', 'address_number', 'tel')
@@ -68,6 +68,7 @@ class StoresController extends Controller
                                 ->leftJoin('products_gallery','products_gallery.product_id','=','products.id')
                                 ->where('customer_id',$id)
                                 ->where('products_gallery.use_profile','1')
+                                ->orderBy('product_name_th','ASC')
                                 ->get();
             $data['provinces'] = DB::table('provinces')->get();
             $data['amphures'] = DB::table('amphures')->get();
@@ -377,7 +378,7 @@ class StoresController extends Controller
     {
 
 
-        $customer = DB::table('customer')
+        $customer = DB::table('customer')->orderBy('name','ASC')
         ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
         ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
         ->whereRaw(("case WHEN '{$request->s_date}' = '' and '{$request->e_date}' != ''  THEN  date(created_at) = '{$request->e_date}' else 1 END"));
