@@ -1005,7 +1005,12 @@ class API1Controller extends Controller
 
             $product_datail = Products::where('id',$r->product_id)->first();
             if( $product_datail){
-                $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+                if(isset($r->products_option_2_items)){
+                    $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->where('products_option_2_items_id',$r->products_option_2_items)->first();
+                }else{
+                    $product = CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->first();
+                }
+
 
                 if($product){
                     if(isset($r->remove_one)){
@@ -1062,7 +1067,11 @@ class API1Controller extends Controller
                     $product->save();
 
                     if($r->qty == 0){
-                        CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->delete();
+                        if(isset($r->products_option_2_items)){
+                            CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->where('products_option_2_items_id',$r->products_option_2_items)->delete();
+                        }else{
+                            CustomerCartProduct::where('customer_cart_id',$cart->id)->where('customer_id',$r->user_id)->where('product_id',$r->product_id)->delete();
+                        }
                     }
 
                 }else{
@@ -1074,6 +1083,12 @@ class API1Controller extends Controller
                     $product->price = $stock_items->price;
                     $product->total_price = ($stock_items->price*$r->qty);
                     $product->qty = $r->qty;
+                    if(isset($r->products_option_2_items)){
+                        $product->products_option_2_items_id = $r->products_option_2_items;
+                    }else{
+                        $products_option_2_items_id = DB::table('products_option_2_items')->select('id')->where('product_id',$r->product_id)->first();
+                        $product->products_option_2_items_id = $products_option_2_items_id->id;
+                    }
                     $product->save();
 
                 }
@@ -1334,6 +1349,8 @@ class API1Controller extends Controller
             }
 
             $brand = Brands::where('id',$product_detail->brands_id)->first();
+            $stock_items = StockItems::whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->get();
+            $stock_items_count = count($stock_items);
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1353,6 +1370,8 @@ class API1Controller extends Controller
                     'comment_number' => count($products_comment),
                     'favorite' => $favorite,
                     'brand' => $brand,
+                    'stock_items' => $stock_items,
+                    'stock_items_count' => $stock_items_count,
                 ],
             ]);
         }else{
