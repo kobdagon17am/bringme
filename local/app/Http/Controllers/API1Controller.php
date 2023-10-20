@@ -1557,6 +1557,10 @@ class API1Controller extends Controller
          $cart->shipping_price = $r->shipping_price_total;
          $cart->total_price = $r->product_total_price;
          $cart->grand_total = $r->all_price_total;
+        //  ใส่ขนส่ง
+         $shipping_name = DB::table('shipping_name')->where('id',1)->first();
+         $cart->shipping_name_id = $shipping_name->id;
+         $cart->shipping_name_name = $shipping_name->name;
         //
          $cart->save();
 
@@ -1633,6 +1637,11 @@ class API1Controller extends Controller
                 $cart->total_price = $r->product_total_price;
                 $cart->grand_total = $r->all_price_total;
                 $cart->cart_products_id_arr = $r->cart_products_id;
+                //  ใส่ขนส่ง
+                $shipping_name = DB::table('shipping_name')->where('id',1)->first();
+                $cart->shipping_name_id = $shipping_name->id;
+                $cart->shipping_name_name = $shipping_name->name;
+                //
                 $cart->save();
 
                  // บันทึกที่อยู่ shipping_date
