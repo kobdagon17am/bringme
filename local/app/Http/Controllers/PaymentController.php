@@ -232,6 +232,13 @@ class PaymentController extends Controller
                 $store->company_img = $imageName;
                 $store->save();
             }
+
+            $gp_data['store_id'] = $store->id;
+            $gp_data['percent'] = 10;
+            $gp_data['status'] = '1';
+            $gp_data['created_at'] = date('Y-m-d H:i:s');
+            $gp = DB::table('bringme_percent_gp')->insert($gp_data);
+
             return redirect('login');
         }else{
             die('reCAPTCHA verification failed');

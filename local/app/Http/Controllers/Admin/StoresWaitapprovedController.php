@@ -57,7 +57,7 @@ class StoresWaitapprovedController extends Controller
     {
 
 
-        $customer = DB::table('customer')
+        $customer = DB::table('customer')->orderBy('name','ASC')
             // ->where('status','=','success')
             ->where('customer_type', 2)
             ->where('approve_store', 0)
