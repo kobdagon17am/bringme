@@ -60,6 +60,9 @@
                 <li>
                     <a href="{{ url('register_partner') }}">Register</a>
                 </li>
+                <li>
+                    <a href="{{ url('login') }}">Login</a>
+                </li>
             </ul>
         </nav>
         <!-- Navbar Button -->

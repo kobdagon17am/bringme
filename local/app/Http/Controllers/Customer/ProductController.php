@@ -283,7 +283,10 @@ class ProductController extends Controller
 
 
 
-
+    public function products_pending_tranfer()
+    {
+        return view('backend/products-pending-tranfer');
+    }
 
     public function product_create(Request $request)
     {
