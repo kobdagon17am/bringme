@@ -13,6 +13,15 @@
                 <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
                     <div class="table-responsive">
                         <table id="workL" class="table table-striped table-hover dt-responsive display nowrap">
+                            <thead>
+                                <th>รูปภาพ</th>
+                                <th class="text-center">วันที่</th>
+                                <th>ชื่อสินค้า</th>
+                                <th>จำนวน</th>
+                                <th>สถานะการจัดส่ง</th>
+                                <th></th>
+
+                            </thead>
 
                         </table>
 
@@ -109,17 +118,23 @@
                 //     title: "ลำดับ",
                 //     className: "w-10 text-center",
                 // },
+
                 {
                     data: "img",
-                    title: 'รูปภาพ',
+
                     className: "w-10 text-center",
 
 
 
                 },
                 {
+                    data: "created_at",
+
+                    className: "w-10",
+                },
+                {
                     data: "product_name",
-                    title: "ชื่อสินค้า",
+
                     className: "w-10",
                 },
 
@@ -131,25 +146,22 @@
 
                 {
                     data: "qty",
-                    title: "จำนวน",
+
                     className: "w-10",
                 },
 
-                // {
-                //     data: "approve_status",
-                //     title: "สถานะอนุมัติร้านค้า",
-                //     className: "w-10 text-center",
-                // },
+
 
                 {
                     data: "transfer_status",
-                    title: "สถานะการจัดส่ง",
+
                     className: "w-10 text-center",
                 },
 
+
                 {
                     data: "action",
-                    title: "",
+
                     className: "w-5 text-right",
 
                 },
