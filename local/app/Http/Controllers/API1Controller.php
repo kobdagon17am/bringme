@@ -1957,12 +1957,11 @@ class API1Controller extends Controller
 
                     $pay_other_cart_id_arr = explode(',',$r->pay_other_cart_id_arr);
                     foreach($pay_other_cart_id_arr as $c_arr){
-                        $cart_other = CustomerCart::where('id',$c_arr)->where('customer_id ',$r->user_id)->where('pay_other_status',1)->first();
+                        $cart_other = CustomerCart::where('id',$c_arr)->where('customer_id',$r->user_id)->where('pay_other_status',1)->first();
                         $cart_other->pay_other_cart_id = $cart->id;
                         $cart_other->pay_status = 1;
                         $cart_other->save();
                     }
-
 
                     $cart_products_id = explode(',',$r->cart_products_id);
                     $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
