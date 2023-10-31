@@ -36,6 +36,9 @@ Use App\Models\CustomerCartProductCutStock;
 Use App\Models\ProductsComment;
 Use App\Models\CustomerCartAddress;
 Use App\Models\Payment;
+use App\Models\StockPre;
+use App\Models\StockItemsPre;
+use App\Models\StockLotPre;
 
 class PaymentController extends Controller
 {
@@ -280,7 +283,6 @@ class PaymentController extends Controller
     public function payment_complete_backend(Request $r)
     {
 
-
         DB::beginTransaction();
         try
         {
@@ -321,6 +323,7 @@ class PaymentController extends Controller
                                 $cart_products_id = explode(',',$cart->cart_products_id_arr);
                                 $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
                                 ->where('customer_cart_product.customer_cart_id',$cart->id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$cart->customer_id)->get();
+
                                 foreach($arr_pro as $p){
 
                                     $customer_cart_store = DB::table('customer_cart_store')->select('id')->where('customer_cart_id',$cart->id)->where('store_id',$p->store_id)->first();
@@ -340,16 +343,41 @@ class PaymentController extends Controller
                                         ]);
                                     }
 
-                                    $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                                    ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
-                                    if(!$stock_lot){
-                                        DB::rollback();
-                                        return response()->json([
-                                            'message' =>  'จำนวนสินค้าไม่เพียงพอ',
-                                            'status' => 0,
-                                            'data' => '',
-                                        ]);
+                                    // $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                                    // ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                                    // if(!$stock_lot){
+                                    //     DB::rollback();
+                                    //     return response()->json([
+                                    //         'message' =>  'จำนวนสินค้าไม่เพียงพอ',
+                                    //         'status' => 0,
+                                    //         'data' => '',
+                                    //     ]);
+                                    // }
+
+                                    if($p->pre_order_status == 0){
+                                        $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                                        ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+                                        $qty_booking_sum = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                                        ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
+                                        if(!$stock_lot){
+                                            DB::rollback();
+                                            return response()->json([
+                                                'message' =>  'จำนวนสินค้าหมดแล้ว',
+                                                'status' => 0,
+                                                'data' => '',
+                                            ]);
+                                        }
+                                        if($p->qty > $qty_booking_sum){
+                                            return response()->json([
+                                                'message' =>  'สินค้าบางรายการเกินจำนวนแล้ว',
+                                                'status' => 0,
+                                                'data' => '',
+                                            ]);
+                                        }
+                                    }else{
+                                        $stock_lot = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))->orderBy('lot_expired_date','asc')->first();
                                     }
+
                                     // จองสต็อก
                                     $qty_mis_total = $p->qty;
                                     if($qty_mis_total>0){
@@ -419,6 +447,7 @@ class PaymentController extends Controller
                                 ]);
 
                                 $cart->status = 2;
+                                $cart->pay_status = 1;
                                 $cart->save();
                             // }
 

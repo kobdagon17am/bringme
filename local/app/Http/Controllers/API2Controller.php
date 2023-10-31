@@ -393,10 +393,12 @@ class API2Controller extends  Controller
             'products_gallery.path as img_path','products_gallery.name as img_name',
             'products_gallery.path as gal_path','products_gallery.name as gal_name',
             'products.products_code', 'products.barcode',
+            'products_option_2_items.name_th as items_name',
             'customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('products_option_2_items','products_option_2_items.id','customer_cart_product.products_option_2_items_id')
             ->where('products_gallery.use_profile',1)
             ->where('customer_cart_product.customer_cart_id',$cart->id)->get();
 
@@ -2351,6 +2353,7 @@ class API2Controller extends  Controller
                 // ->where('products_item.transfer_status',3)
                 // ->orderBy('products.updated_at','desc')
                 ->where('products.approve_status',1)
+                ->where('products.display_status',1)
                 ->get();
             }else{
                 $product_list = Products::select('products.*','products_item.transfer_status',
@@ -2366,6 +2369,7 @@ class API2Controller extends  Controller
                 // ->where('products_item.transfer_status',3)
                 // ->orderBy('products.updated_at','desc')
                 ->where('products.approve_status',1)
+                ->where('products.display_status',1)
                 ->get();
             }
 
