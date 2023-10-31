@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Customer;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
@@ -38,6 +39,7 @@ use App\Models\CustomerCartAddress;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use Illuminate\Filesystem\Filesystem;
+
 class ProductController extends Controller
 {
     /**
@@ -141,7 +143,7 @@ class ProductController extends Controller
             ->first();
 
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['gallery'] = DB::table('products_gallery')->where('product_id', $id)->get();
         $data['category'] = DB::table('category')->get();
         $data['shelf'] = DB::table('dataset_shelf')->get();
 
@@ -149,11 +151,96 @@ class ProductController extends Controller
     }
 
 
-
-    public function item_sand_tranfer(Request $request)
+    public function item_sand_tranfer(Request $r)
     {
-        dd($request->all());
 
+        DB::beginTransaction();
+        try {
+
+
+            if ($r->item_id != '') {
+                $products_item = ProductsItem::where('id', $r->item_id)->first();
+
+                if ($products_item) {
+
+                    $products_transfer = ProductsTransfer::where('product_id', $products_item->product_id)->where('products_item_id', $products_item->id)->first();
+                    if (!$products_transfer) {
+                        $products_transfer = new ProductsTransfer();
+                    }
+                    $products_transfer->product_id = $products_item->product_id;
+                    $products_transfer->products_item_id = $products_item->id;
+                    $products_transfer->transfer_type = 1;
+                    $products_transfer->shipping_date = $r->shipping_date;//
+
+                    $products_transfer->tracking = $r->tracking;
+                    $products_transfer->shipping_name = $r->shipping_name;
+                    $products_transfer->shipping_type = $r->shipping_type;//1.ใช้ขนส่ง 2.ขนส่งด้วยตนเอง
+
+                    $products_transfer->shipping_remark = $r->shipping_remark;
+                    if($r->time_period){
+                        $products_transfer->time_period = $r->time_period;
+                    }else{
+                        $products_transfer->time_period = 1;
+                    }
+
+
+
+                    // $products_transfer->qty = $r->qty;
+                    // $products_transfer->qty = $products_item->qty;
+
+                    $products_transfer->qty = $r->qty;
+                    $products_transfer->save();
+
+
+                    // if ($r->file_data != '') {
+                    //     Storage::disk('public')->delete('product/' . $products_item->customer_id . '/' . $products_item->id . '/' . $products_transfer->img);
+                    //     $image_64 = $r->file_data;
+                    //     $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+                    //     $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    //     // find substring fro replace here eg: data:image/png;base64,
+                    //     $image = str_replace($replace, '', $image_64);
+                    //     $image = str_replace(' ', '+', $image);
+                    //     $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    //     Storage::disk('public')->put('product/' . $products_item->customer_id . '/' . $products_item->id . '/' . $imageName, base64_decode($image));
+                    //     $products_transfer->path_img = 'product/' . $products_item->customer_id . '/' . $products_item->id . '/';
+                    //     $products_transfer->img = $imageName;
+                    //     $products_transfer->save();
+                    //     // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                    // }
+
+
+
+                    if (!empty($r->file('file_data'))) {
+                        foreach ($r->file('file_data') as $key => $imageFile) {
+                            $extension = $imageFile->getClientOriginalExtension();
+                            $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                            Storage::disk('public')->putFileAs('product/' . $products_item->customer_id . '/' . $products_item->id, $imageFile, $imageName, 'public');
+
+                            $products_transfer->path_img = 'product/' . $products_item->customer_id . '/' . $products_item->id . '/';
+                            $products_transfer->img = $imageName;
+
+                            $products_transfer->save();
+                        }
+                    }
+
+                    $products_item->transfer_status = 2;
+                    $products_item->save();
+                }
+                DB::commit();
+
+                return redirect('products-pending-tranfer')->withSuccess('จัดส่งสำเร็จ');
+            } else {
+                return redirect('products-pending-tranfer')->withError('ไม่พบรายการสินค้า');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            dd($e);
+            return redirect('products-pending-tranfer')->withError('Error');
+        } catch (\FatalThrowableError $fe) {
+            DB::rollback();
+            return redirect('products-pending-tranfer')->withError('Error');
+        }
     }
 
     public function item_gallery(Request $request)
@@ -239,10 +326,10 @@ class ProductController extends Controller
         // $products_item->products_code = $products->products_code;
         $products_item->save();
 
-        ProductsOptionHead::where('product_id',$products_item->product_id)->delete();
-        ProductsOption1::where('product_id',$products_item->product_id)->delete();
-        ProductsOption2::where('product_id',$products_item->product_id)->delete();
-        ProductsOption2Items::where('product_id',$products_item->product_id)->delete();
+        ProductsOptionHead::where('product_id', $products_item->product_id)->delete();
+        ProductsOption1::where('product_id', $products_item->product_id)->delete();
+        ProductsOption2::where('product_id', $products_item->product_id)->delete();
+        ProductsOption2Items::where('product_id', $products_item->product_id)->delete();
         $option_type = 1;
         if (!empty($request->input('option_title'))) {
             foreach ($request->input('option_title') as $key => $_option_title) {
@@ -284,11 +371,11 @@ class ProductController extends Controller
 
         // dd($id_option_1, $id_option_2);
 
-        if(!empty($request->input('option_detail')[0])){
+        if (!empty($request->input('option_detail')[0])) {
             foreach ($request->input('option_detail') as $key_1 => $_option_detail) {
-                if(!empty($_option_detail) && !empty($request->input('option_detail_2')[0])){
+                if (!empty($_option_detail) && !empty($request->input('option_detail_2')[0])) {
                     foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
-                        if(!empty($_option_detail_2)){
+                        if (!empty($_option_detail_2)) {
                             $products_option_2_items = new ProductsOption2Items();
                             $products_option_2_items->product_id = $products->id;
                             $products_option_2_items->products_item_id = $products_item->id;
@@ -308,7 +395,7 @@ class ProductController extends Controller
                             }
                         }
                     }
-                }elseif(!empty($_option_detail)){
+                } elseif (!empty($_option_detail)) {
                     $key_2 = 0;
                     $products_option_2_items = new ProductsOption2Items();
                     $products_option_2_items->product_id = $products->id;
@@ -337,7 +424,7 @@ class ProductController extends Controller
 
 
         DB::commit();
-        return redirect('product-edit/' .$products_item->product_id);
+        return redirect('product-edit/' . $products_item->product_id);
         // if(!empty(Auth::guard('admin')->user()->name)){
         //     return redirect('admin/store-detail/' . $products_item->customer_id);
         // }else{
@@ -365,15 +452,18 @@ class ProductController extends Controller
 
 
         $products_item = DB::table('products_item')
-        ->select('products_item.*', 'customer.name as stor_name',
-        'products_gallery.path as gal_path',
-        'products_gallery.name as gal_name')
-        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
-        ->join('products_gallery','products_gallery.product_id','products_item.product_id')
-        ->where('products_gallery.use_profile',1)
-        ->wherein('products_item.transfer_status', [0,1])
-        ->where('customer.id',Auth::guard('customer')->user()->id)
-        ->OrderByDesc('products_item.id');
+            ->select(
+                'products_item.*',
+                'customer.name as stor_name',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name'
+            )
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->join('products_gallery', 'products_gallery.product_id', 'products_item.product_id')
+            ->where('products_gallery.use_profile', 1)
+            ->wherein('products_item.transfer_status', [0, 1])
+            ->where('customer.id', Auth::guard('customer')->user()->id)
+            ->OrderByDesc('products_item.id');
 
 
         $sQuery = Datatables::of($products_item);
@@ -382,12 +472,12 @@ class ProductController extends Controller
 
             ->addColumn('img', function ($row) {
 
-                 $profile_img =$row->gal_path.$row->gal_name;
-                 $img_path = asset('local/storage/app/public/'.$profile_img);
+                $profile_img = $row->gal_path . $row->gal_name;
+                $img_path = asset('local/storage/app/public/' . $profile_img);
                 $img = '<div class="flex">
                 <div class="w-20 h-20 image-fit zoom-in">
                     <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="'.$img_path.'">
+                        src="' . $img_path . '">
                 </div>
             </div>';
 
@@ -415,7 +505,7 @@ class ProductController extends Controller
             ->addColumn('created_at', function ($row) {
 
 
-                return date('Y/m/d H:i:s',strtotime($row->created_at));
+                return date('Y/m/d H:i:s', strtotime($row->created_at));
             })
 
 
@@ -448,8 +538,7 @@ class ProductController extends Controller
                     $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รับสินค้าแล้ว </div>';
                 } elseif ($row->transfer_status == 9) {
 
-                        $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
-
+                    $htmml =  '<div class="flex text-danger"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>';
                 } else {
                     $htmml = '<div class="flex text-warring"> <i data-lucide="check-square" class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>';
                 }
@@ -457,10 +546,10 @@ class ProductController extends Controller
             })
 
             ->addColumn('action', function ($row) {
-                if($row->transfer_status == 1){
-                    $html = '<a href="'.  route('product-panding-tranfer-detail', ['id' => $row->product_id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
-                }else{
-                    $html = '<a href="'.route('product-detail', ['id' => $row->product_id]). '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียดสินค้า</font> </a>';
+                if ($row->transfer_status == 1) {
+                    $html = '<a href="' .  route('product-panding-tranfer-detail', ['id' => $row->product_id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
+                } else {
+                    $html = '<a href="' . route('product-detail', ['id' => $row->product_id]) . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียดสินค้า</font> </a>';
                 }
 
 
@@ -572,11 +661,11 @@ class ProductController extends Controller
 
         // dd($id_option_1, $id_option_2);
 
-        if(!empty($request->input('option_detail')[0])){
+        if (!empty($request->input('option_detail')[0])) {
             foreach ($request->input('option_detail') as $key_1 => $_option_detail) {
-                if(!empty($_option_detail) && !empty($request->input('option_detail_2')[0])){
+                if (!empty($_option_detail) && !empty($request->input('option_detail_2')[0])) {
                     foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
-                        if(!empty($_option_detail_2)){
+                        if (!empty($_option_detail_2)) {
                             $products_option_2_items = new ProductsOption2Items();
                             $products_option_2_items->product_id = $products->id;
                             $products_option_2_items->products_item_id = $products_item->id;
@@ -596,7 +685,7 @@ class ProductController extends Controller
                             }
                         }
                     }
-                }elseif(!empty($_option_detail)){
+                } elseif (!empty($_option_detail)) {
                     $key_2 = 0;
                     $products_option_2_items = new ProductsOption2Items();
                     $products_option_2_items->product_id = $products->id;
@@ -696,9 +785,4 @@ class ProductController extends Controller
 
         return view('frontend/product-add', $data);
     }
-
-
-
-
-
 }

@@ -160,7 +160,8 @@ class ProductsController extends Controller
         }
 
         $data['products_item'] = DB::table('products_item')
-            ->select('products_item.*', 'products_item.id as item_id', 'customer.name as store_name', 'products_transfer.id as transfer_id', 'products.category_id', 'products.brands_id', 'products.store_id as store_id', 'products.storage_method_id')
+            ->select('products_item.*', 'products_item.id as item_id', 'customer.name as store_name', 'products_transfer.id as transfer_id', 'products.category_id', 'products.brands_id',
+             'products.store_id as store_id', 'products.storage_method_id','products_transfer.shipping_type')
             ->where('products_item.id', $id)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
             ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
@@ -586,7 +587,9 @@ class ProductsController extends Controller
 
                 'products_transfer.path_img',
                 'products_transfer.img',
-                'products_transfer.tracking'
+                'products_transfer.tracking',
+                'products_transfer.shipping_type',
+                'products_transfer.time_period',
             )
             ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
@@ -594,6 +597,7 @@ class ProductsController extends Controller
             ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
             ->where('products_transfer.id', '=', $id)
             ->first();
+
 
 
         $data['gallery'] = DB::table('products_gallery')->where('product_id', @$data['data']->product_id)->get();
@@ -747,10 +751,14 @@ class ProductsController extends Controller
 
 
         $products_item = DB::table('products_item')
-            ->select('products_item.*', 'customer.name as stor_name', 'products_item.id as item_id')
+            ->select('products_item.*', 'customer.name as stor_name', 'products_item.id as item_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name')
             // ->where('status','=','success')
             // ->where('customer_type', 2)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->where('products_gallery.use_profile',1)
             ->where('products_item.approve_status', 0);
         // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
         // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
@@ -765,13 +773,14 @@ class ProductsController extends Controller
 
             ->addColumn('img', function ($row) {
 
-                $img = '<div class="flex">
-                <div class="w-10 h-10 image-fit zoom-in">
-                    <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
-                </div>
-            </div>';
-
+                $profile_img =$row->gal_path.$row->gal_name;
+                $img_path = asset('local/storage/app/public/'.$profile_img);
+               $img = '<div class="flex">
+               <div class="w-20 h-20 image-fit zoom-in">
+                   <img alt="Midone - HTML Admin Template" class=" rounded-full"
+                       src="'.$img_path.'">
+               </div>
+           </div>';
                 return $img;
             })
 
@@ -855,10 +864,14 @@ class ProductsController extends Controller
 
 
         $products_item = DB::table('products_item')
-            ->select('products_item.*', 'customer.name as stor_name')
+            ->select('products_item.*', 'customer.name as stor_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name')
             // ->where('status','=','success')
             // ->where('customer_type', 2)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->where('products_gallery.use_profile',1)
             ->where('products_item.approve_status', '=', 1);
         // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
         // ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
@@ -873,10 +886,12 @@ class ProductsController extends Controller
 
             ->addColumn('img', function ($row) {
 
+                $profile_img =$row->gal_path.$row->gal_name;
+                $img_path = asset('local/storage/app/public/'.$profile_img);
                 $img = '<div class="flex">
-                <div class="w-10 h-10 image-fit zoom-in">
+                <div class="w-20 h-20 image-fit zoom-in">
                     <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                        src="'.$img_path.'">
                 </div>
             </div>';
 
@@ -972,9 +987,13 @@ class ProductsController extends Controller
 
 
         $products_transfer = DB::table('products_transfer')
-            ->select('products_item.*', 'customer.name as stor_name', 'products_transfer.approve_status as approve_status_transfer', 'products_transfer.id as products_transfer_id')
+            ->select('products_item.*', 'customer.name as stor_name', 'products_transfer.approve_status as approve_status_transfer', 'products_transfer.id as products_transfer_id',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name')
             ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->where('products_gallery.use_profile',1)
             ->wherein('products_transfer.approve_status', [0, 2, 3]);
 
 
@@ -986,10 +1005,12 @@ class ProductsController extends Controller
 
             ->addColumn('img', function ($row) {
 
+                $profile_img =$row->gal_path.$row->gal_name;
+                $img_path = asset('local/storage/app/public/'.$profile_img);
                 $img = '<div class="flex">
-                <div class="w-10 h-10 image-fit zoom-in">
+                <div class="w-20 h-20 image-fit zoom-in">
                     <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                        src="'.$img_path.'">
                 </div>
             </div>';
 
