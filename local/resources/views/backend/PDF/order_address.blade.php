@@ -34,7 +34,24 @@
 </head>
 
 <body>
-    <p style="text-align: end">Tracking No. MWE15230000072811</p>
+
+
+
+    <table style="width: 100%;border: 0px;color:" border="0">
+        <thead>
+            <tr>
+                <th align="left">
+                   <p> <img src="{{asset('assets/img/nim.png')}}" alt="Girl in a jacket" height="30"><br>
+                    Tracking No. MWE15230000072811</p>
+                </th>
+
+                <th align="right">
+                    <img src="{{asset('assets/img/logo-print.png')}}" alt="Girl in a jacket" height="20">
+                </th>
+            </tr>
+        </thead>
+    </table>
+
     <table style="width: 100%;border: 1px;color: black;" border="2">
         <thead>
             <tr>

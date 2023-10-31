@@ -72,6 +72,7 @@ class ProductController extends Controller
         $data['products_item'] = DB::table('products_item')
             ->select('products_item.*', 'products_item.id as item_id', 'customer.name as store_name', 'products_transfer.id as transfer_id', 'products.category_id', 'products.brands_id', 'products.store_id as store_id', 'products.storage_method_id')
             ->where('products_item.product_id', $id)
+
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
             ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
@@ -105,7 +106,7 @@ class ProductController extends Controller
             ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
             ->first();
 
-        $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->item_id)->get();
+        $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->product_id)->get();
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
         $data['brands_select'] = DB::table('brands')->where('id', $data['products_item']->brands_id)->first();
@@ -118,6 +119,42 @@ class ProductController extends Controller
         return view('frontend/product-detail', $data);
     }
 
+    public function product_panding_tranfer_detail($id = '')
+    {
+        if (empty($id)) {
+            return redirect()->back()->withError('กรุณาเลือกสินค้า');
+        }
+
+        $data['data'] = DB::table('products_item')
+            ->select(
+                'products_item.*',
+                'customer.name as stor_name',
+                'brands.name_th as brand_name',
+                'customer.tel',
+                'products.category_id as category_id',
+
+            )
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+            ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
+            ->where('products_item.product_id', '=', $id)
+            ->first();
+
+
+        $data['gallery'] = DB::table('products_gallery')->where('product_id',$id)->get();
+        $data['category'] = DB::table('category')->get();
+        $data['shelf'] = DB::table('dataset_shelf')->get();
+
+        return view('frontend/product-panding-tranfer-detail', $data);
+    }
+
+
+
+    public function item_sand_tranfer(Request $request)
+    {
+        dd($request->all());
+
+    }
 
     public function item_gallery(Request $request)
     {
@@ -328,10 +365,15 @@ class ProductController extends Controller
 
 
         $products_item = DB::table('products_item')
-        ->select('products_item.*', 'customer.name as stor_name')
+        ->select('products_item.*', 'customer.name as stor_name',
+        'products_gallery.path as gal_path',
+        'products_gallery.name as gal_name')
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->join('products_gallery','products_gallery.product_id','products_item.product_id')
+        ->where('products_gallery.use_profile',1)
         ->wherein('products_item.transfer_status', [0,1])
-        ->where('customer.id',Auth::guard('customer')->user()->id);
+        ->where('customer.id',Auth::guard('customer')->user()->id)
+        ->OrderByDesc('products_item.id');
 
 
         $sQuery = Datatables::of($products_item);
@@ -340,12 +382,16 @@ class ProductController extends Controller
 
             ->addColumn('img', function ($row) {
 
+                 $profile_img =$row->gal_path.$row->gal_name;
+                 $img_path = asset('local/storage/app/public/'.$profile_img);
                 $img = '<div class="flex">
-                <div class="w-10 h-10 image-fit zoom-in">
+                <div class="w-20 h-20 image-fit zoom-in">
                     <img alt="Midone - HTML Admin Template" class=" rounded-full"
-                        src="' . asset('backend/dist/images/preview-9.jpg') . '">
+                        src="'.$img_path.'">
                 </div>
             </div>';
+
+
 
                 return $img;
             })
@@ -364,6 +410,12 @@ class ProductController extends Controller
 
 
                 return number_format($row->qty, 2);
+            })
+
+            ->addColumn('created_at', function ($row) {
+
+
+                return date('Y/m/d H:i:s',strtotime($row->created_at));
             })
 
 
@@ -406,7 +458,7 @@ class ProductController extends Controller
 
             ->addColumn('action', function ($row) {
                 if($row->transfer_status == 1){
-                    $html = '<a href="'.  route('admin/product-panding-tranfer-detail', ['id' => $row->id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
+                    $html = '<a href="'.  route('product-panding-tranfer-detail', ['id' => $row->product_id])   . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">ทำรายการจัดส่งสินค้า</font> </a>';
                 }else{
                     $html = '<a href="'.route('product-detail', ['id' => $row->product_id]). '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รายละเอียดสินค้า</font> </a>';
                 }
