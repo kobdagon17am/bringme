@@ -61,6 +61,28 @@
                             </div>
                         </div>
                         <div class="mt-5">
+                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                <div class="form-label xl:w-64 xl:!mr-10">
+                                    <div class="text-left">
+                                        <div class="flex items-center">
+                                            <div class="font-medium">รายละเอียดสินค้า</div>
+                                            <div
+                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                Required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-full mt-3 xl:mt-0 flex-1">
+                                     {!!$data->detail_th!!}
+                                </div>
+                            </div>
+
+                            {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
+
+                                <button type="button" class="btn py-3 btn-primary">บันทึก</button>
+                            </div> --}}
+                        </div>
+                        <div class="mt-5">
                             <form method="POST" action="{{ route('admin/item_gallery') }}" id="item_gallery"
                                 enctype="multipart/form-data">
                                 @csrf
@@ -110,47 +132,15 @@
                     </div>
                 </div>
 
-                <div class="intro-y box p-5 mt-5">
-                    <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
-                        <div
-                            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                            รายละเอียดสินค้า
-                        </div>
-                        <div class="mt-5">
-                            <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                <div class="form-label xl:w-64 xl:!mr-10">
-                                    <div class="text-left">
-                                        <div class="flex items-center">
-                                            <div class="font-medium">รายละเอียดสินค้า</div>
-                                            <div
-                                                class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                Required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-full mt-3 xl:mt-0 flex-1">
-                                     {!!$data->detail_th!!}
-                                </div>
-                            </div>
-
-                            {{-- <div class="flex justify-end flex-col md:flex-row gap-2 mt-5">
-
-                                <button type="button" class="btn py-3 btn-primary">บันทึก</button>
-                            </div> --}}
-                        </div>
-                    </div>
-                </div>
-
-
                 <div class="intro-y box p-5 mt-5 mb-5">
                     <div class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5">
                         <div
                             class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5">
-                            อนุมัติรายการรอรับสินค้า
+                            รายละเอียดจัดส่ง
                         </div>
                         <form action="{{ route('item_sand_tranfer') }}" method="POST" id="item_confirmation" enctype="multipart/form-data">
                             @csrf
-
+                            <input type="hidden" name="type" value="new">
                             <input type="hidden" name="item_id" value="{{ $data->id }}">
 
                             <div class="mt-5">
@@ -174,7 +164,7 @@
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
                                             <div class="flex items-center">
-                                                <div class="font-medium">วันที่รับเข้าสินค้า</div>
+                                                <div class="font-medium">วันที่จัดส่งสินค้า</div>
                                                 <div
                                                     class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
                                                     Required</div>
@@ -183,15 +173,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <input type="date" value="{{ date('Y-m-d') }}"
-                                            class=" form-control w-56 block mx-auto" name="date_in_stock"
+                                            class=" form-control w-56 block mx-auto" name="shipping_date"
                                             data-single-mode="true">
                                     </div>
                                 </div>
+
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
                                             <div class="flex items-center">
-                                                <div class="font-medium">วันหมดอายุ</div>
+                                                <div class="font-medium">ประเภทการจัดส่ง</div>
                                                 <div
                                                     class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
                                                     Required</div>
@@ -199,17 +190,36 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <?php
-                                        $currentDate = date('Y-m-d'); // วันปัจจุบันในรูปแบบ 'Y-m-d'
-                                        $daysToAdd = 30;
-                                        $newDate = date('Y-m-d', strtotime($currentDate . ' + ' . $daysToAdd . ' days'));
-                                     ?>
-                                        <input type="date" value="{{$newDate}}""
-                                            class="form-control w-56 block mx-auto" name="lot_expired_date"
-                                            data-single-mode="true">
-                                    </div>
 
+                                            <div class="flex flex-col sm:flex-row mt-2">
+                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="shipping_type" value="1" checked> <label class="form-check-label" for="radio-switch-4">ใช้ขนส่ง</label> </div>
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="shipping_type" value="2""> <label class="form-check-label" for="radio-switch-5">ขนส่งด้วยตนเอง</label> </div>
+
+                                            </div>
+                                    </div>
                                 </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">เวลาการจัดส่ง</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    (กรณีจัดส่งด้วยตัวเอง *)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                            <div class="flex flex-col sm:flex-row mt-2">
+                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="time_period" value="1"> <label class="form-check-label" for="radio-switch-4">ช่วงเช้า</label> </div>
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="time_period" value="2"> <label class="form-check-label" for="radio-switch-5">ช่วงบ่าย</label> </div>
+
+                                            </div>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -218,11 +228,11 @@
                                                 <div class="font-medium">ชื่อขนส่ง</div>
                                                 <div
                                                     class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    Required</div>
+                                                    (กรณีไช้ขนส่ง *)</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" required value="">
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" value="">
                                 </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">

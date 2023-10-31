@@ -131,7 +131,7 @@
                                     </div>
                                 </div>
                                 <div class="w-full mt-3 xl:mt-0 flex-1">
-                                    <textarea class="form-control" readonly>{{ $data->detail_th }}</textarea>
+                                    {!! $data->detail_th !!}
                                 </div>
                             </div>
 
@@ -140,6 +140,7 @@
                                 <button type="button" class="btn py-3 btn-primary">บันทึก</button>
                             </div> --}}
                         </div>
+
                     </div>
                 </div>
 
@@ -174,6 +175,89 @@
                                     <input type="text" class="form-control w-56 block mx-auto" name="tracking" required
                                         value="{{$data->tracking}}">
                                 </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">วันที่จัดส่งสินค้า</div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="date" value="{{$data->shipping_date}}"
+                                            class=" form-control w-56 block mx-auto" name="shipping_date"
+                                            data-single-mode="true" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">ประเภทการจัดส่ง</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                            <div class="flex flex-col sm:flex-row mt-2">
+                                                @if($data->shipping_type == 1 )
+                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="shipping_type" value="1" checked> <label class="form-check-label" for="radio-switch-4">ใช้ขนส่ง</label> </div>
+                                                @elseif($data->shipping_type == 2)
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="shipping_type" value="2""> <label class="form-check-label" for="radio-switch-5">ขนส่งด้วยตนเอง</label> </div>
+                                                @else
+                                                @endif
+                                            </div>
+                                    </div>
+                                </div>
+                                @if($data->shipping_type == 2)
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">ช่วงเวลาการจัดส่ง</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    (กรณีจัดส่งด้วยตัวเอง *)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                            <div class="flex flex-col sm:flex-row mt-2">
+                                                @if($data->time_period == 1 )
+                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="time_period" value="1" checked> <label class="form-check-label" for="radio-switch-4">ช่วงเช้า</label> </div>
+                                                @endif
+                                                @if($data->time_period == 2)
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="time_period" value="2" checked> <label class="form-check-label" for="radio-switch-5">ช่วงบ่าย</label> </div>
+                                                @endif
+
+
+                                            </div>
+                                    </div>
+                                </div>
+                                @endif
+
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">ชื่อขนส่ง</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    (กรณีไช้ขนส่ง *)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" value="{{$data->shipping_name}}" disabled>
+                                </div>
+
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
