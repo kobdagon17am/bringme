@@ -507,7 +507,7 @@
                             <div>
                                 <label for="update-profile-form-8" class="form-label">วิธีการจัดเก็บสินค้า</label>
                                 <select id="update-profile-form-8" class="form-select" name="storage_method_id">
-                                    option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
+                                    <option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
                                     @if(!empty($storage_method))
                                         @foreach($storage_method as $_storage_method)
                                             <option {{ (!empty($store_detail->storage_method_id) ? ($_storage_method->id == $store_detail->storage_method_id ? 'selected' : '') : '') }} value="{{ $_storage_method->id }}">{{ $_storage_method->name_th }}</option>

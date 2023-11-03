@@ -65,14 +65,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <input id="product-name" type="text" class="w-full" name="name_th" placeholder="Product name th">
+                            <input id="product-name" type="text" class="w-full" name="name_th" placeholder="Product name th" required>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
                                 <div class="text-left">
                                     <div class="flex items-center">
                                         <div class="font-medium">ชื่อสินค้า (Eng)</div>
-                                        <div class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">Required</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -103,6 +103,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-col sm:flex-row">
+
                                 @if(!empty($storage_method))
                                     @foreach($storage_method as $_storage_method)
                                         <div class="form-check mr-2">
@@ -123,7 +124,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input id="product-name" type="text" class="w-full" name="shelf_lift" placeholder="" required>
+                            <input id="product-name" type="number" class="w-40" name="shelf_lift" placeholder=""  required>
                         </div>
                         <!-- <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
@@ -145,7 +146,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input id="product-name" type="text" class="w-full" name="product_qty" placeholder="" required>
+                            <input id="product-name" type="number" class="w-40" name="product_qty" placeholder="" required>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
@@ -156,7 +157,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input id="product-name" type="text" class="w-full" name="stock_cut_off" placeholder="" required>
+                            <input id="product-name" type="number" class="w-40" name="stock_cut_off" placeholder="" required>
                         </div>
                         <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                             <div class="form-label xl:w-64 xl:!mr-10">
@@ -504,9 +505,9 @@
                         row.append($('<td></td>'));
                     }
 
-                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="text" class="form-control min-w-[6rem]" placeholder="ราคา" name="price['+index+']['+i+'][]"></div></td>'));
+                    row.append($('<td class="!px-2"><div class="input-group"><div class="input-group-text">฿</div><input type="number" class="form-control min-w-[6rem]" placeholder="ราคา" name="price['+index+']['+i+'][]"></div></td>'));
 
-                    row.append($('<td class="!px-2"><input type="text" class="form-control min-w-[6rem]" name="stock['+index+']['+i+'][]" placeholder="สต็อค"></td>'));
+                    row.append($('<td class="!px-2"><input type="number" class="form-control min-w-[6rem]" name="stock['+index+']['+i+'][]" placeholder="สต็อค"></td>'));
 
                     $('#optionTable tbody').append(row);
                 }
