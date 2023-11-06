@@ -147,7 +147,13 @@
 
                 {
                     data: "action",
-                    title: "",
+                    title: "รับสินค้ารายชิ้น",
+                    className: "w-5 ",
+
+                },
+                {
+                    data: "action2",
+                    title: "รับสินค้าหลายรายการ",
                     className: "w-5 ",
 
                 },

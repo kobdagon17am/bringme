@@ -166,13 +166,11 @@
                                         <div class="text-left">
                                             <div class="flex items-center">
                                                 <div class="font-medium">เลข Tracking</div>
-                                                <div
-                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    Required</div>
+
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="tracking" required
+                                    <input type="text" class="form-control w-56 block mx-auto" name="tracking"
                                         value="{{$data->tracking}}">
                                 </div>
 
@@ -295,20 +293,6 @@
 
                                 </div>
 
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">ชื่อขนส่ง</div>
-                                                <div
-                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    Required</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" required
-                                        value="{{$data->shipping_name}}">
-                                </div>
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -399,10 +383,14 @@
                                     </div>
                                     <div class="w-full mt-3 xl:mt-0 flex-1">
                                         <div class="h-64 w-3/5 mr-6 image-fit">
-
+                                            @if($data->img)
                                             <img alt="Midone - HTML Admin Template"
-                                                src="{{ asset($url_img . '' . $data->path_img . '' . $data->img) }}"
-                                                data-action="zoom" class="w-full rounded-md">
+                                            src="{{ asset($url_img . '' . $data->path_img . '' . $data->img) }}"
+                                            data-action="zoom" class="w-full rounded-md">
+                                            @else
+                                            <p>ไม่พบเอกสารการจัดส่ง</p>
+                                            @endif
+
                                         </div>
                                     </div>
                                 </div>

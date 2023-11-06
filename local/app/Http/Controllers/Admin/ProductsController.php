@@ -608,6 +608,75 @@ class ProductsController extends Controller
     }
 
 
+    public function product_panding_tranfer_detail_all($id = '')
+    {
+
+
+        $customer_id = DB::table('products_transfer')
+        ->select(
+            'customer.id',
+            'customer.name as stor_name',
+        )
+        ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+        ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
+        ->where('products_transfer.id', '=', $id)
+        ->first();
+
+
+        if (empty($customer_id)) {
+            return redirect()->back()->withError('ไม่มีรายการสินค้ารอรับ');
+        }
+
+        $products_transfer = DB::table('products_transfer')
+            ->select(
+                'products_transfer.*',
+                'customer.name as stor_name',
+                'products_transfer.approve_status as approve_status_transfer',
+                'products_transfer.id as transfer_id',
+                'products_transfer.path_img',
+                'brands.name_th as brand_name',
+                'products_transfer.shipping_name',
+                'customer.tel',
+                'products.category_id as category_id',
+
+                'products_transfer.path_img',
+                'products_transfer.img',
+                'products_transfer.tracking',
+                'products_transfer.shipping_type',
+                'products_transfer.time_period',
+                'products_gallery.path as gal_path',
+                'products_gallery.name as gal_name',
+                'products_item.name_th',
+                'category.name_th as c_name_th',
+                'products_item.transfer_status',
+            )
+            ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
+            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+            ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
+            ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->leftJoin('category','category.id','products.category_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.customer_id', '=',  $customer_id->id)
+            ->get();
+
+
+
+            $data['store_detail'] = DB::table('store')->where('customer_id', $customer_id->id)->first();
+
+
+        $data['customer'] = $customer_id;
+        $data['products_transfer'] = $products_transfer;
+        //$data['gallery'] = DB::table('products_gallery')->where('product_id', @$data['data']->product_id)->get();
+        $data['category'] = DB::table('category')->get();
+        $data['shelf'] = DB::table('dataset_shelf')->get();
+
+        return view('backend/product-panding-tranfer-detail-all',$data);
+    }
+
+
 
     public function item_confirmation(Request $rs)
     {
@@ -984,8 +1053,6 @@ class ProductsController extends Controller
     public function products_pending_tranfer_datatable(Request $request)
     {
 
-
-
         $products_transfer = DB::table('products_transfer')
             ->select('products_item.*', 'customer.name as stor_name', 'products_transfer.approve_status as approve_status_transfer', 'products_transfer.id as products_transfer_id',
             'products_gallery.path as gal_path',
@@ -995,9 +1062,6 @@ class ProductsController extends Controller
             ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
             ->where('products_gallery.use_profile',1)
             ->wherein('products_transfer.approve_status', [0, 2, 3]);
-
-
-
 
         $sQuery = Datatables::of($products_transfer);
         return $sQuery
@@ -1075,13 +1139,19 @@ class ProductsController extends Controller
             })
 
             ->addColumn('action', function ($row) {
-                 $html = '<a href="'. route('admin/product-panding-tranfer-detail', ['id' => $row->products_transfer_id])  . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">อนุมัติรายการ</font> </a>';
+                 $html = '<a href="'. route('admin/product-panding-tranfer-detail', ['id' => $row->products_transfer_id])  . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รับสินค้ารายชิ้น</font> </a>';
 
                 return $html;
             })
 
+            ->addColumn('action2', function ($row) {
+                $html = '<a href="'. route('admin/product-panding-tranfer-detail-all', ['id' => $row->products_transfer_id])  . '" class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">รับสินค้าหลายรายการ</font> </a>';
 
-            ->rawColumns(['product_name', 'approve_status', 'transfer_status', 'action', 'img'])
+               return $html;
+           })
+
+
+            ->rawColumns(['product_name', 'approve_status', 'transfer_status','action2', 'action', 'img'])
             ->make(true);
     }
 }
