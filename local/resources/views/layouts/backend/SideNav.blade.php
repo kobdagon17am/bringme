@@ -34,7 +34,7 @@
             <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/users') || request()->is('admin/user-edit/*') || request()->is('admin/store-detail/*')  ) ? 'side-menu__sub-open' : '' }}">
                 <li>
                     <a href="{{route('admin/users')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""></div>
                         <div class="side-menu__title"> รายการลูกค้า </div>
                     </a>
                 </li>
@@ -50,13 +50,13 @@
                     <ul class="{{ (request()->is('admin/stores') || request()->is('admin/stores-waitapproved') || request()->is('admin/store-detail/*')   ) ? 'side-menu__sub-open'  : '' }}">
                         <li>
                             <a href="{{route('admin/stores')}}" class="side-menu ">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-20.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> รายการร้านค้า </div>
                             </a>
                         </li>
                         <li>
                             <a href="{{route('admin/stores-waitapproved')}}" class="side-menu">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-21.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> รายการร้านค้ายังไม่อนุมัติ </div>
                             </a>
                         </li>
@@ -78,19 +78,19 @@
 
                 <li>
                     <a href="{{route('admin/products-waitapproved')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""> </div>
                         <div class="side-menu__title"> รายการสินค้ายังรออนุมัติ </div>
                     </a>
                 </li>
                 <li>
                     <a href="{{route('admin/products-pending-tranfer')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-20.png')}}" alt=""> </div>
                         <div class="side-menu__title"> รายการรอรับสินค้า </div>
                     </a>
                 </li>
                 <li>
                     <a href="{{route('admin/products')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-21.png')}}" alt=""> </div>
                         <div class="side-menu__title"> รายการสินค้าทั้งหมด </div>
                     </a>
                 </li>
@@ -141,20 +141,20 @@
                 ">
                 <li>
                     <a href="{{route('admin/setting-category')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""> </div>
                         <div class="side-menu__title"> จัดการหมวดสินค้า </div>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{route('admin/setting-brands')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-20.png')}}" alt=""> </div>
                         <div class="side-menu__title"> จัดการแบรนสินค้า </div>
                     </a>
                 </li>
                 <li>
                     <a href="{{route('admin/setting-banner')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-21.png')}}" alt=""> </div>
                         <div class="side-menu__title"> จัดการแบนเนอร์ </div>
                     </a>
                 </li>
@@ -184,13 +184,13 @@
             <ul class="">
                 <li>
                     <a href="{{route('admin/discount-code')}}" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""> </div>
                         <div class="side-menu__title"> โค้ดส่วนลด </div>
                     </a>
                 </li>
                 <li>
                     <a href="javascript:;" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-20.png')}}" alt=""> </div>
                         <div class="side-menu__title">
                             โปรโมชัน
                             <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
@@ -200,31 +200,31 @@
                     <ul class="">
                         <li>
                             <a href="{{route('admin/promo-discount-product')}}" class="side-menu">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> โปรโมชันส่วนลดสินค้า </div>
                             </a>
                         </li>
                         <li>
                             <a href="{{route('admin/promo-free-gift')}}" class="side-menu">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-20.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> โปรโมชันแถมสินค้า </div>
                             </a>
                         </li>
                         <li>
                             <a href="{{route('admin/promo-bundle-deal')}}" class="side-menu">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-21.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> โปรโมชัน Bundle Deal </div>
                             </a>
                         </li>
                         <li>
                             <a href="{{route('admin/promo-add-on')}}" class="side-menu">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> โปรโมชัน Add-on Deal </div>
                             </a>
                         </li>
                         <li>
                             <a href="#" class="side-menu">
-                                <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-20.png')}}" alt=""> </div>
                                 <div class="side-menu__title"> โปรโมชัน Follow Prize </div>
                             </a>
                         </li>
@@ -232,13 +232,13 @@
                 </li>
                 <li>
                     <a href="#" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-21.png')}}" alt=""> </div>
                         <div class="side-menu__title"> Flash sale ในร้านค้า </div>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="side-menu">
-                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                        <div class="side-menu__icon"> <img class="w-20" src="{{asset('assets/img/BringMe_Web_Operate_ICON-19.png')}}" alt=""> </div>
                         <div class="side-menu__title"> แคมเปญของ Bring Me </div>
                     </a>
                 </li>
@@ -307,7 +307,7 @@
             </a>
         </li>
 
-        
+
         <!-- <li>
             <a href="side-menu-light-chat.html" class="side-menu">
                 <div class="side-menu__icon"> <i data-lucide="message-square"></i> </div>

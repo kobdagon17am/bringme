@@ -361,7 +361,7 @@
                             <div class="box">
                                 <div class="p-5">
                                     <div class="h-40 2xl:h-56 image-fit rounded-md overflow-hidden before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black before:to-black/10">
-                                        
+
                                         @if(!empty($_product->gallery_name))
                                         <img alt="Midone - HTML Admin Template" class="rounded-md" src="{{ asset('local/storage/app/public') }}/{{ $_product->gallery_path }}{{ $_product->gallery_name }}">
                                         @else
@@ -565,7 +565,7 @@
                             <div>
                                 <label for="update-profile-form-8" class="form-label">วิธีการจัดเก็บสินค้า</label>
                                 <select id="update-profile-form-8" class="form-select" name="storage_method_id">
-                                    option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
+                                    <option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
                                     @if(!empty($storage_method))
                                         @foreach($storage_method as $_storage_method)
                                             <option {{ (!empty($store_detail->storage_method_id) ? ($_storage_method->id == $store_detail->storage_method_id ? 'selected' : '') : '') }} value="{{ $_storage_method->id }}">{{ $_storage_method->name_th }}</option>

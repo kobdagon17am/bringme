@@ -149,16 +149,65 @@
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
                                             <div class="flex items-center">
-                                                <div class="font-medium">เลข Tracking</div>
+                                                <div class="font-medium">ประเภทการจัดส่ง</div>
                                                 <div
                                                     class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
                                                     Required</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="tracking" required
-                                        value="">
+                                    <div class="col-md-6">
+
+                                            <div class="flex flex-col sm:flex-row mt-2">
+                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" onclick="disabled_div(1);" name="shipping_type" value="1" checked> <label class="form-check-label" for="radio-switch-4">ใช้ขนส่ง</label> </div>
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" onclick="disabled_div(2);" type="radio" name="shipping_type" value="2""> <label class="form-check-label" for="radio-switch-5">ขนส่งด้วยตนเอง</label> </div>
+
+                                            </div>
+                                    </div>
                                 </div>
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium  time_tranfer" >เลข Tracking</div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto time_tranfer" name="tracking"   value="">
+                                </div>
+
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0" >
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium time_tranfer_2" style="display: none">เวลาการจัดส่ง (กรณีจัดส่งด้วยตัวเอง *)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 time_tranfer_2" style="display: none">
+
+                                            <div class="flex flex-col sm:flex-row mt-2">
+                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="time_period" value="1"> <label class="form-check-label" for="radio-switch-4">ช่วงเช้า</label> </div>
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="time_period" value="2"> <label class="form-check-label" for="radio-switch-5">ช่วงบ่าย</label> </div>
+
+                                            </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium time_tranfer">ชื่อขนส่ง (กรณีไช้ขนส่ง *)</div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control w-56 block mx-auto time_tranfer" name="shipping_name" value="">
+                                </div>
+
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -178,62 +227,9 @@
                                     </div>
                                 </div>
 
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">ประเภทการจัดส่ง</div>
-                                                <div
-                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    Required</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-
-                                            <div class="flex flex-col sm:flex-row mt-2">
-                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="shipping_type" value="1" checked> <label class="form-check-label" for="radio-switch-4">ใช้ขนส่ง</label> </div>
-                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="shipping_type" value="2""> <label class="form-check-label" for="radio-switch-5">ขนส่งด้วยตนเอง</label> </div>
-
-                                            </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">เวลาการจัดส่ง</div>
-                                                <div
-                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    (กรณีจัดส่งด้วยตัวเอง *)</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-
-                                            <div class="flex flex-col sm:flex-row mt-2">
-                                                <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="time_period" value="1"> <label class="form-check-label" for="radio-switch-4">ช่วงเช้า</label> </div>
-                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="time_period" value="2"> <label class="form-check-label" for="radio-switch-5">ช่วงบ่าย</label> </div>
-
-                                            </div>
-                                    </div>
-                                </div>
 
 
-                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
-                                    <div class="form-label xl:w-64 xl:!mr-10">
-                                        <div class="text-left">
-                                            <div class="flex items-center">
-                                                <div class="font-medium">ชื่อขนส่ง</div>
-                                                <div
-                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
-                                                    (กรณีไช้ขนส่ง *)</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <input type="text" class="form-control w-56 block mx-auto" name="shipping_name" value="">
-                                </div>
+
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
@@ -291,7 +287,7 @@
                                                 </div>
                                                 <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                                                   <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                                                  <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="file_data[]" required multiple>
+                                                  <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="file_data[]" multiple>
                                                 </div>
                                               </div>
                                         </div>
@@ -414,6 +410,19 @@
 
 
     });
+
+    function disabled_div(type){
+        if(type == 2){
+            $(".time_tranfer_2").css("display", "block");
+
+            $(".time_tranfer").css("display", "none");
+        }else{
+            $(".time_tranfer_2").css("display", "none");
+            $(".time_tranfer").css("display", "block");
+        }
+
+    }
+
 </script>
 @endsection
 

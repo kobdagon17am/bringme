@@ -564,7 +564,7 @@ class ProductController extends Controller
     public function product_create(Request $request)
     {
 
-        // dd($request->input() , $request->file() );
+        //dd($request->input() , $request->file() );
 
         $store = DB::table('store')->where('customer_id', $request->input('store_id'))->first();
         $brands = DB::table('brands')->where('name_th', 'LIKE', $request->input('brands_id'))->first();
@@ -664,6 +664,7 @@ class ProductController extends Controller
         if (!empty($request->input('option_detail')[0])) {
             foreach ($request->input('option_detail') as $key_1 => $_option_detail) {
                 if (!empty($_option_detail) && !empty($request->input('option_detail_2')[0])) {
+
                     foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
                         if (!empty($_option_detail_2)) {
                             $products_option_2_items = new ProductsOption2Items();
@@ -671,8 +672,20 @@ class ProductController extends Controller
                             $products_option_2_items->products_item_id = $products_item->id;
                             $products_option_2_items->option_1_id = $id_option_1[$key_1];
                             $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                            $products_option_2_items->price = @$request->input('price')[$key_1][$key_2][0];
-                            $products_option_2_items->qty = @$request->input('stock')[$key_1][$key_2][0];
+                            if(@$request->input('price')[$key_1][$key_2][0]){
+                                $price =$request->input('price')[$key_1][$key_2][0];
+                            }else{
+                                $price = 0;
+                            }
+
+                            if(@$request->input('stock')[$key_1][$key_2][0]){
+                                $qty =$request->input('price')[$key_1][$key_2][0];
+                            }else{
+                                $qty = 0;
+                            }
+
+                            $products_option_2_items->price =$price;
+                            $products_option_2_items->qty = $qty;
                             $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                             $products_option_2_items->save();
@@ -687,13 +700,27 @@ class ProductController extends Controller
                     }
                 } elseif (!empty($_option_detail)) {
                     $key_2 = 0;
+
                     $products_option_2_items = new ProductsOption2Items();
                     $products_option_2_items->product_id = $products->id;
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
                     $products_option_2_items->option_2_id = $id_option_2[$key_2];
-                    $products_option_2_items->price = @$request->input('price')[$key_1][$key_2][0];
-                    $products_option_2_items->qty = @$request->input('stock')[$key_1][$key_2][0];
+                    if(@$request->input('price')[$key_1][$key_2][0]){
+                        $price =$request->input('price')[$key_1][$key_2][0];
+                    }else{
+                        $price = 0;
+                    }
+
+
+                    if(@$request->input('stock')[$key_1][$key_2][0]){
+                        $qty =$request->input('price')[$key_1][$key_2][0];
+                    }else{
+                        $qty = 0;
+                    }
+
+                    $products_option_2_items->price = $price ;
+                    $products_option_2_items->qty = $qty;
                     $products_option_2_items->name_th = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->name_en = $_option_detail . ' ' . $_option_detail_2;
                     $products_option_2_items->save();
@@ -782,6 +809,7 @@ class ProductController extends Controller
         $data['category'] = DB::table('category')->get();
         $data['brands'] = DB::table('brands')->get();
         $data['store_id'] = $id;
+        $data['storage_method'] = DB::table('storage_method')->get();
 
         return view('frontend/product-add', $data);
     }

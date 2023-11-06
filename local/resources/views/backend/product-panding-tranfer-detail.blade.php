@@ -209,7 +209,7 @@
                                                 @if($data->shipping_type == 1 )
                                                 <div class="form-check mr-2"> <input id="radio-switch-4" class="form-check-input" type="radio" name="shipping_type" value="1" checked> <label class="form-check-label" for="radio-switch-4">ใช้ขนส่ง</label> </div>
                                                 @elseif($data->shipping_type == 2)
-                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="shipping_type" value="2""> <label class="form-check-label" for="radio-switch-5">ขนส่งด้วยตนเอง</label> </div>
+                                                <div class="form-check mr-2 mt-2 sm:mt-0"> <input id="radio-switch-5"  class="form-check-input" type="radio" name="shipping_type" value="2" checked> <label class="form-check-label" for="radio-switch-5">ขนส่งด้วยตนเอง</label> </div>
                                                 @else
                                                 @endif
                                             </div>

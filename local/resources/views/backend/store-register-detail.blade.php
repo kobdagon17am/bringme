@@ -174,7 +174,7 @@
                 <div>
                     <label for="update-profile-form-8" class="form-label">วิธีการจัดเก็บสินค้า</label>
                     <select id="update-profile-form-8" class="form-select" name="storage_method_id">
-                        option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
+                        <option value="">- เลือกวิธีการจัดเก็บสินค้า -</option>
                         @if(!empty($storage_method))
                             @foreach($storage_method as $_storage_method)
                                 <option value="{{ $_storage_method->id }}">{{ $_storage_method->name_th }}</option>
@@ -427,8 +427,8 @@
         $('#province_id').change(function(){
             var province_id = $(this).val();
             $.ajax({
-              'type': 'get', 
-              'url': "{{ url('/get_amphures') }}", 
+              'type': 'get',
+              'url': "{{ url('/get_amphures') }}",
               'dataType': 'html',
               'data': { 'province_id' : province_id },
               'success': function (data){
@@ -440,8 +440,8 @@
         $('#amphures_id').change(function(){
             var amphures_id = $(this).val();
             $.ajax({
-              'type': 'get', 
-              'url': "{{ url('/get_districes') }}", 
+              'type': 'get',
+              'url': "{{ url('/get_districes') }}",
               'dataType': 'html',
               'data': { 'amphures_id' : amphures_id },
               'success': function (data){
@@ -453,8 +453,8 @@
         $('#district_id').change(function(){
             var district_id = $(this).val();
             $.ajax({
-              'type': 'get', 
-              'url': "{{ url('/get_zipcode') }}", 
+              'type': 'get',
+              'url': "{{ url('/get_zipcode') }}",
               'dataType': 'html',
               'data': { 'district_id' : district_id },
               'success': function (data){
@@ -466,8 +466,8 @@
         $('#province_id2').change(function(){
             var province_id = $(this).val();
             $.ajax({
-              'type': 'get', 
-              'url': "{{ url('/get_amphures') }}", 
+              'type': 'get',
+              'url': "{{ url('/get_amphures') }}",
               'dataType': 'html',
               'data': { 'province_id' : province_id },
               'success': function (data){
@@ -479,8 +479,8 @@
         $('#amphures_id2').change(function(){
             var amphures_id = $(this).val();
             $.ajax({
-              'type': 'get', 
-              'url': "{{ url('/get_districes') }}", 
+              'type': 'get',
+              'url': "{{ url('/get_districes') }}",
               'dataType': 'html',
               'data': { 'amphures_id' : amphures_id },
               'success': function (data){
@@ -492,8 +492,8 @@
         $('#district_id2').change(function(){
             var district_id = $(this).val();
             $.ajax({
-              'type': 'get', 
-              'url': "{{ url('/get_zipcode') }}", 
+              'type': 'get',
+              'url': "{{ url('/get_zipcode') }}",
               'dataType': 'html',
               'data': { 'district_id' : district_id },
               'success': function (data){
@@ -523,11 +523,11 @@
         $('.select_customer').change(function(){
             var customer_id = $(this).val();
             $.ajax({
-              'type': 'post', 
-              'url': "{{ url('admin/get_userdata') }}", 
+              'type': 'post',
+              'url': "{{ url('admin/get_userdata') }}",
               'dataType': 'JSON',
-              'data': { 'customer_id' : customer_id, 
-                        '_token' : "{{csrf_token()}}" 
+              'data': { 'customer_id' : customer_id,
+                        '_token' : "{{csrf_token()}}"
                       },
               'success': function (data){
                     var url = "{{ asset('local/storage/app/public') }}/"+data.profile_img_path+data.profile_img;
