@@ -1921,7 +1921,7 @@ class API1Controller extends Controller
                 $cart->total_price = $r->product_total_price;
                 $cart->grand_total = $r->all_price_total;
                 $cart->cart_products_id_arr = $r->cart_products_id;
-                $cart->pay_other_cart_id_arr = $r->pay_other_cart_id_arr;
+                // $cart->pay_other_cart_id_arr = $r->pay_other_cart_id_arr;
                 //  ใส่ขนส่ง
                 $shipping_name = DB::table('shipping_name')->where('id',1)->first();
                 $cart->shipping_name_id = $shipping_name->id;
@@ -1955,13 +1955,13 @@ class API1Controller extends Controller
 
                 if($cart->status==2){
 
-                    $pay_other_cart_id_arr = explode(',',$r->pay_other_cart_id_arr);
-                    foreach($pay_other_cart_id_arr as $c_arr){
-                        $cart_other = CustomerCart::where('id',$c_arr)->where('customer_id',$r->user_id)->where('pay_other_status',1)->first();
-                        $cart_other->pay_other_cart_id = $cart->id;
-                        $cart_other->pay_status = 1;
-                        $cart_other->save();
-                    }
+                    // $pay_other_cart_id_arr = explode(',',$r->pay_other_cart_id_arr);
+                    // foreach($pay_other_cart_id_arr as $c_arr){
+                    //     $cart_other = CustomerCart::where('id',$c_arr)->where('customer_id',$r->user_id)->where('pay_other_status',1)->first();
+                    //     $cart_other->pay_other_cart_id = $cart->id;
+                    //     $cart_other->pay_status = 1;
+                    //     $cart_other->save();
+                    // }
 
                     $cart_products_id = explode(',',$r->cart_products_id);
                     $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
@@ -2770,6 +2770,22 @@ class API1Controller extends Controller
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status','!=',3)
             ->where('products.display_status',1)
+            ->where('products.normal_active',1)
+            ->orderBy('products.created_at','desc')
+            ->get();
+
+            $product_wait_pre = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            'products_gallery.path as gal_path',
+              'store.logo_path','store.logo',
+            'products_gallery.name as gal_name',)
+            ->join('products_item','products_item.product_id','products.id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+              ->join('store','store.id','products.store_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products.store_id',$store->id)
+            ->where('products.preorder_active',1)
+            // ->where('products_item.transfer_status','!=',3)
+            ->where('products.display_status',1)
             ->orderBy('products.created_at','desc')
             ->get();
 
@@ -2805,6 +2821,7 @@ class API1Controller extends Controller
                     'product_all' => $product_all,
                     'product_wait' => $product_wait,
                     'product_not_show' => $product_not_show,
+                    'product_wait_pre' => $product_wait_pre,
                     'url_img' => $url_img,
                 ],
             ]);
@@ -2939,7 +2956,6 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
             {
-
                 $store = Store::where('customer_id',$r->user_id)->first();
                 // $r->production_date = date('Y-m-d', strtotime($r->production_date));
                 // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
@@ -2962,7 +2978,11 @@ class API1Controller extends Controller
                 // $products->stock_cut_off = $r->stock_cut_off;
                 // $products->production_date = $r->production_date;
                 // $products->shipping_date = $r->shipping_date;
+                $products->normal_active = $r->normal_active;
                 $products->preorder_active = $r->preorder_active;
+                $products->preorder_shipping_date = $r->shipping_date_pre;
+                $products->min_price = 0;
+                $products->max_price = 0;
                 $products->save();
 
                 $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
@@ -3108,7 +3128,11 @@ class API1Controller extends Controller
                 if(count($price_arr) > 1){
                     $products->min_price = min($price_arr);
                     $products->max_price = max($price_arr);
-                }else{
+                }elseif(count($price_arr)== 1){
+                    $products->min_price = $price_arr[0];
+                    $products->max_price = $price_arr[0];
+                }
+                else{
                     $products->min_price = $r->price;
                     $products->max_price = $r->price;
                 }
@@ -3156,7 +3180,7 @@ class API1Controller extends Controller
                     $stock_lot_pre->store_id = $store->id;
                     $stock_lot_pre->date_in_stock = date('Y-m-d');
                     // $stock_lot_pre->lot_expired_date = '9999-'.date('m-d');
-                    $stock_lot_pre->lot_expired_date = $products_item->shipping_date;
+                    $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
                     $stock_lot_pre->lot_number = date('YmdHis');
                     $stock_lot_pre->qty = 0;
                     $stock_lot_pre->qty_booking = 0;

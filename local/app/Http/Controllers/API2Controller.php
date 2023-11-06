@@ -383,15 +383,15 @@ class API2Controller extends  Controller
     public function api_get_cart_detail(Request $r)
     {
         // barcode transfer_status
-        // $cart = CustomerCart::where('customer_cart.id',$r->cart_id)->first();
-        // if($cart->pay_other_cart_id!=null){
-        //     $cart_others = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
-        //     ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
-        //     ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
-        //     ->where('customer_cart.id',$cart->pay_other_cart_id)->get();
-        // }else{
-        //     $cart_others = [];
-        // }
+        $cart = CustomerCart::where('customer_cart.id',$r->cart_id)->first();
+        if($cart->pay_other_cart_id!=null){
+            $cart_others = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
+            ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+            ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
+            ->where('customer_cart.id',$cart->pay_other_cart_id)->get();
+        }else{
+            $cart_others = [];
+        }
 
         $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
         ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
@@ -474,7 +474,7 @@ class API2Controller extends  Controller
                     'tracking_no3' => $tracking_no3,
                     'tracking_no4' => $tracking_no4,
                     'tracking_no5' => $tracking_no5,
-                    // 'cart_others' => $cart_others,
+                    'cart_others' => $cart_others,
                 ],
             ]);
         }else{
