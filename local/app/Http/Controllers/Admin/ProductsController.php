@@ -724,7 +724,7 @@ class ProductsController extends Controller
                 $dataPrepare = [
                     'approve_status' => 1,
                     'transfer_status' => 1,
-
+                    'transfer_status_pre' => 1,
                 ];
                 $products_item = DB::table('products_item')
                     ->where('id', $rs->id)
