@@ -471,4 +471,45 @@ class API3Controller extends Controller
         }
 
      }
+
+     public function api_re_db(Request $r)
+     {
+        // DB::table('customer')->truncate();
+        // DB::table('customer_acc')->truncate();
+        // DB::table('customer_address')->truncate();
+        DB::table('customer_cart')->truncate();
+        DB::table('customer_cart_address')->truncate();
+        DB::table('customer_cart_claim')->truncate();
+        DB::table('customer_cart_product')->truncate();
+        DB::table('customer_cart_product_cut_stock')->truncate();
+        DB::table('customer_cart_store')->truncate();
+        DB::table('customer_cart_tracking')->truncate();
+        DB::table('customer_cart_tracking_item')->truncate();
+        DB::table('db_stock_movement')->truncate();
+        // DB::table('favorite_customer')->truncate();
+        DB::table('finance_movement')->truncate();
+        // DB::table('noti_log')->truncate();
+        DB::table('payment')->truncate();
+        DB::table('products')->truncate();
+        DB::table('products_comment')->truncate();
+        DB::table('products_gallery')->truncate();
+        DB::table('products_item')->truncate();
+        DB::table('products_option_1')->truncate();
+        DB::table('products_option_2')->truncate();
+        DB::table('products_option_2_items')->truncate();
+        DB::table('products_option_head')->truncate();
+        DB::table('products_transfer')->truncate();
+        DB::table('stock')->truncate();
+        DB::table('stock_floor')->truncate();
+        DB::table('stock_items')->truncate();
+        DB::table('stock_items_pre')->truncate();
+        DB::table('stock_lot')->truncate();
+        DB::table('stock_lot_pre')->truncate();
+        DB::table('stock_pre')->truncate();
+        DB::table('stock_shelf')->truncate();
+        // DB::table('store')->truncate();
+        DB::table('store_following')->truncate();
+        DB::table('withdraw')->truncate();
+        return 'success';
+     }
 }
