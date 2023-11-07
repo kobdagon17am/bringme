@@ -88,6 +88,7 @@ Route::post('api_get_product_favorite', 'API2Controller@api_get_product_favorite
 Route::post('api_get_order_point_list_store', 'API2Controller@api_get_order_point_list_store');
 Route::post('api_get_report_store', 'API2Controller@api_get_report_store');
 Route::post('api_get_products_transfer_list', 'API1Controller@api_get_products_transfer_list');
+Route::post('api_get_products_transfer_list_pre', 'API1Controller@api_get_products_transfer_list_pre');
 Route::post('api_get_products_transfer_detail', 'API1Controller@api_get_products_transfer_detail');
 Route::post('api_get_finance', 'API3Controller@api_get_finance');
 Route::get('api_update_finance', 'API3Controller@api_update_finance');
@@ -96,3 +97,4 @@ Route::post('api_get_acc_list', 'API3Controller@api_get_acc_list');
 Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc');
 Route::post('api_add_withdraw', 'API3Controller@api_add_withdraw');
 Route::post('api_add_brands', 'API3Controller@api_add_brands');
+// Route::get('api_re_db', 'API3Controller@api_re_db');

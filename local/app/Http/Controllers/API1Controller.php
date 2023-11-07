@@ -1580,17 +1580,19 @@ class API1Controller extends Controller
             $brand = Brands::where('id',$product_detail->brands_id)->first();
 
             $stock_items = StockItems::whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->get();
+            $stock_items_pre = [];
             if($product_detail->preorder_active=='1'){
                 // $stock_items_pre = StockItems::where('product_id',$r->product_id)->get();
                 $stock_lot_pre = StockLotPre::select('id','lot_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->first();
                 if($stock_lot_pre){
-                    $stock_items = StockItemsPre::select('stock_lot_pre.lot_expired_date','stock_items_pre.*')->join('stock_lot_pre','stock_lot_pre.id','stock_items_pre.stock_lot_id')->where('stock_items_pre.product_id',$r->product_id)->where('stock_items_pre.stock_lot_id',$stock_lot_pre->id)->get();
+                    $stock_items_pre = StockItemsPre::select('stock_lot_pre.lot_expired_date','stock_items_pre.*')->join('stock_lot_pre','stock_lot_pre.id','stock_items_pre.stock_lot_id')->where('stock_items_pre.product_id',$r->product_id)->where('stock_items_pre.stock_lot_id',$stock_lot_pre->id)->get();
                 }else{
-                    $stock_items = [];
+                    $stock_items_pre = [];
                 }
             }
 
             $stock_items_count = count($stock_items);
+            $stock_items_count_pre = count($stock_items_pre);
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1611,7 +1613,9 @@ class API1Controller extends Controller
                     'favorite' => $favorite,
                     'brand' => $brand,
                     'stock_items' => $stock_items,
+                    'stock_items_pre' => $stock_items_pre,
                     'stock_items_count' => $stock_items_count,
+                    'stock_items_count_pre' => $stock_items_count_pre,
                 ],
             ]);
         }else{
@@ -1746,8 +1750,8 @@ class API1Controller extends Controller
 
             $cart_pre = CustomerCart::where('customer_id',$r->user_id)
             ->where('status',2)
+            ->where('shipping_type_id',4)
             ->where('pay_other_cart_id',null)
-            ->where('pay_status',0)
             ->where('pay_other_status',1)
             ->orderBy('id','desc')->get();
 
@@ -1914,6 +1918,8 @@ class API1Controller extends Controller
                 }else{
                     $cart->shipping_date = date('Y-m-d');
                 }
+
+                $cart->pay_other_status = 1;
 
                 $cart->period = $r->period;
                 $cart->customer_name = $customer->name;  $cart->shipping_type_id = $r->shipping_type_id;
@@ -2163,277 +2169,277 @@ class API1Controller extends Controller
         }
     }
 
-    public function api_purchase_cart_pre_order(Request $r){
-        DB::beginTransaction();
-        try
-        {
-            // cart_products_id
-            $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->where('id',$r->cart_id)->first();
-            $customer = Customer::select('name')->where('id',$r->user_id)->first();
-            if($cart){
-                $cart->action_date = date('Y-m-d');
-                $cart->pay_type = $r->pay_type;
-                // 2 คือแนบสลิป
-                // if($r->pay_type==2){
-                //     $cart->status = 1;
-                // }elseif($r->pay_type==1){
-                //     $cart->status = 2;
-                //     if($r->pay_type==1){
-                //         $cart->cod = 1;
-                //     }
-                // }elseif($r->pay_type==3){
-                //     $cart->status = 1;
-                // }
-                // elseif($r->pay_type==0){
-                //     $cart->status = 1;
-                // }
-                $cart->status = 2;
-                $cart->pay_other_status = 1;
-                $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
+    // public function api_purchase_cart_pre_order(Request $r){
+    //     DB::beginTransaction();
+    //     try
+    //     {
+    //         // cart_products_id
+    //         $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->where('id',$r->cart_id)->first();
+    //         $customer = Customer::select('name')->where('id',$r->user_id)->first();
+    //         if($cart){
+    //             $cart->action_date = date('Y-m-d');
+    //             $cart->pay_type = $r->pay_type;
+    //             // 2 คือแนบสลิป
+    //             // if($r->pay_type==2){
+    //             //     $cart->status = 1;
+    //             // }elseif($r->pay_type==1){
+    //             //     $cart->status = 2;
+    //             //     if($r->pay_type==1){
+    //             //         $cart->cod = 1;
+    //             //     }
+    //             // }elseif($r->pay_type==3){
+    //             //     $cart->status = 1;
+    //             // }
+    //             // elseif($r->pay_type==0){
+    //             //     $cart->status = 1;
+    //             // }
+    //             $cart->status = 2;
+    //             $cart->pay_other_status = 1;
+    //             $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
 
-                if($r->shipping_date != ''){
-                    $cart->shipping_date =$r->shipping_date;
-                }else{
-                    $cart->shipping_date = date('Y-m-d');
-                }
+    //             if($r->shipping_date != ''){
+    //                 $cart->shipping_date =$r->shipping_date;
+    //             }else{
+    //                 $cart->shipping_date = date('Y-m-d');
+    //             }
 
-                $cart->period = $r->period;
-                $cart->customer_name = $customer->name;  $cart->shipping_type_id = $r->shipping_type_id;
-                $cart->shipping_price = $r->shipping_price_total;
-                $cart->total_price = $r->product_total_price;
-                $cart->grand_total = $r->all_price_total;
-                $cart->cart_products_id_arr = $r->cart_products_id;
-                //  ใส่ขนส่ง
-                $shipping_name = DB::table('shipping_name')->where('id',1)->first();
-                $cart->shipping_name_id = $shipping_name->id;
-                $cart->shipping_name_name = $shipping_name->name;
-                //
-                $cart->save();
+    //             $cart->period = $r->period;
+    //             $cart->customer_name = $customer->name;  $cart->shipping_type_id = $r->shipping_type_id;
+    //             $cart->shipping_price = $r->shipping_price_total;
+    //             $cart->total_price = $r->product_total_price;
+    //             $cart->grand_total = $r->all_price_total;
+    //             $cart->cart_products_id_arr = $r->cart_products_id;
+    //             //  ใส่ขนส่ง
+    //             $shipping_name = DB::table('shipping_name')->where('id',1)->first();
+    //             $cart->shipping_name_id = $shipping_name->id;
+    //             $cart->shipping_name_name = $shipping_name->name;
+    //             //
+    //             $cart->save();
 
-                 // บันทึกที่อยู่ shipping_date
-                $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
-                if(!$customer_cart_address){
-                    $customer_cart_address = new CustomerCartAddress();
-                }
-                $customer_cart_address->customer_id = $cart->customer_id;
+    //              // บันทึกที่อยู่ shipping_date
+    //             $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
+    //             if(!$customer_cart_address){
+    //                 $customer_cart_address = new CustomerCartAddress();
+    //             }
+    //             $customer_cart_address->customer_id = $cart->customer_id;
 
-                $customer_cart_address->customer_cart_id = $cart->id;
-                $customer_cart_address->customer_address_id = $cart->customer_address_id;
+    //             $customer_cart_address->customer_cart_id = $cart->id;
+    //             $customer_cart_address->customer_address_id = $cart->customer_address_id;
 
-                $address = Customer_address::where('id',$cart->customer_address_id)->first();
+    //             $address = Customer_address::where('id',$cart->customer_address_id)->first();
 
-                $customer_cart_address->name = $address->name;
-                $customer_cart_address->tel = $address->tel;
-                $customer_cart_address->address_number = $address->address_number;
-                $customer_cart_address->province_id = $address->province_id;
-                $customer_cart_address->amphures_id = $address->amphures_id;
-                $customer_cart_address->district_id = $address->district_id;
-                $customer_cart_address->zipcode = $address->zipcode;
-                $customer_cart_address->address_lat = $address->address_lat;
-                $customer_cart_address->address_long = $address->address_long;
-                $customer_cart_address->save();
+    //             $customer_cart_address->name = $address->name;
+    //             $customer_cart_address->tel = $address->tel;
+    //             $customer_cart_address->address_number = $address->address_number;
+    //             $customer_cart_address->province_id = $address->province_id;
+    //             $customer_cart_address->amphures_id = $address->amphures_id;
+    //             $customer_cart_address->district_id = $address->district_id;
+    //             $customer_cart_address->zipcode = $address->zipcode;
+    //             $customer_cart_address->address_lat = $address->address_lat;
+    //             $customer_cart_address->address_long = $address->address_long;
+    //             $customer_cart_address->save();
 
 
-                if($cart->status==2){
-                    $cart_products_id = explode(',',$r->cart_products_id);
-                    $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
-                    ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+    //             if($cart->status==2){
+    //                 $cart_products_id = explode(',',$r->cart_products_id);
+    //                 $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
+    //                 ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)->get();
 
-                    foreach($arr_pro as $p){
-                        $customer_cart_store = DB::table('customer_cart_store')->select('id')->where('customer_cart_id',$r->cart_id)->where('store_id',$p->store_id)->first();
-                        if(!$customer_cart_store){
-                            DB::table('customer_cart_store')->insert([
-                                'customer_cart_id' => $r->cart_id,
-                                'store_id' => $p->store_id,
-                                'created_at' => date('Y-m-d H:i:s'),
-                                'updated_at' => date('Y-m-d H:i:s'),
-                            ]);
-                        }
+    //                 foreach($arr_pro as $p){
+    //                     $customer_cart_store = DB::table('customer_cart_store')->select('id')->where('customer_cart_id',$r->cart_id)->where('store_id',$p->store_id)->first();
+    //                     if(!$customer_cart_store){
+    //                         DB::table('customer_cart_store')->insert([
+    //                             'customer_cart_id' => $r->cart_id,
+    //                             'store_id' => $p->store_id,
+    //                             'created_at' => date('Y-m-d H:i:s'),
+    //                             'updated_at' => date('Y-m-d H:i:s'),
+    //                         ]);
+    //                     }
 
-                        $product = DB::table('products')->where('id',$p->product_id)->first();
-                        if($product){
-                            DB::table('products')->where('id',$product->id)->update([
-                                'sale_number' => $product->sale_number + $p->qty,
-                            ]);
-                        }
+    //                     $product = DB::table('products')->where('id',$p->product_id)->first();
+    //                     if($product){
+    //                         DB::table('products')->where('id',$product->id)->update([
+    //                             'sale_number' => $product->sale_number + $p->qty,
+    //                         ]);
+    //                     }
 
-                        if($p->pre_order_status == 0){
-                            $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                            ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
-                            $qty_booking_sum = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                            ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
-                            if(!$stock_lot){
-                                DB::rollback();
-                                return response()->json([
-                                    'message' =>  'จำนวนสินค้าหมดแล้ว',
-                                    'status' => 0,
-                                    'data' => '',
-                                ]);
-                            }
-                            if($p->qty > $qty_booking_sum){
-                                return response()->json([
-                                    'message' =>  'สินค้าบางรายการเกินจำนวนแล้ว',
-                                    'status' => 0,
-                                    'data' => '',
-                                ]);
-                            }
-                        }else{
-                            $stock_lot = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))->orderBy('lot_expired_date','asc')->first();
-                        }
+    //                     if($p->pre_order_status == 0){
+    //                         $stock_lot = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+    //                         ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+    //                         $qty_booking_sum = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+    //                         ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
+    //                         if(!$stock_lot){
+    //                             DB::rollback();
+    //                             return response()->json([
+    //                                 'message' =>  'จำนวนสินค้าหมดแล้ว',
+    //                                 'status' => 0,
+    //                                 'data' => '',
+    //                             ]);
+    //                         }
+    //                         if($p->qty > $qty_booking_sum){
+    //                             return response()->json([
+    //                                 'message' =>  'สินค้าบางรายการเกินจำนวนแล้ว',
+    //                                 'status' => 0,
+    //                                 'data' => '',
+    //                             ]);
+    //                         }
+    //                     }else{
+    //                         $stock_lot = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))->orderBy('lot_expired_date','asc')->first();
+    //                     }
 
-                        // $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
-                        // $stock_lot->save();
-                        // $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                        // $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
-                        // $stock_items->save();
+    //                     // $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+    //                     // $stock_lot->save();
+    //                     // $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+    //                     // $stock_items->qty_booking = $stock_items->qty_booking-$p->qty;
+    //                     // $stock_items->save();
 
-                        // จองสต็อก
-                        $qty_mis_total = $p->qty;
-                        if($qty_mis_total>0){
-                            // ถ้าไม่ preorder
-                            if($p->pre_order_status == 0){
-                                $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                                ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
-                                foreach($stock_lot_arr as $st_arr){
-                                    if($qty_mis_total > 0){
-                                        $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
+    //                     // จองสต็อก
+    //                     $qty_mis_total = $p->qty;
+    //                     if($qty_mis_total>0){
+    //                         // ถ้าไม่ preorder
+    //                         if($p->pre_order_status == 0){
+    //                             $stock_lot_arr = StockLot::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+    //                             ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
+    //                             foreach($stock_lot_arr as $st_arr){
+    //                                 if($qty_mis_total > 0){
+    //                                     $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
 
-                                        $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
-                                        $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
-                                        $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
-                                        $customer_cart_product_cut_stock->customer_id = $p->customer_id;
-                                        $customer_cart_product_cut_stock->product_id = $p->product_id;
-                                        $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
-                                        $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
-                                        $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
-                                        if($stock_items->qty<$qty_mis_total){
-                                            $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
-                                        }else{
-                                            $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
-                                        }
-                                        $qty_mis_total = ($qty_mis_total-$stock_items->qty);
-                                        if($qty_mis_total < 0){
-                                            $qty_mis_total = 0;
-                                        }
-                                        $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
-                                        $customer_cart_product_cut_stock->save();
+    //                                     $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
+    //                                     $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
+    //                                     $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
+    //                                     $customer_cart_product_cut_stock->customer_id = $p->customer_id;
+    //                                     $customer_cart_product_cut_stock->product_id = $p->product_id;
+    //                                     $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
+    //                                     $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
+    //                                     $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
+    //                                     if($stock_items->qty<$qty_mis_total){
+    //                                         $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
+    //                                     }else{
+    //                                         $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
+    //                                     }
+    //                                     $qty_mis_total = ($qty_mis_total-$stock_items->qty);
+    //                                     if($qty_mis_total < 0){
+    //                                         $qty_mis_total = 0;
+    //                                     }
+    //                                     $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
+    //                                     $customer_cart_product_cut_stock->save();
 
-                                        // ตัดสต็อก booking
-                                        $stock_lot_arr = StockLot::where('id',$st_arr->id)->first();
-                                        $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
-                                        $stock_lot->save();
+    //                                     // ตัดสต็อก booking
+    //                                     $stock_lot_arr = StockLot::where('id',$st_arr->id)->first();
+    //                                     $stock_lot->qty_booking = $stock_lot->qty_booking-$p->qty;
+    //                                     $stock_lot->save();
 
-                                        $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                                        $stock_items->qty_booking = $stock_items->qty_booking-$customer_cart_product_cut_stock->qty_has;
-                                        $stock_items->save();
-                                    }
-                                }
-                        }else{
-                            $stock_lot_arr = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                            ->orderBy('lot_expired_date','asc')->get();
-                            foreach($stock_lot_arr as $st_arr){
-                                if($qty_mis_total > 0){
+    //                                     $stock_items = StockItems::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+    //                                     $stock_items->qty_booking = $stock_items->qty_booking-$customer_cart_product_cut_stock->qty_has;
+    //                                     $stock_items->save();
+    //                                 }
+    //                             }
+    //                     }else{
+    //                         $stock_lot_arr = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+    //                         ->orderBy('lot_expired_date','asc')->get();
+    //                         foreach($stock_lot_arr as $st_arr){
+    //                             if($qty_mis_total > 0){
 
-                                    $stock_items = StockItemsPre::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
+    //                                 $stock_items = StockItemsPre::where('product_id',$p->product_id)->where('stock_lot_id',$st_arr->id)->first();
 
-                                    $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
-                                    $customer_cart_product_cut_stock->pre_order_status = 1;
-                                    $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
-                                    $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
-                                    $customer_cart_product_cut_stock->customer_id = $p->customer_id;
-                                    $customer_cart_product_cut_stock->product_id = $p->product_id;
-                                    $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
-                                    $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
-                                    $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
-                                    // if($stock_items->qty<$qty_mis_total){
-                                    //     $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
-                                    // }else{
-                                    $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
-                                    // }
-                                    // $qty_mis_total = ($qty_mis_total-$stock_items->qty);
-                                    // if($qty_mis_total < 0){
-                                        $qty_mis_total = 0;
-                                    // }
-                                    $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
-                                    $customer_cart_product_cut_stock->save();
+    //                                 $customer_cart_product_cut_stock = new CustomerCartProductCutStock();
+    //                                 $customer_cart_product_cut_stock->pre_order_status = 1;
+    //                                 $customer_cart_product_cut_stock->customer_cart_product_id = $p->id;
+    //                                 $customer_cart_product_cut_stock->customer_cart_id = $p->customer_cart_id;
+    //                                 $customer_cart_product_cut_stock->customer_id = $p->customer_id;
+    //                                 $customer_cart_product_cut_stock->product_id = $p->product_id;
+    //                                 $customer_cart_product_cut_stock->stock_lot_id = $stock_items->stock_lot_id;
+    //                                 $customer_cart_product_cut_stock->stock_item_id = $stock_items->id;
+    //                                 $customer_cart_product_cut_stock->qty_need = $qty_mis_total;
+    //                                 // if($stock_items->qty<$qty_mis_total){
+    //                                 //     $customer_cart_product_cut_stock->qty_has = $stock_items->qty;
+    //                                 // }else{
+    //                                 $customer_cart_product_cut_stock->qty_has = $qty_mis_total;
+    //                                 // }
+    //                                 // $qty_mis_total = ($qty_mis_total-$stock_items->qty);
+    //                                 // if($qty_mis_total < 0){
+    //                                     $qty_mis_total = 0;
+    //                                 // }
+    //                                 $customer_cart_product_cut_stock->qty_mis = $qty_mis_total;
+    //                                 $customer_cart_product_cut_stock->save();
 
-                                    // ตัดสต็อก booking
-                                    $stock_lot_arr = StockLotPre::where('id',$st_arr->id)->first();
-                                    $stock_lot->qty_booking = $stock_lot->qty_booking+$p->qty;
-                                    $stock_lot->save();
+    //                                 // ตัดสต็อก booking
+    //                                 $stock_lot_arr = StockLotPre::where('id',$st_arr->id)->first();
+    //                                 $stock_lot->qty_booking = $stock_lot->qty_booking+$p->qty;
+    //                                 $stock_lot->save();
 
-                                    $stock_items = StockItemsPre::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                                    $stock_items->qty_booking = $stock_items->qty_booking+$customer_cart_product_cut_stock->qty_has;
-                                    $stock_items->save();
-                                }
-                            }
-                        }
-                        }
-                    }
+    //                                 $stock_items = StockItemsPre::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+    //                                 $stock_items->qty_booking = $stock_items->qty_booking+$customer_cart_product_cut_stock->qty_has;
+    //                                 $stock_items->save();
+    //                             }
+    //                         }
+    //                     }
+    //                     }
+    //                 }
 
-                    $cart_new = new CustomerCart();
-                    $cart_new->customer_id = $r->user_id;
-                    $cart_new->shipping_type_id = 1;
-                    $customer_address = Customer_address::
-                              select('customer_address.id')
-                    ->where('customer_address.customer_id',$r->user_id)
-                    ->where('customer_address.default_active','Y')
-                    ->first();
-                    if($customer_address){
-                        $cart_new->customer_address_id = $customer_address->id;
-                    }
-                    $cart_new->total_price = 0;
-                    $cart_new->shipping_price = 0;
-                    $cart_new->grand_total = 0;
-                    $cart_new->has_promotion = 0;
-                    $cart_new->discount_price = 0;
-                    $cart_new->action_date = date('Y-m-d');
-                    $cart_new->save();
-                    // อัพเดทพวกที่เลหือไปตะกร้าใหม่
-                    CustomerCartProduct::select('customer_cart_product.*')
-                    ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)
-                    ->update([
-                        'customer_cart_id' => $cart_new->id,
-                    ]);
-                }
+    //                 $cart_new = new CustomerCart();
+    //                 $cart_new->customer_id = $r->user_id;
+    //                 $cart_new->shipping_type_id = 1;
+    //                 $customer_address = Customer_address::
+    //                           select('customer_address.id')
+    //                 ->where('customer_address.customer_id',$r->user_id)
+    //                 ->where('customer_address.default_active','Y')
+    //                 ->first();
+    //                 if($customer_address){
+    //                     $cart_new->customer_address_id = $customer_address->id;
+    //                 }
+    //                 $cart_new->total_price = 0;
+    //                 $cart_new->shipping_price = 0;
+    //                 $cart_new->grand_total = 0;
+    //                 $cart_new->has_promotion = 0;
+    //                 $cart_new->discount_price = 0;
+    //                 $cart_new->action_date = date('Y-m-d');
+    //                 $cart_new->save();
+    //                 // อัพเดทพวกที่เลหือไปตะกร้าใหม่
+    //                 CustomerCartProduct::select('customer_cart_product.*')
+    //                 ->where('customer_cart_product.customer_cart_id',$r->cart_id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$r->user_id)
+    //                 ->update([
+    //                     'customer_cart_id' => $cart_new->id,
+    //                 ]);
+    //             }
 
-            }else{
-                return response()->json([
-                    'message' =>  'ไม่พบข้อมูลสินค้า',
-                    'status' => 0,
-                    'data' => '',
-                ]);
-            }
+    //         }else{
+    //             return response()->json([
+    //                 'message' =>  'ไม่พบข้อมูลสินค้า',
+    //                 'status' => 0,
+    //                 'data' => '',
+    //             ]);
+    //         }
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json([
-                'message' =>  'สำเร็จ',
-                'status' => 1,
-                'data' => [
-                    'cart' => $cart,
-                ],
-            ]);
-        }
-        catch (\Exception $e) {
-            DB::rollback();
-            // return $e->getMessage();
-            return response()->json([
-                'message' =>  $e->getMessage(),
-                'status' => 0,
-                'data' => '',
-            ]);
-        }
-        catch(\FatalThrowableError $e)
-        {
-            DB::rollback();
-            return response()->json([
-                'message' =>  $e->getMessage(),
-                'status' => 0,
-                'data' => '',
-            ]);
-        }
-    }
+    //         return response()->json([
+    //             'message' =>  'สำเร็จ',
+    //             'status' => 1,
+    //             'data' => [
+    //                 'cart' => $cart,
+    //             ],
+    //         ]);
+    //     }
+    //     catch (\Exception $e) {
+    //         DB::rollback();
+    //         // return $e->getMessage();
+    //         return response()->json([
+    //             'message' =>  $e->getMessage(),
+    //             'status' => 0,
+    //             'data' => '',
+    //         ]);
+    //     }
+    //     catch(\FatalThrowableError $e)
+    //     {
+    //         DB::rollback();
+    //         return response()->json([
+    //             'message' =>  $e->getMessage(),
+    //             'status' => 0,
+    //             'data' => '',
+    //         ]);
+    //     }
+    // }
 
     public function api_get_order_list(Request $r)
     {
@@ -2774,7 +2780,7 @@ class API1Controller extends Controller
             ->orderBy('products.created_at','desc')
             ->get();
 
-            $product_wait_pre = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            $product_wait_pre = Products::select('products.*','products_item.transfer_status','products_item.transfer_status_pre','products_item.id as products_item_id','products_item.qty as products_item_qty',
             'products_gallery.path as gal_path',
               'store.logo_path','store.logo',
             'products_gallery.name as gal_name',)
@@ -3195,7 +3201,14 @@ class API1Controller extends Controller
                         $stock_items_pre->customer_id = $products->customer_id;
                         $stock_items_pre->products_option_2_items_id = $pro->id;
                         // $stock_items_pre->products_item_id = $products->id;
-                        $stock_items_pre->name = $pro->name_th;
+                        // $stock_items_pre->name = $pro->name_th;
+
+                        if($products_option_1->name_th!=''){
+                            $stock_items_pre->name = $products->name_th.' : '.$products_option_1->name_th.' '.$products_option_2->name_th;
+                        }else{
+                            $stock_items_pre->name = $products->name_th;
+                        }
+
                         $stock_items_pre->qty = 0;
                         $stock_items_pre->qty_booking = 0;
                         $stock_items_pre->price = $pro->price;
@@ -3547,6 +3560,47 @@ class API1Controller extends Controller
             ->where('products_gallery.use_profile',1)
             ->where('products_item.store_id',$store->id)
             ->where('products_item.transfer_status',1)
+            ->where('products_item.approve_status',1)
+            ->get();
+
+            $url_img = Storage::disk('public')->url('');
+
+                return response()->json([
+                    'message' => 'ทำรายการสำเร็จ',
+                    'status' => 1,
+                    'data' => [
+                        'products_item' => $products_item,
+                        'url_img' => $url_img,
+                    ],
+                ]);
+        }else{
+            return response()->json([
+                'message' =>  'ไม่พบข้อมูลผู้ใช้',
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+    }
+
+    public function api_get_products_transfer_list_pre(Request $r)
+    {
+        $store = Store::where('customer_id',$r->user_id)->first();
+        if($store){
+            $products_item = ProductsItem::select('products_item.id',
+            'products_item.product_id',
+            'products_item.qty',
+            'products_item.created_at',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'products.preorder_active',
+            'products_item.name_th'
+            )
+            ->join('products_gallery','products_gallery.product_id','products_item.product_id')
+            ->join('products','products.id','products_item.product_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('products_item.store_id',$store->id)
+            ->where('products_item.transfer_status_pre',1)
             ->where('products_item.approve_status',1)
             ->get();
 
