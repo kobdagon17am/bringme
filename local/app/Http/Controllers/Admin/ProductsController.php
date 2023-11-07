@@ -616,6 +616,7 @@ class ProductsController extends Controller
         ->select(
             'customer.id',
             'customer.name as stor_name',
+            'customer.tel',
         )
         ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
         ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
@@ -660,9 +661,8 @@ class ProductsController extends Controller
             ->leftJoin('category','category.id','products.category_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.customer_id', '=',  $customer_id->id)
+            ->orderByDesc('products_transfer.id')
             ->get();
-
-
 
             $data['store_detail'] = DB::table('store')->where('customer_id', $customer_id->id)->first();
 
@@ -672,51 +672,153 @@ class ProductsController extends Controller
         //$data['gallery'] = DB::table('products_gallery')->where('product_id', @$data['data']->product_id)->get();
         $data['category'] = DB::table('category')->get();
         $data['shelf'] = DB::table('dataset_shelf')->get();
+        $data['page_id'] =$id;
+
 
         return view('backend/product-panding-tranfer-detail-all',$data);
+    }
+
+    public function product_panding_tranfer_pdf(Request $rs)
+    {
+        $products_transfer = DB::table('products_transfer')
+        ->select(
+            'products_transfer.*',
+            'customer.name as stor_name',
+            'products_transfer.approve_status as approve_status_transfer',
+            'products_transfer.id as transfer_id',
+            'products_transfer.path_img',
+            'brands.name_th as brand_name',
+            'products_transfer.shipping_name',
+            'customer.tel',
+            'products.category_id as category_id',
+
+            'products_transfer.path_img',
+            'products_transfer.img',
+            'products_transfer.tracking',
+            'products_transfer.shipping_type',
+            'products_transfer.time_period',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'products_item.name_th',
+            'category.name_th as c_name_th',
+            'products_item.transfer_status',
+        )
+        ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
+        ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+        ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+        ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
+        ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
+        ->leftJoin('category','category.id','products.category_id')
+        ->where('products_gallery.use_profile',1)
+        ->wherein('products_transfer.id',$rs->id)
+        ->orderByDesc('products_transfer.id')
+        ->get();
+        // panding-tranfer.blade
+
+
+        $file = new Filesystem;
+        $file->cleanDirectory(public_path('products_transfer/'));
+
+
+        $data = ['products_transfer' => $products_transfer];
+
+        // Create a PDF instance using the PDF facade
+        $pdf = PDF::loadView('backend.PDF.panding-tranfer', compact('data'));
+
+        // $pdf2 = PDF::loadView('backend.PDF.order_detail', compact('data'));
+
+        $pathfile = public_path('products_transfer/result_'.$rs->customer_id.'.pdf');
+
+        $pdf->save($pathfile);
+
+        $url =  asset('local/public/products_transfer/result_'.$rs->customer_id.'.pdf');
+        $data = ['status'=>'success','url'=>$url];
+         return $data;
     }
 
 
 
     public function item_confirmation(Request $rs)
     {
+        if($rs->type == 'confirm_all'){
 
-        if ($rs->tranfer_status == 1) {
-            // dd($rs->transfer_id);
+            if(empty($rs->transfer_id)){
+                return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError('กรุณาเลือกรายการที่ต้องการยืนยันการรับสินค้า');
+            }
+            if ($rs->tranfer_status == 1) {
+                // dd($rs->transfer_id);
+                foreach($rs->transfer_id as $value){
 
-            $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id, $rs->date_in_stock, $rs->lot_expired_date, $rs->lot_number, $rs->shelf, $rs->floor, $rs);
+                    $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($value, $rs->date_in_stock, $rs->lot_expired_date, $rs->lot_number, $rs->shelf, $rs->floor, $rs);
+                    if ($data['status'] == 0) {
+                        return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError($data['message']);
+                    }
+                }
 
-            if ($data['status'] == 0) {
-                return redirect('admin/products-pending-tranfer')->withError($data['message']);
+                    return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withSuccess('อัพเดทรายการสำเร็จ');
+
+            } else {
+                try {
+                    DB::BeginTransaction();
+
+                    $dataPrepare = [
+                        'approve_status' => $rs->tranfer_status,
+
+                    ];
+                    $products_item = DB::table('products_transfer')
+                        ->wherein('id',$rs->transfer_id)
+                        ->update($dataPrepare);
+
+
+                    DB::commit();
+                    return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withSuccess('อัพเดทรายการสำเร็จ');
+                } catch (Exception $e) {
+                    DB::rollback();
+                    return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError('อัพเดทรายการไม่สำเร็จ');
+                }
             }
 
-            if ($data['status'] == 1) {
-                return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
-            }
-        } else {
-            try {
-                DB::BeginTransaction();
+        }else{
+            if ($rs->tranfer_status == 1) {
+                // dd($rs->transfer_id);
 
-                $dataPrepare = [
-                    'approve_status' => $rs->tranfer_status,
+                $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id, $rs->date_in_stock, $rs->lot_expired_date, $rs->lot_number, $rs->shelf, $rs->floor, $rs);
 
-                ];
-                $products_item = DB::table('products_transfer')
-                    ->where('id', $rs->transfer_id)
-                    ->update($dataPrepare);
+                if ($data['status'] == 0) {
+                    return redirect('admin/products-pending-tranfer')->withError($data['message']);
+                }
+
+                if ($data['status'] == 1) {
+                    return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
+                }
+            } else {
+                try {
+                    DB::BeginTransaction();
+
+                    $dataPrepare = [
+                        'approve_status' => $rs->tranfer_status,
+
+                    ];
+                    $products_item = DB::table('products_transfer')
+                        ->where('id', $rs->transfer_id)
+                        ->update($dataPrepare);
 
 
-                DB::commit();
-                return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
-            } catch (Exception $e) {
-                DB::rollback();
-                return redirect('admin/products-pending-tranfer')->withError('อัพเดทรายการไม่สำเร็จ');
+                    DB::commit();
+                    return redirect('admin/products-pending-tranfer')->withSuccess('อัพเดทรายการสำเร็จ');
+                } catch (Exception $e) {
+                    DB::rollback();
+                    return redirect('admin/products-pending-tranfer')->withError('อัพเดทรายการไม่สำเร็จ');
+                }
             }
         }
+
+
     }
 
     public function product_confirmation(Request $rs)
     {
+
 
         if ($rs->type == 'confirm') {
             try {
@@ -724,8 +826,9 @@ class ProductsController extends Controller
                 $dataPrepare = [
                     'approve_status' => 1,
                     'transfer_status' => 1,
-                    'transfer_status_pre' => 1,
+                    // 'transfer_status_pre' => 1,
                 ];
+
                 $products_item = DB::table('products_item')
                     ->where('id', $rs->id)
                     ->update($dataPrepare);
