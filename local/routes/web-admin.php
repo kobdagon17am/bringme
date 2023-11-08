@@ -56,9 +56,12 @@ Route::get('admin/products-waitapproved-detail/{id}', 'Admin\ProductsController@
 Route::get('admin/product-panding-tranfer-detail/{id}', 'Admin\ProductsController@product_panding_tranfer_detail')->name('admin/product-panding-tranfer-detail');
 
 Route::get('admin/product-panding-tranfer-detail-all/{id}', 'Admin\ProductsController@product_panding_tranfer_detail_all')->name('admin/product-panding-tranfer-detail-all');
+Route::get('admin/product_panding_tranfer_pdf', 'Admin\ProductsController@product_panding_tranfer_pdf')->name('admin/product_panding_tranfer_pdf');
 
-Route::post('admin/product_confirmation}', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
-Route::post('admin/item_confirmation}', 'Admin\ProductsController@item_confirmation')->name('admin/item_confirmation');
+
+
+Route::post('admin/product_confirmation', 'Admin\ProductsController@product_confirmation')->name('admin/product_confirmation');
+Route::post('admin/item_confirmation', 'Admin\ProductsController@item_confirmation')->name('admin/item_confirmation');
 Route::post('admin/item_gallery', 'Admin\ProductsController@item_gallery')->name('admin/item_gallery');
 Route::post('admin/remove_gallery', 'Admin\ProductsController@remove_gallery')->name('admin/remove_gallery');
 
