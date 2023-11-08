@@ -43,6 +43,9 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use Illuminate\Filesystem\Filesystem;
+use App\Models\StockPre;
+use App\Models\StockItemsPre;
+use App\Models\StockLotPre;
 
 class API2Controller extends  Controller
 {
@@ -397,8 +400,8 @@ class API2Controller extends  Controller
                         // $products->approve_status = 1;
                         // $products->save();
 
-                        $stock_lot->qty = $qty;
-                        $stock_lot->qty_booking = $qty;
+                        $stock_lot->qty = $r->qty;
+                        // $stock_lot->qty_booking = $qty;
                         $stock_lot->save();
 
                         $products_item->approve_status = 1;

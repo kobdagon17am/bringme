@@ -51,6 +51,7 @@ Route::post('api_store_following_update', 'API2Controller@api_store_following_up
 
 Route::post('api_product_store', 'API1Controller@api_product_store');
 Route::post('api_product_store_more', 'API1Controller@api_product_store_more');
+Route::post('api_product_store_more_pre', 'API1Controller@api_product_store_more_pre');
 Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
 // API2Controller
 Route::post('api_products_transfer_approve', 'API2Controller@api_products_transfer_approve');
