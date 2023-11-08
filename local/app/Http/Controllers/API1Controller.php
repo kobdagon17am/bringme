@@ -1478,6 +1478,17 @@ class API1Controller extends Controller
             $category2 = Category::where('status',1)->whereIn('id',$c_arr2)->orderBy('name_th','asc')->get();
             $url_img = Storage::disk('public')->url('');
 
+            // ตรวจว่าพรีออเดอร์หมดยัง
+            $product_all_pre = Products::select('id')->where('products.display_status',1)->where('preorder_active',1)->get();
+            $p_arr_not = [];
+           foreach($product_all_pre as $arr){
+            $product_item_pe_arr = ProductsItem::select('id')->where('product_id',$arr->id)->where('is_preorder',1)->where('transfer_status',1)->pluck('id')->toArray();
+            $stock_lot_pre = StockLotPre::select('id','lot_expired_date')->whereIn('products_item_id',$product_item_pe_arr)->where('product_id',$arr->id)->where('lot_expired_date','>',date('Y-m-d'))->first();
+            if(!$stock_lot_pre){
+                array_push($p_arr_not,$arr->id);
+            }
+        }
+
             $product_preorder = Products::select('products.*',
             // 'products_item.transfer_status',
             // 'products_item.id as products_item_id',
@@ -1494,6 +1505,7 @@ class API1Controller extends Controller
             ->where('products.display_status',1)
             // ->whereNotIn('products.id',$p_arr_not)
             ->where('products.preorder_active',1)
+            ->whereNotIn('products.id',$p_arr_not)
             ->orderBy('products.sale_number','desc')
             ->inRandomOrder()->get();
 
@@ -1585,7 +1597,8 @@ class API1Controller extends Controller
             $stock_items_pre = [];
             if($product_detail->preorder_active=='1'){
                 // $stock_items_pre = StockItems::where('product_id',$r->product_id)->get();
-                $stock_lot_pre = StockLotPre::select('id','lot_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->first();
+                $product_item_pe_arr = ProductsItem::select('id')->where('product_id',$r->product_id)->where('is_preorder',1)->where('transfer_status',1)->pluck('id')->toArray();
+                $stock_lot_pre = StockLotPre::select('id','lot_expired_date')->whereIn('products_item_id',$product_item_pe_arr)->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->first();
                 if($stock_lot_pre){
                     $stock_items_pre = StockItemsPre::select('stock_lot_pre.lot_expired_date','stock_items_pre.*')->join('stock_lot_pre','stock_lot_pre.id','stock_items_pre.stock_lot_id')->where('stock_items_pre.product_id',$r->product_id)->where('stock_items_pre.stock_lot_id',$stock_lot_pre->id)->get();
                 }else{
@@ -2101,6 +2114,10 @@ class API1Controller extends Controller
                                     $stock_items = StockItemsPre::where('product_id',$p->product_id)->where('stock_lot_id',$stock_lot->id)->first();
                                     $stock_items->qty_booking = $stock_items->qty_booking+$customer_cart_product_cut_stock->qty_has;
                                     $stock_items->save();
+
+                                    $products_item = ProductsItem::where('id',$stock_lot_arr->products_item_id)->first();
+                                    $products_item->qty = $stock_items->qty_booking;
+                                    $products_item->save();
                                 }
                             }
                         }
@@ -2822,6 +2839,10 @@ class API1Controller extends Controller
             'products_item.is_preorder',
             'products_item.transfer_status_pre',
             'products_item.shipping_date',
+
+            'products_item.is_preorder as products_item_is_preorder',
+            'products_item.shipping_date as products_item_shipping_date',
+            'products_item.transfer_status as products_item_transfer_status',
             )
             ->join('products','products.id','products_item.product_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
@@ -3263,6 +3284,7 @@ class API1Controller extends Controller
                     $stock_lot_pre->lot_number = date('YmdHis');
                     $stock_lot_pre->qty = 0;
                     $stock_lot_pre->qty_booking = 0;
+                    $stock_lot_pre->products_item_id = $products_item_pre->id;
                     $stock_lot_pre->save();
 
                     $products_option_2_items = ProductsOption2Items::where('product_id',$products->id)->get();
@@ -3489,6 +3511,9 @@ class API1Controller extends Controller
                                 $products_transfer->time_period = $r->time_period;
                                 // $products_transfer->qty = $r->qty;
                                 $products_transfer->qty = $products_item->qty;
+                                if(isset($r->is_preorder)){
+                                    $products_transfer->is_preorder = $r->is_preorder;
+                                }
                                 $products_transfer->save();
 
                                 if($r->img!=''){
@@ -3508,6 +3533,7 @@ class API1Controller extends Controller
                                 }
 
                                 $products_item->transfer_status = 2;
+                                $products_item->transfer_status_pre = 2;
                                 $products_item->shipping_date = $r->shipping_date;
                                 $products_item->save();
 
@@ -3534,6 +3560,9 @@ class API1Controller extends Controller
                         $products_transfer->time_period = $r->time_period;
                         $products_transfer->qty = $r->qty;
                         // $products_transfer->qty = $products_item->qty;
+                        if(isset($r->is_preorder)){
+                            $products_transfer->is_preorder = $r->is_preorder;
+                        }
                         $products_transfer->save();
 
                         if($r->img!=''){
@@ -3553,6 +3582,7 @@ class API1Controller extends Controller
                         }
 
                         $products_item->transfer_status = 2;
+                        $products_item->transfer_status_pre = 2;
                         $products_item->shipping_date = $r->shipping_date;
                         $products_item->save();
 
@@ -3665,6 +3695,7 @@ class API1Controller extends Controller
             'products_item.product_id',
             'products_item.qty',
             'products_item.created_at',
+            'products_item.shipping_date',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
             'products.preorder_active',
@@ -3676,6 +3707,7 @@ class API1Controller extends Controller
             ->where('products_item.store_id',$store->id)
             ->where('products_item.transfer_status_pre',1)
             ->where('products_item.approve_status',1)
+            ->where('products_item.is_preorder',1)
             ->get();
 
             $url_img = Storage::disk('public')->url('');
