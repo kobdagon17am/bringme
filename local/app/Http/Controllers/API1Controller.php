@@ -2870,6 +2870,7 @@ class API1Controller extends Controller
               'store.logo_path','store.logo',
             'products_gallery.name as gal_name',
             'products_item.is_preorder',
+            // 'products_item.created_at',
             'products_item.transfer_status_pre',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
@@ -2878,7 +2879,7 @@ class API1Controller extends Controller
             ->where('products.store_id',$store->id)
             // ->where('products_item.transfer_status',3)
             ->where('products.display_status',2)
-            ->orderBy('products.created_at','desc')
+            ->orderBy('products_item.id','desc')
             ->get();
 
             $url_img = Storage::disk('public')->url('');
