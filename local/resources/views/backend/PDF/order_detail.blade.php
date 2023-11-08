@@ -7,7 +7,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="{{ asset('frontend/dist/css/font.css')}}" rel="stylesheet" type="text/css" />
     <style>
-        body,th,tr,table,td{
+        tbody,th,tr,table,td{
+
+            line-height: 16px;
             font-family: 'THSarabunNew,Arial,sans-serif';
             font-size: 14px;
             font-weight: normal;
@@ -18,7 +20,7 @@
             line-height: 13px; */
         }
         b,h5 {
-            font-family: 'THSarabunNew-b,Arial,sans-serif';
+            font-family:'THSarabunNew,Arial,sans-serif';
             font-size: 16px;
 
         }
@@ -30,6 +32,10 @@
         .horizontal-line {
             border-top: 1px solid black;
             margin: 2px 0;
+        }
+        body {
+            font-family:'THSarabunNew,Arial,sans-serif';
+
         }
 
 

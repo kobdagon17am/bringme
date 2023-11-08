@@ -9,6 +9,7 @@
     <style>
         b,h5,h3,body,th,tr,table,td{
             font-family: 'THSarabunNew,Arial,sans-serif';
+            border-collapse: collapse;
             font-size: 16px;
             font-weight: normal;
             /* line-height: 14px;
@@ -59,38 +60,38 @@
             <?php $i = 0; ?>
             @foreach($data['products_transfer'] as $value)
             <?php $i++; ?>
-            <tr>
+            <tr style="margin: 0px;">
                 <td style="text-align: center;">
                     {{$i}}
                 </td>
 
 
                 <td style="text-align: center;">
-                    <p>{{$value->name_th}}</p>
+                    <p style="margin: 0px">{{$value->name_th}}</p>
                 </td>
                 <td style="text-align: center;">
-                    <p>{{$value->c_name_th}}</p>
+                     <p style="margin: 0px">{{$value->c_name_th}}</p>
 
 
                 </td>
                 <td style="text-align: center;">
-                    <p>{{$value->shipping_date}}</p>
+                     <p style="margin: 0px">{{$value->shipping_date}}</p>
 
-                </td>
-
-                <td style="text-align: center;">
-                    <p>{{$value->tracking}}</p>
                 </td>
 
                 <td style="text-align: center;">
-                    <p>{{$value->shipping_name}}</p>
+                     <p style="margin: 0px">{{$value->tracking}}</p>
+                </td>
+
+                <td style="text-align: center;">
+                     <p style="margin: 0px">{{$value->shipping_name}}</p>
                 </td>
 
                 <td style="text-align: center;">
                     @if($value->shipping_type == 1 )
-                     <p>ใช้ขนส่ง</p>
+                      <p style="margin: 0px">ใช้ขนส่ง</p>
                     @elseif($value->shipping_type == 2)
-                     <p>ขนส่งด้วยตนเอง</p>
+                      <p style="margin: 0px">ขนส่งด้วยตนเอง</p>
                     @else
                     @endif
 
@@ -98,7 +99,7 @@
 
 
                 <td style="text-align: center;">
-                    <p>{{$value->qty}}</p>
+                    <p style="margin: 0px">{{$value->qty}}</p>
                 </td>
 
             </tr>
