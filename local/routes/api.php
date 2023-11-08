@@ -97,4 +97,4 @@ Route::post('api_get_acc_list', 'API3Controller@api_get_acc_list');
 Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc');
 Route::post('api_add_withdraw', 'API3Controller@api_add_withdraw');
 Route::post('api_add_brands', 'API3Controller@api_add_brands');
-// Route::get('api_re_db', 'API3Controller@api_re_db');
+Route::get('api_re_db', 'API3Controller@api_re_db');

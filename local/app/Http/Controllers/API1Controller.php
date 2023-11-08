@@ -1478,16 +1478,18 @@ class API1Controller extends Controller
             $category2 = Category::where('status',1)->whereIn('id',$c_arr2)->orderBy('name_th','asc')->get();
             $url_img = Storage::disk('public')->url('');
 
-            $product_preorder = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
+            $product_preorder = Products::select('products.*',
+            // 'products_item.transfer_status',
+            // 'products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
             'store.logo_path','store.logo',
             )
-            ->join('products_item','products_item.product_id','products.id')
+            // ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
-            ->where('products_item.approve_status',1)
+            // ->where('products_item.approve_status',1)
             // ->where('products_item.transfer_status',3)
             ->where('products.display_status',1)
             // ->whereNotIn('products.id',$p_arr_not)
@@ -2765,35 +2767,76 @@ class API1Controller extends Controller
             ->orderBy('products.created_at','desc')
             ->get();
 
-            $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            // $product_wait = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            // 'products_gallery.path as gal_path',
+            //   'store.logo_path','store.logo',
+            // 'products_gallery.name as gal_name',)
+            // ->join('products_item','products_item.product_id','products.id')
+            // ->join('products_gallery','products_gallery.product_id','products.id')
+            //   ->join('store','store.id','products.store_id')
+            // ->where('products_gallery.use_profile',1)
+            // ->where('products.store_id',$store->id)
+            // ->where('products_item.transfer_status','!=',3)
+            // ->where('products.display_status',1)
+            // ->where('products.normal_active',1)
+            // ->orderBy('products.created_at','desc')
+            // ->get();
+
+            $product_wait = ProductsItem::select('products.*','products_item.transfer_status','products_item.id as products_item_id','products_item.qty as products_item_qty',
             'products_gallery.path as gal_path',
               'store.logo_path','store.logo',
-            'products_gallery.name as gal_name',)
-            ->join('products_item','products_item.product_id','products.id')
+            'products_gallery.name as gal_name',
+            'products_item.shipping_date',
+            )
+            ->join('products','products.id','products_item.product_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
-              ->join('store','store.id','products.store_id')
+            ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
             ->where('products_item.transfer_status','!=',3)
             ->where('products.display_status',1)
             ->where('products.normal_active',1)
+            ->where('products_item.is_preorder',0)
             ->orderBy('products.created_at','desc')
             ->get();
 
-            $product_wait_pre = Products::select('products.*','products_item.transfer_status','products_item.transfer_status_pre','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            // $product_wait_pre = Products::select('products.*','products_item.transfer_status','products_item.transfer_status_pre','products_item.id as products_item_id','products_item.qty as products_item_qty',
+            // 'products_gallery.path as gal_path',
+            //   'store.logo_path','store.logo',
+            // 'products_gallery.name as gal_name',)
+            // ->join('products_item','products_item.product_id','products.id')
+            // ->join('products_gallery','products_gallery.product_id','products.id')
+            //   ->join('store','store.id','products.store_id')
+            // ->where('products_gallery.use_profile',1)
+            // ->where('products.store_id',$store->id)
+            // ->where('products.preorder_active',1)
+            // // ->where('products_item.transfer_status','!=',3)
+            // ->where('products.display_status',1)
+            // ->orderBy('products.created_at','desc')
+            // ->get();
+
+            $product_wait_pre = ProductsItem::select('products.*','products_item.transfer_status','products_item.transfer_status_pre','products_item.id as products_item_id','products_item.qty as products_item_qty',
             'products_gallery.path as gal_path',
               'store.logo_path','store.logo',
-            'products_gallery.name as gal_name',)
-            ->join('products_item','products_item.product_id','products.id')
+            'products_gallery.name as gal_name',
+            'products_item.is_preorder',
+            'products_item.transfer_status_pre',
+            'products_item.shipping_date',
+            )
+            ->join('products','products.id','products_item.product_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
-              ->join('store','store.id','products.store_id')
+            ->join('store','store.id','products.store_id')
             ->where('products_gallery.use_profile',1)
             ->where('products.store_id',$store->id)
-            ->where('products.preorder_active',1)
+            // ->where('products.preorder_active',1)
             // ->where('products_item.transfer_status','!=',3)
+            ->where('products_item.is_preorder',1)
             ->where('products.display_status',1)
             ->orderBy('products.created_at','desc')
             ->get();
+
+            // $product_wait_pre = StockLotPre::select()
+            // ->join('products','products.id','')
 
             // $product_not_show = Products::where('store_id',$store->id)
             // // ->where('approve_status',0)
@@ -2804,7 +2847,9 @@ class API1Controller extends Controller
             $product_not_show = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
               'store.logo_path','store.logo',
-            'products_gallery.name as gal_name',)
+            'products_gallery.name as gal_name',
+            'products_item.is_preorder',
+            'products_item.transfer_status_pre',)
             ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
               ->join('store','store.id','products.store_id')
@@ -3018,6 +3063,7 @@ class API1Controller extends Controller
                 $products_item->products_code = $products->products_code;
                 // $products_item->barcode = $products->barcode;
                 $products_item->save();
+
                 $price_arr = [];
                 $qty_all = 0;
                 if($r->yes_option == '1'){
@@ -3173,6 +3219,33 @@ class API1Controller extends Controller
                 }
 
                 if($r->preorder_active == 1){
+
+                    // เพิ่ม item สินค้า storage_method_id brands_id
+                    $products_item_pre = new ProductsItem();
+                    $products_item_pre->product_id = $products->id;
+                    $products_item_pre->customer_id = $r->user_id;
+                    $products_item_pre->name_th = $r->name_th;
+                    $products_item_pre->name_en = $r->name_en;
+                    $products_item_pre->detail_th = $r->detail_th;
+                    $products_item_pre->detail_en = $r->detail_en;
+                    // $products_item->category_id = $r->category_id;
+                    // $products_item->brands_id = $r->brands_id;
+                    $products_item_pre->shelf_lift = $r->shelf_lift;
+                    // $products_item->storage_method_id = $r->storage_method_id;
+                    $products_item_pre->store_id = $store->id;
+                    $products_item_pre->price = $r->price;
+                    $products_item_pre->qty = 0;
+                    $products_item_pre->stock_cut_off = $r->stock_cut_off;
+                    $products_item_pre->production_date = $r->production_date;
+                    $products_item_pre->shipping_date = $products->preorder_shipping_date;
+                    $products_item_pre->products_code = $products->products_code;
+                    // $products_item->barcode = $products->barcode;
+                    $products_item_pre->is_preorder = 1;
+                    $products_item_pre->save();
+
+                    // $products_item->is_preorder = 1;
+                    // $products_item->save();
+
                     $stock_pre = new StockPre();
                     $stock_pre->product_id = $products->id;
                     $stock_pre->store_id = $store->id;
@@ -3200,7 +3273,7 @@ class API1Controller extends Controller
                         $stock_items_pre->product_id = $products->id;
                         $stock_items_pre->customer_id = $products->customer_id;
                         $stock_items_pre->products_option_2_items_id = $pro->id;
-                        // $stock_items_pre->products_item_id = $products->id;
+                        $stock_items_pre->products_item_id = $products_item_pre->id;
                         // $stock_items_pre->name = $pro->name_th;
 
                         if($products_option_1->name_th!=''){
@@ -3561,6 +3634,7 @@ class API1Controller extends Controller
             ->where('products_item.store_id',$store->id)
             ->where('products_item.transfer_status',1)
             ->where('products_item.approve_status',1)
+            ->where('products_item.is_preorder',0)
             ->get();
 
             $url_img = Storage::disk('public')->url('');
