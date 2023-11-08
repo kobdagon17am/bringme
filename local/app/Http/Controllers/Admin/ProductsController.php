@@ -965,6 +965,21 @@ class ProductsController extends Controller
                 return $name;
             })
 
+
+            ->addColumn('is_preorder', function ($row) {
+                if($row->is_preorder == 1){
+                    $html = '<b class="btn btn-sm  btn-outline-primary mr-2 mb-2"> <font style="color: black;">สินค้าพรีออเดอร์</font> </b>';
+                }else{
+                    $html = '';
+                }
+
+
+
+                return $html;
+            })
+
+
+
             ->addColumn('stor_name', function ($row) {
 
                 $name = $row->stor_name;
@@ -1025,8 +1040,7 @@ class ProductsController extends Controller
             })
 
 
-
-            ->rawColumns(['product_name', 'approve_status', 'transfer_status', 'action', 'img'])
+            ->rawColumns(['product_name', 'approve_status', 'transfer_status', 'action', 'img','is_preorder'])
             ->make(true);
     }
 
