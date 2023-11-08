@@ -51,6 +51,7 @@ Route::post('api_store_following_update', 'API2Controller@api_store_following_up
 
 Route::post('api_product_store', 'API1Controller@api_product_store');
 Route::post('api_product_store_more', 'API1Controller@api_product_store_more');
+Route::post('api_product_store_more_pre', 'API1Controller@api_product_store_more_pre');
 Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
 // API2Controller
 Route::post('api_products_transfer_approve', 'API2Controller@api_products_transfer_approve');
@@ -97,4 +98,4 @@ Route::post('api_get_acc_list', 'API3Controller@api_get_acc_list');
 Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc');
 Route::post('api_add_withdraw', 'API3Controller@api_add_withdraw');
 Route::post('api_add_brands', 'API3Controller@api_add_brands');
-// Route::get('api_re_db', 'API3Controller@api_re_db');
+Route::get('api_re_db', 'API3Controller@api_re_db');
