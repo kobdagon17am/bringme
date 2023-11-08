@@ -7,9 +7,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="{{ asset('frontend/dist/css/font.css')}}" rel="stylesheet" type="text/css" />
     <style>
-        body,th,tr,table,td{
+
+        p,tbody,th,tr,table,td{
+
+            border-collapse: collapse;
+             margin: 1px;
+             padding: 1px;
             font-family: 'THSarabunNew,Arial,sans-serif';
-            font-size: 10px;
             font-weight: normal;
             /* line-height: 14px;
             margin-top: 0px;
@@ -17,16 +21,22 @@
             margin-right: 33px;
             line-height: 13px; */
         }
-        b,h5 {
-            font-family: 'THSarabunNew-b,Arial,sans-serif';
-            font-size: 10px;
 
-        }
         @page {
             padding: 10px;
             size: 100mm 180mm;
             margin: 10px; /* Set margins to 0 if you want no margins */
         }
+        body{
+            font-family: 'THSarabunNew-b,Arial,sans-serif';
+            font-size: 10px
+
+        }
+        .horizontal-line {
+            border-top: 1px solid black;
+            margin: 2px 0;
+        }
+
 
 
 
@@ -37,12 +47,12 @@
 
 
 
-    <table style="width: 100%;border: 0px;color:" border="0">
+    <table style="width: 100%;border: 0px;margin: 0px" border="0">
         <thead>
             <tr>
                 <th align="left">
-                   <p> <img src="{{asset('assets/img/nim.png')}}" alt="Girl in a jacket" height="30"><br>
-                    Tracking No. MWE15230000072811</p>
+                   <p style="font-size: 14px"> <img src="{{asset('assets/img/nim.png')}}" alt="Girl in a jacket" height="30"><br>
+                    Tracking No. MWE15230000072811 </p>
                 </th>
 
                 <th align="right">
@@ -51,22 +61,22 @@
             </tr>
         </thead>
     </table>
-
-    <table style="width: 100%;border: 1px;color: black;" border="2">
+    <table style="width: 100%;border: 1px solid black;padding-bottom: 0px;margin: 0px" border="1">
         <thead>
             <tr>
-                <th align="left" style="padding-left: 5px">
-                    <p>ชื่อผู้ส่ง(Sender)<br>
-                   ชื่อ นิติพล เล่าเปี่ยม Moomike Shop <br>
+                <td style="background-color:#000000;padding-left: 2px;"><font style="color: #ffff;font-size: 14px;margin-left: 5px;margin-top: 0px;">ชื่อผู้ส่ง(Sender)</font></td>
+                <td style="background-color:#000000;padding-left: 2px;"><font style="color: #ffff;font-size: 14px;margin-left: 5px;margin-top: 0px;">ผู้รับ(Receiver)</font></td>
+            </tr>
+            <tr>
+                <th align="left" style="padding-left: 2px;">
+                    <p style="margin-left: 5px;margin-top: 0px;">ชื่อ นิติพล เล่าเปี่ยม Moomike Shop <br>
                     โทร 078-123-4567 โทร 087-676-5394 <br>
                     ที่อยู่ 600 ซอยป้าไม้4 สุขุมวิท77/1 พระโขนง  <br>
                     คลองเตย กรุงเทพมหานคร <br>
                     11130</p>
                 </th>
-                <th align="left" style="padding-left: 5px">
-
-                    <p>
-                        ผู้รับ(Receiver)<br>
+                <th align="left" style="padding-left: 2px">
+                    <p style="margin-left: 5px;margin-top: 0px;">
                         ชื่อ นิติพล เล่าเปี่ยม Moomike Shop <br>
                         โทร 078-123-4567 โทร 087-676-5394 <br>
                         ที่อยู่ 600 ซอยป้าไม้4 สุขุมวิท77/1 พระโขนง  <br>
@@ -76,12 +86,12 @@
             </tr>
             <tr>
                 <th align="left" style="padding-left: 2px">
-                    <p> เลขที่ใบสั่งซื้อ 0420200000014 <br>
+                    <p style="margin-left: 5px;margin-top: 0px;"> เลขที่ใบสั่งซื้อ 0420200000014 <br>
                         วันที่สั่งซื้อ 17 Apr 2020 16:40 <br>
                         วิธีการจัดส่ง Flash </p>
                  </th>
                  <th style="">
-                    <p>การชำระเงิน<br>
+                    <p style="margin-left: 5px;margin-top: 0px;">การชำระเงิน<br>
                     โอนเงินผ่านบัญชีธนาคาร<br>
                         (ชำระเงินแล้ว)
                      </p>
@@ -89,8 +99,8 @@
             </tr>
         </thead>
     </table>
-    <p>*หากมีปัญหาเกี่ยวกับสินค้า กรุณาติตต่อบริษัทที่ท่านสั่งซื้อสินคำโดยตรง และหากหัสดุดีกลับกรุณานำส่งตามชื่อผู้ฝากส่งรายการสินค้า</p>
-    <p style="text-align: center">รายการสินค้า</p>
+    <p style="padding: 0px;margin: 0px;">*หากมีปัญหาเกี่ยวกับสินค้ากรุณาติตต่อบริษัทที่ท่านสั่งซื้อสินคำโดยตรงและหากหัสดุดีกลับกรุณานำส่งตามชื่อผู้ฝากส่งรายการสินค้า</p>
+    <p style="text-align: center;font-size: 14px;padding: 0px;margin: 0px;">รายการสินค้า</p>
     <table style="width: 100%;border: 0px;color:" border="0">
         <thead>
             <tr>
@@ -106,10 +116,10 @@
 
     <table style="width: 100%;border: 0px;color: black; padding: 0px" border="0">
         <thead>
-            <tr>
+            <tr style="margin: 0px">
                 <td d colspan="4" ><div class="horizontal-line"></div></td>
             </tr>
-            <tr>
+            <tr style="margin: 0px">
                 <th align="left" style=""> สินค้า
                 </th>
                 <th align="center" style="">ราคา/หน่วย
@@ -127,7 +137,7 @@
             <td d colspan="4" ><div class="horizontal-line"></div></td>
         </tr>
 
-         <tr>
+        <tr style="margin: 0px">
                 <td align="left" style="">
                     1. A003-3450 ฟิลม Fuj C4200 (135/35MM)
                  </td>
@@ -143,7 +153,7 @@
 
             </tr>
 
-            <tr>
+            <tr style="margin: 0px">
                 <td align="left" style="">
                     2. A003-3450 ฟิลม Fuj C4200 (135/35MM)
                  </td>
@@ -159,7 +169,7 @@
 
             </tr>
 
-            <tr>
+            <tr style="margin: 0px">
                 <td align="left" style="">
                     3. A003-3450 ฟิลม Fuj C4200 (135/35MM)
                  </td>
@@ -194,8 +204,6 @@
 
 
             </tr> --}}
-
-
             <tr><td style="border: 0px;"></td><td colspan="2" style="border: 0px;">ยอดรวมสินค้า</td> <td align="right" style="border: 0px;">฿ 400.00</td></tr>
             <tr><td style="border: 0px;"></td><td colspan="2" style="border: 0px;">โปรโมขันส่วนลด</td><td align="right" style="border: 0px;">฿ 400.00</td></tr>
             <tr><td style="border: 0px;"></td><td colspan="2" style="border: 0px;">ค่าจัดส่งสินค้า</td><td align="right" style="border: 0px;">฿ 400.00</td></tr>
