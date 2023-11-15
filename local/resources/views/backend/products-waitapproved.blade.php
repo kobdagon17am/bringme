@@ -193,6 +193,12 @@
                 },
 
                 {
+                    data: "is_preorder",
+                    title: "สินค้าพรีออเดอร์",
+                    className: "w-10",
+                },
+
+                {
                     data: "qty",
                     title: "จำนวน",
                     className: "w-10",
