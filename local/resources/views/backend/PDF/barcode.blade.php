@@ -7,13 +7,8 @@
     <style>
         body {
             font-family: 'THSarabunNew,Arial,sans-serif';
-            font-size: 16px;
-            font-weight: normal;
-            line-height: 14px;
-            margin-top: 0px;
-            margin-left: 13px;
-            margin-right: 33px;
-            line-height: 13px;
+            font-size: 20px;
+
         }
 
         b {
@@ -30,7 +25,7 @@
 
         /* Set the page size to 40x30mm */
         @page {
-            size: 85mm 25mm;
+            size: 100mm 30mm;
             margin: 0; /* Set margins to 0 if you want no margins */
         }
 
@@ -249,15 +244,14 @@
 </head>
 <body style=" text-align: center;">
     <div class="row text-center">
-        <p style="font-size: 14px">N:{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
+        <p style="font-size: 16px">N:{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
 
-        <div style="margin-left: 10px; margin-top: 5px;text-align: center;">
+        <div style="margin-left: 10px; margin-top: 10px;text-align: center;">
           {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B') !!}
             {{-- {!! DNS1D::getBarcodeHTML('1234567', 'C128B') !!} --}}
-
-
         </div>
-        <p style="font-size: 14px">COD:{{$data['barcode']->barcode}}<</p>
+
+        <p style="font-size: 16px">COD:{{$data['barcode']->barcode}}</p>
     </div>
 
 

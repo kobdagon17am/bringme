@@ -204,11 +204,11 @@
                     className: "w-10",
                 },
 
-                {
-                    data: "approve_status",
-                    title: "สถานะอนุมัติร้านค้า",
-                    className: "w-10 text-center",
-                },
+                // {
+                //     data: "approve_status",
+                //     title: "สถานะอนุมัติร้านค้า",
+                //     className: "w-10 text-center",
+                // },
 
                 {
                     data: "transfer_status",

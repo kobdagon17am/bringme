@@ -22,7 +22,7 @@
                       </div>
                       <div class="px-4 pb-4 flex items-center cursor-pointer relative">
                         <i data-lucide="image" class="w-4 h-4 mr-2"></i> <span class="text-primary mr-1">อัปโหลดไฟล์</span>
-                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="produc_gallery[]" multiple>
+                        <input type="file" class="w-full h-full top-0 left-0 absolute opacity-0 product" name="produc_gallery[]" multiple required>
                       </div>
                     </div>
                   </div>

@@ -110,8 +110,18 @@
 
 
                         </div>
+                        <div class="flex items-center">
+                            <i data-lucide="clipboard" class="w-4 h-4 text-slate-500 mr-2"></i>
+                            ชื่อ:  {{$order_detail['data']['customer_cart_address']->name}}
+                        </div>
+                        <div class="flex items-center mt-3">
+                            <i data-lucide="calendar" class="w-4 h-4 text-slate-500 mr-2"></i>
+                             หมายเลขโทรศัพท์: {{$order_detail['data']['customer_cart_address']->tel}}
+                        </div>
+
 
                         <div class="flex items-center mt-3">
+
                             <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 mr-2">
                             </i>   ที่อยู่: {{$order_detail['data']['customer_cart_address']->address_number}} อ.{{$order_detail['data']['customer_cart_address']->amphures_name}} ต.{{$order_detail['data']['customer_cart_address']->districts_name}}
                              จ.{{$order_detail['data']['customer_cart_address']->provinces_name}} {{$order_detail['data']['customer_cart_address']->zipcode}}
