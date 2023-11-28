@@ -53,6 +53,7 @@ Route::post('api_product_store', 'API1Controller@api_product_store');
 Route::post('api_product_store_more', 'API1Controller@api_product_store_more');
 Route::post('api_product_store_more_pre', 'API1Controller@api_product_store_more_pre');
 Route::post('api_products_transfer_store', 'API1Controller@api_products_transfer_store');
+Route::post('api_products_gal_remove', 'API1Controller@api_products_gal_remove');
 // API2Controller
 Route::post('api_products_transfer_approve', 'API2Controller@api_products_transfer_approve');
 Route::post('api_get_picking_list', 'API2Controller@api_get_picking_list');
