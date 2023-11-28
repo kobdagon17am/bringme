@@ -62,8 +62,6 @@ class OrdersController extends  Controller
     {
 
 
-
-
         return view('backend/orders');
     }
 
@@ -168,6 +166,7 @@ class OrdersController extends  Controller
     {
 
         $resule =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($cart_id);
+//dd($resule);
 
         if ($resule['status'] == 1) {
 
@@ -179,53 +178,73 @@ class OrdersController extends  Controller
         }
     }
 
+
+
+
     public function order_print(Request $rs)
+    {
+        $file = new Filesystem;
+        $file->cleanDirectory(public_path('order_list/'));
+
+        $car_id = $rs->order_id;
+
+        $customer_cart = DB::table('customer_cart_tracking')
+        ->where('customer_cart_id',$car_id)
+        ->get();
+
+        if(count($customer_cart) > 1){
+
+        }else{
+            $data =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($car_id);
+            $status = 0;
+
+            $pdf = PDF::loadView('backend.PDF.order_address', compact('data','status'));
+            for ($i = 0; $i < 1; $i++) {
+                $pathfile = public_path('order_list/'.$car_id.'_'.$i.'.pdf');
+                $pdf->save($pathfile);
+
+            }
+        }
+
+        $this->merger_pdf($car_id);
+        $url =  asset('local/public/order/result_'.$car_id.'.pdf');
+        $data = ['status'=>'success','url'=>$url];
+
+         return $data;
+
+    }
+
+    public function order_print_api($cart_id)
     {
         $file = new Filesystem;
         $file->cleanDirectory(public_path('order_list/'));
 
 
 
+        $customer_cart = DB::table('customer_cart_tracking')
+        ->where('customer_cart_id',$cart_id)
+        ->get();
 
-        // $customer_cart = DB::table('customer_cart')
-        // ->where('id', 3)
-        // ->first();
-        $item_id =1;
+        if(count($customer_cart) > 1){
 
+        }else{
+            $data =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($cart_id);
+            $status = 0;
 
-        $product = DB::table('products')
-            ->where('id', 3)
-            ->first();
-            $item_id =1;
+            $pdf = PDF::loadView('backend.PDF.order_address', compact('data','status'));
+            for ($i = 0; $i < 1; $i++) {
+                $pathfile = public_path('order_list/'.$cart_id.'_'.$i.'.pdf');
+                $pdf->save($pathfile);
 
-        $barcode = DB::table('products_option_2_items')
-            ->where('product_id', $item_id)
-            ->first();
-
-        $data = ['product' => $product, 'barcode' => $barcode];
-
-        // Create a PDF instance using the PDF facade
-        $pdf = PDF::loadView('backend.PDF.order_address', compact('data'));
-
-        // $pdf2 = PDF::loadView('backend.PDF.order_detail', compact('data'));
-
-
-        for ($i = 0; $i < 1; $i++) {
-            $pathfile = public_path('order_list/'.$item_id.'_'.$i.'.pdf');
-            $pdf->save($pathfile);
-
-            // $pathfile = public_path('order_list/'.$item_id.'_detail_'.$i.'.pdf');
-            // $pdf2->save($pathfile);
-
+            }
         }
 
-
-
-        $this->merger_pdf($item_id);
-        $url =  asset('local/public/order/result_'.$item_id.'.pdf');
+        $this->merger_pdf($cart_id);
+        $url =  asset('local/public/order/result_'.$cart_id.'.pdf');
         $data = ['status'=>'success','url'=>$url];
 
-         return $data;
+        return redirect($url);
+
     }
 
     public function merger_pdf($item_id)

@@ -48,11 +48,14 @@
                         <div class="modal-body p-0">
                             <div class="p-5 text-center">
 
-                                <div class="text-3xl mt-5">เลือกจำนวนที่ต้องการพิมพ์</div>
+                                <div class="text-2xl mt-5"><b>ยืนยันการพิมรายการ</b><br>
+                                    {{$products->name_th}}<br>
+                                    <b> Code: </b> {{$products->products_code}}<br>
+                                </div>
                                 <input type="hidden" id="product_id" name="product_id" value="{{$value->product_id}}">
                                 <input type="hidden" id="item_id"  name="item_id" value="{{$value->id}}">
                                 <div class="grid grid-cols-12 gap-2 px-5 text-center mt-5 mx-auto">
-                                    <input type="number" id="count" name="count" class="form-control col-span-12" value="1">
+                                    <input type="hidden" id="count" name="count" class="form-control col-span-12" value="1">
                                 </div>
 
                             </div>
@@ -94,7 +97,7 @@
                         success: function(data){
                             Swal.close();
                             var url_asset = '{{asset('')}}';
-                            const path = url_asset+'local/public/pdf/result.pdf';
+                            const path = data;
                             window.open(path, "_blank");
 
 

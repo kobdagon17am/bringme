@@ -100,3 +100,5 @@ Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc')
 Route::post('api_add_withdraw', 'API3Controller@api_add_withdraw');
 Route::post('api_add_brands', 'API3Controller@api_add_brands');
 Route::get('api_re_db', 'API3Controller@api_re_db');
+
+Route::get('label/print/{cart_id}', 'Admin\OrdersController@order_print_api')->name('label/print');

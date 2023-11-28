@@ -116,13 +116,13 @@ class ProductsController extends Controller
 
         }
 
-        $this->merger_pdf();
-        $url =  asset('local/public/pdf/result.pdf');
+        $this->merger_pdf($rs->item_id);
+        $url =  asset('local/public/barcode/result_'.$rs->item_id.'.pdf');
 
          return $url;
     }
 
-    public function merger_pdf()
+    public function merger_pdf($item_id)
     {
 
         $pdf = PDFMerger::init();
@@ -134,7 +134,8 @@ class ProductsController extends Controller
             }
         }
         $pdf->merge();
-        $fileName = public_path('pdf/' . 'result' . '.pdf');
+        $fileName = public_path('barcode/result_'.$item_id.'.pdf');
+
         // return $pdf->stream();
         $pdf->save(($fileName));
         // $pdf->save(public_path($path_file));
@@ -923,12 +924,12 @@ class ProductsController extends Controller
 
 
         $products_item = DB::table('products_item')
-            ->select('products_item.*', 'customer.name as stor_name', 'products_item.id as item_id',
+            ->select('products_item.*', 'store.store_name as stor_name', 'products_item.id as item_id',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name')
             // ->where('status','=','success')
             // ->where('customer_type', 2)
-            ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
+            ->leftJoin('store', 'store.customer_id', '=', 'products_item.customer_id')
             ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.approve_status', 0);
