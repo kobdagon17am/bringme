@@ -25,7 +25,7 @@
 
         /* Set the page size to 40x30mm */
         @page {
-            size: 100mm 30mm;
+            size: 80mm 30mm;
             margin: 0; /* Set margins to 0 if you want no margins */
         }
 

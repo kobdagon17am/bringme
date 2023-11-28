@@ -62,8 +62,6 @@ class OrdersController extends  Controller
     {
 
 
-
-
         return view('backend/orders');
     }
 
@@ -180,6 +178,9 @@ class OrdersController extends  Controller
         }
     }
 
+
+
+
     public function order_print(Request $rs)
     {
         $file = new Filesystem;
@@ -210,6 +211,39 @@ class OrdersController extends  Controller
         $data = ['status'=>'success','url'=>$url];
 
          return $data;
+
+    }
+
+    public function order_print_api($cart_id)
+    {
+        $file = new Filesystem;
+        $file->cleanDirectory(public_path('order_list/'));
+
+
+
+        $customer_cart = DB::table('customer_cart_tracking')
+        ->where('customer_cart_id',$cart_id)
+        ->get();
+
+        if(count($customer_cart) > 1){
+
+        }else{
+            $data =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($cart_id);
+            $status = 0;
+
+            $pdf = PDF::loadView('backend.PDF.order_address', compact('data','status'));
+            for ($i = 0; $i < 1; $i++) {
+                $pathfile = public_path('order_list/'.$cart_id.'_'.$i.'.pdf');
+                $pdf->save($pathfile);
+
+            }
+        }
+
+        $this->merger_pdf($cart_id);
+        $url =  asset('local/public/order/result_'.$cart_id.'.pdf');
+        $data = ['status'=>'success','url'=>$url];
+
+        return redirect($url);
 
     }
 
