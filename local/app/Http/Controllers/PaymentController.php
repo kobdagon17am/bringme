@@ -58,6 +58,38 @@ class PaymentController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+     public function api_test(){
+        try {
+
+            $url = '103.208.27.85/APIGetData/APIGetData/GetSEllByData';
+            $curl = curl_init($url);
+            $fields = array(
+                'Date' => '2023-10-01',
+                'CheckSum' => 'f06b57aed7043bb4f0c148440aa98c31',
+            );
+
+            $fields_string = json_encode($fields);
+            // $fields_string = http_build_query($fields);
+
+
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Authorization: 16fk7b3a-db88-4d79-bzck-29e52attq541'
+            ]);
+
+            $response2 = curl_exec($curl);
+            curl_close($curl);
+            $response2 =  json_decode($response2);
+
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+    }
+
     public function register_partner(){$data['customer'] = Customer::all();
         $data['provinces'] = DB::table('provinces')->get();
         $data['amphures'] = DB::table('amphures')->get();

@@ -1592,6 +1592,8 @@ class API1Controller extends Controller
             }
 
             $brand = Brands::where('id',$product_detail->brands_id)->first();
+            $category = Category::where('id',$product_detail->category_id)->first();
+            $storage_method = DB::table('storage_method')->where('id',$product_detail->storage_method_id)->first();
 
             $stock_items = StockItems::whereIn('stock_lot_id',$stock_lot_all_arr)->where('product_id',$r->product_id)->get();
             $stock_items_pre = [];
@@ -1608,6 +1610,14 @@ class API1Controller extends Controller
 
             $stock_items_count = count($stock_items);
             $stock_items_count_pre = count($stock_items_pre);
+
+            // $products_option_head1 = ProductsOptionHead::where('product_id',$r->product_id)->where('option_type',1)->first();
+            // $products_option_head2 = ProductsOptionHead::where('product_id',$r->product_id)->where('option_type',2)->first();
+
+            // $products_option_1 = ProductsOption1::where('product_id',$r->product_id)->get();
+            // $products_option_2 = ProductsOption2::where('product_id',$r->product_id)->get();
+
+            // $products_option_2_items = ProductsOption2Items::where('product_id',$r->product_id)->
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -1631,6 +1641,12 @@ class API1Controller extends Controller
                     'stock_items_pre' => $stock_items_pre,
                     'stock_items_count' => $stock_items_count,
                     'stock_items_count_pre' => $stock_items_count_pre,
+                    'category' => $category,
+                    'storage_method' => $storage_method,
+                    // 'products_option_head1' => $products_option_head1,
+                    // 'products_option_head2' => $products_option_head2,
+                    // 'products_option_1' => $products_option_1,
+                    // 'products_option_2' => $products_option_2,
                 ],
             ]);
         }else{
@@ -1983,6 +1999,62 @@ class API1Controller extends Controller
                     //     $cart_other->pay_status = 1;
                     //     $cart_other->save();
                     // }
+
+                //     try
+                //     {
+                //     // เชื่อม API Makesend
+                //     $url = url('api/api_search_person_date');
+                //     $fields = array(
+                //         'activity_type_id' => $r->activity_type_id,
+                //         'min_price' => '',
+                //         'max_price' => '',
+                //         'sex_type' => '',
+                //         'member_name' => $r->member_name,
+                //         'date' => $r->date,
+                //         'time_start' => $r->time_start,
+                //         'time_end' => $r->time_end,
+                //         'lat' => $r->lat,
+                //         'long' => $r->long,
+                //         'member_id' => $r->member_id,
+                //     );
+
+                //     $curl = curl_init($url);
+                //     $fields_string = http_build_query($fields);
+
+                //     curl_setopt($curl, CURLOPT_URL, $url);
+                //     curl_setopt($curl, CURLOPT_POST, TRUE);
+                //     curl_setopt($curl, CURLOPT_POSTFIELDS, $fields_string);
+                //     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                //     // curl_setopt($curl, CURLOPT_HEADER, false);
+                //     // curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                //         'Authorization: 16fk7b3a-db88-4d79-bzck-29e52attq541',
+                //     ]);
+
+                //     $response1 = curl_exec($curl);
+                //     curl_close($curl);
+                //     $response1 =  json_decode($response1);
+                // }
+                //     catch (\Exception $e) {
+                //         DB::rollback();
+                //         return response()->json([
+                //             'message' =>  'เชื่อมต่อ API ไม่สำเร็จ',
+                //             'status' => 0,
+                //             'data' => '',
+                //         ]);
+                //     }
+
+                //     // dd($response1);
+
+                //     if($response1->message != 'success'){
+                //         DB::rollback();
+                //         // return $e->getMessage();
+                //         return response()->json([
+                //             'message' =>  'เชื่อมต่อ API ไม่สำเร็จ2',
+                //             'status' => 0,
+                //             'data' => '',
+                //         ]);
+                //     }
 
                     $cart_products_id = explode(',',$r->cart_products_id);
                     $arr_pro = CustomerCartProduct::select('customer_cart_product.*')
@@ -2553,7 +2625,9 @@ class API1Controller extends Controller
             // ->where('products_item.transfer_status','!=',3)
             ->where('products_item.is_preorder',1)
             ->where('products.display_status',1)
+             ->orderBy('products_item.transfer_status','asc')
             ->orderBy('products.created_at','desc')
+            ->orderBy('products_item.transfer_status','asc')
             ->get();
 
             $product_not_show = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
@@ -2725,38 +2799,41 @@ class API1Controller extends Controller
                 // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
 
                 // เพิ่มสินค้าหลัก
-                $products = new Products();
+                if($r->function_type == 'edit_product'){
+                    $products = Products::where('id',@$r->product_id)->first();
+                }
+                if($r->function_type == 'add_product'){
+                    $products = new Products();
+                    $products->qty = 0;
+                    $products->min_price = 0;
+                    $products->max_price = 0;
+                }
                 $products->name_th = $r->name_th;
                 $products->name_en = $r->name_en;
-                $products->name_th = $r->name_th;
-                $products->detail_th = $r->name_th;
+                $products->detail_th = $r->detail_th;
                 $products->detail_en = $r->detail_en;
+
+                $products->shelf_lift = $r->shelf_lift;
+                $products->stock_cut_off = $r->stock_cut_off;
+
                 $products->category_id = $r->category_id;
                 $products->brands_id = $r->brands_id;
-                // $products->shelf_lift = $r->shelf_lift;
                 $products->storage_method_id = $r->storage_method_id;
                 $products->store_id = $store->id;
                 $products->customer_id = $r->user_id;
-                // $products->price = $r->price;
-                $products->qty = 0;
-                // $products->stock_cut_off = $r->stock_cut_off;
-                // $products->production_date = $r->production_date;
-                // $products->shipping_date = $r->shipping_date;
                 $products->normal_active = $r->normal_active;
                 $products->preorder_active = $r->preorder_active;
-                $products->preorder_shipping_date = $r->shipping_date_pre;
-                $products->min_price = 0;
-                $products->max_price = 0;
                 $products->save();
 
-                $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
-                $products->products_code = 'BM'.$products_code.'B';
-                $products->barcode = $products->id.date('YmdHis');
+                if($r->function_type == 'add_product'){
+                    $products_code = str_pad($products->id, 6, '0', STR_PAD_LEFT);
+                    $products->products_code = 'BM'.$products_code.'B';
+                    $products->barcode = $products->id.date('YmdHis');
+                    $products->save();
+                }
 
-                $products->save();
-
+                if($r->function_type == 'add_product'){
                 if($products->normal_active==1){
-                // เพิ่ม item สินค้า storage_method_id brands_id
                 $products_item = new ProductsItem();
                 $products_item->product_id = $products->id;
                 $products_item->customer_id = $r->user_id;
@@ -2764,10 +2841,7 @@ class API1Controller extends Controller
                 $products_item->name_en = $r->name_en;
                 $products_item->detail_th = $r->detail_th;
                 $products_item->detail_en = $r->detail_en;
-                // $products_item->category_id = $r->category_id;
-                // $products_item->brands_id = $r->brands_id;
                 $products_item->shelf_lift = $r->shelf_lift;
-                // $products_item->storage_method_id = $r->storage_method_id;
                 $products_item->store_id = $store->id;
                 $products_item->price = $r->price;
                 $products_item->qty = $r->qty;
@@ -2775,12 +2849,10 @@ class API1Controller extends Controller
                 $products_item->production_date = $r->production_date;
                 $products_item->shipping_date = $r->shipping_date;
                 $products_item->products_code = $products->products_code;
-                // $products_item->barcode = $products->barcode;
                 $products_item->save();
                 }
-
                 if($r->preorder_active == 1){
-                    // เพิ่ม item สินค้า storage_method_id brands_id
+                    // เพิ่ม item สินค้า
                     $products_item_pre = new ProductsItem();
                     $products_item_pre->product_id = $products->id;
                     $products_item_pre->customer_id = $r->user_id;
@@ -2794,13 +2866,11 @@ class API1Controller extends Controller
                     $products_item_pre->qty = 0;
                     $products_item_pre->stock_cut_off = $r->stock_cut_off;
                     $products_item_pre->production_date = $r->production_date;
-                    $products_item_pre->shipping_date = $products->preorder_shipping_date;
+                    $products_item_pre->shipping_date = $r->shipping_date_pre;
                     $products_item_pre->products_code = $products->products_code;
                     $products_item_pre->is_preorder = 1;
                     $products_item_pre->save();
                 }
-
-
                 $price_arr = [];
                 $qty_all = 0;
                 if($r->yes_option == '1'){
@@ -2867,16 +2937,15 @@ class API1Controller extends Controller
                         $qty_all += $pr_list->qty;
 
                         $new_barcode = $this->generateRandomString(10);
-                        // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
                         $products_option_2_items->barcode = $new_barcode;
                         $products_option_2_items->save();
                         }
                     }
 
-                    $products_item->qty = $qty_all;
-                    $products_item->save();
-
-
+                    if($products->normal_active==1){
+                        $products_item->qty = $qty_all;
+                        $products_item->save();
+                        }
                 }else{
                     $products_option_head1 = new ProductsOptionHead();
                     $products_option_head1->product_id = $products->id;
@@ -2926,7 +2995,6 @@ class API1Controller extends Controller
                     array_push($price_arr, $r->price);
 
                     $new_barcode = $this->generateRandomString(10);
-                    // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
                     $products_option_2_items->barcode = $new_barcode;
                     $products_option_2_items->save();
                 }
@@ -2942,10 +3010,12 @@ class API1Controller extends Controller
                     $products->min_price = $r->price;
                     $products->max_price = $r->price;
                 }
+            }
 
                 $products->save();
 
                     $gal = explode('|',$r->images);
+                    $gal_use = ProductsGallery::where('product_id',$products->id)->where('use_profile',1)->first();
                     foreach ($gal as $key => $img) {
                         if($img!=''){
                             $image_64 = $img;
@@ -2963,15 +3033,19 @@ class API1Controller extends Controller
                             $gal->name = $imageName;
                             $gal->product_id = $products->id;
                             if($key==0){
-                                $gal->use_profile = 1;
+                                if(!$gal_use){
+                                    $gal->use_profile = 1;
+                                }else{
+                                    $gal->use_profile = 0;
+                                }
                             }else{
                                 $gal->use_profile = 0;
                             }
                             $gal->save();
-                            // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
                         }
                 }
 
+                if($r->function_type == 'add_product'){
                 if($r->preorder_active == 1){
 
                     $stock_pre = new StockPre();
@@ -2986,7 +3060,6 @@ class API1Controller extends Controller
                     $stock_lot_pre->customer_id = $products->customer_id;
                     $stock_lot_pre->store_id = $store->id;
                     $stock_lot_pre->date_in_stock = date('Y-m-d');
-                    // $stock_lot_pre->lot_expired_date = '9999-'.date('m-d');
                     $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
                     $stock_lot_pre->lot_number = date('YmdHis');
                     $stock_lot_pre->qty = 0;
@@ -3003,8 +3076,6 @@ class API1Controller extends Controller
                         $stock_items_pre->customer_id = $products->customer_id;
                         $stock_items_pre->products_option_2_items_id = $pro->id;
                         $stock_items_pre->products_item_id = $products_item_pre->id;
-                        // $stock_items_pre->name = $pro->name_th;
-
                         if($products_option_1->name_th!=''){
                             $stock_items_pre->name = $products->name_th.' : '.$products_option_1->name_th.' '.$products_option_2->name_th;
                         }else{
@@ -3018,6 +3089,7 @@ class API1Controller extends Controller
                     }
 
                 }
+            }
 
                 DB::commit();
                 return response()->json([
@@ -3047,6 +3119,11 @@ class API1Controller extends Controller
                 }
     }
 
+    public function api_products_gal_remove(Request $r)
+    {
+        $gal_use = ProductsGallery::where('id')->where('product_id',$products->id)->where('use_profile',1)->first();
+    }
+
     public function api_product_store_more_pre(Request $r)
     {
         DB::beginTransaction();
@@ -3054,28 +3131,25 @@ class API1Controller extends Controller
             {
                 $store = Store::where('customer_id',$r->user_id)->first();
                 // $r->production_date = date('Y-m-d', strtotime($r->production_date));
-                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date)); stock_cut_off
 
-                // เพิ่มสินค้าหลัก
-                // $products = new Products();
+                // เพิ่มรอบจัดส่ง
                 $products = Products::where('id',$r->product_id)->first();
-
                 // $products->name_th = $r->name_th;
                 // $products->name_en = $r->name_en;
-                // $products->name_th = $r->name_th;
-                // $products->detail_th = $r->name_th;
+                // $products->detail_th = $r->detail_th;
                 // $products->detail_en = $r->detail_en;
                 // $products->category_id = $r->category_id;
                 // $products->brands_id = $r->brands_id;
-                // // $products->shelf_lift = $r->shelf_lift;
+                // $products->shelf_lift = $r->shelf_lift;
                 // $products->storage_method_id = $r->storage_method_id;
                 // $products->store_id = $store->id;
                 // $products->customer_id = $r->user_id;
-                // // $products->price = $r->price;
+                // $products->price = $r->price;
                 // $products->qty = 0;
-                // // $products->stock_cut_off = $r->stock_cut_off;
-                // // $products->production_date = $r->production_date;
-                // // $products->shipping_date = $r->shipping_date;
+                // $products->stock_cut_off = $r->stock_cut_off;
+                // $products->production_date = $r->production_date;
+                // $products->shipping_date = $r->shipping_date;
                 // $products->normal_active = $r->normal_active;
                 // $products->preorder_active = $r->preorder_active;
                 // $products->preorder_shipping_date = $r->shipping_date_pre;
@@ -3089,27 +3163,51 @@ class API1Controller extends Controller
 
                 // $products->save();
 
-                // เพิ่ม item สินค้า storage_method_id brands_id
-                $products_item = new ProductsItem();
-                $products_item->product_id = $products->id;
-                $products_item->customer_id = $r->user_id;
-                $products_item->name_th = $products->name_th;
-                $products_item->name_en = $products->name_en;
-                $products_item->detail_th = $products->detail_th;
-                $products_item->detail_en = $products->detail_en;
-                // $products_item->category_id = $r->category_id;
-                // $products_item->brands_id = $r->brands_id;
-                $products_item->shelf_lift = $r->shelf_lift;
-                // $products_item->storage_method_id = $r->storage_method_id;
-                $products_item->store_id = $store->id;
-                $products_item->price = $r->price;
-                $products_item->qty = $r->qty;
-                $products_item->stock_cut_off = $r->stock_cut_off;
-                $products_item->production_date = $r->production_date;
-                $products_item->shipping_date = $r->shipping_date;
-                $products_item->products_code = $products->products_code;
-                // $products_item->barcode = $products->barcode;
-                $products_item->save();
+                // if($products->normal_active==1){
+                // // เพิ่ม item สินค้า storage_method_id brands_id
+                // $products_item = new ProductsItem();
+                // $products_item->product_id = $products->id;
+                // $products_item->customer_id = $r->user_id;
+                // $products_item->name_th = $r->name_th;
+                // $products_item->name_en = $r->name_en;
+                // $products_item->detail_th = $r->detail_th;
+                // $products_item->detail_en = $r->detail_en;
+                // // $products_item->category_id = $r->category_id;
+                // // $products_item->brands_id = $r->brands_id;
+                // $products_item->shelf_lift = $r->shelf_lift;
+                // // $products_item->storage_method_id = $r->storage_method_id;
+                // $products_item->store_id = $store->id;
+                // $products_item->price = $r->price;
+                // $products_item->qty = $r->qty;
+                // $products_item->stock_cut_off = $r->stock_cut_off;
+                // $products_item->production_date = $r->production_date;
+                // $products_item->shipping_date = $r->shipping_date;
+                // $products_item->products_code = $products->products_code;
+                // // $products_item->barcode = $products->barcode;
+                // $products_item->save();
+                // }
+
+                if($products->preorder_active == 1){
+                    // เพิ่ม item สินค้า storage_method_id brands_id
+                    $products_item_pre = new ProductsItem();
+                    $products_item_pre->product_id = $products->id;
+                    $products_item_pre->customer_id = $r->user_id;
+                    $products_item_pre->name_th = $r->name_th;
+                    $products_item_pre->name_en = $r->name_en;
+                    $products_item_pre->detail_th = $r->detail_th;
+                    $products_item_pre->detail_en = $r->detail_en;
+                    $products_item_pre->shelf_lift = $r->shelf_lift;
+                    $products_item_pre->store_id = $store->id;
+                    $products_item_pre->price = $r->price;
+                    $products_item_pre->qty = 0;
+                    $products_item_pre->stock_cut_off = $r->stock_cut_off;
+                    $products_item_pre->production_date = $r->production_date;
+                    $products_item_pre->shipping_date = $products->preorder_shipping_date;
+                    $products_item_pre->products_code = $products->products_code;
+                    $products_item_pre->is_preorder = 1;
+                    $products_item_pre->save();
+                }
+
 
                 $price_arr = [];
                 $qty_all = 0;
@@ -3156,7 +3254,15 @@ class API1Controller extends Controller
                         // สร้างจำนวนสินค้า
                         $products_option_2_items = new ProductsOption2Items();
                         $products_option_2_items->product_id = $products->id;
-                        $products_option_2_items->products_item_id = $products_item->id;
+
+                        // if($products->normal_active==1){
+                        //     $products_option_2_items->products_item_id = $products_item->id;
+                        // }
+
+                        if($products->preorder_active==1){
+                            $products_option_2_items->products_item_pre_id = $products_item_pre->id;
+                        }
+
                         $products_option_2_items->option_1_id = $products_option_1->id;
                         $products_option_2_items->option_2_id = $products_option_2_id->id;
                         $products_option_2_items->price = $pr_list->price;
@@ -3175,8 +3281,10 @@ class API1Controller extends Controller
                         }
                     }
 
-                    $products_item->qty = $qty_all;
-                    $products_item->save();
+                    // if($products->normal_active==1){
+                    // $products_item->qty = $qty_all;
+                    // $products_item->save();
+                    // }
 
 
                 }else{
@@ -3208,11 +3316,19 @@ class API1Controller extends Controller
 
                     $products_option_2_items = new ProductsOption2Items();
                     $products_option_2_items->product_id = $products->id;
-                    $products_option_2_items->products_item_id = $products_item->id;
+
+                    // if($products->normal_active==1){
+                    //     $products_option_2_items->products_item_id = $products_item->id;
+                    // }
+
+                    if($products->preorder_active==1){
+                        $products_option_2_items->products_item_pre_id = $products_item_pre->id;
+                    }
+
                     $products_option_2_items->option_1_id = $products_option_1->id;
                     $products_option_2_items->option_2_id = $products_option_2->id;
                     $products_option_2_items->price = $r->price;
-                    $products_option_2_items->qty = $r->qty;
+                    $products_option_2_items->qty = 0;
                     $products_option_2_items->name_th = '';
                     $products_option_2_items->name_en = '';
                     $products_option_2_items->save();
@@ -3224,6 +3340,7 @@ class API1Controller extends Controller
                     $products_option_2_items->barcode = $new_barcode;
                     $products_option_2_items->save();
                 }
+
                 if(count($price_arr) > 1){
                     $products->min_price = min($price_arr);
                     $products->max_price = max($price_arr);
@@ -3265,39 +3382,17 @@ class API1Controller extends Controller
                 //         }
                 // }
 
-                // if($r->preorder_active == 1){
+                if($products->preorder_active == 1){
 
-                    // เพิ่ม item สินค้า storage_method_id brands_id
-                    $products_item_pre = new ProductsItem();
-                    $products_item_pre->product_id = $products->id;
-                    $products_item_pre->customer_id = $r->user_id;
-                    $products_item_pre->name_th = $r->name_th;
-                    $products_item_pre->name_en = $r->name_en;
-                    $products_item_pre->detail_th = $r->detail_th;
-                    $products_item_pre->detail_en = $r->detail_en;
-                    // $products_item->category_id = $r->category_id;
-                    // $products_item->brands_id = $r->brands_id;
-                    $products_item_pre->shelf_lift = $r->shelf_lift;
-                    // $products_item->storage_method_id = $r->storage_method_id;
-                    $products_item_pre->store_id = $store->id;
-                    $products_item_pre->price = $r->price;
-                    $products_item_pre->qty = 0;
-                    $products_item_pre->stock_cut_off = $r->stock_cut_off;
-                    $products_item_pre->production_date = $r->production_date;
-                    $products_item_pre->shipping_date = $products->preorder_shipping_date;
-                    $products_item_pre->products_code = $products->products_code;
-                    // $products_item->barcode = $products->barcode;
-                    $products_item_pre->is_preorder = 1;
-                    $products_item_pre->save();
-
-                    // $products_item->is_preorder = 1;
-                    // $products_item->save();
-
-                    $stock_pre = new StockPre();
-                    $stock_pre->product_id = $products->id;
-                    $stock_pre->store_id = $store->id;
-                    $stock_pre->customer_id = $products->customer_id;
-                    $stock_pre->save();
+                    $stock_pre = StockPre::where('product_id',$products->id)->where('store_id',$store->id)
+                    ->where('customer_id',$products->customer_id)->first();
+                    if(!$stock_pre){
+                        $stock_pre = new StockPre();
+                        $stock_pre->product_id = $products->id;
+                        $stock_pre->store_id = $store->id;
+                        $stock_pre->customer_id = $products->customer_id;
+                        $stock_pre->save();
+                    }
 
                     $stock_lot_pre = new StockLotPre();
                     $stock_lot_pre->stock_id = $stock_pre->id;
@@ -3336,7 +3431,7 @@ class API1Controller extends Controller
                         $stock_items_pre->save();
                     }
 
-                // }
+                }
 
                 DB::commit();
                 return response()->json([

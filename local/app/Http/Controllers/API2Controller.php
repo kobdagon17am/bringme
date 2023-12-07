@@ -399,7 +399,9 @@ class API2Controller extends  Controller
 
     public function api_get_picking_list(Request $r)
     {
-        $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',0)->orderBy('shipping_date','asc')->get();
+        $cart = CustomerCart::where('status',2)
+        // ->where('shipping_date','<=',date('Y-m-d'))
+        ->where('picking_status',0)->orderBy('shipping_date','asc')->get();
         $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -413,7 +415,9 @@ class API2Controller extends  Controller
 
     public function api_get_scan_list(Request $r)
     {
-        $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
+        $cart = CustomerCart::where('status',2)
+        // ->where('shipping_date','<=',date('Y-m-d'))
+        ->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
         $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -427,9 +431,13 @@ class API2Controller extends  Controller
 
     public function api_get_shipping_list(Request $r)
     {
-        $cart = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
+        $cart = CustomerCart::where('status',2)
+        // ->where('shipping_date','<=',date('Y-m-d'))
+        ->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
         $status = [1,2];
-        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->whereIn('transfer_status',$status)->orderBy('shipping_date','desc')->get();
+        $cart_success = CustomerCart::where('status',2)
+        // ->where('shipping_date','<=',date('Y-m-d'))
+        ->where('picking_status',1)->where('scan_status',1)->whereIn('transfer_status',$status)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -892,7 +900,7 @@ class API2Controller extends  Controller
                     }
                     $tracking_no1->customer_cart_id = $cart->id;
                     $tracking_no1->customer_id = $cart->customer_id;
-                    $tracking_no1->tracking_no = '';
+                    $tracking_no1->tracking_no = 'BM'.$cart->customer_id.$cart->id.date('YmdHis');
                     $tracking_no1->transfer_type = 1;
                     $tracking_no1->cod = 0;
                     $tracking_no1->no = 1;
@@ -903,7 +911,7 @@ class API2Controller extends  Controller
                 foreach($customer_cart_product as $c){
                     $customer_cart_tracking_item = new CustomerCartTrackingItem();
                     $customer_cart_tracking_item->customer_cart_id = $cart->id;
-                    $customer_cart_tracking_item->customer_id = $cart->customer_id;
+                    $customer_cart_tracking_item->customer_Sid = $cart->customer_id;
                     $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1->id;
                     $customer_cart_tracking_item->customer_cart_product_id = $c->id;
                     $customer_cart_tracking_item->qty = $c->qty;
@@ -1853,52 +1861,79 @@ class API2Controller extends  Controller
 
     public function api_get_shipping_price(Request $r){
 
-            $shipping_type_price_1 = DB::table('shipping_type_price')
-            ->select('shipping_price')
-            ->where('shipping_type_id',1)
-            ->where('min_price','<=',$r->product_total_price)
-            ->where('max_price','>=',$r->product_total_price)
-            ->orderBy('max_price','asc')
-            ->first();
-            if($shipping_type_price_1){
-                $shipping_price_1 = $shipping_type_price_1->shipping_price;
-            }else{
-                $shipping_price_1 = 0;
-            }
+        $shipping_type_price_arr = [];
+        $shipping_type_price = DB::table('shipping_type_price')
+        // ->select('shipping_price')
+        // ->where('shipping_type_id',1)
+        ->where('min_price','<=',$r->product_total_price)
+        ->where('max_price','>=',$r->product_total_price)
+        ->orderBy('max_price','asc')
+        ->get();
 
-            $shipping_type_price_2 = DB::table('shipping_type_price')
-            ->select('shipping_price')
-            ->where('shipping_type_id',2)
-            ->where('min_price','<=',$r->product_total_price)
-            ->where('max_price','>=',$r->product_total_price)
-            ->orderBy('max_price','asc')
-            ->first();
-            if($shipping_type_price_2){
-                $shipping_price_2 = $shipping_type_price_2->shipping_price;
-            }else{
-                $shipping_price_2 = 0;
-            }
+        $shipping_type_id_get = 0;
 
-            $shipping_type_price_3 = DB::table('shipping_type_price')
-            ->select('shipping_price')
-            ->where('shipping_type_id',3)
-            ->where('min_price','<=',$r->product_total_price)
-            ->where('max_price','>=',$r->product_total_price)
-            ->orderBy('max_price','asc')
-            ->first();
-            if($shipping_type_price_3){
-                $shipping_price_3 = $shipping_type_price_3->shipping_price;
+        $provinces = DB::table('provinces')->where('id',$r->provinces_id)->first();
+        if($provinces){
+            if($provinces->shipping_type_id != null){
+                $shipping_type_id_get = $provinces->shipping_type_id;
             }else{
-                $shipping_price_3 = 0;
+                $shipping_type_id_get = 7;
             }
+        }
+
+        foreach( $shipping_type_price as $p){
+            $shipping_type_price_arr[$p->shipping_type_id] = $p->shipping_price;
+        }
+
+            // $shipping_type_price_1 = DB::table('shipping_type_price')
+            // ->select('shipping_price')
+            // ->where('shipping_type_id',1)
+            // ->where('min_price','<=',$r->product_total_price)
+            // ->where('max_price','>=',$r->product_total_price)
+            // ->orderBy('max_price','asc')
+            // ->first();
+
+            // if($shipping_type_price_1){
+            //     $shipping_price_1 = $shipping_type_price_1->shipping_price;
+            // }else{
+            //     $shipping_price_1 = 0;
+            // }
+
+            // $shipping_type_price_2 = DB::table('shipping_type_price')
+            // ->select('shipping_price')
+            // ->where('shipping_type_id',2)
+            // ->where('min_price','<=',$r->product_total_price)
+            // ->where('max_price','>=',$r->product_total_price)
+            // ->orderBy('max_price','asc')
+            // ->first();
+            // if($shipping_type_price_2){
+            //     $shipping_price_2 = $shipping_type_price_2->shipping_price;
+            // }else{
+            //     $shipping_price_2 = 0;
+            // }
+
+            // $shipping_type_price_3 = DB::table('shipping_type_price')
+            // ->select('shipping_price')
+            // ->where('shipping_type_id',3)
+            // ->where('min_price','<=',$r->product_total_price)
+            // ->where('max_price','>=',$r->product_total_price)
+            // ->orderBy('max_price','asc')
+            // ->first();
+            // if($shipping_type_price_3){
+            //     $shipping_price_3 = $shipping_type_price_3->shipping_price;
+            // }else{
+            //     $shipping_price_3 = 0;
+            // }
 
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => [
-                    'shipping_price_1' => $shipping_price_1,
-                    'shipping_price_2' => $shipping_price_2,
-                    'shipping_price_3' => $shipping_price_3,
+                    'shipping_type_price_arr' => $shipping_type_price_arr,
+                    'shipping_type_id_get' => $shipping_type_id_get,
+                    // 'shipping_price_1' => $shipping_price_1,
+                    // 'shipping_price_2' => $shipping_price_2,
+                    // 'shipping_price_3' => $shipping_price_3,
                 ],
             ]);
     }

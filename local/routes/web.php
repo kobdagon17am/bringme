@@ -23,6 +23,7 @@ Route::get('/c', function () {
   });
 
 Route::get('payment_form', 'PaymentController@payment_form');
+Route::get('api_test', 'PaymentController@api_test');
 Route::post('payment_form/complete', 'PaymentController@payment_complete')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::post('payment_complete', 'PaymentController@payment_complete_backend')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
