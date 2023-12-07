@@ -13,7 +13,7 @@
                     <div class="flex flex-1 px-5 items-center justify-center lg:justify-start">
                         <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative" >
                             <b class="mt-5">COD:{{$value->barcode}} {{$value->name_th}}</b>
-                            <div class="">{!! DNS1D::getBarcodeHTML("$value->barcode", 'C128B') !!}
+                            <div class="">{!! DNS1D::getBarcodeHTML("$value->barcode", 'C128B',2,40) !!}
 
                             <br>
 

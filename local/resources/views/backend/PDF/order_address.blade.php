@@ -13,7 +13,7 @@
             border-collapse: collapse;
              /* margin: 1px;
              padding: 1px; */
-            font-family: 'THSarabunNew,Arial,sans-serif';
+            font-family: 'kanit,Arial,sans-serif';
             font-weight: normal;
             /* line-height: 16px;
             margin-top: 0px;
@@ -28,8 +28,8 @@
             margin: 10px; /* Set margins to 0 if you want no margins */
         }
         body{
-            font-family: 'THSarabunNew-b,Arial,sans-serif';
-            font-size: 13px;
+            font-family: 'kanit-b,Arial,sans-serif';
+            font-size: 10px;
             margin-top: 0px;
             margin-bottom: 0px; /* Adjust the value to reduce the space as needed */
             margin-top: 0px;
@@ -59,23 +59,23 @@
             <tr>
                 <th align="left">
                     @if($data['data']['cart']->shipping_name_id == 1)
-                    <p style="font-size: 16px"> <img src="{{asset('assets/img/MAKESEND_b.png')}}" alt="Girl in a jacket" height="30"><br>
+                    <p style="font-size: 10px"> <img src="{{asset('assets/img/MAKESEND_b.png')}}" alt="Girl in a jacket" height="30"><br>
                     @endif
 
                     @if($data['data']['cart']->shipping_name_id == 2)
-                    <p style="font-size: 16px"> <img src="{{asset('assets/img/MAKESEND_b.png')}}" alt="Girl in a jacket" height="30"><br>
+                    <p style="font-size: 10px"> <img src="{{asset('assets/img/MAKESEND_b.png')}}" alt="Girl in a jacket" height="30"><br>
                     @endif
 
                     @if($data['data']['cart']->shipping_name_id == 3)
-                    <p style="font-size: 16px"> <img src="{{asset('assets/img/logo-print.png')}}" alt="Girl in a jacket" height="30"><br>
+                    <p style="font-size: 10px"> <img src="{{asset('assets/img/logo-print.png')}}" alt="Girl in a jacket" height="30"><br>
                     @endif
 
                     @if($data['data']['cart']->shipping_name_id == 4)
-                    <p style="font-size: 16px"> <img src="{{asset('assets/img/f_b.png')}}" alt="Girl in a jacket" height="30"><br>
+                    <p style="font-size: 10px"> <img src="{{asset('assets/img/f_b.png')}}" alt="Girl in a jacket" height="30"><br>
                     @endif
 
                     @if($data['data']['cart']->shipping_name_id == 5)
-                    <p style="font-size: 16px"> <img src="{{asset('assets/img/nim_b.png')}}" alt="Girl in a jacket" height="30"><br>
+                    <p style="font-size: 10px"> <img src="{{asset('assets/img/nim_b.png')}}" alt="Girl in a jacket" height="30"><br>
                     @endif
 
 
@@ -99,8 +99,8 @@
     <table style="width: 100%;border: 1px solid black;padding: 0px;margin: 0px" border="1">
         <thead>
             <tr>
-                <td style="background-color:#000000;padding-left: 2px;"><font style="color: #ffff;font-size: 16px;margin-left: 5px;margin-top: 0px;">ชื่อผู้ส่ง(Sender)</font></td>
-                <td style="background-color:#000000;padding-left: 2px;"><font style="color: #ffff;font-size: 16px;margin-left: 5px;margin-top: 0px;">ผู้รับ(Receiver)</font></td>
+                <td style="background-color:#000000;padding-left: 2px;"><font style="color: #ffff;font-size: 10px;margin-left: 5px;margin-top: 0px;">ชื่อผู้ส่ง(Sender)</font></td>
+                <td style="background-color:#000000;padding-left: 2px;"><font style="color: #ffff;font-size: 10px;margin-left: 5px;margin-top: 0px;">ผู้รับ(Receiver)</font></td>
             </tr>
             <tr>
 
@@ -153,7 +153,7 @@
         </thead>
     </table>
     {{-- <p style="padding: 0px;margin: 0px;">*หากมีปัญหาเกี่ยวกับสินค้ากรุณาติตต่อบริษัทที่ท่านสั่งซื้อสินคำโดยตรงและหากหัสดุดีกลับกรุณานำส่ง ตามชื่อผู้ฝากส่งรายการสินค้า</p> --}}
-    <p style="text-align: center;font-size: 16px;padding: 0px;margin: 0px;">รายการสินค้า</p>
+    <p style="text-align: center;font-size: 10px;padding: 0px;margin: 0px;">รายการสินค้า</p>
     <table style="width: 100%;border: 0px;color:" border="0">
         <thead>
             <tr>

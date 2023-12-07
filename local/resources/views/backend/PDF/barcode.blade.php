@@ -6,15 +6,15 @@
     <link href="{{ asset('frontend/dist/css/font.css')}}" rel="stylesheet" type="text/css" />
     <style>
         body {
-            font-family: 'THSarabunNew,Arial,sans-serif';
-            font-size: 20px;
+            font-family: 'kanit,Arial,sans-serif';
+            font-size: 14px;
 
         }
 
         b {
-            font-family: 'THSarabunNew,Arial,sans-serif';
-            font-size: 16px;
-            font-weight: bold;
+            font-family: 'kanit-b,Arial,sans-serif';
+            font-size: 14px;
+
 
         }
 
@@ -25,7 +25,7 @@
 
         /* Set the page size to 40x30mm */
         @page {
-            size: 80mm 30mm;
+            size: 85mm 45mm;
             margin: 0; /* Set margins to 0 if you want no margins */
         }
 
@@ -244,14 +244,15 @@
 </head>
 <body style=" text-align: center;">
     <div class="row text-center">
-        <p style="font-size: 16px">N:{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
+        <p style="font-size: 18px">{{$data['product']->name_th}}({{@$data['barcode']->name_th}})</p>
 
-        <div style="margin-left: 10px; margin-top: 10px;text-align: center;">
-          {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B') !!}
+        <div style="margin-left: 20px; margin-top: 10px;text-align: center;">
+         {!! DNS1D::getBarcodeHTML($data['barcode']->barcode, 'C128B',1.9,50) !!}
+
             {{-- {!! DNS1D::getBarcodeHTML('1234567', 'C128B') !!} --}}
         </div>
 
-        <p style="font-size: 16px">COD:{{$data['barcode']->barcode}}</p>
+        <p style="font-size: 18px">CODE:{{$data['barcode']->barcode}}</p>
     </div>
 
 
