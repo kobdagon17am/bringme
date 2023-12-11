@@ -38,6 +38,7 @@ Use App\Models\ProductsComment;
 use App\Models\CustomerCartAddress;
 use App\Models\CustomerAcc;
 use App\Models\Withdraw;
+use App\Models\MessageList;
 
 class API3Controller extends Controller
 {
@@ -511,5 +512,73 @@ class API3Controller extends Controller
         DB::table('store_following')->truncate();
         DB::table('withdraw')->truncate();
         return 'success';
+     }
+
+     public function api_send_message(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+
+            $message_list = MessageList::where('customer_id','customer_id')->where('customer_id_2','customer_id_2')->first();
+            if(!$message_list){
+                $message_list =  new MessageList();
+                $message_list->customer_id = $r->customer_id;
+                $message_list->customer_id_2 = $r->customer_id_2;
+                $message_list->save();
+            }
+            $message = $message_list->message;
+            if($message!=''){
+                $message =  json_decode($message);
+            }
+
+            $message[] = [
+                'author' => 'user',
+                'createdAt' => $r->createdAt,
+                'id' => $r->id,
+                'status' => 'unseen',
+                'text' => $r->text,
+                'type' => $r->type,
+            ];
+
+            // return response()->json([
+            //     'message' =>  'ไม่พบข้อมูลของคุณ',
+            //     'status' => 0,
+            //     'data' => '',
+            // ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'brands' => $brands,
+                    // 'brands_store' => $brands_store,
+                    // 'brands_new' => $brands_new,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
      }
 }

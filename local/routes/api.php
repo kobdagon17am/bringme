@@ -102,3 +102,4 @@ Route::post('api_add_brands', 'API3Controller@api_add_brands');
 Route::get('api_re_db', 'API3Controller@api_re_db');
 
 Route::get('label/print/{cart_id}', 'Admin\OrdersController@order_print_api')->name('label/print');
+Route::post('api_send_message', 'API3Controller@api_send_message');
