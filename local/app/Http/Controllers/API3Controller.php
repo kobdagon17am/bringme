@@ -520,7 +520,7 @@ class API3Controller extends Controller
         try
         {
 
-            $message_list = MessageList::where('customer_id','customer_id')->where('customer_id_2','customer_id_2')->first();
+            $message_list = MessageList::where('customer_id',$r->customer_id)->where('customer_id_2',$r->customer_id_2)->first();
             if(!$message_list){
                 $message_list =  new MessageList();
                 $message_list->customer_id = $r->customer_id;
@@ -541,6 +541,46 @@ class API3Controller extends Controller
                 'type' => $r->type,
             ];
 
+            $message =  json_encode($message);
+
+            $message_list->message = $message;
+            $message_list->last_message = $r->text;
+            $message_list->send_type = 1;
+            $message_list->message_type = 1;
+            $message_list->read_status = 0;
+            $message_list->save();
+
+            // ฝั่งผู้รับ
+            $message_list2 = MessageList::where('customer_id',$r->customer_id_2)->where('customer_id_2',$r->customer_id)->first();
+            if(!$message_list2){
+                $message_list2 =  new MessageList();
+                $message_list2->customer_id = $r->customer_id_2;
+                $message_list2->customer_id_2 = $r->customer_id;
+                $message_list2->save();
+            }
+            $message2 = $message_list2->message;
+            if($message2!=''){
+                $message2 =  json_decode($message2);
+            }
+
+            $message2[] = [
+                'author' => 'user2',
+                'createdAt' => $r->createdAt,
+                'id' => $r->id,
+                'status' => 'unseen',
+                'text' => $r->text,
+                'type' => $r->type,
+            ];
+
+            $message2 =  json_encode($message2);
+
+            $message_list2->message = $message2;
+            $message_list2->last_message = $r->text;
+            $message_list2->send_type = 2;
+            $message_list2->message_type = 1;
+            $message_list2->read_status = 0;
+            $message_list2->save();
+
             // return response()->json([
             //     'message' =>  'ไม่พบข้อมูลของคุณ',
             //     'status' => 0,
@@ -556,6 +596,132 @@ class API3Controller extends Controller
                     // 'brands' => $brands,
                     // 'brands_store' => $brands_store,
                     // 'brands_new' => $brands_new,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
+
+     public function api_get_message(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+
+            $message_list = MessageList::where('customer_id',$r->customer_id)->where('customer_id_2',$r->customer_id_2)->first();
+            if($message_list){
+                $message =  json_decode($message_list->message);
+                $message_new = [];
+                $last_user2_message_id = '';
+                foreach($message as $m){
+                    $status = 'unseen';
+                    if($m->author == 'user'){
+                        $status = 'seen';
+                        $last_user2_message_id = $m->id;
+                    }
+                    $message_new[] = [
+                        'author' => $m->author,
+                        'createdAt' => $m->createdAt,
+                        'id' => $m->id,
+                        'status' => $status,
+                        'text' => $m->text,
+                        'type' => $m->type,
+                    ];
+                }
+                $message_new =  json_encode($message_new);
+
+                $message_list->message = $message_new;
+                $message_list->last_user2_message_id = $last_user2_message_id;
+                if($message_list->send_type == 2){
+                    $message_list->read_status = 1;
+                }
+                $message_list->save();
+                $message =  json_decode($message_list->message);
+            }else{
+                $message = [];
+            }
+
+            // return response()->json([
+            //     'message' =>  'ไม่พบข้อมูลของคุณ',
+            //     'status' => 0,
+            //     'data' => '',
+            // ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'message' => $message,
+                    'last_user2_message_id' => $last_user2_message_id,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
+
+     public function api_get_message_list(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+
+            $message_list = MessageList::where('customer_id',$r->customer_id)->orderBy('updated_at','desc')->get();
+
+            // return response()->json([
+            //     'message' =>  'ไม่พบข้อมูลของคุณ',
+            //     'status' => 0,
+            //     'data' => '',
+            // ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'message_list' => $message_list,
                 ],
             ]);
 
