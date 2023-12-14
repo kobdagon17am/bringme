@@ -198,7 +198,7 @@ class API2Controller extends  Controller
 
 
     // รับสินค้า
-    public static function api_products_transfer_approve_back($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number,$shelf_id,$floor,$r)
+    public static function api_products_transfer_approve_back($products_transfer_id,$date_in_stock,$lot_expired_date,$lot_number,$shelf_id,$floor,$r,$qty_new)
     {
 
         DB::beginTransaction();
@@ -271,7 +271,7 @@ class API2Controller extends  Controller
                             $stock_items = new StockItems();
 
                             if($products_transfer->is_preorder == 0){
-                                $item_qty = $item->qty;
+                                $item_qty = $qty_new;
                                 $item_qty_booking = $item->qty;
                             }else{
                                 $stock_items_pre = StockItemsPre::select('qty_booking','id')->where('product_id',$products_item->product_id)
