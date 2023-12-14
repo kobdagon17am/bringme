@@ -105,3 +105,4 @@ Route::get('label/print/{cart_id}', 'Admin\OrdersController@order_print_api')->n
 Route::post('api_send_message', 'API3Controller@api_send_message');
 Route::post('api_get_message', 'API3Controller@api_get_message');
 Route::post('api_get_message_list', 'API3Controller@api_get_message_list');
+Route::post('api_send_image', 'API3Controller@api_send_image');

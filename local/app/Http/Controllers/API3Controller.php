@@ -519,7 +519,9 @@ class API3Controller extends Controller
         DB::beginTransaction();
         try
         {
-
+            $customer_1 = Customer::select('select_type','id','profile_img_path','profile_img','name')->where('id',$r->customer_id)->first();
+            $customer_2 = Customer::select('select_type','id','profile_img_path','profile_img','name')->where('id',$r->customer_id_2)->first();
+            $customer_2->select_type = $r->user2_type;
             $message_list = MessageList::where('customer_id',$r->customer_id)->where('customer_id_2',$r->customer_id_2)->first();
             if(!$message_list){
                 $message_list =  new MessageList();
@@ -549,6 +551,32 @@ class API3Controller extends Controller
             $message_list->message_type = 1;
             $message_list->read_status = 0;
             $message_list->save();
+
+            if($message_list->customer_1_is == ''){
+                $message_list->customer_1_is = $customer_1->select_type;
+                $message_list->save();
+            }
+            if($message_list->customer_2_is == ''){
+                $message_list->customer_2_is = $customer_2->select_type;
+                $message_list->save();
+
+
+            if($customer_2->select_type==1){
+                $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
+                $name = $customer_2->name;
+                if($customer_2->profile_img==''){
+                    $url_img = 'nopic';
+                }
+            }else{
+                $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
+                $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                $name = $store->store_name;
+            }
+            $message_list->url_img = $url_img;
+            $message_list->name = $name;
+            $message_list->save();
+            }
+
 
             // ฝั่งผู้รับ
             $message_list2 = MessageList::where('customer_id',$r->customer_id_2)->where('customer_id_2',$r->customer_id)->first();
@@ -580,6 +608,205 @@ class API3Controller extends Controller
             $message_list2->message_type = 1;
             $message_list2->read_status = 0;
             $message_list2->save();
+
+            if($message_list2->customer_1_is == ''){
+                $message_list2->customer_1_is = $customer_2->select_type;
+                $message_list2->save();
+            }
+            if($message_list2->customer_2_is == ''){
+                $message_list2->customer_2_is = $customer_1->select_type;
+                $message_list2->save();
+
+                if($customer_1->select_type==1){
+                    $url_img = Storage::disk('public')->url('').$customer_1->profile_img_path.$customer_1->profile_img;
+                    if($customer_1->profile_img==''){
+                        $url_img = 'nopic';
+                    }
+                     $name = $customer_1->name;
+                }else{
+                    $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_1->id)->first();
+                    $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                      $name = $store->store_name;
+                }
+                $message_list2->url_img = $url_img;
+                $message_list2->name = $name;
+                $message_list2->save();
+            }
+
+
+
+            // return response()->json([
+            //     'message' =>  'ไม่พบข้อมูลของคุณ',
+            //     'status' => 0,
+            //     'data' => '',
+            // ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'brands' => $brands,
+                    // 'brands_store' => $brands_store,
+                    // 'brands_new' => $brands_new,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
+
+     public function api_send_image(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+            $customer_1 = Customer::select('select_type','id','profile_img_path','profile_img','name')->where('id',$r->customer_id)->first();
+            $customer_2 = Customer::select('select_type','id','profile_img_path','profile_img','name')->where('id',$r->customer_id_2)->first();
+            $customer_2->select_type = $r->user2_type;
+            $message_list = MessageList::where('customer_id',$r->customer_id)->where('customer_id_2',$r->customer_id_2)->first();
+            if(!$message_list){
+                $message_list =  new MessageList();
+                $message_list->customer_id = $r->customer_id;
+                $message_list->customer_id_2 = $r->customer_id_2;
+                $message_list->save();
+            }
+            $message = $message_list->message;
+            if($message!=''){
+                $message =  json_decode($message);
+            }
+
+            $message[] = [
+                'author' => 'user',
+                'name' => $r->name,
+                'createdAt' => $r->createdAt,
+                'id' => $r->id,
+                'status' => 'unseen',
+                'text' => '',
+                'size' => $r->size,
+                'height' => $r->height,
+                'width' => $r->width,
+                'uri' => $r->uri,
+                'type' => $r->type,
+            ];
+
+            $message =  json_encode($message);
+
+            $message_list->message = $message;
+            $message_list->last_message = 'Image file';
+            $message_list->send_type = 1;
+            $message_list->message_type = 1;
+            $message_list->read_status = 0;
+            $message_list->save();
+
+            if($message_list->customer_1_is == ''){
+                $message_list->customer_1_is = $customer_1->select_type;
+                $message_list->save();
+            }
+            if($message_list->customer_2_is == ''){
+                $message_list->customer_2_is = $customer_2->select_type;
+                $message_list->save();
+
+                if($customer_2->select_type==1){
+                    $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
+                    if($customer_2->profile_img==''){
+                        $url_img = 'nopic';
+                    }
+                    $name = $customer_2->name;
+                }else{
+                    $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
+                    $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                    $name = $store->store_name;
+                }
+                $message_list->url_img = $url_img;
+                $message_list->name = $name;
+                $message_list->save();
+            }
+
+
+
+            // ฝั่งผู้รับ
+            $message_list2 = MessageList::where('customer_id',$r->customer_id_2)->where('customer_id_2',$r->customer_id)->first();
+            if(!$message_list2){
+                $message_list2 =  new MessageList();
+                $message_list2->customer_id = $r->customer_id_2;
+                $message_list2->customer_id_2 = $r->customer_id;
+                $message_list2->save();
+            }
+            $message2 = $message_list2->message;
+            if($message2!=''){
+                $message2 =  json_decode($message2);
+            }
+
+            $message2[] = [
+                'author' => 'user2',
+                'name' => $r->name,
+                'createdAt' => $r->createdAt,
+                'id' => $r->id,
+                'status' => 'unseen',
+                'text' => '',
+                'size' => $r->size,
+                'height' => $r->height,
+                'width' => $r->width,
+                'uri' => $r->uri,
+                'type' => $r->type,
+            ];
+
+            $message2 =  json_encode($message2);
+
+            $message_list2->message = $message2;
+            $message_list2->last_message = 'Image file';
+            $message_list2->send_type = 2;
+            $message_list2->message_type = 1;
+            $message_list2->read_status = 0;
+            $message_list2->save();
+
+            if($message_list2->customer_1_is == ''){
+                $message_list2->customer_1_is = $customer_2->select_type;
+                $message_list2->save();
+            }
+            if($message_list2->customer_2_is == ''){
+                $message_list2->customer_2_is = $customer_1->select_type;
+                $message_list2->save();
+
+                if($customer_1->select_type==1){
+                    $url_img = Storage::disk('public')->url('').$customer_1->profile_img_path.$customer_1->profile_img;
+                    if($customer_1->profile_img==''){
+                        $url_img = 'nopic';
+                    }
+                    $name = $customer_1->name;
+                }else{
+                    $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_1->id)->first();
+                    $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                    $name = $store->store_name;
+                }
+                $message_list2->url_img = $url_img;
+                $message_list2->name = $name;
+                $message_list2->save();
+            }
+
+
+
 
             // return response()->json([
             //     'message' =>  'ไม่พบข้อมูลของคุณ',
@@ -629,17 +856,18 @@ class API3Controller extends Controller
         {
 
             $message_list = MessageList::where('customer_id',$r->customer_id)->where('customer_id_2',$r->customer_id_2)->first();
-            if($message_list){
-                $message =  json_decode($message_list->message);
-                $message_new = [];
-                $last_user2_message_id = '';
-                foreach($message as $m){
-                    $status = 'unseen';
+            $message_list2 = MessageList::where('customer_id',$r->customer_id_2)->where('customer_id_2',$r->customer_id)->first();
+
+            if($message_list2){
+                $message2 =  json_decode($message_list2->message);
+                $message_new2 = [];
+                foreach($message2 as $m){
+                    $status = $m->status;
                     if($m->author == 'user'){
                         $status = 'seen';
-                        $last_user2_message_id = $m->id;
                     }
-                    $message_new[] = [
+                    if($m->type == 'text'){
+                        $message_new2[] = [
                         'author' => $m->author,
                         'createdAt' => $m->createdAt,
                         'id' => $m->id,
@@ -647,6 +875,62 @@ class API3Controller extends Controller
                         'text' => $m->text,
                         'type' => $m->type,
                     ];
+                }else{
+                        $message_new2[] = [
+                            'author' => $m->author,
+                            'createdAt' => $m->createdAt,
+                            'id' => $m->id,
+                            'status' => $status,
+                            'name' => $m->name,
+                            'type' => $m->type,
+                            'size' => $m->size,
+                            'height' => $m->height,
+                            'width' => $m->width,
+                            'uri' => $m->uri,
+                            'type' => $m->type,
+                        ];
+                    }
+                }
+                $message_new2 =  json_encode($message_new2);
+                $message_list2->message = $message_new2;
+                $message_list2->save();
+            }
+
+            if($message_list){
+                $message =  json_decode($message_list->message);
+                $message_new = [];
+                $last_user2_message_id = '';
+                foreach($message as $m){
+                    $status = $m->status;
+                    if($m->author == 'user2'){
+                        $status = 'seen';
+                        $last_user2_message_id = $m->id;
+                    }
+                    if($m->type == 'text'){
+                        $message_new[] = [
+                            'author' => $m->author,
+                            'createdAt' => $m->createdAt,
+                            'id' => $m->id,
+                            'status' => $status,
+                            'text' => $m->text,
+                            'type' => $m->type,
+                        ];
+                    }else{
+                        $message_new[] = [
+                            'author' => $m->author,
+                            'createdAt' => $m->createdAt,
+                            'id' => $m->id,
+                            'status' => $status,
+                            'name' => $m->name,
+                            'type' => $m->type,
+                            'size' => $m->size,
+                            'height' => $m->height,
+                            'width' => $m->width,
+                            'uri' => $m->uri,
+                            'type' => $m->type,
+                        ];
+                    }
+
                 }
                 $message_new =  json_encode($message_new);
 
@@ -659,6 +943,7 @@ class API3Controller extends Controller
                 $message =  json_decode($message_list->message);
             }else{
                 $message = [];
+                $last_user2_message_id = 0;
             }
 
             // return response()->json([
@@ -708,6 +993,7 @@ class API3Controller extends Controller
         {
 
             $message_list = MessageList::where('customer_id',$r->customer_id)->orderBy('updated_at','desc')->get();
+            // $
 
             // return response()->json([
             //     'message' =>  'ไม่พบข้อมูลของคุณ',
