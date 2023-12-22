@@ -399,9 +399,16 @@ class API2Controller extends  Controller
 
     public function api_get_picking_list(Request $r)
     {
-        $cart = CustomerCart::where('status',2)
-        // ->where('shipping_date','<=',date('Y-m-d'))
-        ->where('picking_status',0)->orderBy('shipping_date','asc')->get();
+        if($r->shipping_date == ''){
+            $cart = CustomerCart::where('status',2)
+            ->where('shipping_date','<=',date('Y-m-d'))
+            ->where('picking_status',0)->orderBy('shipping_date','asc')->get();
+        }else{
+            $cart = CustomerCart::where('status',2)
+            ->where('shipping_date',$r->shipping_date)
+            ->where('picking_status',0)->orderBy('shipping_date','asc')->get();
+        }
+
         $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -415,9 +422,16 @@ class API2Controller extends  Controller
 
     public function api_get_scan_list(Request $r)
     {
-        $cart = CustomerCart::where('status',2)
-        // ->where('shipping_date','<=',date('Y-m-d'))
-        ->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
+        if($r->shipping_date == ''){
+            $cart = CustomerCart::where('status',2)
+            ->where('shipping_date','<=',date('Y-m-d'))
+            ->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
+        }else{
+            $cart = CustomerCart::where('status',2)
+            ->where('shipping_date',$r->shipping_date)
+            ->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
+        }
+
         $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -431,9 +445,16 @@ class API2Controller extends  Controller
 
     public function api_get_shipping_list(Request $r)
     {
-        $cart = CustomerCart::where('status',2)
-        // ->where('shipping_date','<=',date('Y-m-d'))
-        ->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
+        if($r->shipping_date == ''){
+            $cart = CustomerCart::where('status',2)
+            ->where('shipping_date','<=',date('Y-m-d'))
+            ->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
+        }else{
+            $cart = CustomerCart::where('status',2)
+            ->where('shipping_date',$r->shipping_date)
+            ->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
+        }
+
         $status = [1,2];
         $cart_success = CustomerCart::where('status',2)
         // ->where('shipping_date','<=',date('Y-m-d'))
@@ -911,7 +932,7 @@ class API2Controller extends  Controller
                 foreach($customer_cart_product as $c){
                     $customer_cart_tracking_item = new CustomerCartTrackingItem();
                     $customer_cart_tracking_item->customer_cart_id = $cart->id;
-                    $customer_cart_tracking_item->customer_Sid = $cart->customer_id;
+                    $customer_cart_tracking_item->customer_id = $cart->customer_id;
                     $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1->id;
                     $customer_cart_tracking_item->customer_cart_product_id = $c->id;
                     $customer_cart_tracking_item->qty = $c->qty;
@@ -1038,7 +1059,7 @@ class API2Controller extends  Controller
                 }
                 $cart->save();
 
-                if($r->tracking_no1 != ''){
+                // if($r->tracking_no1 != ''){
                     $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
                     if(!$tracking_no1){
                         $tracking_no1 = new CustomerCartTracking();
@@ -1050,9 +1071,9 @@ class API2Controller extends  Controller
                     $tracking_no1->cod = 0;
                     $tracking_no1->no = 1;
                     $tracking_no1->save();
-                }
+                // }
 
-                if($r->tracking_no2 != ''){
+                // if($r->tracking_no2 != ''){
                     $tracking_no2 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',2)->first();
                     if(!$tracking_no2){
                         $tracking_no2 = new CustomerCartTracking();
@@ -1064,9 +1085,9 @@ class API2Controller extends  Controller
                     $tracking_no2->cod = 0;
                     $tracking_no2->no = 2;
                     $tracking_no2->save();
-                }
+                // }
 
-                if($r->tracking_no3 != ''){
+                // if($r->tracking_no3 != ''){
                     $tracking_no3 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',3)->first();
                     if(!$tracking_no3){
                         $tracking_no3 = new CustomerCartTracking();
@@ -1078,9 +1099,9 @@ class API2Controller extends  Controller
                     $tracking_no3->cod = 0;
                     $tracking_no3->no = 3;
                     $tracking_no3->save();
-                }
+                // }
 
-                if($r->tracking_no4 != ''){
+                // if($r->tracking_no4 != ''){
                     $tracking_no4 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',4)->first();
                     if(!$tracking_no4){
                         $tracking_no4 = new CustomerCartTracking();
@@ -1092,9 +1113,9 @@ class API2Controller extends  Controller
                     $tracking_no4->cod = 0;
                     $tracking_no4->no = 4;
                     $tracking_no4->save();
-                }
+                // }
 
-                if($r->tracking_no5 != ''){
+                // if($r->tracking_no5 != ''){
                     $tracking_no5 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',5)->first();
                     if(!$tracking_no5){
                         $tracking_no5 = new CustomerCartTracking();
@@ -1106,7 +1127,7 @@ class API2Controller extends  Controller
                     $tracking_no5->cod = 0;
                     $tracking_no5->no = 5;
                     $tracking_no5->save();
-                }
+                // }
 
             DB::commit();
 
