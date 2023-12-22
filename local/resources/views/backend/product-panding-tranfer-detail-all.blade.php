@@ -198,7 +198,6 @@
                                                                 <p class="font-medium whitespace-nowrap">{{ $value->qty }}</p>
                                                             </td>
 
-
                                                             <td>
 
                                                                 @if ($value->transfer_status == 2)
@@ -266,8 +265,9 @@
 
 
                                                                 @else
-                                                                Shelf: <br> {{$value->shelf_name}}
-                                                                floor:
+
+                                                                Shelf: {{$value->shelf_name}} <br>
+                                                                floor: {{$value->floor_name}}
                                                                 @endif
 
                                                             </td>

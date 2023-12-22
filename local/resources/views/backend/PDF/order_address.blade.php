@@ -207,7 +207,7 @@
 
 
             <tr>
-                <td d colspan="4" ><div class="horizontal-line"></div></td>
+                <td colspan="4" ><div class="horizontal-line"></div></td>
             </tr>
 
 
