@@ -190,7 +190,14 @@ class OrdersController extends  Controller
 
         $customer_cart = DB::table('customer_cart_tracking')
         ->where('customer_cart_id',$car_id)
+        ->whereNotNull('tracking_no')
         ->get();
+
+        if(count($customer_cart) == 0){
+            $data = ['status'=>'fail','url'=>'','ms'=>'ไม่พบข้อมูลใน customer_cart_tracking '];
+
+            return  $data;
+        }
 
         if(count($customer_cart) > 1){
 
@@ -216,6 +223,8 @@ class OrdersController extends  Controller
 
     public function order_print_api($cart_id)
     {
+
+        // dd($cart_id);
         $file = new Filesystem;
         $file->cleanDirectory(public_path('order_list/'));
 
@@ -223,9 +232,21 @@ class OrdersController extends  Controller
 
         $customer_cart = DB::table('customer_cart_tracking')
         ->where('customer_cart_id',$cart_id)
+        ->whereNotNull('tracking_no')
         ->get();
 
+
+
+        if(count($customer_cart) == 0){
+            $data = ['status'=>'fail','url'=>'','ms'=>'ไม่พบข้อมูลใน customer_cart_tracking '];
+            return  $data;
+        }
+
+
         if(count($customer_cart) > 1){
+            $data = ['status'=>'fail','url'=>'','ms'=>' กรณีหลายใบยังไม่เสร็จ '];
+
+            return  $data;
 
         }else{
             $data =  \App\Http\Controllers\API2Controller::api_get_cart_detail_web($cart_id);
@@ -241,9 +262,8 @@ class OrdersController extends  Controller
 
         $this->merger_pdf($cart_id);
         $url =  asset('local/public/order/result_'.$cart_id.'.pdf');
-        $data = ['status'=>'success','url'=>$url];
-
-        return redirect($url);
+        $data = ['status'=>'success','url'=>$url,'ms'=>'success'];
+        return  $data;
 
     }
 

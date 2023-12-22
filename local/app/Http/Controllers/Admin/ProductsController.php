@@ -613,6 +613,7 @@ class ProductsController extends Controller
     {
 
 
+
         $customer_id = DB::table('products_transfer')
         ->select(
             'customer.id',
@@ -652,11 +653,22 @@ class ProductsController extends Controller
                 'products_gallery.name as gal_name',
                 'products_item.name_th',
                 'category.name_th as c_name_th',
+
+                'stock_lot.date_in_stock',
+                'stock_lot.lot_expired_date',
                 'products_item.transfer_status',
+                'stock_shelf.name as shelf_name',
+                'stock_floor.floor as floor_name',
+
             )
             ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
             ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+            ->leftJoin('stock_lot', 'stock_lot.product_id', '=', 'products.id')
+            ->leftJoin('stock_shelf', 'stock_shelf.product_id', '=', 'products.id')
+            ->leftJoin('stock_floor', 'stock_floor.product_id', '=', 'products.id')
+
+
             ->leftJoin('brands', 'brands.id', '=', 'products.brands_id')
             ->leftJoin('products_gallery','products_gallery.product_id','products_item.product_id')
             ->leftJoin('category','category.id','products.category_id')
@@ -666,6 +678,8 @@ class ProductsController extends Controller
             ->get();
 
             $data['store_detail'] = DB::table('store')->where('customer_id', $customer_id->id)->first();
+
+            // dd( $products_transfer);
 
 
         $data['customer'] = $customer_id;
@@ -741,6 +755,12 @@ class ProductsController extends Controller
 
     public function item_confirmation(Request $rs)
     {
+
+        if(empty($rs->transfer_id)){
+            return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError('กรุณาเลือกรายการที่ต้องการยืนยันการรับสินค้า');
+        }
+
+
         if($rs->type == 'confirm_all'){
 
             if(empty($rs->transfer_id)){
@@ -748,12 +768,14 @@ class ProductsController extends Controller
             }
             if ($rs->tranfer_status == 1) {
                 // dd($rs->transfer_id);
+                $i=0;
                 foreach($rs->transfer_id as $value){
 
-                    $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($value, $rs->date_in_stock, $rs->lot_expired_date, $rs->lot_number, $rs->shelf, $rs->floor, $rs);
+                    $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($value, $rs->date_in_stock[$i], $rs->lot_expired_date[$i], $rs->lot_number, $rs->shelf[$i], $rs->floor[$i], $rs,$rs->qty[$i]);
                     if ($data['status'] == 0) {
                         return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError($data['message']);
                     }
+                    $i++;
                 }
 
                     return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withSuccess('อัพเดทรายการสำเร็จ');
@@ -783,7 +805,7 @@ class ProductsController extends Controller
             if ($rs->tranfer_status == 1) {
                 // dd($rs->transfer_id);
 
-                $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id, $rs->date_in_stock, $rs->lot_expired_date, $rs->lot_number, $rs->shelf, $rs->floor, $rs);
+                $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($rs->transfer_id, $rs->date_in_stock, $rs->lot_expired_date, $rs->lot_number, $rs->shelf, $rs->floor, $rs,$rs->qty);
 
                 if ($data['status'] == 0) {
                     return redirect('admin/products-pending-tranfer')->withError($data['message']);

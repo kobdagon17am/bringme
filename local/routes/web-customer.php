@@ -191,6 +191,9 @@ Route::get('/', function () {
     return view('frontend/check-stock');
   })->name('check-stock');
 
+
+  Route::get('label/print/{cart_id}', 'Admin\OrdersController@order_print_api')->name('label/print');
+
   ?>
 
 
