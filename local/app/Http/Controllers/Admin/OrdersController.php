@@ -261,7 +261,7 @@ class OrdersController extends  Controller
         }
 
         $this->merger_pdf($cart_id);
-        $url =  asset('local/public/order/result_'.$cart_id.'.pdf');
+        $url =  asset('local/public/order/result_'.$cart_id);
         $data = ['status'=>'success','url'=>$url,'ms'=>'success'];
         return  $data;
 
