@@ -11,6 +11,7 @@
         width: 65px;
     }
 </style>
+
 @section('content')
 <div class="content">
     <div class="intro-y flex items-center mt-8">
@@ -393,10 +394,12 @@
                 @endif
             </div>
         </div>
+
         <div id="profile" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-6-tab">
             <form class="grid grid-cols-12 gap-6" method="POST" action="{{ url('admin/store_update') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="customer_id" value="{{ $id }}">
+
                 <input type="hidden" name="store_id" value="{{ $store_detail->id }}">
                 <div class="col-span-12">
                     <!-- BEGIN: Display Information -->

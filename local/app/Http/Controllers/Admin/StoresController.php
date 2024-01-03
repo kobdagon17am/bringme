@@ -54,11 +54,16 @@ class StoresController extends Controller
         if($id){
             $data['id'] = $id;
             $data['store'] = DB::table('customer')->where('customer.id',$id)
+            ->select('customer.*')
                                 ->leftJoin('provinces','provinces.id','=','customer.province_id')
                                 ->leftJoin('amphures','amphures.id','=','customer.amphures_id')
                                 ->leftJoin('districts','districts.id','=','customer.district_id')
                                 ->first();
+
             $data['store_detail'] = DB::table('store')->where('customer_id',$id)->first();
+
+
+
             $data['category'] = DB::table('category')->get();
             $data['storage_method'] = DB::table('storage_method')->get();
             $data['product'] = DB::table('products')
@@ -74,6 +79,7 @@ class StoresController extends Controller
             $data['amphures'] = DB::table('amphures')->get();
             $data['districts'] = DB::table('districts')->get();
             $data['bank'] = DB::table('bank')->get();
+
             return view('backend/store-detail',$data);
         }else{
             return redirect('admin/stores')->withError(' Data Is Null');
@@ -81,6 +87,7 @@ class StoresController extends Controller
     }
 
     public function store_register_detail(){
+
         $data['customer'] = Customer::all();
         $data['provinces'] = DB::table('provinces')->get();
         $data['amphures'] = DB::table('amphures')->get();
@@ -381,7 +388,8 @@ class StoresController extends Controller
         $customer = DB::table('customer')->orderBy('name','ASC')
         ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' = ''  THEN  date(created_at) = '{$request->s_date}' else 1 END"))
         ->whereRaw(("case WHEN '{$request->s_date}' != '' and '{$request->e_date}' != ''  THEN  date(created_at) >= '{$request->s_date}' and date(created_at) <= '{$request->e_date}'else 1 END"))
-        ->whereRaw(("case WHEN '{$request->s_date}' = '' and '{$request->e_date}' != ''  THEN  date(created_at) = '{$request->e_date}' else 1 END"));
+        ->whereRaw(("case WHEN '{$request->s_date}' = '' and '{$request->e_date}' != ''  THEN  date(created_at) = '{$request->e_date}' else 1 END"))
+        ->where('customer_type',2);
 
         $sQuery = Datatables::of($customer);
         return $sQuery
