@@ -27,7 +27,7 @@
 
                         <div>
                             <label for="" class="form-label">ชื่อ-นามสกุล</label>
-                            <input id="firstname" type="text" class="form-control" placeholder="Input text" name="firstname" value="">
+                            <input id="firstname" type="text" class="form-control" placeholder="ชื่อ-นามสกุล" name="firstname" value="">
                         </div>
 
                         <div>
@@ -39,28 +39,28 @@
 
                         <div>
                             <label for="" class="form-label">อายุ</label>
-                            <input id="age" type="text" class="form-control" placeholder="Input text" value="">
+                            <input id="age" type="text" class="form-control" placeholder="อายุ" value="">
                         </div>
 
                         <div>
                             <label for="" class="form-label">อีเมล</label>
-                            <input id="email" type="text" class="form-control" placeholder="Input text" name="email" value="">
+                            <input id="email" type="text" class="form-control" placeholder="อีเมล" name="email" value="">
                         </div>
 
                         <div>
                             <label for="" class="form-label">รหัสผ่าน</label>
-                            <input id="password" type="password" class="form-control" placeholder="Input text" name="password" value="">
+                            <input id="password" type="password" class="form-control" placeholder="รหัสผ่าน" name="password" value="">
                         </div>
 
                         <div>
                             <label for="" class="form-label">เบอร์ติดต่อ</label>
-                            <input id="tel" type="text" class="form-control" placeholder="Input text" name="tel" value="">
+                            <input id="tel" type="text" class="form-control" placeholder="เบอร์ติดต่อ" name="tel" value="">
                         </div>
 
                          @if(!empty(Auth::guard('admin')->user()->name))
                         <div>
                             <label for="" class="form-label">เปอร์เซ็นต์ GP</label>
-                            <input id="" type="text" class="form-control" placeholder="Input text" name="percent" value="">
+                            <input id="" type="text" class="form-control" placeholder="เปอร์เซ็นต์ GP" name="percent" value="">
                         </div>
                         @endif
 
@@ -75,7 +75,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
                         <div>
                             <label for="address" class="form-label">ห้อง/บ้านเลขที่</label>
-                            <input id="address" type="text" class="form-control" placeholder="Input text" name="address" value="">
+                            <input id="address" type="text" class="form-control" placeholder="ห้อง/บ้านเลขที่" name="address" value="">
                         </div>
 
                         <div>
@@ -116,7 +116,7 @@
 
                         <div>
                             <label for="" class="form-label">รหัสไปรษณีย์</label>
-                            <input id="zipcode" type="text" class="form-control" placeholder="Input text" name="zipcode" value="">
+                            <input id="zipcode" type="text" class="form-control" placeholder="รหัสไปรษณีย์" name="zipcode" value="">
                         </div>
 
                     </div>
@@ -151,7 +151,7 @@
 
                 <div>
                     <label for="" class="form-label">ชื่อแบรนด์</label>
-                    <input id="" type="text" class="form-control" placeholder="Input text" value="" name="store_name">
+                    <input id="" type="text" class="form-control" placeholder="ชื่อแบรนด์" value="" name="store_name">
                 </div>
 
                 <div>
@@ -185,12 +185,12 @@
 
                 <div>
                     <label for="" class="form-label">Shelf-life</label>
-                    <input id="" type="text" class="form-control" name="shelf_lift" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->shelf_lift : '') }}">
+                    <input id="" type="text" class="form-control" name="shelf_lift" placeholder="Shelf-life" value="{{ (!empty($store_detail) ? $store_detail->shelf_lift : '') }}">
                 </div>
 
                 <div>
                     <label for="" class="form-label">จำนวนรายการสินค้า (SKU)</label>
-                    <input id="" type="text" class="form-control" name="qty_sku" placeholder="Input text" value="{{ (!empty($store_detail) ? $store_detail->qty_sku : '') }}">
+                    <input id="" type="number" class="form-control" name="qty_sku" placeholder="จำนวนรายการสินค้า (SKU)" value="{{ (!empty($store_detail) ? $store_detail->qty_sku : '') }}">
                 </div>
 
                 <div>
@@ -204,8 +204,8 @@
                 </div>
 
                 <div>
-                    <label for="" class="form-label">ช่องทาง social media</label>
-                    <input id="" type="text" class="form-control" placeholder="Input text" name="social" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
+                    <label for="" class="form-label">ช่องทาง Social Media</label>
+                    <input id="" type="text" class="form-control" placeholder="Social Media" name="social" value="{{ (!empty($store_detail) ? $store_detail->social : '') }}">
                 </div>
 
                 <div>
@@ -225,7 +225,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
                 <div>
                     <label for="" class="form-label">ห้อง/บ้านเลขที่</label>
-                    <input id="" type="text" class="form-control" placeholder="Input text" name="address2" value="{{ (!empty($store_detail) ? $store_detail->address : '') }}">
+                    <input id="" type="text" class="form-control" placeholder="ห้อง/บ้านเลขที่" name="address2" value="{{ (!empty($store_detail) ? $store_detail->address : '') }}">
                 </div>
 
                 <div>
@@ -266,7 +266,7 @@
 
                 <div>
                     <label for="" class="form-label">รหัสไปรษณีย์</label>
-                    <input id="zipcode2" type="text" class="form-control" placeholder="Input text" name="zipcode2" value="">
+                    <input id="zipcode2" type="text" class="form-control" placeholder="รหัสไปรษณีย์" name="zipcode2" value="">
                 </div>
 
                 <div class="col-span-1 md:col-span-2">
@@ -343,12 +343,12 @@
 
                     <div>
                         <label for="" class="form-label">ชื่อบัญชี</label>
-                        <input id="" type="text" class="form-control" placeholder="Input text" name="bank_account_name" value="">
+                        <input id="" type="text" class="form-control" placeholder="ชื่อบัญชี" name="bank_account_name" value="">
                     </div>
 
                     <div>
                         <label for="" class="form-label">เลขบัญชี</label>
-                        <input id="" type="text" class="form-control" placeholder="Input text" name="bank_account_number" value="">
+                        <input id="" type="text" class="form-control" placeholder="เลขบัญชี" name="bank_account_number" value="">
                     </div>
 
                     <div class="col-span-1 md:col-span-2">
