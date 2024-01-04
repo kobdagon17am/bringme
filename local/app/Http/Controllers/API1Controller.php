@@ -250,6 +250,7 @@ class API1Controller extends Controller
                     $customer->email = $r->email;
                     $customer->birthday = $r->birthday;
                     $customer->tel = $r->tel;
+                    $customer->firstname = $r->firstname;
                     $customer->password = Hash::make($r->password);
                     $customer->customer_type = 1;
                     $customer->select_type = 1;

@@ -1033,4 +1033,48 @@ class API3Controller extends Controller
         }
 
      }
+
+     public function api_remove_customer(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+
+            $customer = Customer::where('id',$r->id)
+            ->first();
+            $customer->status = 9;
+            $customer->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'ทำรายการสำเร็จ',
+                'status' => 1,
+                'data' => [
+                    // 'message_list' => $message_list,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
 }
