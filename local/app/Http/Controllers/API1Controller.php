@@ -472,167 +472,193 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
             {
+
                 $check_email = Customer::select('email')->where('email',$r->email)->first();
-                if($check_email){
-                    return response()->json([
-                        'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
-                        'status' => 0,
-                        'data' => '',
-                    ]);
-                }else{
-                    $customer = new Customer();
-                    $customer->name = $r->user_name;
-                    $customer->email = $r->email;
-                    $customer->birthday = $r->birthday;
-                    $customer->tel = $r->tel;
-                    $customer->password = Hash::make($r->password);
-                    $customer->customer_type = 2;
-                    $customer->select_type = 1;
-                    $customer->status = 1;
-                    $customer->address = $r->address;
-                    $customer->province_id = $r->province_id;
-                    $customer->amphures_id = $r->amphures_id;
-                    $customer->district_id = $r->district_id;
-                    $customer->zipcode = $r->zipcode;
-                    $customer->firstname = $r->name;
-                    // $customer->lat = $r->birthday;
-                    // $customer->long = $r->birthday;
-                    //
-                    $customer->save();
-
-                    $brand = Brands::where('name_th',$r->brands)->first();
-                    if(!$brand){
-                        $brand = new Brands();
-                        $brand->name_th = $r->brands;
-                        $brand->name_en = $r->brands;
-                        $brand->has_store = 1;
-                        $brand->save();
-                    }
-
-                    $store = new Store();
-                    $store->customer_id = $customer->id;
-                    $store->brands_id = $brand->id;
-                    $store->store_name = $r->brands;
-                    $store->category_id = $customer->category_id;
-                    $store->brand_product_detail = $r->brand_product_detail;
-                    $store->product_price = $r->product_price;
-                    $store->storage_method_id = $r->storage_method_id;
-                    $store->shelf_lift = $r->shelf_lift;
-                    $store->qty_sku = $r->qty_sku;
-                    $store->shipping_date = $r->shipping_date;
-                    $store->social = $r->social;
-                    $store->store_type = $r->store_type;
-
-                    if($r->store_type == '1'){
-                        $store->address = $r->address;
-                        $store->province_id = $r->province_id;
-                        $store->amphures_id = $r->amphures_id;
-                        $store->district_id = $r->district_id;
-                        $store->zipcode = $r->zipcode;
+                if(isset($r->user_id)){
+                    if($r->user_id==0){
+                        if($check_email){
+                            return response()->json([
+                                'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }else{
+                            $customer = new Customer();
+                            $customer->name = $r->user_name;
+                            $customer->email = $r->email;
+                            $customer->password = Hash::make($r->password);
+                        }
                     }else{
-                        $store->address = $r->address2;
-                        $store->province_id = $r->province_id2;
-                        $store->amphures_id = $r->amphures_id2;
-                        $store->district_id = $r->district_id2;
-                        $store->zipcode = $r->zipcode2;
+                        $customer = Customer::where('id',$r->user_id)->first();
+                        if(!$customer){
+                            return response()->json([
+                                'message' => 'ไม่พบผู้ใช้ในระบบ',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
                     }
-
-                    $store->bank_id = $r->bank_id;
-                    $store->bank_account_name = $r->bank_account_name;
-                    $store->bank_account_number = $r->bank_account_number;
-                    $store->save();
-
-                    if($r->product_ex_img!=''){
-                        $image_64 = $r->product_ex_img;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                        $store->product_ex_img_path = 'store/'.$store->id.'/';
-                        $store->product_ex_img = $imageName;
-                        $store->save();
+                }else{
+                    if($check_email){
+                        return response()->json([
+                            'message' => 'email นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                            'status' => 0,
+                            'data' => '',
+                        ]);
+                    }else{
+                        $customer = new Customer();
+                        $customer->name = $r->user_name;
+                        $customer->email = $r->email;
+                        $customer->password = Hash::make($r->password);
                     }
-
-                    if($r->product_pack_img!=''){
-                        $image_64 = $r->product_pack_img;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                        $store->product_pack_img_path = 'store/'.$store->id.'/';
-                        $store->product_pack_img = $imageName;
-                        $store->save();
-                    }
-
-                    if($r->certificate!=''){
-                        $image_64 = $r->certificate;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                        $store->certificate_path = 'store/'.$store->id.'/';
-                        $store->certificate = $imageName;
-                        $store->save();
-                    }
-
-                    if($r->bank_img!=''){
-                        $image_64 = $r->bank_img;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                        $store->bank_img_path = 'store/'.$store->id.'/';
-                        $store->bank_img = $imageName;
-                        $store->save();
-                    }
-
-                    if($r->id_card_img!=''){
-                        $image_64 = $r->id_card_img;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                        $store->id_card_img_path = 'store/'.$store->id.'/';
-                        $store->id_card_img = $imageName;
-                        $store->save();
-                    }
-
-                    if($r->company_img!=''){
-                        $image_64 = $r->company_img;
-                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                        $image = str_replace($replace, '', $image_64);
-                        $image = str_replace(' ', '+', $image);
-                        $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
-                        Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
-                        $store->company_img_path = 'store/'.$store->id.'/';
-                        $store->company_img = $imageName;
-                        $store->save();
-                    }
-
-
-                    DB::table('customer_acc')->insert([
-                        'store_id' => $store->id,
-                        'bank_id' => $r->bank_id,
-                        'acc_name' => $r->bank_account_name,
-                        'acc_number' => $r->bank_account_number,
-                        'acc_path' => $store->bank_img_path,
-                        'acc_img' => $store->bank_img,
-                        'used' => 1,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ]);
-
                 }
+
+                $customer->birthday = $r->birthday;
+                $customer->tel = $r->tel;
+                $customer->customer_type = 2;
+                $customer->select_type = 1;
+                $customer->status = 1;
+                $customer->address = $r->address;
+                $customer->province_id = $r->province_id;
+                $customer->amphures_id = $r->amphures_id;
+                $customer->district_id = $r->district_id;
+                $customer->zipcode = $r->zipcode;
+                $customer->firstname = $r->name;
+                // $customer->lat = $r->birthday;
+                // $customer->long = $r->birthday;
+                //
+                $customer->save();
+
+                $brand = Brands::where('name_th',$r->brands)->first();
+                if(!$brand){
+                    $brand = new Brands();
+                    $brand->name_th = $r->brands;
+                    $brand->name_en = $r->brands;
+                    $brand->has_store = 1;
+                    $brand->save();
+                }
+                $store = new Store();
+                $store->customer_id = $customer->id;
+                $store->brands_id = $brand->id;
+                $store->store_name = $r->brands;
+                $store->category_id = $customer->category_id;
+                $store->brand_product_detail = $r->brand_product_detail;
+                $store->product_price = $r->product_price;
+                $store->storage_method_id = $r->storage_method_id;
+                $store->shelf_lift = $r->shelf_lift;
+                $store->qty_sku = $r->qty_sku;
+                $store->shipping_date = $r->shipping_date;
+                $store->social = $r->social;
+                $store->store_type = $r->store_type;
+
+                if($r->store_type == '1'){
+                    $store->address = $r->address;
+                    $store->province_id = $r->province_id;
+                    $store->amphures_id = $r->amphures_id;
+                    $store->district_id = $r->district_id;
+                    $store->zipcode = $r->zipcode;
+                }else{
+                    $store->address = $r->address2;
+                    $store->province_id = $r->province_id2;
+                    $store->amphures_id = $r->amphures_id2;
+                    $store->district_id = $r->district_id2;
+                    $store->zipcode = $r->zipcode2;
+                }
+
+                $store->bank_id = $r->bank_id;
+                $store->bank_account_name = $r->bank_account_name;
+                $store->bank_account_number = $r->bank_account_number;
+                $store->save();
+
+                if($r->product_ex_img!=''){
+                    $image_64 = $r->product_ex_img;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                    $store->product_ex_img_path = 'store/'.$store->id.'/';
+                    $store->product_ex_img = $imageName;
+                    $store->save();
+                }
+
+                if($r->product_pack_img!=''){
+                    $image_64 = $r->product_pack_img;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                    $store->product_pack_img_path = 'store/'.$store->id.'/';
+                    $store->product_pack_img = $imageName;
+                    $store->save();
+                }
+
+                if($r->certificate!=''){
+                    $image_64 = $r->certificate;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                    $store->certificate_path = 'store/'.$store->id.'/';
+                    $store->certificate = $imageName;
+                    $store->save();
+                }
+
+                if($r->bank_img!=''){
+                    $image_64 = $r->bank_img;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                    $store->bank_img_path = 'store/'.$store->id.'/';
+                    $store->bank_img = $imageName;
+                    $store->save();
+                }
+
+                if($r->id_card_img!=''){
+                    $image_64 = $r->id_card_img;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                    $store->id_card_img_path = 'store/'.$store->id.'/';
+                    $store->id_card_img = $imageName;
+                    $store->save();
+                }
+
+                if($r->company_img!=''){
+                    $image_64 = $r->company_img;
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                    $image = str_replace($replace, '', $image_64);
+                    $image = str_replace(' ', '+', $image);
+                    $imageName = time() . rand(0, 10) . rand(0, 10000) . '.' . $extension;
+                    Storage::disk('public')->put('store/'.$store->id.'/' . $imageName, base64_decode($image));
+                    $store->company_img_path = 'store/'.$store->id.'/';
+                    $store->company_img = $imageName;
+                    $store->save();
+                }
+
+                DB::table('customer_acc')->insert([
+                    'store_id' => $store->id,
+                    'bank_id' => $r->bank_id,
+                    'acc_name' => $r->bank_account_name,
+                    'acc_number' => $r->bank_account_number,
+                    'acc_path' => $store->bank_img_path,
+                    'acc_img' => $store->bank_img,
+                    'used' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ]);
+
                 DB::commit();
                 $customer = Customer::where('email',$r->email)->first();
                 $store = Store::where('id',$store->id)->first();
