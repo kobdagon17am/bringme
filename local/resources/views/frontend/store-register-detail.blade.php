@@ -3,7 +3,7 @@
 @section('content')
 <div class="content">
     <h2 class="intro-y text-lg font-medium mt-10">
-        ข้อมูลร้านค้า
+        ข้อมูลร้านค้า ฟหฟห
     </h2>
     <div class="grid grid-cols-12 gap-6">
 
