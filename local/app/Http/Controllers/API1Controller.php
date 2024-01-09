@@ -2600,6 +2600,28 @@ class API1Controller extends Controller
             ->orderBy('products.sale_number','desc')
             ->inRandomOrder()->get();
 
+            // if($store->id==1){
+            //     $product_preorder = Products::select('products.*',
+            //     // 'products_item.transfer_status',
+            //     // 'products_item.id as products_item_id',
+            //     'products_gallery.path as gal_path',
+            //     'products_gallery.name as gal_name',
+            //     'store.logo_path','store.logo',
+            //     )
+            //     // ->join('products_item','products_item.product_id','products.id')
+            //     ->join('products_gallery','products_gallery.product_id','products.id')
+            //     ->join('store','store.id','products.store_id')
+            //     // ->where('products.store_id',$store->id)
+            //     ->where('products_gallery.use_profile',1)
+            //     // ->where('products_item.approve_status',1)
+            //     // ->where('products_item.transfer_status',3)
+            //     ->where('products.display_status',1)
+            //     // ->whereNotIn('products.id',$p_arr_not)
+            //     ->where('products.preorder_active',1)
+            //     ->orderBy('products.sale_number','desc')
+            //     ->inRandomOrder()->get();
+            // }
+
             $product_all = Products::select('products.*','products_item.transfer_status','products_item.id as products_item_id',
             'products_gallery.path as gal_path',
               'store.logo_path','store.logo',
@@ -3088,7 +3110,8 @@ class API1Controller extends Controller
                     $stock_lot_pre->customer_id = $products->customer_id;
                     $stock_lot_pre->store_id = $store->id;
                     $stock_lot_pre->date_in_stock = date('Y-m-d');
-                    $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
+                    // $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
+                    $stock_lot_pre->lot_expired_date = $products_item_pre->shipping_date;
                     $stock_lot_pre->lot_number = date('YmdHis');
                     $stock_lot_pre->qty = 0;
                     $stock_lot_pre->qty_booking = 0;
@@ -3429,7 +3452,8 @@ class API1Controller extends Controller
                     $stock_lot_pre->store_id = $store->id;
                     $stock_lot_pre->date_in_stock = date('Y-m-d');
                     // $stock_lot_pre->lot_expired_date = '9999-'.date('m-d');
-                    $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
+                    // $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
+                    $stock_lot_pre->lot_expired_date = $products_item_pre->shipping_date;
                     $stock_lot_pre->lot_number = date('YmdHis');
                     $stock_lot_pre->qty = 0;
                     $stock_lot_pre->qty_booking = 0;
