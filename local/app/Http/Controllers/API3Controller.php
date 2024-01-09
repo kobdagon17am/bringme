@@ -520,6 +520,9 @@ class API3Controller extends Controller
         try
         {
             $customer_1 = Customer::select('select_type','id','profile_img_path','profile_img','name')->where('id',$r->customer_id)->first();
+            // if($r->user2_type==3){
+
+            // }
             $customer_2 = Customer::select('select_type','id','profile_img_path','profile_img','name')->where('id',$r->customer_id_2)->first();
             $customer_2->select_type = $r->user2_type;
             $message_list = MessageList::where('customer_id',$r->customer_id)->where('customer_id_2',$r->customer_id_2)->first();
@@ -527,6 +530,11 @@ class API3Controller extends Controller
                 $message_list =  new MessageList();
                 $message_list->customer_id = $r->customer_id;
                 $message_list->customer_id_2 = $r->customer_id_2;
+                if($r->chat_type=='user'){
+                    $message_list->chat_type = 1;
+                }else{
+                    $message_list->chat_type = 2;
+                }
                 $message_list->save();
             }
             $message = $message_list->message;
@@ -561,17 +569,30 @@ class API3Controller extends Controller
                 $message_list->save();
 
 
-            if($customer_2->select_type==1){
+            // if($customer_2->select_type==1){
+            //     $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
+            //     $name = $customer_2->name;
+            //     if($customer_2->profile_img==''){
+            //         $url_img = 'nopic';
+            //     }
+            // }else{
+            //     $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
+            //     $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+            //     $name = $store->store_name;
+            // }
+
+            if($r->chat_type=='user'){
+                $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
+                $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                $name = $store->store_name;
+            }else{
                 $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
                 $name = $customer_2->name;
                 if($customer_2->profile_img==''){
                     $url_img = 'nopic';
                 }
-            }else{
-                $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
-                $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
-                $name = $store->store_name;
             }
+
             $message_list->url_img = $url_img;
             $message_list->name = $name;
             $message_list->save();
@@ -584,6 +605,11 @@ class API3Controller extends Controller
                 $message_list2 =  new MessageList();
                 $message_list2->customer_id = $r->customer_id_2;
                 $message_list2->customer_id_2 = $r->customer_id;
+                if($r->chat_type=='user'){
+                    $message_list2->chat_type = 2;
+                }else{
+                    $message_list2->chat_type = 1;
+                }
                 $message_list2->save();
             }
             $message2 = $message_list2->message;
@@ -617,7 +643,19 @@ class API3Controller extends Controller
                 $message_list2->customer_2_is = $customer_1->select_type;
                 $message_list2->save();
 
-                if($customer_1->select_type==1){
+                // if($customer_1->select_type==1){
+                //     $url_img = Storage::disk('public')->url('').$customer_1->profile_img_path.$customer_1->profile_img;
+                //     if($customer_1->profile_img==''){
+                //         $url_img = 'nopic';
+                //     }
+                //      $name = $customer_1->name;
+                // }else{
+                //     $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_1->id)->first();
+                //     $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                //       $name = $store->store_name;
+                // }
+
+                if($r->chat_type=='user'){
                     $url_img = Storage::disk('public')->url('').$customer_1->profile_img_path.$customer_1->profile_img;
                     if($customer_1->profile_img==''){
                         $url_img = 'nopic';
@@ -628,12 +666,11 @@ class API3Controller extends Controller
                     $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
                       $name = $store->store_name;
                 }
+
                 $message_list2->url_img = $url_img;
                 $message_list2->name = $name;
                 $message_list2->save();
             }
-
-
 
             // return response()->json([
             //     'message' =>  'ไม่พบข้อมูลของคุณ',
@@ -689,6 +726,11 @@ class API3Controller extends Controller
                 $message_list =  new MessageList();
                 $message_list->customer_id = $r->customer_id;
                 $message_list->customer_id_2 = $r->customer_id_2;
+                 if($r->chat_type=='user'){
+                    $message_list->chat_type = 1;
+                }else{
+                    $message_list->chat_type = 2;
+                }
                 $message_list->save();
             }
             $message = $message_list->message;
@@ -727,17 +769,30 @@ class API3Controller extends Controller
                 $message_list->customer_2_is = $customer_2->select_type;
                 $message_list->save();
 
-                if($customer_2->select_type==1){
-                    $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
-                    if($customer_2->profile_img==''){
-                        $url_img = 'nopic';
-                    }
-                    $name = $customer_2->name;
-                }else{
-                    $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
-                    $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
-                    $name = $store->store_name;
+                // if($customer_2->select_type==1){
+                //     $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
+                //     if($customer_2->profile_img==''){
+                //         $url_img = 'nopic';
+                //     }
+                //     $name = $customer_2->name;
+                // }else{
+                //     $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
+                //     $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                //     $name = $store->store_name;
+                // }
+
+            if($r->chat_type=='user'){
+                $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_2->id)->first();
+                $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                $name = $store->store_name;
+            }else{
+                $url_img = Storage::disk('public')->url('').$customer_2->profile_img_path.$customer_2->profile_img;
+                $name = $customer_2->name;
+                if($customer_2->profile_img==''){
+                    $url_img = 'nopic';
                 }
+            }
+
                 $message_list->url_img = $url_img;
                 $message_list->name = $name;
                 $message_list->save();
@@ -751,6 +806,11 @@ class API3Controller extends Controller
                 $message_list2 =  new MessageList();
                 $message_list2->customer_id = $r->customer_id_2;
                 $message_list2->customer_id_2 = $r->customer_id;
+                  if($r->chat_type=='user'){
+                    $message_list2->chat_type = 2;
+                }else{
+                    $message_list2->chat_type = 1;
+                }
                 $message_list2->save();
             }
             $message2 = $message_list2->message;
@@ -789,24 +849,34 @@ class API3Controller extends Controller
                 $message_list2->customer_2_is = $customer_1->select_type;
                 $message_list2->save();
 
-                if($customer_1->select_type==1){
+                // if($customer_1->select_type==1){
+                //     $url_img = Storage::disk('public')->url('').$customer_1->profile_img_path.$customer_1->profile_img;
+                //     if($customer_1->profile_img==''){
+                //         $url_img = 'nopic';
+                //     }
+                //     $name = $customer_1->name;
+                // }else{
+                //     $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_1->id)->first();
+                //     $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
+                //     $name = $store->store_name;
+                // }
+
+                   if($r->chat_type=='user'){
                     $url_img = Storage::disk('public')->url('').$customer_1->profile_img_path.$customer_1->profile_img;
                     if($customer_1->profile_img==''){
                         $url_img = 'nopic';
                     }
-                    $name = $customer_1->name;
+                     $name = $customer_1->name;
                 }else{
                     $store = Store::select('logo_path','logo','store_name')->where('customer_id',$customer_1->id)->first();
                     $url_img = Storage::disk('public')->url('').$store->logo_path.$store->logo;
-                    $name = $store->store_name;
+                      $name = $store->store_name;
                 }
+
                 $message_list2->url_img = $url_img;
                 $message_list2->name = $name;
                 $message_list2->save();
             }
-
-
-
 
             // return response()->json([
             //     'message' =>  'ไม่พบข้อมูลของคุณ',
@@ -991,9 +1061,16 @@ class API3Controller extends Controller
         DB::beginTransaction();
         try
         {
+            if(isset($r->type)){
+                if($r->type=='user'){
+                    $message_list = MessageList::where('customer_id',$r->customer_id)->where('chat_type',1)->orderBy('updated_at','desc')->get();
+                }else{
+                    $message_list = MessageList::where('customer_id',$r->customer_id)->where('chat_type',2)->orderBy('updated_at','desc')->get();
+                }
+            }else{
+                $message_list = MessageList::where('customer_id',$r->customer_id)->orderBy('updated_at','desc')->get();
+            }
 
-            $message_list = MessageList::where('customer_id',$r->customer_id)->orderBy('updated_at','desc')->get();
-            // $
 
             // return response()->json([
             //     'message' =>  'ไม่พบข้อมูลของคุณ',

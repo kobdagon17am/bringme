@@ -2590,6 +2590,7 @@ class API1Controller extends Controller
             // ->join('products_item','products_item.product_id','products.id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->join('store','store.id','products.store_id')
+            ->where('products.store_id',$store->id)
             ->where('products_gallery.use_profile',1)
             // ->where('products_item.approve_status',1)
             // ->where('products_item.transfer_status',3)
