@@ -185,12 +185,12 @@ class API1Controller extends Controller
         ->whereIn('status',[1,2])
         ->first();
         if(!$customer){
-            $customer = Customer::where('name',$r->email)
+            $customer = Customer::where('name',$r->name)
             ->whereIn('status',[1,2])
             ->first();
         }
         if(!$customer){
-            $customer = Customer::where('tel',$r->email)
+            $customer = Customer::where('tel',$r->tel)
             ->whereIn('status',[1,2])
             ->first();
         }
