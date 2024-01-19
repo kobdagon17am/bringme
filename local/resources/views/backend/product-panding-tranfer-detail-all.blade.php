@@ -47,7 +47,7 @@
 
                     </div>
                 </div>
-                <form method="POST" action="{{ route('admin/item_confirmation')}}" id="item_confirmation">
+                <form method="POST" action="{{ route('admin/item_confirmation') }}" id="item_confirmation">
                     @csrf
                     <input type="hidden" name="page_id" value="{{ $page_id }}">
                     <div class="intro-y box p-5 mt-5">
@@ -74,242 +74,249 @@
 
 
 
-                                <div class="p-5" id="basic-table">
-                                    <div class="preview">
-                                        <div class="overflow-x-auto">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th class=""><input id="select-free-all"
-                                                                class="form-check-input free-product" type="checkbox"
-                                                                value=""></th>
-                                                        <th class="whitespace-nowrap">รูปสินค้า</th>
-                                                        <th class="whitespace-nowrap">ชื่อสินค้า</th>
-                                                        <th class="whitespace-nowrap">ประเภทสินค้า</th>
-                                                        <th class="whitespace-nowrap">วันที่จัดส่งสินค้า</th>
-                                                        <th class="whitespace-nowrap">Tracking</th>
-                                                        <th class="whitespace-nowrap">ชื่อขนส่ง</th>
-                                                        <th class="whitespace-nowrap">ประเภทการจัดส่ง</th>
-                                                        <th class="whitespace-nowrap">จำนวนสินค้า</th>
+                            <div class="p-5" id="basic-table">
+                                <div class="preview">
+                                    <div class="overflow-x-auto">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class=""><input id="select-free-all"
+                                                            class="form-check-input free-product" type="checkbox"
+                                                            value=""></th>
+                                                    <th class="whitespace-nowrap">รูปสินค้า</th>
+                                                    <th class="whitespace-nowrap">รายละเอียด</th>
+                                                    {{-- <th class="whitespace-nowrap">ประเภทสินค้า</th> --}}
+                                                    <th class="whitespace-nowrap">จัดส่ง</th>
+                                                    {{-- <th class="whitespace-nowrap">Tracking</th> --}}
+                                                    {{-- <th class="whitespace-nowrap">ชื่อขนส่ง</th> --}}
+                                                    {{-- <th class="whitespace-nowrap">ประเภทการจัดส่ง</th> --}}
+                                                    <th class="whitespace-nowrap">จำนวนสินค้า</th>
+                                                    <th class="whitespace-nowrap">จำนวนสินค้ารับจริง</th>
+                                                    {{-- <th class="whitespace-nowrap">วันหมดอายุสินค้า</th> --}}
+                                                    <th class="whitespace-nowrap">วันตัดสต็อค</th>
+                                                    <th class="whitespace-nowrap">ที่จัดเก็บสินค้า</th>
 
-                                                        <th class="whitespace-nowrap">จำนวนสินค้ารับจริง</th>
-                                                        <th class="whitespace-nowrap">วันที่รับเข้าสินค้า</th>
-                                                        <th class="whitespace-nowrap">วันหมดอายุ</th>
-                                                        <th class="whitespace-nowrap">ที่จัดเก็บสินค้า</th>
+                                                    <th class="whitespace-nowrap">หลักฐานการจัดส่ง</th>
 
-                                                        <th class="whitespace-nowrap">หลักฐานการจัดส่ง</th>
+                                                    {{-- <th class="text-center whitespace-nowrap">สถานะ</th> --}}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
-                                                        {{-- <th class="text-center whitespace-nowrap">สถานะ</th> --}}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                    @foreach ($products_transfer as $value)
-
-
-                                                        <tr class="intro-x">
+                                                @foreach ($products_transfer as $value)
+                                                    <tr class="intro-x">
 
 
-                                                            <td class="w-40">
-                                                                {{-- @if ($value->shipping_type == 1)
+                                                        <td class="w-40">
+                                                            {{-- @if ($value->shipping_type == 1)
                                                     <p>รับสินค้า</p>
                                                    @elseif($value->shipping_type == 2)
                                                     <p>ขนส่งด้วยตนเอง</p>
                                                    @else
                                                    @endif --}}
 
-                                                                @if ($value->transfer_status == 0)
-                                                                    <div class="flex text-warring"> <i data-lucide="check-square"
-                                                                            class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>
-                                                                @elseif ($value->transfer_status == 1)
-                                                                    <div class="flex text-primary"> <i data-lucide="check-square"
-                                                                            class="w-4 h-4 mr-2"></i> รอจัดส่ง </div>
-                                                                @elseif ($value->transfer_status == 2)
-                                                                    <input id="checkbox-switch-1"
-                                                                        class="form-check-input free-product" name="transfer_id[]" type="checkbox"
-                                                                        value="{{ $value->id }}">
-                                                                @elseif($value->transfer_status == 3)
-                                                                    <div class="flex text-success"> <i data-lucide="check-square"
-                                                                            class="w-4 h-4 mr-2"></i> รับสินค้าแล้ว </div>
-                                                                @elseif($value->transfer_status == 9)
-                                                                    <div class="flex text-danger"> <i data-lucide="check-square"
-                                                                            class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>
-                                                                @else
-                                                                    <div class="flex text-warning"> <i data-lucide="check-square"
-                                                                            class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>
-                                                                @endif
+                                                            @if ($value->transfer_status == 0)
+                                                                <div class="flex text-warring"> <i
+                                                                        data-lucide="check-square" class="w-4 h-4 mr-2"></i>
+                                                                    รออนุมัติจัดส่ง </div>
+                                                            @elseif ($value->transfer_status == 1)
+                                                                <div class="flex text-primary"> <i
+                                                                        data-lucide="check-square" class="w-4 h-4 mr-2"></i>
+                                                                    รอจัดส่ง </div>
+                                                            @elseif ($value->transfer_status == 2)
+                                                                <input id="checkbox-switch-1"
+                                                                    class="form-check-input free-product"
+                                                                    name="transfer_id[]" type="checkbox"
+                                                                    value="{{ $value->id }}">
+                                                            @elseif($value->transfer_status == 3)
+                                                                <div class="flex text-success"> <i
+                                                                        data-lucide="check-square" class="w-4 h-4 mr-2"></i>
+                                                                    รับสินค้าแล้ว </div>
+                                                            @elseif($value->transfer_status == 9)
+                                                                <div class="flex text-danger"> <i
+                                                                        data-lucide="check-square"
+                                                                        class="w-4 h-4 mr-2"></i> ไม่อนุมัติ </div>
+                                                            @else
+                                                                <div class="flex text-warning"> <i
+                                                                        data-lucide="check-square"
+                                                                        class="w-4 h-4 mr-2"></i> รออนุมัติจัดส่ง </div>
+                                                            @endif
 
-                                                            </td>
-                                                            <td>
-                                                                <?php
-
-                                                                $profile_img = $value->gal_path . $value->gal_name;
-                                                                $img_path = asset('local/storage/app/public/' . $profile_img);
-                                                                ?>
-                                                                <div class="flex">
-                                                                    <div class="w-20 h-20 image-fit zoom-in">
-                                                                        <img alt="Midone - HTML Admin Template "
-                                                                            class=" rounded-full" src="{{ $img_path }}">
-                                                                    </div>
+                                                        </td>
+                                                        <td>
+                                                            <?php
+                                                            $profile_img = $value->gal_path . $value->gal_name;
+                                                            $img_path = asset('local/storage/app/public/' . $profile_img);
+                                                            ?>
+                                                            <div class="flex">
+                                                                <div class="w-20 h-20 image-fit zoom-in">
+                                                                    <img alt="Midone - HTML Admin Template "
+                                                                        class=" rounded-full" src="{{ $img_path }}">
                                                                 </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <p class="font-medium whitespace-nowrap">ชื่อ :
+                                                                {{ $value->name_th }}
+                                                            </p>
+                                                            <p class="font-medium whitespace-nowrap">
+                                                                หมวดหมู่ : {{ $value->c_name_th }}</p>
+                                                        </td>
+                                                        {{-- <td>
+                                                            <p class="font-medium whitespace-nowrap">
+                                                                {{ $value->c_name_th }}
+                                                            </p>
+                                                        </td> --}}
+                                                        <td>
+                                                            <p class="font-medium whitespace-nowrap">
+                                                                วันที่จัดส่ง : {{ $value->shipping_date }}</p>
+                                                            @if ($value->shipping_type == 1)
+                                                                <p>ประเภทจัดส่ง : ใช้ขนส่ง</p>
+                                                            @elseif($value->shipping_type == 2)
+                                                                <p>ประเภทจัดส่ง : ขนส่งด้วยตนเอง</p>
+                                                            @else
+                                                            @endif
+                                                            <p class="font-medium whitespace-nowrap">Tracking :
+                                                                {{ $value->tracking }}
+                                                            </p>
+                                                            <p class="font-medium whitespace-nowrap">
+                                                                ขนส่ง : {{ $value->shipping_name }}</p>
+                                                        </td>
+                                                        {{-- <td>
+                                                            <p class="font-medium whitespace-nowrap">{{ $value->tracking }}
+                                                            </p>
+                                                        </td> --}}
+                                                        {{-- <td>
+                                                            <p class="font-medium whitespace-nowrap">
+                                                                {{ $value->shipping_name }}</p>
+                                                        </td> --}}
+                                                        {{-- <td>
+                                                            @if ($value->shipping_type == 1)
+                                                                <p>ใช้ขนส่ง</p>
+                                                            @elseif($value->shipping_type == 2)
+                                                                <p>ขนส่งด้วยตนเอง</p>
+                                                            @else
+                                                            @endif
+                                                        </td> --}}
+                                                        <td>
+                                                            <p class="font-medium whitespace-nowrap">{{ $value->qty }}
+                                                            </p>
+                                                        </td>
+
+                                                        <td>
+
+                                                            @if ($value->transfer_status == 2)
+                                                                <input type="text" class="form-control block mx-auto"
+                                                                    name="qty"
+                                                                    value="{{ $value->qty }}">
+                                                            @else
+                                                                <input type="text" class="form-control block mx-auto"
+                                                                    name="qty"
+                                                                    value="{{ $value->qty }}" disabled>
+                                                            @endif
+                                                        </td>
+                                                        {{-- <td>
+
+                                                            @if ($value->transfer_status == 2)
+                                                                <input type="date" value="{{ date('Y-m-d', strtotime($value->production_date. ' + '.($value->shelf_lift).' days')) }}"
+                                                                    class=" form-control block mx-auto"
+                                                                    name="product_expired_date[]" data-single-mode="true">
+                                                            @else
+                                                                <input type="date" value="{{ date('Y-m-d', strtotime($value->production_date. ' + '.($value->shelf_lift).' days')) }}"
+                                                                    class=" form-control block mx-auto"
+                                                                    name="product_expired_date[]" data-single-mode="true"
+                                                                    disabled>
+                                                            @endif
+                                                        </td> --}}
+
+                                                        <td>
+                                                            @if ($value->transfer_status == 2)
+                                                                <input type="date" value="{{ date('Y-m-d', strtotime($value->production_date. ' + '.($value->shelf_lift-$value->stock_cut_off).' days')) }}"
+                                                                    class=" form-control block mx-auto"
+                                                                    name="lot_expired_date[{{ $value->id }}]" data-single-mode="true">
+                                                            @else
+                                                                <input type="date"
+                                                                    value="{{ $value->lot_expired_date }}"
+                                                                    class=" form-control block mx-auto"
+                                                                    name="lot_expired_date[{{ $value->id }}]" data-single-mode="true"
+                                                                    disabled>
+                                                            @endif
+
+                                                        </td>
 
 
 
-                                                            </td>
-                                                            <td>
-                                                                <p class="font-medium whitespace-nowrap">{{ $value->name_th }}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p class="font-medium whitespace-nowrap">{{ $value->c_name_th }}
-                                                                </p>
+                                                        <td>
+                                                            @if ($value->transfer_status == 2)
+                                                                <select name="shelf[{{ $value->id }}]"
+                                                                    class="form-select form-select-lg sm:mt-2 sm:mr-2 w-56"
+                                                                    aria-label=".form-select-lg example" >
+                                                                    <option value=""> ------ เลือก Shelf -----
+                                                                    </option>
+                                                                    @foreach ($shelf as $shelf_value)
+                                                                        <option value="{{ $shelf_value->id }}">
+                                                                            {{ $shelf_value->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <br>
+                                                                <select name="floor[{{ $value->id }}]"
+                                                                    class="form-select form-select-lg sm:mt-2 sm:mr-2  w-56"
+                                                                    aria-label=".form-select-lg example" >
+                                                                    <option value=""> - เลือกชั้น -</option>
+                                                                    <option value="1">1</option>
+                                                                    <option value="2">2</option>
+                                                                    <option value="3">3</option>
+                                                                    <option value="4">4</option>
+                                                                    <option value="5">5</option>
+                                                                    <option value="6">6</option>
+                                                                    <option value="7">7</option>
+                                                                    <option value="8">8</option>
+                                                                </select>
+                                                            @else
+                                                                Shelf: {{ $value->shelf_name }} <br>
+                                                                floor: {{ $value->floor_name }}
+                                                            @endif
 
+                                                        </td>
 
-                                                            </td>
-                                                            <td>
-                                                                <p class="font-medium whitespace-nowrap">
-                                                                    {{ $value->shipping_date }}</p>
+                                                        <td>
 
-                                                            </td>
-
-                                                            <td>
-                                                                <p class="font-medium whitespace-nowrap">{{ $value->tracking }}</p>
-
-
-                                                            </td>
-
-
-                                                            <td>
-                                                                <p class="font-medium whitespace-nowrap">
-                                                                    {{ $value->shipping_name }}</p>
-                                                            </td>
-
-                                                            <td>
-                                                                @if ($value->shipping_type == 1)
-                                                                    <p>ใช้ขนส่ง</p>
-                                                                @elseif($value->shipping_type == 2)
-                                                                    <p>ขนส่งด้วยตนเอง</p>
-                                                                @else
-                                                                @endif
-
-                                                            </td>
-
-
-                                                            <td>
-                                                                <p class="font-medium whitespace-nowrap">{{ $value->qty }}</p>
-                                                            </td>
-
-                                                            <td>
-
-                                                                @if ($value->transfer_status == 2)
-                                                                <input type="text" class="form-control block mx-auto" name="qty" required="" value="{{ $value->qty }}">
-                                                                @else
-                                                                <input type="text" class="form-control block mx-auto" name="qty" required="" value="{{ $value->qty }}" disabled>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-
-                                                                @if ($value->transfer_status == 2)
-                                                                <input type="date" value="{{ date('Y-m-d') }}"
-                                                                class=" form-control block mx-auto" name="date_in_stock[]"
-                                                                data-single-mode="true">
-                                                                @else
-
-
-                                                                <input type="date" value="{{ $value->date_in_stock }}"
-                                                                class=" form-control block mx-auto" name="date_in_stock[]"
-                                                                data-single-mode="true" disabled>
-                                                                @endif
-                                                            </td>
-
-                                                            <td>
-                                                                @if ($value->transfer_status == 2)
-                                                                <input type="date" value="{{ date('Y-m-t') }}"
-                                                                class=" form-control block mx-auto" name="lot_expired_date[]"
-                                                                data-single-mode="true">
-                                                                @else
-
-                                                                <input type="date" value="{{ $value->lot_expired_date }}"
-                                                                class=" form-control block mx-auto" name="lot_expired_date[]"
-                                                                data-single-mode="true" disabled>
-                                                                @endif
-
-                                                            </td>
-
-
-
-                                                            <td>
-                                                                @if ($value->transfer_status == 2)
-
-                                                                    <select name="shelf[]"
-                                                                        class="form-select form-select-lg sm:mt-2 sm:mr-2 w-56"
-                                                                        aria-label=".form-select-lg example" required>
-                                                                        <option value=""> ------ เลือก Shelf -----</option>
-                                                                        @foreach ($shelf as $shelf_value)
-                                                                            <option value="{{ $shelf_value->id }}">{{ $shelf_value->name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    <br>
-                                                                    <select name="floor[]"
-                                                                        class="form-select form-select-lg sm:mt-2 sm:mr-2  w-56"
-                                                                        aria-label=".form-select-lg example" required >
-                                                                        <option value=""> - เลือกชั้น -</option>
-                                                                        <option value="1">1</option>
-                                                                        <option value="2">2</option>
-                                                                        <option value="3">3</option>
-                                                                        <option value="4">4</option>
-                                                                        <option value="5">5</option>
-                                                                        <option value="6">6</option>
-                                                                        <option value="7">7</option>
-                                                                        <option value="8">8</option>
-                                                                    </select>
-
-
-                                                                @else
-
-                                                                Shelf: {{$value->shelf_name}} <br>
-                                                                floor: {{$value->floor_name}}
-                                                                @endif
-
-                                                            </td>
-
-                                                            <td>
-
-                                                                @if ($value->img)
-                                                                    <?php $url_img = Storage::disk('public')->url(''); ?>
-                                                                    <img alt="Midone - HTML Admin Template"
-                                                                        src="{{ asset($url_img . '' . $value->path_img . '' . $value->img) }}"
-                                                                        data-action="zoom" class="w-20 rounded-md ">
-                                                                @else
-                                                                    <p>ไม่พบเอกสารการจัดส่ง</p>
-                                                                @endif
-                                                            </td>
+                                                            @if ($value->img)
+                                                                <?php $url_img = Storage::disk('public')->url(''); ?>
+                                                                <img alt="Midone - HTML Admin Template"
+                                                                    src="{{ asset($url_img . '' . $value->path_img . '' . $value->img) }}"
+                                                                    data-action="zoom" class="w-20 rounded-md ">
+                                                            @else
+                                                                <p>ไม่พบเอกสารการจัดส่ง</p>
+                                                            @endif
+                                                        </td>
 
 
 
 
 
 
-                                                        </tr>
-                                                    @endforeach
+                                                    </tr>
+                                                @endforeach
 
 
 
-                                                </tbody>
-                                            </table>
+                                            </tbody>
+                                        </table>
 
-                                        </div>
                                     </div>
-
                                 </div>
 
-
-
-                                <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+                            </div>
 
 
 
-                                </div>
-                                <!-- END: Data List -->
+                            <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+
+
+
+                            </div>
+                            <!-- END: Data List -->
 
                         </div>
                     </div>
@@ -324,7 +331,23 @@
 
                             <div class="mt-5">
 
-
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">วันที่รับเข้าสินค้า</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="date" value="{{ date('Y-m-d') }}"
+                                            class=" form-control w-56 block mx-auto" name="date_in_stock"
+                                            data-single-mode="true">
+                                    </div>
+                                </div>
 
 
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
@@ -415,7 +438,7 @@
 
                                     <button type="button" data-tw-toggle="modal"
                                         data-tw-target="#confirm-confirmation-modal"
-                                        class="btn py-3 btn-primary" >บันทึก</button>
+                                        class="btn py-3 btn-primary">บันทึก</button>
                                 </div>
 
                                 <div id="confirm-confirmation-modal" class="modal" tabindex="-1" aria-hidden="true">

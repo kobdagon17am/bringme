@@ -659,7 +659,9 @@ class ProductsController extends Controller
                 'products_item.transfer_status',
                 'stock_shelf.name as shelf_name',
                 'stock_floor.floor as floor_name',
-
+                'products_item.production_date',
+                'products_item.shelf_lift',
+                'products_item.stock_cut_off',
             )
             ->leftJoin('products_item', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
@@ -674,6 +676,7 @@ class ProductsController extends Controller
             ->leftJoin('category','category.id','products.category_id')
             ->where('products_gallery.use_profile',1)
             ->where('products_item.customer_id', '=',  $customer_id->id)
+            ->where('products_item.transfer_status',2)
             ->orderByDesc('products_transfer.id')
             ->get();
 
@@ -759,27 +762,22 @@ class ProductsController extends Controller
         if(empty($rs->transfer_id)){
             return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError('กรุณาเลือกรายการที่ต้องการยืนยันการรับสินค้า');
         }
-
-
+        // dd($rs->all());
         if($rs->type == 'confirm_all'){
 
             if(empty($rs->transfer_id)){
                 return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError('กรุณาเลือกรายการที่ต้องการยืนยันการรับสินค้า');
             }
             if ($rs->tranfer_status == 1) {
-                // dd($rs->transfer_id);
-                $i=0;
-                foreach($rs->transfer_id as $value){
-
-                    $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($value, $rs->date_in_stock[$i], $rs->lot_expired_date[$i], $rs->lot_number, $rs->shelf[$i], $rs->floor[$i], $rs,$rs->qty[$i]);
-                    if ($data['status'] == 0) {
-                        return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError($data['message']);
+                foreach($rs->transfer_id as $i => $value){
+                    if($rs->shelf[$value]!='' && $rs->floor[$value]!='' && $rs->qty[$value]!=''){
+                        $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($value, $rs->date_in_stock, $rs->lot_expired_date[$value], $rs->lot_number, $rs->shelf[$value], $rs->floor[$value], $rs,$rs->qty[$value]);
+                        if ($data['status'] == 0) {
+                            return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError($data['message']);
+                        }
                     }
-                    $i++;
                 }
-
                     return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withSuccess('อัพเดทรายการสำเร็จ');
-
             } else {
                 try {
                     DB::BeginTransaction();
