@@ -274,11 +274,31 @@
                                             data-single-mode="true">
                                     </div>
                                 </div>
+
                                 <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
                                     <div class="form-label xl:w-64 xl:!mr-10">
                                         <div class="text-left">
                                             <div class="flex items-center">
-                                                <div class="font-medium">วันหมดอายุ</div>
+                                                <div class="font-medium">วันหมดอายุสินค้า</div>
+                                                <div
+                                                    class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
+                                                    Required</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="date" value="{{ date('Y-m-d', strtotime($data->production_date. ' + '.($data->shelf_lift).' days')) }}"
+                                            class="form-control w-56 block mx-auto" name="product_expired_date"
+                                            data-single-mode="true">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0">
+                                    <div class="form-label xl:w-64 xl:!mr-10">
+                                        <div class="text-left">
+                                            <div class="flex items-center">
+                                                <div class="font-medium">วันตัดสต็อค</div>
                                                 <div
                                                     class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md">
                                                     Required</div>
