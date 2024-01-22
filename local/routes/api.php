@@ -108,4 +108,6 @@ Route::post('api_get_message_list', 'API3Controller@api_get_message_list');
 Route::post('api_send_image', 'API3Controller@api_send_image');
 
 Route::post('api_remove_customer', 'API3Controller@api_remove_customer');
+Route::get('test_edit_stock_lot', 'API4Controller@test_edit_stock_lot');
+
 

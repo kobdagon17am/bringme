@@ -223,6 +223,7 @@ class API2Controller extends  Controller
                         $stock_lot->date_in_stock = $date_in_stock;
                         $stock_lot->lot_expired_date = $lot_expired_date;
                         $stock_lot->product_expired_date = date('Y-m-d', strtotime($products_item->production_date. ' + '.($products_item->shelf_lift).' days'));
+                        $stock_lot->products_item_id = $products_item->id;
                         $stock_lot->lot_number = $lot_number;
                         $stock_lot->save();
 
