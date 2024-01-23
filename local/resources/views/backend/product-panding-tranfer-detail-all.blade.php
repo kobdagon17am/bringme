@@ -207,11 +207,11 @@
 
                                                             @if ($value->transfer_status == 2)
                                                                 <input type="text" class="form-control block mx-auto"
-                                                                    name="qty"
+                                                                    name="qty[{{ $value->id }}]"
                                                                     value="{{ $value->qty }}">
                                                             @else
                                                                 <input type="text" class="form-control block mx-auto"
-                                                                    name="qty"
+                                                                    name="qty[{{ $value->id }}]"
                                                                     value="{{ $value->qty }}" disabled>
                                                             @endif
                                                         </td>

@@ -372,12 +372,19 @@ class API1Controller extends Controller
     {
         $user = Customer::where('id',$r->user_id)->first();
         $url_img = Storage::disk('public')->url('');
+        $following_store_numbers = DB::table('store_following')->select('id')->where('customer_id',$r->user_id)->where('status',1)->get();
+        $following_store_number = count($following_store_numbers);
+        if($following_store_number==null){
+            $following_store_number = '0';
+        }
+
         if($user){
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => $user,
                 'url_img' => $url_img,
+                'following_store_number' => $following_store_number,
             ]);
         }else{
             return response()->json([
@@ -1588,11 +1595,13 @@ class API1Controller extends Controller
 
             $product_gallery = ProductsGallery::where('product_id',$r->product_id)->orderBy('use_profile','desc')->get();
             $url_img = Storage::disk('public')->url('');
-            $stock_lot = StockLot::select('lot_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
+            $stock_lot = StockLot::select('lot_expired_date','product_expired_date')->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
             if($stock_lot){
                 $lot_expired_date = date('d/m/Y', strtotime($stock_lot->lot_expired_date));
+                $product_expired_date = date('d/m/Y', strtotime($stock_lot->product_expired_date));
             }else{
                 $lot_expired_date = '';
+                $product_expired_date = '';
             }
             $stock_lot_all = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->get();
             $products_comment = ProductsComment::
@@ -1670,6 +1679,7 @@ class API1Controller extends Controller
                     'stock_items_count_pre' => $stock_items_count_pre,
                     'category' => $category,
                     'storage_method' => $storage_method,
+                    'product_expired_date' => $product_expired_date,
                     // 'products_option_head1' => $products_option_head1,
                     // 'products_option_head2' => $products_option_head2,
                     // 'products_option_1' => $products_option_1,
@@ -2490,6 +2500,7 @@ class API1Controller extends Controller
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->where('customer_cart_product.customer_cart_id',$c->id)
+            ->where('customer_cart_product.store_id',$store->id)
             ->where('customer_cart.transfer_status',2)
             ->limit(1)
             ->get();
@@ -2511,6 +2522,7 @@ class API1Controller extends Controller
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
             ->where('customer_cart_product.customer_cart_id',$c->id)
+            ->where('customer_cart_product.store_id',$store->id)
             ->where('customer_cart.transfer_status',2)
             ->get();
             $arr_cart_success[$key] = [];
@@ -2533,6 +2545,7 @@ class API1Controller extends Controller
                 ->join('products_gallery','products_gallery.product_id','products.id')
                 // ->where('customer_cart.transfer_status',0)
                 ->where('customer_cart_product.customer_cart_id',$c->id)
+                ->where('customer_cart_product.store_id',$store->id)
                 ->limit(1)->get();
                 $cart_claim[$key] = [];
                 foreach($products as $key2 => $p){
@@ -2550,6 +2563,7 @@ class API1Controller extends Controller
             ->join('products_gallery','products_gallery.product_id','products.id')
             // ->where('customer_cart.transfer_status',0)
             ->where('customer_cart_product.customer_cart_id',$c->id)
+            ->where('customer_cart_product.store_id',$store->id)
             ->get();
             $cart_claim[$key] = [];
             foreach($products as $key2 => $p){

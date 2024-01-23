@@ -100,14 +100,19 @@ Route::post('api_select_customer_acc', 'API3Controller@api_select_customer_acc')
 Route::post('api_add_withdraw', 'API3Controller@api_add_withdraw');
 Route::post('api_add_brands', 'API3Controller@api_add_brands');
 Route::get('api_re_db', 'API3Controller@api_re_db');
-
-
 Route::post('api_send_message', 'API3Controller@api_send_message');
 Route::post('api_get_message', 'API3Controller@api_get_message');
 Route::post('api_get_message_list', 'API3Controller@api_get_message_list');
 Route::post('api_send_image', 'API3Controller@api_send_image');
-
 Route::post('api_remove_customer', 'API3Controller@api_remove_customer');
-Route::get('test_edit_stock_lot', 'API4Controller@test_edit_stock_lot');
+Route::post('api_get_search_products', 'API4Controller@api_get_search_products');
+Route::post('api_get_store_products_list', 'API4Controller@api_get_store_products_list');
 
+
+
+
+
+
+
+Route::get('test_edit_stock_lot', 'API4Controller@test_edit_stock_lot');
 

@@ -770,7 +770,7 @@ class ProductsController extends Controller
             }
             if ($rs->tranfer_status == 1) {
                 foreach($rs->transfer_id as $i => $value){
-                    if($rs->shelf[$value]!='' && $rs->floor[$value]!='' && $rs->qty[$value]!=''){
+                    if($rs->shelf[$value]!=null && $rs->floor[$value]!=null && $rs->qty[$value]!=null){
                         $data = \App\Http\Controllers\API2Controller::api_products_transfer_approve_back($value, $rs->date_in_stock, $rs->lot_expired_date[$value], $rs->lot_number, $rs->shelf[$value], $rs->floor[$value], $rs,$rs->qty[$value]);
                         if ($data['status'] == 0) {
                             return redirect('admin/product-panding-tranfer-detail-all/'.$rs->page_id)->withError($data['message']);
