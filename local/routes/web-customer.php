@@ -193,6 +193,7 @@ Route::get('/', function () {
 
 
   Route::get('label/print/{cart_id}', 'Admin\OrdersController@order_print_api')->name('label/print');
+  Route::get('label/print_file/{file_name}', 'Admin\OrdersController@order_print_api_stream');
 
   ?>
 

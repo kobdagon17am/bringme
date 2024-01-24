@@ -236,7 +236,6 @@ class OrdersController extends  Controller
         ->get();
 
 
-
         if(count($customer_cart) == 0){
             $data = ['status'=>'fail','url'=>'','ms'=>'ไม่พบข้อมูลใน customer_cart_tracking '];
             return  $data;
@@ -256,15 +255,26 @@ class OrdersController extends  Controller
             for ($i = 0; $i < 1; $i++) {
                 $pathfile = public_path('order_list/'.$cart_id.'_'.$i.'.pdf');
                 $pdf->save($pathfile);
-
             }
         }
 
         $this->merger_pdf($cart_id);
-        $url =  asset('local/public/order/result_'.$cart_id);
-        $data = ['status'=>'success','url'=>$url,'ms'=>'success'];
-        return  $data;
+        return $pdf->stream();
 
+        // $url_pdf =  asset('local/public/order/result_'.$cart_id);
+        // $url = url('label/print_file/'.$cart_id);
+        // $data = ['status'=>'success','url'=>$url,'ms'=>'success'];
+
+        // return  $data;
+
+    }
+
+    public function order_print_api_stream($file_name)
+    {
+        $url_img = Storage::disk('public')->url('');
+        // $url_pdf = asset('local/storage/app/public/order/result_'.$file_name.'.pdf');
+
+        // return PDF::loadFile($url_img.'order/result_'.$file_name.'.pdf')->stream(date('YmdHis').'.pdf');
     }
 
     public function merger_pdf($item_id)

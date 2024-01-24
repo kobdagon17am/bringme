@@ -38,6 +38,7 @@ Use App\Models\ProductsComment;
 use App\Models\CustomerCartAddress;
 use App\Models\CustomerAcc;
 use App\Models\Withdraw;
+use App\Models\CustomerCartClaim;
 use App\Models\MessageList;
 
 class API4Controller extends Controller
@@ -231,6 +232,67 @@ class API4Controller extends Controller
                 'data' => [
                     'products' => $products,
                     'url_img' => $url_img,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
+
+     public function api_approve_product_claim(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+            $cart = CustomerCart::where('id',$r->cart_id)->first();
+            if($cart){
+                if($r->status == 1){
+                    $claim = CustomerCartClaim::where('customer_cart_id',$r->cart_id)->first();
+                    $claim->status_assign = 'Y';
+                    $claim->status = 1;
+                    $claim->save();
+
+                    $cart->status_assign_claim = null;
+                    $cart->save();
+                }else{
+                    $claim = CustomerCartClaim::where('customer_cart_id',$r->cart_id)->first();
+                    $claim->status_assign = 'Y';
+                    $claim->status = 2;
+                    $claim->save();
+
+                    $cart->status_assign_claim = null;
+                    $cart->save();
+                }
+
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'success',
+                'status' => 1,
+                'data' => [
+                    // 'products' => $products,
+                    // 'url_img' => $url_img,
                 ],
             ]);
 

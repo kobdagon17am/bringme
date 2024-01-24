@@ -112,8 +112,14 @@ class RefundController extends Controller
         $data['status'] = 0;
         $data['status_assign'] = 'Y';
         $data['updated_at'] = date('Y-m-d H:i:s');
-        DB::Table('customer_cart_claim')->where('id',$id)->update($data);
-        return redirect('admin/refund');
+        $claim_data = DB::table('customer_cart_claim')->where('id',$id)->first();
+        if($claim_data){
+            $customer_cart = DB::table('customer_cart')->where('id',$claim_data->customer_cart_id)->update([
+                'status_assign_claim' => 'Y'
+            ]);
+            DB::Table('customer_cart_claim')->where('id',$id)->update($data);
+            return redirect('admin/refund');
+        }
     }
 
 }

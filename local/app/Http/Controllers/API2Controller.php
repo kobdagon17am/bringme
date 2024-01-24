@@ -575,6 +575,125 @@ class API2Controller extends  Controller
         }
     }
 
+    public function api_get_cart_detail_store(Request $r)
+    {
+        // barcode transfer_status
+        $store = Store::where('customer_id',$r->user_id)->first();
+
+        $cart = CustomerCart::where('customer_cart.id',$r->cart_id)->first();
+        if($cart->pay_other_cart_id!=null){
+            $cart_others = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
+            ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+            ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
+            ->where('customer_cart.id',$cart->pay_other_cart_id)->get();
+        }else{
+            $cart_others = [];
+        }
+
+        $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
+        ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
+        ->join('shipping_type','shipping_type.id','customer_cart.shipping_type_id')
+        ->where('customer_cart.id',$r->cart_id)->first();
+
+        $product_qty = 0;
+        if($cart){
+            $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'products_gallery.path as img_path','products_gallery.name as img_name',
+            'products_gallery.path as gal_path','products_gallery.name as gal_name',
+            'products.products_code', 'products.barcode',
+            'products_option_2_items.name_th as items_name',
+            'customer_cart_product.price as product_price','brands.name_th as brand_name')
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('products_option_2_items','products_option_2_items.id','customer_cart_product.products_option_2_items_id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)
+            ->where('customer_cart_product.store_id',$store->id)
+            ->get();
+
+            $arr_lot = [];
+            $arr_barcode = [];
+            $total_price_products = 0;
+            foreach($products as $index => $pro){
+
+                $total_price_products += $pro->total_price;
+
+                $product_qty+=$pro->qty;
+
+                // ดึงตำแหน่งสินค้า
+                $customer_cart_product_cut_stock = CustomerCartProductCutStock::
+                select('customer_cart_product_cut_stock.*','stock_lot.lot_number','dataset_shelf.name as shelf_name','products_option_2_items.barcode','stock_floor.floor','stock_items.name as stock_item_name')
+                ->join('stock_items','stock_items.id','customer_cart_product_cut_stock.stock_item_id')
+                ->join('stock_floor','stock_floor.id','stock_items.stock_floor_id')
+                ->join('stock_shelf','stock_shelf.id','stock_items.stock_shelt_id')
+                ->join('dataset_shelf','dataset_shelf.id','stock_shelf.shelf_id')
+                ->join('stock_lot','stock_lot.id','stock_shelf.stock_lot_id')
+                ->join('products_option_2_items','products_option_2_items.id','stock_items.products_option_2_items_id')
+                ->where('customer_cart_product_cut_stock.customer_cart_product_id',$pro->id)
+                ->get();
+
+                foreach($customer_cart_product_cut_stock as $key => $c){
+                    $arr_lot[$index][$key] = $c->lot_number.' > '.$c->shelf_name.' > '.$c->floor.' > '.$c->stock_item_name.' (Barcode:'.$c->barcode.')';
+                }
+            }
+
+            $customer_address = Customer_address::
+            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            ->join('districts','districts.id','customer_address.district_id')
+            ->join('amphures','amphures.id','customer_address.amphures_id')
+            ->join('provinces','provinces.id','customer_address.province_id')
+            ->where('customer_address.id',$cart->customer_address_id)->first();
+            if(!$customer_address){
+                $customer_address = '';
+            }
+
+            $url_img = Storage::disk('public')->url('');
+
+            $tracking_no1 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',1)->first();
+            $tracking_no2 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',2)->first();
+            $tracking_no3 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',3)->first();
+            $tracking_no4 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',4)->first();
+            $tracking_no5 = CustomerCartTracking::select('tracking_no')->where('customer_cart_id',$r->cart_id)->where('no',5)->first();
+
+            $tracking_no1 = ($tracking_no1)? $tracking_no1->tracking_no : '';
+            $tracking_no2 = ($tracking_no2)? $tracking_no2->tracking_no : '';
+            $tracking_no3 = ($tracking_no3)? $tracking_no3->tracking_no : '';
+            $tracking_no4 = ($tracking_no4)? $tracking_no4->tracking_no : '';
+            $tracking_no5 = ($tracking_no5)? $tracking_no5->tracking_no : '';
+
+            $customer_cart_claim = CustomerCartClaim::where('customer_cart_id',$cart->id)->get();
+
+            return response()->json([
+                'message' => 'สำเร็จ',
+                'status' => 1,
+                'data' => [
+                    'products' => $products,
+                    'product_qty' => $product_qty,
+                    'cart' => $cart,
+                    'customer_address' => $customer_address,
+                    'url_img' => $url_img,
+                    'arr_lot' => $arr_lot,
+                    'tracking_no1' => $tracking_no1,
+                    'tracking_no2' => $tracking_no2,
+                    'tracking_no3' => $tracking_no3,
+                    'tracking_no4' => $tracking_no4,
+                    'tracking_no5' => $tracking_no5,
+                    'cart_others' => $cart_others,
+                    'total_price_products' => $total_price_products,
+                    'customer_cart_claim' => $customer_cart_claim,
+                ],
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'ไม่พบสินค้าในตะกร้า',
+                'status' => 0,
+                'data' => [
+                ],
+            ]);
+        }
+    }
+
     public static function api_get_cart_detail_web($cart_id)
     {
         $cart = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
@@ -1795,11 +1914,13 @@ class API2Controller extends  Controller
                     $CustomerCart = CustomerCart::where('id',$r->customer_cart_id)->first();
                     // $CustomerCartProduct = CustomerCartProduct::where('customer_cart_id',$r->customer_cart_id)->first();
                     $cus_product_id_arr = explode(',',$r->cus_product_id_arr);
-                    foreach($cus_product_id_arr as $arr){
+                    $cus_product_qty_claim_arr = explode(',',$r->cus_product_qty_claim_arr);
+                    foreach($cus_product_id_arr as $index => $arr){
                         if($arr!=''){
 
                             $CustomerCartProduct = CustomerCartProduct::where('customer_cart_id',$r->customer_cart_id)->where('id',$arr)->first();
                             $CustomerCartProduct->claim_status = 1;
+                            $CustomerCartProduct->qty_claim = $cus_product_qty_claim_arr[$index];
                             $CustomerCartProduct->save();
 
                             $product = Products::where('id',$CustomerCartProduct->product_id)->first();
@@ -1810,7 +1931,18 @@ class API2Controller extends  Controller
                             $cart_claim->customer_cart_product_id = $arr;
                             $cart_claim->store_id = $product->store_id;
                             $cart_claim->problem_id = $r->problem_id;
-                            $cart_claim->other_problem = $r->other_problem;
+
+                            if($r->problem_id == 1){
+                                $cart_claim->problem = 'สินค้ามีปัญหาระหว่างการจัดส่ง';
+                            }
+                            if($r->problem_id == 2){
+                                $cart_claim->problem = 'ตรวจสอบสินค้าแล้วพบว่าเกินกำหนดเวลา ตามฉลากวันหมดอายุ';
+                            }
+
+                            if($r->problem_id == 3){
+                                $cart_claim->problem = 'ปัญหาอื่นๆ';
+                                $cart_claim->other_problem = $r->other_problem;
+                            }
 
                                 $gal = explode('|',$r->images);
                                 foreach ($gal as $key => $img) {
@@ -1847,9 +1979,6 @@ class API2Controller extends  Controller
 
                         }
                     }
-
-
-
 
                     DB::commit();
                     return response()->json([

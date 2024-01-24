@@ -2481,11 +2481,12 @@ class API1Controller extends Controller
         $store_success = DB::table('customer_cart_store')->select('customer_cart_id')->where('store_id',$store->id)->pluck('customer_cart_id')->toArray();
 
         $carts_success = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
-        $carts_claim = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('claim_status',1)->orderBy('id','desc')->get();
+        $carts_claim = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('claim_status',1)->where('status_assign_claim','Y')->orderBy('id','desc')->get();
 
         $arr_cart_success = [];
         $cart_claim = [];
 
+        $store_total_price_success = [];
         foreach($carts_success as $key=> $c){
 
             if(!isset($r->limit)){
@@ -2533,7 +2534,11 @@ class API1Controller extends Controller
         }
         }
 
+        $store_total_price_claim = [];
+
         foreach($carts_claim as $key=> $c){
+            $price = 0;
+
             if(!isset($r->limit)){
 
                 $products = CustomerCartProduct::select('customer_cart_product.*',
@@ -2546,11 +2551,15 @@ class API1Controller extends Controller
                 // ->where('customer_cart.transfer_status',0)
                 ->where('customer_cart_product.customer_cart_id',$c->id)
                 ->where('customer_cart_product.store_id',$store->id)
-                ->limit(1)->get();
+                // ->limit(1)
+                ->get();
                 $cart_claim[$key] = [];
                 foreach($products as $key2 => $p){
+                    $price += $p->total_price;
                     // $arr_cart[$key] = $p;
-                    array_push($cart_claim[$key],$p);
+                    if($key2==0){
+                        array_push($cart_claim[$key],$p);
+                    }
                 }
             }else{
 
@@ -2567,10 +2576,13 @@ class API1Controller extends Controller
             ->get();
             $cart_claim[$key] = [];
             foreach($products as $key2 => $p){
+                $price += $p->total_price;
                 // $arr_cart[$key] = $p;
                 array_push($cart_claim[$key],$p);
             }
             }
+
+            array_push($store_total_price_claim,$price);
 
         }
 
@@ -2583,6 +2595,7 @@ class API1Controller extends Controller
                     'cart_success' => $arr_cart_success,
                     'cart_claim' => $cart_claim,
                     'url_img' => $url_img,
+                    'store_total_price_claim' => $store_total_price_claim,
                 ],
             ]);
     }

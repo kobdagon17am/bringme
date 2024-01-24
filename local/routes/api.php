@@ -60,6 +60,7 @@ Route::post('api_get_picking_list', 'API2Controller@api_get_picking_list');
 Route::post('api_get_scan_list', 'API2Controller@api_get_scan_list');
 Route::post('api_get_shipping_list', 'API2Controller@api_get_shipping_list');
 Route::post('api_get_cart_detail', 'API2Controller@api_get_cart_detail');
+Route::post('api_get_cart_detail_store', 'API2Controller@api_get_cart_detail_store');
 Route::post('api_pick_update', 'API2Controller@api_pick_update');
 Route::post('api_pick_approve', 'API2Controller@api_pick_approve');
 Route::post('api_pick_delete', 'API2Controller@api_pick_delete');
@@ -107,7 +108,7 @@ Route::post('api_send_image', 'API3Controller@api_send_image');
 Route::post('api_remove_customer', 'API3Controller@api_remove_customer');
 Route::post('api_get_search_products', 'API4Controller@api_get_search_products');
 Route::post('api_get_store_products_list', 'API4Controller@api_get_store_products_list');
-
+Route::post('api_approve_product_claim', 'API4Controller@api_approve_product_claim');
 
 
 
