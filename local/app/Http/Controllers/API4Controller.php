@@ -271,16 +271,16 @@ class API4Controller extends Controller
                     $claim->status = 1;
                     $claim->save();
 
-                    $cart->status_assign_claim = null;
-                    $cart->save();
+                    // $cart->status_assign_claim = null;
+                    // $cart->save();
                 }else{
                     $claim = CustomerCartClaim::where('customer_cart_id',$r->cart_id)->first();
                     $claim->status_assign = 'Y';
                     $claim->status = 2;
                     $claim->save();
 
-                    $cart->status_assign_claim = null;
-                    $cart->save();
+                    // $cart->status_assign_claim = null;
+                    // $cart->save();
                 }
 
             }

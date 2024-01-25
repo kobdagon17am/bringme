@@ -663,6 +663,7 @@ class API2Controller extends  Controller
             $tracking_no5 = ($tracking_no5)? $tracking_no5->tracking_no : '';
 
             $customer_cart_claim = CustomerCartClaim::where('customer_cart_id',$cart->id)->get();
+            $customer = DB::table('customer')->where('id',$cart->customer_id)->first();
 
             return response()->json([
                 'message' => 'สำเร็จ',
@@ -682,6 +683,7 @@ class API2Controller extends  Controller
                     'cart_others' => $cart_others,
                     'total_price_products' => $total_price_products,
                     'customer_cart_claim' => $customer_cart_claim,
+                    'customer' => $customer,
                 ],
             ]);
         }else{

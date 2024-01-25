@@ -2481,7 +2481,15 @@ class API1Controller extends Controller
         $store_success = DB::table('customer_cart_store')->select('customer_cart_id')->where('store_id',$store->id)->pluck('customer_cart_id')->toArray();
 
         $carts_success = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('transfer_status',2)->orderBy('id','desc')->get();
-        $carts_claim = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('claim_status',1)->where('status_assign_claim','Y')->orderBy('id','desc')->get();
+        // $carts_claim = CustomerCart::select('id')->whereIn('id',$store_success)->where('status',2)->where('claim_status',1)->where('status_assign_claim','Y')->orderBy('id','desc')->get();
+        $carts_claim = CustomerCart::select('customer_cart.id')
+        ->join('customer_cart_claim','customer_cart_claim.customer_cart_id','customer_cart.id')
+        ->whereIn('customer_cart.id',$store_success)
+        ->where('customer_cart_claim.store_id',$store->id)
+        ->where('customer_cart.status',2)
+        ->where('customer_cart.claim_status',1)
+        ->where('customer_cart.status_assign_claim','Y')
+        ->orderBy('customer_cart.id','desc')->get();
 
         $arr_cart_success = [];
         $cart_claim = [];
@@ -2542,15 +2550,19 @@ class API1Controller extends Controller
             if(!isset($r->limit)){
 
                 $products = CustomerCartProduct::select('customer_cart_product.*',
+                'customer_cart_claim.status as cart_claim_status','customer_cart_claim.status_assign as cart_claim_status_assign',
                 'products_gallery.path as gal_path',
                 'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
                 ->join('products','products.id','customer_cart_product.product_id')
                 ->join('brands','brands.id','products.brands_id')
                 ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
                 ->join('products_gallery','products_gallery.product_id','products.id')
+                ->join('customer_cart_claim','customer_cart_claim.customer_cart_id','customer_cart_product.customer_cart_id')
                 // ->where('customer_cart.transfer_status',0)
                 ->where('customer_cart_product.customer_cart_id',$c->id)
                 ->where('customer_cart_product.store_id',$store->id)
+                ->where('customer_cart_product.claim_status',1)
+                ->where('customer_cart_claim.store_id',$store->id)
                 // ->limit(1)
                 ->get();
                 $cart_claim[$key] = [];
@@ -2564,15 +2576,19 @@ class API1Controller extends Controller
             }else{
 
             $products = CustomerCartProduct::select('customer_cart_product.*',
+            'customer_cart_claim.status as cart_claim_status','customer_cart_claim.status_assign as cart_claim_status_assign',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name','customer_cart.grand_total as cart_grand_total','customer_cart.order_number','products.name_th as product_name','customer_cart_product.price as product_price','brands.name_th as brand_name')
             ->join('products','products.id','customer_cart_product.product_id')
             ->join('brands','brands.id','products.brands_id')
             ->join('customer_cart','customer_cart.id','customer_cart_product.customer_cart_id')
             ->join('products_gallery','products_gallery.product_id','products.id')
+            ->join('customer_cart_claim','customer_cart_claim.customer_cart_id','customer_cart_product.customer_cart_id')
             // ->where('customer_cart.transfer_status',0)
             ->where('customer_cart_product.customer_cart_id',$c->id)
             ->where('customer_cart_product.store_id',$store->id)
+            ->where('customer_cart_product.claim_status',1)
+            ->where('customer_cart_claim.store_id',$store->id)
             ->get();
             $cart_claim[$key] = [];
             foreach($products as $key2 => $p){
