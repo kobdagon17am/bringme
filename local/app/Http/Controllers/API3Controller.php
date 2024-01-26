@@ -798,8 +798,6 @@ class API3Controller extends Controller
                 $message_list->save();
             }
 
-
-
             // ฝั่งผู้รับ
             $message_list2 = MessageList::where('customer_id',$r->customer_id_2)->where('customer_id_2',$r->customer_id)->first();
             if(!$message_list2){

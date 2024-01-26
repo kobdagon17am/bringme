@@ -547,6 +547,14 @@ class API2Controller extends  Controller
             $tracking_no4 = ($tracking_no4)? $tracking_no4->tracking_no : '';
             $tracking_no5 = ($tracking_no5)? $tracking_no5->tracking_no : '';
 
+            $claim_status_success = 0;
+            if($cart->claim_status==1){
+                $claim = DB::table('customer_cart_claim')->select('status')->where('customer_cart_id',$cart->id)->first();
+                if($claim->status!=0){
+                    $claim_status_success = 1;
+                }
+            }
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -563,6 +571,7 @@ class API2Controller extends  Controller
                     'tracking_no4' => $tracking_no4,
                     'tracking_no5' => $tracking_no5,
                     'cart_others' => $cart_others,
+                    'claim_status_success' => $claim_status_success,
                 ],
             ]);
         }else{
