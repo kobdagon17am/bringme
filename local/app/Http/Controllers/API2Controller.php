@@ -524,7 +524,7 @@ class API2Controller extends  Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
             ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
@@ -648,7 +648,7 @@ class API2Controller extends  Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
             ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
@@ -713,7 +713,7 @@ class API2Controller extends  Controller
         ->where('customer_cart.id',$cart_id)->first();
 
         $customer_cart_address = CustomerCartAddress::
-        select('customer_cart_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+        select('customer_cart_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
         ->join('districts','districts.id','customer_cart_address.district_id')
         ->join('amphures','amphures.id','customer_cart_address.amphures_id')
         ->join('provinces','provinces.id','customer_cart_address.province_id')
@@ -757,7 +757,7 @@ class API2Controller extends  Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
             ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
@@ -2031,10 +2031,12 @@ class API2Controller extends  Controller
         ->get();
 
         $shipping_type_id_get = 0;
+        $province_data = '';
 
         $provinces = DB::table('provinces')->where('id',$r->provinces_id)->first();
         if($provinces){
-            if($provinces->shipping_type_id != null){
+            $province_data = 'id : '.$provinces->id.' name : '.$provinces->name_th.' shipping_type_id : '.$provinces->shipping_type_id;
+            if($provinces->shipping_type_id != null || $provinces->shipping_type_id != ''){
                 $shipping_type_id_get = $provinces->shipping_type_id;
             }else{
                 $shipping_type_id_get = 7;
@@ -2045,55 +2047,13 @@ class API2Controller extends  Controller
             $shipping_type_price_arr[$p->shipping_type_id] = $p->shipping_price;
         }
 
-            // $shipping_type_price_1 = DB::table('shipping_type_price')
-            // ->select('shipping_price')
-            // ->where('shipping_type_id',1)
-            // ->where('min_price','<=',$r->product_total_price)
-            // ->where('max_price','>=',$r->product_total_price)
-            // ->orderBy('max_price','asc')
-            // ->first();
-
-            // if($shipping_type_price_1){
-            //     $shipping_price_1 = $shipping_type_price_1->shipping_price;
-            // }else{
-            //     $shipping_price_1 = 0;
-            // }
-
-            // $shipping_type_price_2 = DB::table('shipping_type_price')
-            // ->select('shipping_price')
-            // ->where('shipping_type_id',2)
-            // ->where('min_price','<=',$r->product_total_price)
-            // ->where('max_price','>=',$r->product_total_price)
-            // ->orderBy('max_price','asc')
-            // ->first();
-            // if($shipping_type_price_2){
-            //     $shipping_price_2 = $shipping_type_price_2->shipping_price;
-            // }else{
-            //     $shipping_price_2 = 0;
-            // }
-
-            // $shipping_type_price_3 = DB::table('shipping_type_price')
-            // ->select('shipping_price')
-            // ->where('shipping_type_id',3)
-            // ->where('min_price','<=',$r->product_total_price)
-            // ->where('max_price','>=',$r->product_total_price)
-            // ->orderBy('max_price','asc')
-            // ->first();
-            // if($shipping_type_price_3){
-            //     $shipping_price_3 = $shipping_type_price_3->shipping_price;
-            // }else{
-            //     $shipping_price_3 = 0;
-            // }
-
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
                 'data' => [
                     'shipping_type_price_arr' => $shipping_type_price_arr,
                     'shipping_type_id_get' => $shipping_type_id_get,
-                    // 'shipping_price_1' => $shipping_price_1,
-                    // 'shipping_price_2' => $shipping_price_2,
-                    // 'shipping_price_3' => $shipping_price_3,
+                    'province_data'=>$province_data,
                 ],
             ]);
     }

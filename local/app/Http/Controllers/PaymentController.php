@@ -91,9 +91,9 @@ class PaymentController extends Controller
     }
 
     public function register_partner(){$data['customer'] = Customer::all();
-        $data['provinces'] = DB::table('provinces')->get();
+        $data['provinces'] = DB::table('province_makesend')->get();
         $data['amphures'] = DB::table('amphures')->get();
-        $data['districts'] = DB::table('districts')->get();
+        $data['districts'] = DB::table('district_makesend')->get();
         $data['category'] = DB::table('category')->get();
         $data['storage_method'] = DB::table('storage_method')->get();
         $data['bank'] = DB::table('bank')->get();

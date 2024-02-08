@@ -31,8 +31,8 @@ class CustomersController extends Controller
         $data['customer'] = DB::table('customer')->where('id',$id)->first();
         $data['address'] = DB::table('customer_address')
                                 ->where('customer_id',$id)
-                                ->select('provinces.name_th as provinces_name', 'amphures.name_th as amphures_name', 'districts.name_th as districts_name', 'zipcode', 'address_number', 'tel')
-                                ->leftJoin('provinces','provinces.id','=','customer_address.province_id')
+                                ->select('district_makesend.name as provinces_name', 'amphures.name_th as amphures_name', 'district_makesend.name as districts_name', 'zipcode', 'address_number', 'tel')
+                                ->leftJoin('district_makesend','district_makesend.id','=','customer_address.province_id')
                                 ->leftJoin('amphures','amphures.id','=','customer_address.amphures_id')
                                 ->leftJoin('districts','districts.id','=','customer_address.district_id')
                                 ->get();

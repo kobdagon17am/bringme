@@ -397,7 +397,7 @@ class API1Controller extends Controller
 
     public function api_get_provinces(Request $r)
     {
-        $data = DB::table('provinces')->where('business_location_id',1)->orderBy('name_th')->get();
+        $data = DB::table('province_makesend')->orderBy('name')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1486,10 +1486,10 @@ class API1Controller extends Controller
             $address = 'ยังไม่ระบุสถานที่จัดส่ง';
             if($r->user_id!=0){
                 $customer_address = Customer_address::
-                select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
-                ->join('districts','districts.id','customer_address.district_id')
+                select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
+                ->join('district_makesend','district_makesend.id','customer_address.district_id')
                 ->join('amphures','amphures.id','customer_address.amphures_id')
-                ->join('provinces','provinces.id','customer_address.province_id')
+                ->join('province_makesend','province_makesend.id','customer_address.province_id')
                 ->where('customer_id',$r->user_id)->where('default_active','Y')->first();
                 if($customer_address){
                     $address = $customer_address->address_number.' '.$customer_address->districts_name.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
@@ -1766,7 +1766,7 @@ class API1Controller extends Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
             ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
@@ -1852,7 +1852,7 @@ class API1Controller extends Controller
     public function api_get_address_list(Request $r)
     {
         $customer_address = Customer_address::
-        select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+        select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
         ->join('districts','districts.id','customer_address.district_id')
         ->join('amphures','amphures.id','customer_address.amphures_id')
         ->join('provinces','provinces.id','customer_address.province_id')
