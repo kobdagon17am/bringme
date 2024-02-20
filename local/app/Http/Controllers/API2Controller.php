@@ -470,7 +470,7 @@ class API2Controller extends  Controller
 
     public function api_get_cart_detail(Request $r)
     {
-        // barcode transfer_status
+        // barcode transfer_status districts
         $cart = CustomerCart::where('customer_cart.id',$r->cart_id)->first();
         if($cart->pay_other_cart_id!=null){
             $cart_others = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
@@ -523,12 +523,24 @@ class API2Controller extends  Controller
                 }
             }
 
-            $customer_address = Customer_address::
-            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
-            ->join('districts','districts.id','customer_address.district_id')
-            ->join('amphures','amphures.id','customer_address.amphures_id')
-            ->join('provinces','provinces.id','customer_address.province_id')
-            ->where('customer_address.id',$cart->customer_address_id)->first();
+            // $customer_address = Customer_address::
+            // select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            // ->join('districts','districts.id','customer_address.district_id')
+            // ->join('amphures','amphures.id','customer_address.amphures_id')
+            // ->join('provinces','provinces.id','customer_address.province_id')
+            // ->where('customer_address.id',$cart->customer_address_id)->first();
+            // if(!$customer_address){
+            //     $customer_address = '';
+            // }
+
+            $customer_address = CustomerCartAddress::
+            select('customer_cart_address.*','district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            // ->join('districts','districts.id','customer_cart_address.district_id')
+            ->join('amphures','amphures.id','customer_cart_address.amphures_id')
+            ->join('provinces','provinces.id','customer_cart_address.province_id')
+            ->where('customer_cart_address.customer_cart_id',$r->cart_id)
+            ->where('customer_cart_address.customer_address_id',$cart->customer_address_id)
+            ->first();
             if(!$customer_address){
                 $customer_address = '';
             }
@@ -648,7 +660,7 @@ class API2Controller extends  Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
+            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
             ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
@@ -713,7 +725,7 @@ class API2Controller extends  Controller
         ->where('customer_cart.id',$cart_id)->first();
 
         $customer_cart_address = CustomerCartAddress::
-        select('customer_cart_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
+        select('customer_cart_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
         ->join('districts','districts.id','customer_cart_address.district_id')
         ->join('amphures','amphures.id','customer_cart_address.amphures_id')
         ->join('provinces','provinces.id','customer_cart_address.province_id')
@@ -757,7 +769,7 @@ class API2Controller extends  Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
+            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
             ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
@@ -1044,29 +1056,29 @@ class API2Controller extends  Controller
                 $cart->picking_status = 1;
                 $cart->save();
 
-                    $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
-                    if(!$tracking_no1){
-                        $tracking_no1 = new CustomerCartTracking();
-                    }
-                    $tracking_no1->customer_cart_id = $cart->id;
-                    $tracking_no1->customer_id = $cart->customer_id;
-                    $tracking_no1->tracking_no = 'BM'.$cart->customer_id.$cart->id.date('YmdHis');
-                    $tracking_no1->transfer_type = 1;
-                    $tracking_no1->cod = 0;
-                    $tracking_no1->no = 1;
-                    $tracking_no1->save();
+                //     $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
+                //     if(!$tracking_no1){
+                //         $tracking_no1 = new CustomerCartTracking();
+                //     }
+                //     $tracking_no1->customer_cart_id = $cart->id;
+                //     $tracking_no1->customer_id = $cart->customer_id;
+                //     $tracking_no1->tracking_no = 'BM'.$cart->customer_id.$cart->id.date('YmdHis');
+                //     $tracking_no1->transfer_type = 1;
+                //     $tracking_no1->cod = 0;
+                //     $tracking_no1->no = 1;
+                //     $tracking_no1->save();
 
-                $customer_cart_product = CustomerCartProduct::Where('customer_cart_id',$cart->id)->get();
-                CustomerCartTrackingItem::where('customer_cart_id',$cart->id)->delete();
-                foreach($customer_cart_product as $c){
-                    $customer_cart_tracking_item = new CustomerCartTrackingItem();
-                    $customer_cart_tracking_item->customer_cart_id = $cart->id;
-                    $customer_cart_tracking_item->customer_id = $cart->customer_id;
-                    $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1->id;
-                    $customer_cart_tracking_item->customer_cart_product_id = $c->id;
-                    $customer_cart_tracking_item->qty = $c->qty;
-                    $customer_cart_tracking_item->save();
-                }
+                // $customer_cart_product = CustomerCartProduct::Where('customer_cart_id',$cart->id)->get();
+                // CustomerCartTrackingItem::where('customer_cart_id',$cart->id)->delete();
+                // foreach($customer_cart_product as $c){
+                //     $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                //     $customer_cart_tracking_item->customer_cart_id = $cart->id;
+                //     $customer_cart_tracking_item->customer_id = $cart->customer_id;
+                //     $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1->id;
+                //     $customer_cart_tracking_item->customer_cart_product_id = $c->id;
+                //     $customer_cart_tracking_item->qty = $c->qty;
+                //     $customer_cart_tracking_item->save();
+                // }
 
             DB::commit();
 
@@ -2036,8 +2048,18 @@ class API2Controller extends  Controller
         $provinces = DB::table('provinces')->where('id',$r->provinces_id)->first();
         if($provinces){
             $province_data = 'id : '.$provinces->id.' name : '.$provinces->name_th.' shipping_type_id : '.$provinces->shipping_type_id;
-            if($provinces->shipping_type_id != null || $provinces->shipping_type_id != ''){
-                $shipping_type_id_get = $provinces->shipping_type_id;
+            if($provinces->shipping_type_id != null && $provinces->shipping_type_id != ''){
+                if($provinces->shipping_type_id==5){
+                    $amphures = DB::table('amphures')->where('id',$r->amphures_id)->first();
+                    if($amphures){
+                        $shipping_type_id_get = $amphures->shipping_type_id;
+                    }else{
+                        $shipping_type_id_get = $provinces->shipping_type_id;
+                    }
+
+                }else{
+                    $shipping_type_id_get = $provinces->shipping_type_id;
+                }
             }else{
                 $shipping_type_id_get = 7;
             }
@@ -2383,7 +2405,7 @@ class API2Controller extends  Controller
                 }
     }
 
-    public function api_reset_password(Request $r)
+    public function api_forgot_password(Request $r)
     {
 
         $customer = DB::table('customer')->where('email',$r->email)->first();

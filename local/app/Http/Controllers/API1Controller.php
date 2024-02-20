@@ -38,6 +38,9 @@ use App\Models\CustomerCartAddress;
 use App\Models\StockPre;
 use App\Models\StockItemsPre;
 use App\Models\StockLotPre;
+use App\Models\CustomerCartTracking;
+use App\Models\CustomerCartTrackingItem;
+use Carbon\Carbon;
 
 class API1Controller extends Controller
 {
@@ -184,13 +187,13 @@ class API1Controller extends Controller
         $customer = Customer::where('email',$r->email)
         ->whereIn('status',[1,2])
         ->first();
+        // if(!$customer){
+        //     $customer = Customer::where('name',$r->email)
+        //     ->whereIn('status',[1,2])
+        //     ->first();
+        // }
         if(!$customer){
-            $customer = Customer::where('name',$r->name)
-            ->whereIn('status',[1,2])
-            ->first();
-        }
-        if(!$customer){
-            $customer = Customer::where('tel',$r->tel)
+            $customer = Customer::where('tel',$r->email)
             ->whereIn('status',[1,2])
             ->first();
         }
@@ -397,7 +400,7 @@ class API1Controller extends Controller
 
     public function api_get_provinces(Request $r)
     {
-        $data = DB::table('province_makesend')->orderBy('name')->get();
+        $data = DB::table('provinces')->orderBy('name_th')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -415,15 +418,15 @@ class API1Controller extends Controller
             ]);
     }
 
-    public function api_get_districts(Request $r)
-    {
-        $data = DB::table('districts')->where('amphure_id',$r->amphure_id)->orderBy('name_th')->get();
-            return response()->json([
-                'message' => 'สำเร็จ',
-                'status' => 1,
-                'data' => $data,
-            ]);
-    }
+    // public function api_get_districts(Request $r)
+    // {
+    //     $data = DB::table('districts')->where('amphure_id',$r->amphure_id)->orderBy('name_th')->get();
+    //         return response()->json([
+    //             'message' => 'สำเร็จ',
+    //             'status' => 1,
+    //             'data' => $data,
+    //         ]);
+    // }
 
     public function api_get_zipcode(Request $r)
     {
@@ -481,6 +484,7 @@ class API1Controller extends Controller
             {
 
                 $check_email = Customer::select('email')->where('email',$r->email)->first();
+                $check_phone = Customer::select('tel')->where('tel',$r->tel)->first();
                 if(isset($r->user_id)){
                     if($r->user_id==0){
                         if($check_email){
@@ -490,6 +494,15 @@ class API1Controller extends Controller
                                 'data' => '',
                             ]);
                         }else{
+
+                            if($check_phone){
+                                return response()->json([
+                                    'message' => 'เบอร์โทร นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                                    'status' => 0,
+                                    'data' => '',
+                                ]);
+                            }
+
                             $customer = new Customer();
                             $customer->name = $r->user_name;
                             $customer->email = $r->email;
@@ -513,6 +526,15 @@ class API1Controller extends Controller
                             'data' => '',
                         ]);
                     }else{
+
+                        if($check_phone){
+                            return response()->json([
+                                'message' => 'เบอร์โทร นี้ถูกใช้งานในระบบแล้วไม่สามารถใช้ซ้ำได้',
+                                'status' => 0,
+                                'data' => '',
+                            ]);
+                        }
+
                         $customer = new Customer();
                         $customer->name = $r->user_name;
                         $customer->email = $r->email;
@@ -869,7 +891,6 @@ class API1Controller extends Controller
                 $customer_address = DB::table('customer_address')->where('customer_id',$request->customer_id)->update([
                     'default_active' => 'N'
                 ]);
-
             }
             $customer_address = new Customer_address();
             $customer_address->customer_id = $request->customer_id;
@@ -885,6 +906,13 @@ class API1Controller extends Controller
             $customer_address->default_active = $request->default_active;
             $customer_address->created_at = date('Y-m-d H:i:s');
             $customer_address->save();
+
+            if($request->default_active=='Y'){
+                CustomerCart::where('customer_id',$request->customer_id)->where('status',0)->update([
+                    'customer_address_id'=>$customer_address->id
+                ]);
+            }
+
             DB::commit();
 
             return response()->json([
@@ -1205,7 +1233,14 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
         {
-
+            $product_preorder = ProductsItem::where('product_id',$r->product_id)->where('preorder_date_cut_off','>',date('Y-m-d'))->where('is_preorder',1)->where('transfer_status',1)->first();
+            if(!$product_preorder){
+                return response()->json([
+                    'message' =>  'สินค้านี้ปิดรับแล้ว',
+                    'status' => 0,
+                    'data' => '',
+                ]);
+            }
             $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->first();
             if(!$cart){
                 $cart = new CustomerCart();
@@ -1253,46 +1288,9 @@ class API1Controller extends Controller
                         }
                     }
                 }
-                // if($product_datail->preorder_active == 0){
-                //     $stock_lot = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                //     ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->first();
-                //     $qty_booking_sum = StockLot::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))
-                //     ->where('qty_booking','>',0)->orderBy('lot_expired_date','asc')->sum('qty_booking');
-                // }else{
                     $stock_lot = StockLotPre::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->first();
-                    // $qty_booking_sum = StockLotPre::where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->sum('qty_booking');
-                // }
-
-                // if($product_datail->preorder_active == 0){
-                //     if(!$stock_lot){
-                //         return response()->json([
-                //             'message' =>  'จำนวนสินค้าหมดแล้ว',
-                //             'status' => 0,
-                //             'data' => '',
-                //         ]);
-                //     }else{
-                //         if($qty_booking_sum<$r->qty){
-                //             return response()->json([
-                //                 'message' =>  'จำนวนสินค้าไม่เพียงพอ',
-                //                 'status' => 0,
-                //                 'data' => '',
-                //             ]);
-                //         }
-                //     }
-                // }
-
-                $stock_items = StockItemsPre::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
-                if($product){
-                    // ตรวจว่าในตะกร้าเกินหรือยัง
-                    // if($product_datail->preorder_active == 0){
-                    //     if(($r->qty+$product->qty) > $qty_booking_sum){
-                    //         return response()->json([
-                    //             'message' =>  'ท่านหยิบสินค้าเกินจำนวนแล้ว',
-                    //             'status' => 0,
-                    //             'data' => '',
-                    //         ]);
-                    //     }
-                    // }
+                   $stock_items = StockItemsPre::where('product_id',$r->product_id)->where('stock_lot_id',$stock_lot->id)->first();
+                   if($product){
 
                     $product->price = $stock_items->price;
                     if($r->type=='new'){
@@ -1484,16 +1482,18 @@ class API1Controller extends Controller
             ->inRandomOrder()->get();
 
             $address = 'ยังไม่ระบุสถานที่จัดส่ง';
+            $customer = [];
             if($r->user_id!=0){
                 $customer_address = Customer_address::
-                select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
-                ->join('district_makesend','district_makesend.id','customer_address.district_id')
+                select('customer_address.*','customer_address.district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+                // ->join('districts','districts.id','customer_address.district_id')
                 ->join('amphures','amphures.id','customer_address.amphures_id')
-                ->join('province_makesend','province_makesend.id','customer_address.province_id')
+                ->join('provinces','provinces.id','customer_address.province_id')
                 ->where('customer_id',$r->user_id)->where('default_active','Y')->first();
                 if($customer_address){
-                    $address = $customer_address->address_number.' '.$customer_address->districts_name.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
+                    $address = $customer_address->address_number.' '.$customer_address->district_id.' '.$customer_address->amphures_name.' '.$customer_address->provinces_name.' '.$customer_address->zipcode;
                 }
+                $customer = Customer::where('id',$r->user_id)->get();
             }
 
             $category = Category::where('status',1)->orderBy('name_th','asc')->get();
@@ -1516,7 +1516,7 @@ class API1Controller extends Controller
             $product_all_pre = Products::select('id')->where('products.display_status',1)->where('preorder_active',1)->get();
             $p_arr_not = [];
            foreach($product_all_pre as $arr){
-            $product_item_pe_arr = ProductsItem::select('id')->where('product_id',$arr->id)->where('is_preorder',1)->where('transfer_status',1)->pluck('id')->toArray();
+            $product_item_pe_arr = ProductsItem::select('id')->where('product_id',$arr->id)->where('preorder_date_cut_off','>',date('Y-m-d'))->where('is_preorder',1)->where('transfer_status',1)->pluck('id')->toArray();
             $stock_lot_pre = StockLotPre::select('id','lot_expired_date')->whereIn('products_item_id',$product_item_pe_arr)->where('product_id',$arr->id)->where('lot_expired_date','>',date('Y-m-d'))->first();
             if(!$stock_lot_pre){
                 array_push($p_arr_not,$arr->id);
@@ -1556,6 +1556,7 @@ class API1Controller extends Controller
                     'category1' => $category1,
                     'category2' => $category2,
                     'product_preorder' => $product_preorder,
+                    'customer' => $customer,
                 ],
             ]);
     }
@@ -1729,18 +1730,27 @@ class API1Controller extends Controller
                 }
             }
 
-            // $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
-            // 'customer_cart_product.price as product_price',
-            // 'brands.name_th as brand_name',
-            // 'products_gallery.path as gal_path',
-            // 'products_gallery.name as gal_name',
-            // 'products.storage_method_id',
-            // )
-            // ->join('products','products.id','customer_cart_product.product_id')
-            // ->join('brands','brands.id','products.brands_id')
-            // ->join('products_gallery','products_gallery.product_id','products.id')
-            // ->where('products_gallery.use_profile',1)
-            // ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            $products_pre = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
+            'customer_cart_product.price as product_price',
+            'brands.name_th as brand_name',
+            'products_gallery.path as gal_path',
+            'products_gallery.name as gal_name',
+            'products.storage_method_id',
+            )
+            ->join('products','products.id','customer_cart_product.product_id')
+            ->join('brands','brands.id','products.brands_id')
+            ->join('products_gallery','products_gallery.product_id','products.id')
+            ->where('products_gallery.use_profile',1)
+            ->where('customer_cart_product.pre_order_status',1)
+            ->where('customer_cart_product.customer_cart_id',$cart->id)->where('customer_cart_product.customer_id',$r->user_id)->get();
+            // เช็คจำนวนอีกครั้ง
+
+            foreach($products_pre as $pro){
+                $product_preorder = ProductsItem::where('product_id',$pro->product_id)->where('preorder_date_cut_off','>',date('Y-m-d'))->where('is_preorder',1)->where('transfer_status',1)->first();
+                if(!$product_preorder){
+                    CustomerCartProduct::where('pre_order_status',1)->where('id',$pro->id)->delete();
+                }
+            }
 
             // เพิ่ม option
             $products = CustomerCartProduct::select('customer_cart_product.*','products.name_th as product_name',
@@ -1766,8 +1776,8 @@ class API1Controller extends Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
-            ->join('districts','districts.id','customer_address.district_id')
+            select('customer_address.*','customer_address.district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            // ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
             ->where('customer_address.id',$cart->customer_address_id)->first();
@@ -1823,6 +1833,18 @@ class API1Controller extends Controller
             ->where('pay_other_status',1)
             ->orderBy('id','desc')->get();
 
+            $shipping_period = [];
+            if(isset($r->shipping_type_id)){
+                if($r->shipping_type_id==1 || $r->shipping_type_id==2 || $r->shipping_type_id==7 || $r->shipping_type_id==8 || $r->shipping_type_id==9 || $r->shipping_type_id==10){
+                    $shipping_period = DB::table('shipping_period')->where('makesend_pickup_time','!=',0)->where('shipping_other',0)->where('status',1)->get();
+                }
+                if($r->shipping_type_id==3 || $r->shipping_type_id==4 || $r->shipping_type_id==5 || $r->shipping_type_id==6 || $r->shipping_type_id==7 || $r->shipping_type_id==8){
+                    $shipping_period = DB::table('shipping_period')->where('makesend_pickup_time','==',0)->where('shipping_other',0)->where('status',1)->get();
+                }
+            }
+
+            $shipping_period_pre = DB::table('shipping_period')->where('shipping_other',1)->where('status',1)->get();
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -1837,6 +1859,8 @@ class API1Controller extends Controller
                     'period' => $period,
                     'payment_terms' => $payment_terms,
                     'cart_pre' => $cart_pre,
+                    'shipping_period' => $shipping_period,
+                    'shipping_period_pre' => $shipping_period_pre,
                 ],
             ]);
         }else{
@@ -1852,8 +1876,8 @@ class API1Controller extends Controller
     public function api_get_address_list(Request $r)
     {
         $customer_address = Customer_address::
-        select('customer_address.*','district_makesend.name as districts_name','amphures.name_th as amphures_name','province_makesend.name as provinces_name')
-        ->join('districts','districts.id','customer_address.district_id')
+        select('customer_address.*','customer_address.district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+        // ->join('districts','districts.id','customer_address.district_id')
         ->join('amphures','amphures.id','customer_address.amphures_id')
         ->join('provinces','provinces.id','customer_address.province_id')
         ->where('customer_id',$r->user_id)->get();
@@ -1902,10 +1926,17 @@ class API1Controller extends Controller
          $cart->pay_type = $r->pay_type;
          $cart->status = 0;
          $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
-         if($r->shipping_date != ''){
-            $cart->shipping_date =$r->shipping_date;
+        if($r->shipping_date != ''){
+            $cart->shipping_date = $r->shipping_date;
         }else{
-            $cart->shipping_date = date('Y-m-d');
+            $shipping_period = DB::table('shipping_period')->where('id',$r->period)->first();
+            if($shipping_period->time_end < date('H:i:s')){
+                $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
+                $date = $date->addDays(1);
+                $cart->shipping_date = $date;
+            }else{
+                $cart->shipping_date = date('Y-m-d');
+            }
         }
          $cart->period = $r->period;
          $cart->customer_name = $customer->name;
@@ -1962,7 +1993,7 @@ class API1Controller extends Controller
         DB::beginTransaction();
         try
         {
-            // cart_products_id cart_products_id
+            // cart_products_id cart_products_id shipping_type_id
             $cart = CustomerCart::where('customer_id',$r->user_id)->where('status',0)->where('id',$r->cart_id)->first();
             $customer = Customer::select('name')->where('id',$r->user_id)->first();
             if($cart){
@@ -1990,7 +2021,8 @@ class API1Controller extends Controller
                 $cart->pay_other_status = 1;
 
                 $cart->period = $r->period;
-                $cart->customer_name = $customer->name;  $cart->shipping_type_id = $r->shipping_type_id;
+                $cart->customer_name = $customer->name;
+                $cart->shipping_type_id = $r->shipping_type_id;
                 $cart->shipping_price = $r->shipping_price_total;
                 $cart->total_price = $r->product_total_price;
                 $cart->grand_total = $r->all_price_total;
@@ -2233,6 +2265,31 @@ class API1Controller extends Controller
                         }
                     }
 
+                    // สร้าง tracking
+                    $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
+                    if(!$tracking_no1){
+                        $tracking_no1 = new CustomerCartTracking();
+                    }
+                    $tracking_no1->customer_cart_id = $cart->id;
+                    $tracking_no1->customer_id = $cart->customer_id;
+                    $tracking_no1->tracking_no = 'BM'.$cart->customer_id.$cart->id.date('YmdHis');
+                    $tracking_no1->transfer_type = 1;
+                    $tracking_no1->cod = 0;
+                    $tracking_no1->no = 1;
+                    $tracking_no1->save();
+
+                    $customer_cart_product = CustomerCartProduct::Where('customer_cart_id',$cart->id)->get();
+                    CustomerCartTrackingItem::where('customer_cart_id',$cart->id)->delete();
+                    foreach($customer_cart_product as $c){
+                        $customer_cart_tracking_item = new CustomerCartTrackingItem();
+                        $customer_cart_tracking_item->customer_cart_id = $cart->id;
+                        $customer_cart_tracking_item->customer_id = $cart->customer_id;
+                        $customer_cart_tracking_item->customer_cart_tracking_id = $tracking_no1->id;
+                        $customer_cart_tracking_item->customer_cart_product_id = $c->id;
+                        $customer_cart_tracking_item->qty = $c->qty;
+                        $customer_cart_tracking_item->save();
+                    }
+
                     $cart_new = new CustomerCart();
                     $cart_new->customer_id = $r->user_id;
                     $cart_new->shipping_type_id = 1;
@@ -2257,6 +2314,7 @@ class API1Controller extends Controller
                     ->update([
                         'customer_cart_id' => $cart_new->id,
                     ]);
+
                 }
 
             }else{
@@ -2704,6 +2762,7 @@ class API1Controller extends Controller
             'products_item.is_preorder',
             'products_item.transfer_status',
             'products_item.shipping_date',
+            'products_item.preorder_date_cut_off',
 
             'products_item.is_preorder as products_item_is_preorder',
             'products_item.shipping_date as products_item_shipping_date',
@@ -2889,7 +2948,7 @@ class API1Controller extends Controller
             {
                 $store = Store::where('customer_id',$r->user_id)->first();
                 // $r->production_date = date('Y-m-d', strtotime($r->production_date));
-                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+                // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date)); shipping_date_pre
 
                 // เพิ่มสินค้าหลัก
                 if($r->function_type == 'edit_product'){
@@ -2960,6 +3019,7 @@ class API1Controller extends Controller
                     $products_item_pre->stock_cut_off = $r->stock_cut_off;
                     $products_item_pre->production_date = $r->production_date;
                     $products_item_pre->shipping_date = $r->shipping_date_pre;
+                    $products_item_pre->preorder_date_cut_off = $r->preorder_date_cut_off;
                     $products_item_pre->products_code = $products->products_code;
                     $products_item_pre->is_preorder = 1;
                     $products_item_pre->save();

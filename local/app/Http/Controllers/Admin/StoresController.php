@@ -35,19 +35,18 @@ class StoresController extends Controller
         return view('backend/stores');
     }
 
-    public function store_view($id){
+    // public function store_view($id){
 
-        $data['store'] = DB::table('customer')->orderBy('name','ASC')->where('id',$id)->first();
-        $data['address'] = DB::table('customer_address')
-                                ->where('customer_id',$id)
-                                ->select('province_makesend.name as provinces_name', 'amphures.name_th as amphures_name', 'district_makesend.name as districts_name', 'zipcode', 'address_number', 'tel')
-                                ->leftJoin('provinces','provinces.id','=','customer_address.province_id')
-                                ->leftJoin('amphures','amphures.id','=','customer_address.amphures_id')
-                                ->leftJoin('districts','districts.id','=','customer_address.district_id')
-                                ->get();
-        return view('backend/user-edit',$data);
-    }
-
+    //     $data['store'] = DB::table('customer')->orderBy('name','ASC')->where('id',$id)->first();
+    //     $data['address'] = DB::table('customer_address')
+    //                             ->where('customer_id',$id)
+    //                             ->select('provinces.name_th as provinces_name', 'amphures.name_th as amphures_name', 'districts.name_th as districts_name', 'zipcode', 'address_number', 'tel')
+    //                             ->leftJoin('provinces','provinces.id','=','customer_address.province_id')
+    //                             ->leftJoin('amphures','amphures.id','=','customer_address.amphures_id')
+    //                             ->leftJoin('districts','districts.id','=','customer_address.district_id')
+    //                             ->get();
+    //     return view('backend/user-edit',$data);
+    // }
 
     public function store_detail($id)
     {
@@ -57,12 +56,10 @@ class StoresController extends Controller
             ->select('customer.*')
                                 ->leftJoin('provinces','provinces.id','=','customer.province_id')
                                 ->leftJoin('amphures','amphures.id','=','customer.amphures_id')
-                                ->leftJoin('districts','districts.id','=','customer.district_id')
+                                // ->leftJoin('districts','districts.id','=','customer.district_id')
                                 ->first();
 
             $data['store_detail'] = DB::table('store')->where('customer_id',$id)->first();
-
-
 
             $data['category'] = DB::table('category')->get();
             $data['storage_method'] = DB::table('storage_method')->get();
@@ -77,7 +74,7 @@ class StoresController extends Controller
                                 ->get();
             $data['provinces'] = DB::table('provinces')->get();
             $data['amphures'] = DB::table('amphures')->get();
-            $data['districts'] = DB::table('districts')->get();
+            // $data['districts'] = DB::table('districts')->get();
             $data['bank'] = DB::table('bank')->get();
 
             return view('backend/store-detail',$data);

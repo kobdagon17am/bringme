@@ -57,7 +57,7 @@
                 class="form-horizontal">
                 <modernpay:widget id="modernpay-widget-container" data-merchantid="M034461" data-amount="{{ ($cart->grand_total*100) }}"
                     data-orderno="{{ $cart->order_number }}" data-customerid="{{ $cart->customer_id }}" data-mobileno="{{ $customer_cart_address->tel }}"
-                    data-clientip="101.109.170.201" data-routeno="1" data-currency="764" data-description="Test Payment"
+                    data-clientip="101.109.170.201" data-routeno="1" data-currency="764" data-description="Test Payment" data-lang="TH"
                     data-apikey="QFUbuOg6OrRzigvXaspcULOw95GczT1GCdc3CnBHQRxJDKNYuKlW1FvGIBYWrs9U">
                 </modernpay:widget>
                 {{-- <button type="submit" id="btnSubmit" value="Submit" class="btn">Payment</button> --}}

@@ -40,6 +40,7 @@ use App\Models\CustomerAcc;
 use App\Models\Withdraw;
 use App\Models\CustomerCartClaim;
 use App\Models\MessageList;
+use App\Models\ShippingPeriod;
 
 class API4Controller extends Controller
 {
