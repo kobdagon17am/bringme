@@ -33,12 +33,16 @@ class HomeController extends Controller
 
         $id =  Auth::guard('customer')->user()->id;
 
+
+
+
+
         if($id){
             $data['id'] = $id;
             $data['store'] = DB::table('customer')->where('customer.id',$id)
                                 ->leftJoin('provinces','provinces.id','=','customer.province_id')
                                 ->leftJoin('amphures','amphures.id','=','customer.amphures_id')
-                                ->leftJoin('districts','districts.id','=','customer.district_id')
+                                // ->leftJoin('districts','districts.id','=','customer.district_id')
                                 ->first();
             $data['store_detail'] = DB::table('store')->where('customer_id',$id)->first();
             $data['category'] = DB::table('category')->get();
@@ -51,9 +55,12 @@ class HomeController extends Controller
                                 ->where('customer_id',$id)
                                 ->where('products_gallery.use_profile','1')
                                 ->get();
+
+
+
             $data['provinces'] = DB::table('provinces')->get();
             $data['amphures'] = DB::table('amphures')->get();
-            $data['districts'] = DB::table('districts')->get();
+            // $data['districts'] = DB::table('districts')->get();
             $data['bank'] = DB::table('bank')->get();
             return view('frontend/home',$data);
         }else{

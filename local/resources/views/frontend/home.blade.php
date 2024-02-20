@@ -433,14 +433,15 @@
 
                                     <div>
                                         <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                                        <select id="update-profile-form-8" class="form-select" name="district_id">
+                                        <input id="" type="text" class="form-control" placeholder="Input text" name="district_id" value="{{ $store->district_id }}">
+                                        {{-- <select id="update-profile-form-8" class="form-select" name="district_id">
                                             <option value="">- เลือกแขวง -</option>
                                             @if(!empty($districts))
                                                 @foreach($districts as $_districts)
                                                     <option {{ ($_districts->id == $store->district_id ? 'selected' : '') }} value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
                                                 @endforeach
                                             @endif
-                                        </select>
+                                        </select> --}}
                                     </div>
 
                                     <div>
@@ -587,14 +588,15 @@
 
                             <div>
                                 <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                                <select id="update-profile-form-8" class="form-select" name="district_id2">
+                                <input id="" type="text" class="form-control" placeholder="Input text" name="district_id" value="{{ $store->district_id }}">
+                                {{-- <select id="update-profile-form-8" class="form-select" name="district_id2">
                                     <option value="">- เลือกแขวง -</option>
                                     @if(!empty($districts))
                                         @foreach($districts as $_districts)
                                             <option {{ (!empty($store_detail) ? ($_districts->id == $store_detail->district_id ? 'selected' : '') : '') }} value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
                                         @endforeach
                                     @endif
-                                </select>
+                                </select> --}}
                             </div>
 
                             <div>
