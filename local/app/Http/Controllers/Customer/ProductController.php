@@ -90,6 +90,8 @@ class ProductController extends Controller
         $data['products_option_2'] = DB::table('products_option_2')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id', $data['products_item']->product_id)->get();
 
+
+
         return view('frontend/product-edit', $data);
     }
 
@@ -376,6 +378,7 @@ class ProductController extends Controller
                 if (!empty($_option_detail) && !empty($request->input('option_detail_2')[0])) {
                     foreach ($request->input('option_detail_2') as $key_2 => $_option_detail_2) {
                         if (!empty($_option_detail_2)) {
+
                             $products_option_2_items = new ProductsOption2Items();
                             $products_option_2_items->product_id = $products->id;
                             $products_option_2_items->products_item_id = $products_item->id;
@@ -397,7 +400,10 @@ class ProductController extends Controller
                     }
                 } elseif (!empty($_option_detail)) {
                     $key_2 = 0;
+
                     $products_option_2_items = new ProductsOption2Items();
+
+                    dd($request->input('price')[$_option_detail]);
                     $products_option_2_items->product_id = $products->id;
                     $products_option_2_items->products_item_id = $products_item->id;
                     $products_option_2_items->option_1_id = $id_option_1[$key_1];
