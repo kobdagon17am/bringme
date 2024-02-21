@@ -598,7 +598,7 @@ class API2Controller extends  Controller
 
     public function api_get_cart_detail_store(Request $r)
     {
-        // barcode transfer_status
+        // barcode transfer_status districts
         $store = Store::where('customer_id',$r->user_id)->first();
 
         $cart = CustomerCart::where('customer_cart.id',$r->cart_id)->first();
@@ -659,12 +659,12 @@ class API2Controller extends  Controller
                 }
             }
 
-            $customer_address = Customer_address::
-            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
-            ->join('districts','districts.id','customer_address.district_id')
-            ->join('amphures','amphures.id','customer_address.amphures_id')
-            ->join('provinces','provinces.id','customer_address.province_id')
-            ->where('customer_address.id',$cart->customer_address_id)->first();
+            $customer_address = CustomerCartAddress::
+            select('customer_cart_address.*','customer_cart_address.district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            // ->join('districts','districts.id','customer_cart_address.district_id')
+            ->join('amphures','amphures.id','customer_cart_address.amphures_id')
+            ->join('provinces','provinces.id','customer_cart_address.province_id')
+            ->where('customer_cart_address.customer_cart_id',$cart->customer_address_id)->first();
             if(!$customer_address){
                 $customer_address = '';
             }
