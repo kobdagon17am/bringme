@@ -400,15 +400,17 @@ class API2Controller extends  Controller
     {
         if($r->shipping_date == ''){
             $cart = CustomerCart::where('status',2)
+            ->where('ready_transfer',1)
             ->where('shipping_date','<=',date('Y-m-d'))
             ->where('picking_status',0)->orderBy('shipping_date','asc')->get();
         }else{
             $cart = CustomerCart::where('status',2)
+            ->where('ready_transfer',1)
             ->where('shipping_date',$r->shipping_date)
             ->where('picking_status',0)->orderBy('shipping_date','asc')->get();
         }
 
-        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','asc')->orderBy('id','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('ready_transfer',1)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->orderBy('shipping_date','asc')->orderBy('id','asc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -423,15 +425,17 @@ class API2Controller extends  Controller
     {
         if($r->shipping_date == ''){
             $cart = CustomerCart::where('status',2)
+            ->where('ready_transfer',1)
             ->where('shipping_date','<=',date('Y-m-d'))
             ->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
         }else{
             $cart = CustomerCart::where('status',2)
+            ->where('ready_transfer',1)
             ->where('shipping_date',$r->shipping_date)
             ->where('picking_status',1)->where('scan_status',0)->orderBy('shipping_date','asc')->get();
         }
 
-        $cart_success = CustomerCart::where('status',2)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','asc')->orderBy('id','asc')->get();
+        $cart_success = CustomerCart::where('status',2)->where('ready_transfer',1)->where('shipping_date','<=',date('Y-m-d'))->where('picking_status',1)->where('scan_status',1)->orderBy('shipping_date','asc')->orderBy('id','asc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -446,10 +450,12 @@ class API2Controller extends  Controller
     {
         if($r->shipping_date == ''){
             $cart = CustomerCart::where('status',2)
+            ->where('ready_transfer',1)
             ->where('shipping_date','<=',date('Y-m-d'))
             ->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
         }else{
             $cart = CustomerCart::where('status',2)
+            ->where('ready_transfer',1)
             ->where('shipping_date',$r->shipping_date)
             ->where('picking_status',1)->where('scan_status',1)->where('transfer_status',0)->orderBy('shipping_date','asc')->get();
         }
@@ -457,7 +463,7 @@ class API2Controller extends  Controller
         $status = [1,2];
         $cart_success = CustomerCart::where('status',2)
         // ->where('shipping_date','<=',date('Y-m-d'))
-        ->where('picking_status',1)->where('scan_status',1)->whereIn('transfer_status',$status)->orderBy('shipping_date','desc')->get();
+        ->where('picking_status',1)->where('scan_status',1)->where('ready_transfer',1)->whereIn('transfer_status',$status)->orderBy('shipping_date','desc')->get();
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,

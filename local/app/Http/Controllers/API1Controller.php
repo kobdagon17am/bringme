@@ -1563,6 +1563,11 @@ class API1Controller extends Controller
 
     public function api_get_product_detail(Request $r)
     {
+        // if(isset($r->user_id)){
+        //     if(){
+
+        //     }
+        // }
         $product_detail = Products::where('id',$r->product_id)->first();
         $product_detail->visitor_number = $product_detail->visitor_number+1;
         $product_detail->save();
