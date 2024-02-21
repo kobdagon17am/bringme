@@ -3408,6 +3408,7 @@ class API1Controller extends Controller
                     $products_item_pre->shipping_date = $products->preorder_shipping_date;
                     $products_item_pre->products_code = $products->products_code;
                     $products_item_pre->is_preorder = 1;
+                    $products_item_pre->preorder_date_cut_off = $r->preorder_date_cut_off;
                     $products_item_pre->save();
                 }
 
