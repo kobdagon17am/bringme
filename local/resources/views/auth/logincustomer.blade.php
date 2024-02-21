@@ -95,6 +95,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- BEGIN: JS Assets-->
     <script src="{{ asset('backend/dist/js/app.js') }}"></script>
     <!-- END: JS Assets-->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    @include('layouts.backend.flash-message')
 </body>
 
 </html>
