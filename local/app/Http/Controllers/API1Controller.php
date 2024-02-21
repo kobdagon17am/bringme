@@ -1927,7 +1927,18 @@ class API1Controller extends Controller
          $cart->status = 0;
          $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
         if($r->shipping_date != ''){
-            $cart->shipping_date = $r->shipping_date;
+            if($r->shipping_date <= date('Y-m-d')){
+                $shipping_period = DB::table('shipping_period')->where('id',$r->period)->first();
+                if($shipping_period->time_end < date('H:i:s')){
+                    $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
+                    $date = $date->addDays(1);
+                    $cart->shipping_date = $date;
+                }else{
+                    $cart->shipping_date = date('Y-m-d');
+                }
+            }else{
+                $cart->shipping_date = $r->shipping_date;
+            }
         }else{
             $shipping_period = DB::table('shipping_period')->where('id',$r->period)->first();
             if($shipping_period->time_end < date('H:i:s')){
@@ -1949,6 +1960,12 @@ class API1Controller extends Controller
          $cart->shipping_name_id = $shipping_name->id;
          $cart->shipping_name_name = $shipping_name->name;
         //
+
+        $cart->pay_other_cart_id_arr = $r->pay_other_cart_id_arr;
+        $cart->shipping_type_id = $r->shipping_type_id;
+
+        $cart->pay_other_status = $r->shipping_other;
+
          $cart->save();
 
         // บันทึกที่อยู่
@@ -1973,6 +1990,38 @@ class API1Controller extends Controller
         $customer_cart_address->address_lat = $address->address_lat;
         $customer_cart_address->address_long = $address->address_long;
         $customer_cart_address->save();
+
+        if($r->pay_other_cart_id_arr!=''){
+            $pay_other_cart_id_arr = explode(',',$r->pay_other_cart_id_arr);
+            foreach($pay_other_cart_id_arr as $c_arr){
+                $cart_other = CustomerCart::where('id',$c_arr)->where('customer_id',$r->user_id)->where('pay_other_status',1)->first();
+                $cart_other->pay_other_cart_id = $cart->id;
+                // $cart_other->pay_status = 0;
+                $cart_other->save();
+                  // บันทึกที่อยู่
+                $customer_cart_address_other = CustomerCartAddress::where('customer_cart_id',$cart_other->id)->first();
+                if(!$customer_cart_address_other){
+                    $customer_cart_address_other = new CustomerCartAddress();
+                }
+                $customer_cart_address_other->customer_id = $cart->customer_id;
+
+                $customer_cart_address_other->customer_cart_id = $cart_other->id;
+                $customer_cart_address_other->customer_address_id = $cart->customer_address_id;
+
+                $address = Customer_address::where('id',$cart->customer_address_id)->first();
+
+                $customer_cart_address_other->name = $address->name;
+                $customer_cart_address_other->tel = $address->tel;
+                $customer_cart_address_other->address_number = $address->address_number;
+                $customer_cart_address_other->province_id = $address->province_id;
+                $customer_cart_address_other->amphures_id = $address->amphures_id;
+                $customer_cart_address_other->district_id = $address->district_id;
+                $customer_cart_address_other->zipcode = $address->zipcode;
+                $customer_cart_address_other->address_lat = $address->address_lat;
+                $customer_cart_address_other->address_long = $address->address_long;
+                $customer_cart_address_other->save();
+                    }
+         }
 
                 return response()->json([
                     'message' =>  'success',
@@ -2027,7 +2076,7 @@ class API1Controller extends Controller
                 $cart->total_price = $r->product_total_price;
                 $cart->grand_total = $r->all_price_total;
                 $cart->cart_products_id_arr = $r->cart_products_id;
-                // $cart->pay_other_cart_id_arr = $r->pay_other_cart_id_arr;
+                $cart->pay_other_cart_id_arr = $r->pay_other_cart_id_arr;
                 //  ใส่ขนส่ง
                 $shipping_name = DB::table('shipping_name')->where('id',1)->first();
                 $cart->shipping_name_id = $shipping_name->id;
