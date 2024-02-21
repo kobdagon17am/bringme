@@ -725,8 +725,8 @@ class API2Controller extends  Controller
         ->where('customer_cart.id',$cart_id)->first();
 
         $customer_cart_address = CustomerCartAddress::
-        select('customer_cart_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
-        ->join('districts','districts.id','customer_cart_address.district_id')
+        select('customer_cart_address.*','customer_cart_address.district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+        // ->join('districts','districts.id','customer_cart_address.district_id')
         ->join('amphures','amphures.id','customer_cart_address.amphures_id')
         ->join('provinces','provinces.id','customer_cart_address.province_id')
         ->where('customer_cart_address.customer_cart_id',$cart->id)
@@ -769,8 +769,8 @@ class API2Controller extends  Controller
             }
 
             $customer_address = Customer_address::
-            select('customer_address.*','districts.name_th as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
-            ->join('districts','districts.id','customer_address.district_id')
+            select('customer_address.*','customer_cart_address.district_id as districts_name','amphures.name_th as amphures_name','provinces.name_th as provinces_name')
+            // ->join('districts','districts.id','customer_address.district_id')
             ->join('amphures','amphures.id','customer_address.amphures_id')
             ->join('provinces','provinces.id','customer_address.province_id')
             ->where('customer_address.id',$cart->customer_address_id)->first();
