@@ -287,9 +287,8 @@ class PaymentController extends Controller
             ->whereIn('status',[1,2])
             ->first();
 
-            Auth::guard('customer')->login($customer);
-            return redirect('home')->withSuccess('Register Success');
-            //return redirect('login');
+            // Auth::guard('customer')->login($customer);
+            return redirect('login')->withSuccess('Register Success');;
         }else{
             // die('reCAPTCHA verification failed');
             return redirect('register_partner')->withError('reCAPTCHA verification failed');
