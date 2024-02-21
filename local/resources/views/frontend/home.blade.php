@@ -166,9 +166,9 @@
 
             <div class="intro-y mt-5">
                 <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center box" role="tablist">
-                    <li id="sales-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4 active" data-tw-target="#sales" aria-controls="dashboard" aria-selected="true" role="tab"> ยอดขาย </a> </li>
-                    <li id="numberofproducts-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4" data-tw-target="#numberofproducts" aria-selected="false" role="tab"> จำนวนสินค้า </a> </li>
-                    <li id="productviews-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4" data-tw-target="#productviews" aria-selected="false" role="tab"> ยอดชมสินค้า </a> </li>
+                    <li id="sales-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4 active" data-tw-target="#sales" aria-controls="dashboard" aria-selected="true" role="tab"> รายการสินค้า </a> </li>
+                    {{-- <li id="numberofproducts-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4" data-tw-target="#numberofproducts" aria-selected="false" role="tab"> false </a> </li> --}}
+                    {{-- <li id="productviews-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-4" data-tw-target="#productviews" aria-selected="false" role="tab"> ยอดชมสินค้า </a> </li> --}}
                 </ul>
 
                 <div class="tab-content py-5 mt-5">
