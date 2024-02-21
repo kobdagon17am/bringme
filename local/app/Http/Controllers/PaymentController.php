@@ -275,10 +275,16 @@ class PaymentController extends Controller
             $gp_data['created_at'] = date('Y-m-d H:i:s');
             $gp = DB::table('bringme_percent_gp')->insert($gp_data);
 
-            return redirect('login');
+            $customer = Customer::where('email',$request->input('email'))
+            ->whereIn('status',[1,2])
+            ->first();
+
+            Auth::guard('customer')->login($customer);
+            return redirect('home')->withSuccess('Register Success');
+            //return redirect('login');
         }else{
-            die('reCAPTCHA verification failed');
-            return redirect('register_partner');
+            // die('reCAPTCHA verification failed');
+            return redirect('register_partner')->withError('reCAPTCHA verification failed');
         }
 
     }

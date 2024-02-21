@@ -27,7 +27,7 @@
 
                         <div>
                             <label for="" class="form-label">ชื่อ-นามสกุล</label>
-                            <input id="firstname" type="text" class="form-control" placeholder="ชื่อ-นามสกุล" name="firstname" value="">
+                            <input id="firstname" type="text" class="form-control" placeholder="ชื่อ-นามสกุล" name="firstname" value="" required>
                         </div>
 
                         <div>
@@ -408,6 +408,10 @@
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@include('layouts.backend.flash-message')
+
 
 <script type="text/javascript">
     $(document).ready(function(){
