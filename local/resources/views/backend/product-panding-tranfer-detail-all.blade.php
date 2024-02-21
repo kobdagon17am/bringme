@@ -23,6 +23,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <input id="brand-name" type="text" class="form-control" placeholder="Brand name" readonly
                                     value="{{ $store_detail->store_name }}">
                             </div>
@@ -55,7 +56,7 @@
                             <div class="intro-y block sm:flex items-center h-10">
 
                                 <div class="flex items-center mt-3 sm:mt-0">
-                                    <button onclick="print_pdf();" class="ml-3 btn btn-primary flex items-center "> <svg
+                                    <button type="button" onclick="print_pdf();" class="ml-3 btn btn-primary flex items-center "> <svg
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round" icon-name="file-text"
