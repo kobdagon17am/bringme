@@ -88,7 +88,7 @@
                         </li>
                         <li class="mb-1">
                             <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-                                href="#">About Us</a>
+                                href="#About">About Us</a>
                         </li>
                         <li class="mb-1">
                             <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
@@ -163,11 +163,11 @@
                     src="{{ asset('assets/img/Sonw_Flake.png') }}" alt="" />
                 <img class="snow snow-2 hidden md:block md:relative md:bottom-24 md:-right-[15rem]"
                     src="{{ asset('assets/img/Sonw_Flake.png') }}" alt="" />
-                <div class="main-context mt-6 md:mt-48">
+                <div class="main-context mt-6 md:mt-48"  >
                     <p class="title-context md-2 md:mb-12 text-2xl md:text-[2.5rem]">
                         Lifestyle Online Shopping Store
                     </p>
-                    <div class="text-center mt-4 text-sm md:text-2xl hidden md:block">
+                    <div class="text-center mt-4 text-sm md:text-2xl hidden md:block" id="About">
                         <p>แหล่งรวมสินค้าหลากหลายหมวดหมู่ให้ลูกค้าได้เลือกสรร</p>
                         <p class="mt-2">
                             และสามารถส่งพร้อมกันได้ในออเดอร์เดียว เช่น ขนมเบเกอรี่

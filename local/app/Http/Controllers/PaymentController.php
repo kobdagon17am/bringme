@@ -41,6 +41,7 @@ use App\Models\StockItemsPre;
 use App\Models\StockLotPre;
 use App\Models\CustomerCartTracking;
 use App\Models\CustomerCartTrackingItem;
+use Session;
 
 class PaymentController extends Controller
 {
@@ -95,10 +96,11 @@ class PaymentController extends Controller
     public function register_partner(){$data['customer'] = Customer::all();
         $data['provinces'] = DB::table('provinces')->get();
         $data['amphures'] = DB::table('amphures')->get();
-        $data['districts'] = DB::table('districts')->get();
+        // $data['districts'] = DB::table('districts')->get();
         $data['category'] = DB::table('category')->get();
         $data['storage_method'] = DB::table('storage_method')->get();
         $data['bank'] = DB::table('bank')->get();
+
         return view('backend.store-register-detail', $data);
     }
 
@@ -276,10 +278,16 @@ class PaymentController extends Controller
             $gp_data['created_at'] = date('Y-m-d H:i:s');
             $gp = DB::table('bringme_percent_gp')->insert($gp_data);
 
-            return redirect('login');
+            $customer = Customer::where('email',$request->input('email'))
+            ->whereIn('status',[1,2])
+            ->first();
+
+            Auth::guard('customer')->login($customer);
+            return redirect('home')->withSuccess('Register Success');
+            //return redirect('login');
         }else{
-            die('reCAPTCHA verification failed');
-            return redirect('register_partner');
+            // die('reCAPTCHA verification failed');
+            return redirect('register_partner')->withError('reCAPTCHA verification failed');
         }
 
     }

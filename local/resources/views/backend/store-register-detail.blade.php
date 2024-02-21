@@ -27,7 +27,7 @@
 
                         <div>
                             <label for="" class="form-label">ชื่อ-นามสกุล</label>
-                            <input id="firstname" type="text" class="form-control" placeholder="ชื่อ-นามสกุล" name="firstname" value="">
+                            <input id="firstname" type="text" class="form-control" placeholder="ชื่อ-นามสกุล" name="firstname" value="" required>
                         </div>
 
                         <div>
@@ -104,14 +104,8 @@
 
                         <div>
                             <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                            <select id="district_id" class="form-select" name="district_id">
-                                <option value="">- เลือกแขวง -</option>
-                                @if(!empty($districts))
-                                    @foreach($districts as $_districts)
-                                        <option value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
+                            <input id="" type="text" class="form-control" placeholder="แขวง/ตำบล" name="district_id" value="">
+
                         </div>
 
                         <div>
@@ -254,14 +248,8 @@
 
                 <div>
                     <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                    <select id="district_id2" class="form-select" name="district_id2">
-                        <option value="">- เลือกแขวง -</option>
-                        @if(!empty($districts))
-                            @foreach($districts as $_districts)
-                                <option value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
-                            @endforeach
-                        @endif
-                    </select>
+                    <input id="" type="text" class="form-control" placeholder="แขวง/ตำบล" name="district_id" value="">
+
                 </div>
 
                 <div>
@@ -420,6 +408,10 @@
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@include('layouts.backend.flash-message')
+
 
 <script type="text/javascript">
     $(document).ready(function(){
