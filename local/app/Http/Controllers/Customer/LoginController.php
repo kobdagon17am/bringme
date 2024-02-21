@@ -92,6 +92,7 @@ class LoginController extends Controller
 
             if ($user) {
                 Auth::guard('c_user')->login($user);
+
                 session()->put('access_from_admin', 1);
             }
 

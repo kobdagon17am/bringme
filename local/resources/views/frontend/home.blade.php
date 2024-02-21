@@ -143,8 +143,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="intro-y mt-12">
+ 
+            {{-- <div class="intro-y mt-12">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         แนวโน้มยอดขายใน Real-time
@@ -162,7 +162,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}} 
 
             <div class="intro-y mt-5">
                 <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center box" role="tablist">
@@ -609,7 +609,8 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                            @if(!empty($store_detail))
+                                           
+                                            @if(!empty($store_detail->product_ex_img_path))
                                             <img class="rounded-md detail_show" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_ex_img_path }}{{ $store_detail->product_ex_img }}">
                                             @else
                                             <img class="rounded-md detail_show" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
@@ -629,7 +630,7 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                            @if(!empty($store_detail))
+                                            @if(!empty($store_detail->product_pack_img_path))
                                             <img class="rounded-md package_show" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->product_pack_img_path }}{{ $store_detail->product_pack_img }}">
                                             @else
                                             <img class="rounded-md package_show" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
@@ -649,7 +650,7 @@
                                 <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                     <div class="flex flex-wrap px-4">
                                         <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                            @if(!empty($store_detail))
+                                            @if(!empty($store_detail->product_pack_img_path))
                                             <img class="rounded-md certificate_show " alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->certificate_path }}{{ $store_detail->certificate }}">
                                             @else
                                             <img class="rounded-md certificate_show " alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
@@ -703,7 +704,7 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                @if(!empty($store_detail))
+                                                @if(!empty($store_detail->bank_img_path))
                                                 <img class="rounded-md idcard_show " alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->id_card_img }}">
                                                 @else
                                                 <img class="rounded-md idcard_show " alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
@@ -723,7 +724,7 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                @if(!empty($store_detail))
+                                                @if(!empty($store_detail->bank_img_path))
                                                 <img class="bank_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->bank_img_path }}{{ $store_detail->bank_img }}">
                                                 @else
                                                 <img class="bank_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">
@@ -743,7 +744,7 @@
                                     <div class="border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4">
                                         <div class="flex flex-wrap px-4">
                                             <div class="w-24 h-24 relative image-fit mb-5 mr-5 cursor-pointer zoom-in">
-                                                @if(!empty($store_detail))
+                                                @if(!empty($store_detail->company_img_path))
                                                 <img class="company_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('local/storage/app/public') }}/{{ $store_detail->company_img_path }}{{ $store_detail->company_img }}">
                                                 @else
                                                 <img class="company_show rounded-md" alt="Midone - HTML Admin Template" src="{{ asset('backend/dist/images/food-beverage-1.jpg') }}">

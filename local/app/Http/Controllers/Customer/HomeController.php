@@ -35,8 +35,6 @@ class HomeController extends Controller
 
 
 
-
-
         if($id){
             $data['id'] = $id;
             $data['store'] = DB::table('customer')->where('customer.id',$id)

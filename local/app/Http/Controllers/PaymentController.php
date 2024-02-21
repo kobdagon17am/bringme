@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use DB;
 use App\User;
 use File;
@@ -41,7 +40,13 @@ use App\Models\StockItemsPre;
 use App\Models\StockLotPre;
 use App\Models\CustomerCartTracking;
 use App\Models\CustomerCartTrackingItem;
+use Auth;
 use Session;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PaymentController extends Controller
 {
@@ -282,9 +287,8 @@ class PaymentController extends Controller
             ->whereIn('status',[1,2])
             ->first();
 
-            Auth::guard('customer')->login($customer);
-            return redirect('home')->withSuccess('Register Success');
-            //return redirect('login');
+            // Auth::guard('customer')->login($customer);
+            return redirect('login')->withSuccess('Register Success');;
         }else{
             // die('reCAPTCHA verification failed');
             return redirect('register_partner')->withError('reCAPTCHA verification failed');
