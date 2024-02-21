@@ -39,6 +39,7 @@ Use App\Models\Payment;
 use App\Models\StockPre;
 use App\Models\StockItemsPre;
 use App\Models\StockLotPre;
+use Session;
 
 class PaymentController extends Controller
 {
