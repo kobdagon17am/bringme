@@ -50,7 +50,7 @@
                     <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="twitter" class="w-4 h-4 mr-2"></i>{{ (!empty($store) ? $store->firstname : '') }} </div> --}}
                 </div>
             </div>
-            <div class="mt-6 lg:mt-0 flex-1 px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
+            {{-- <div class="mt-6 lg:mt-0 flex-1 px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
                 <div class="font-medium text-center lg:text-left lg:mt-5">Sales Growth</div>
                 <div class="flex items-center justify-center lg:justify-start mt-2">
                     <div class="mr-2 w-20 flex"> USP: <span class="ml-3 font-medium text-success">+23%</span> </div>
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
 

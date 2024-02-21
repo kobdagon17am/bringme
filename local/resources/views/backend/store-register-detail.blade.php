@@ -104,15 +104,8 @@
 
                         <div>
                             <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                            <input id="" type="text" class="form-control" placeholder="Input text" name="district_id" value="{{ $store->district_id }}">
-                            {{-- <select id="district_id" class="form-select" name="district_id">
-                                <option value="">- เลือกแขวง -</option>
-                                @if(!empty($districts))
-                                    @foreach($districts as $_districts)
-                                        <option value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
-                                    @endforeach
-                                @endif
-                            </select> --}}
+                            <input id="" type="text" class="form-control" placeholder="แขวง/ตำบล" name="district_id" value="">
+
                         </div>
 
                         <div>
@@ -255,15 +248,8 @@
 
                 <div>
                     <label for="update-profile-form-8" class="form-label">แขวง/ตำบล</label>
-                    <input id="" type="text" class="form-control" placeholder="Input text" name="district_id" value="{{ $store->district_id }}">
-                    {{-- <select id="district_id2" class="form-select" name="district_id2">
-                        <option value="">- เลือกแขวง -</option>
-                        @if(!empty($districts))
-                            @foreach($districts as $_districts)
-                                <option value="{{ $_districts->id }}">{{ $_districts->name_th }}</option>
-                            @endforeach
-                        @endif
-                    </select> --}}
+                    <input id="" type="text" class="form-control" placeholder="แขวง/ตำบล" name="district_id" value="">
+
                 </div>
 
                 <div>
