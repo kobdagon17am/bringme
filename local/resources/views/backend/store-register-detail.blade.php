@@ -26,14 +26,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
 
                         <div>
-                            <label for="" class="form-label">ชื่อ-นามสกุล</label>
+                            <label for="" class="form-label">ชื่อ-นามสกุล *</label>
                             <input id="firstname" type="text" class="form-control" placeholder="ชื่อ-นามสกุล" name="firstname" value="" required>
                         </div>
 
                         <div>
-                            <label for="" class="form-label">วันเดือนปีเกิด</label>
+                            <label for="" class="form-label">วันเดือนปีเกิด *</label>
                             <div class="relative">
-                                <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400"> <i data-lucide="calendar" class="w-4 h-4"></i> </div> <input type="text" class="datepicker form-control pl-12 change_birthday" data-single-mode="true" id="birthday" name="birthday" value="">
+                                <div class="absolute rounded-l w-10 h-full flex items-center justify-center bg-slate-100 border text-slate-500 dark:bg-darkmode-700 dark:border-darkmode-800 dark:text-slate-400">
+                                     <i data-lucide="calendar" class="w-4 h-4"></i> </div> <input type="text" class="datepicker form-control pl-12 change_birthday" data-single-mode="true" id="birthday" name="birthday" value="" required>
                             </div>
                         </div>
 
@@ -43,8 +44,8 @@
                         </div>
 
                         <div>
-                            <label for="" class="form-label">อีเมล</label>
-                            <input id="email" type="text" class="form-control" placeholder="อีเมล" name="email" value="">
+                            <label for="" class="form-label">อีเมล *</label>
+                            <input id="email" type="text" class="form-control" placeholder="อีเมล" name="email" value="" required>
                         </div>
 
                         <div>
