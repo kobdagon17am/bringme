@@ -178,7 +178,7 @@
                 {{-- <th align="center" style="">ราคา/หน่วย
 
                 </th> --}}
-                <th align="center" style="">จำนวนสินค้า
+                <th align="right" style="">จำนวนสินค้า
 
                 </th>
                 {{-- <th align="right" style="">ราคารวม
@@ -197,7 +197,7 @@
                     {{$i}}. {{ $value->product_name}}
                  </td>
 
-                 <td align="center" style="">
+                 <td align="right" style="">
                     {{$value->qty}}
                  </td>
 

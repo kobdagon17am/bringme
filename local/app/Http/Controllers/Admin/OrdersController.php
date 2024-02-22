@@ -252,13 +252,13 @@ class OrdersController extends  Controller
             $status = 0;
 
             $pdf = PDF::loadView('backend.PDF.order_address', compact('data','status'));
-            for ($i = 0; $i < 1; $i++) {
-                $pathfile = public_path('order_list/'.$cart_id.'_'.$i.'.pdf');
-                $pdf->save($pathfile);
-            }
+            // for ($i = 0; $i < 1; $i++) {
+            //     $pathfile = public_path('order_list/'.$cart_id.'_'.$i.'.pdf');
+            //     $pdf->save($pathfile);
+            // }
         }
 
-        $this->merger_pdf($cart_id);
+        // $this->merger_pdf($cart_id);
         return $pdf->stream();
 
         // $url_pdf =  asset('local/public/order/result_'.$cart_id);
