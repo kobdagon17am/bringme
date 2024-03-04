@@ -1817,7 +1817,9 @@ class API1Controller extends Controller
             }else{
               $arr_type_not = [2];
             }
-            $shipping_type = DB::table('shipping_type')->whereNotIn('type',$arr_type_not)->where('display',1)->get();
+            $shipping_type = DB::table('shipping_type')
+            // ->whereNotIn('type',$arr_type_not)
+            ->where('display',1)->get();
 
             if(date("Y-m-d H:i:s") < date("Y-m-d".' 08:00:00')){
                 $period = '1';
