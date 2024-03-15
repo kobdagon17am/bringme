@@ -412,7 +412,7 @@ class PaymentController extends Controller
                                             $status_err_detail = 'สินค้าบางรายการเกินจำนวนแล้ว';
                                         }
                                     }else{
-                                        $stock_lot = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))->orderBy('lot_expired_date','asc')->first();
+                                        $stock_lot = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))->where('cut_off',0)->orderBy('lot_expired_date','asc')->first();
                                     }
 
                             // จองสต็อก
@@ -462,6 +462,7 @@ class PaymentController extends Controller
 
                             }else{
                                 $stock_lot_arr = StockLotPre::where('product_id',$p->product_id)->where('lot_expired_date','>',date('Y-m-d'))
+                                ->where('cut_off',0)
                                 ->orderBy('lot_expired_date','asc')->get();
                                 foreach($stock_lot_arr as $st_arr){
                                     if($qty_mis_total > 0){
