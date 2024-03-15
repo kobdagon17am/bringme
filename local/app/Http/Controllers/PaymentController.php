@@ -510,7 +510,10 @@ class PaymentController extends Controller
                 }
             }
 
-                if($stock_lot){
+                // if($stock_lot){
+
+                if($cart->pay_other_status==0){
+
                  // สร้าง tracking
                  $tracking_no1 = CustomerCartTracking::where('customer_cart_id',$cart->id)->where('no',1)->first();
                  if(!$tracking_no1){
@@ -536,6 +539,8 @@ class PaymentController extends Controller
                      $customer_cart_tracking_item->save();
                  }
 
+                }
+
                                 $cart_new = new CustomerCart();
                                 $cart_new->customer_id = $cart->customer_id;
                                 $cart_new->shipping_type_id = 1;
@@ -554,7 +559,7 @@ class PaymentController extends Controller
                                 $cart_new->discount_price = 0;
                                 $cart_new->action_date = date('Y-m-d');
                                 $cart_new->save();
-                              // อัพเดทพวกที่เลหือไปตะกร้าใหม่
+                              // อัพเดทพวกที่เหลือไปตะกร้าใหม่
                                     CustomerCartProduct::select('customer_cart_product.*')
                                     ->where('customer_cart_product.customer_cart_id',$cart->id)->whereNotIn('id',$cart_products_id)->where('customer_cart_product.customer_id',$cart->customer_id)
                                     ->update([
@@ -580,12 +585,28 @@ class PaymentController extends Controller
                                             // $cart_other->pay_status = 1;
                                             $cart_other->ready_transfer = 1;
                                             $cart_other->save();
+
+                                            // $cart->total_price = $cart->total_price+$cart_other->total_price;
+                                            $cart->grand_total = $cart->total_price+$cart->shipping_price;
+                                            $cart->save();
+
+                                            DB::table('customer_cart_address')->where('customer_cart_id',$cart_other->id)->delete();
+                                            DB::table('customer_cart_product')->where('customer_cart_id',$cart_other->id)->update([
+                                                'customer_cart_id' => $cart->id,
+                                            ]);
+                                            DB::table('customer_cart_product_cut_stock')->where('customer_cart_id',$cart_other->id)->update([
+                                                'customer_cart_id' => $cart->id,
+                                            ]);
+                                            DB::table('customer_cart_store')->where('customer_cart_id',$cart_other->id)->update([
+                                                'customer_cart_id' => $cart->id,
+                                            ]);
+                                            DB::table('customer_cart')->where('id',$cart_other->id)->delete();
                                         }
                                     }
                                 }
 
                             // }
-                        }
+                        // }
 
                         }else{
                             $status_err = 1;

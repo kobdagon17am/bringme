@@ -1928,7 +1928,7 @@ class API1Controller extends Controller
                 $cart->cart_products_id_arr = $r->cart_products_id;
                 $cart->save();
 
-         // ตะกร้า
+         // ตะกร้า pay_other_cart_id_arr total_price pay_other_status
          $cart->action_date = date('Y-m-d');
          $cart->pay_type = $r->pay_type;
          $cart->status = 0;
@@ -1976,27 +1976,33 @@ class API1Controller extends Controller
          $cart->save();
 
         // บันทึกที่อยู่
-        $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
-        if(!$customer_cart_address){
-            $customer_cart_address = new CustomerCartAddress();
-        }
-        $customer_cart_address->customer_id = $cart->customer_id;
 
-        $customer_cart_address->customer_cart_id = $cart->id;
-        $customer_cart_address->customer_address_id = $cart->customer_address_id;
+        // if($cart->pay_other_status==0){
 
-        $address = Customer_address::where('id',$cart->customer_address_id)->first();
+            $customer_cart_address = CustomerCartAddress::where('customer_cart_id',$cart->id)->first();
+            if(!$customer_cart_address){
+                $customer_cart_address = new CustomerCartAddress();
+            }
+            $customer_cart_address->customer_id = $cart->customer_id;
 
-        $customer_cart_address->name = $address->name;
-        $customer_cart_address->tel = $address->tel;
-        $customer_cart_address->address_number = $address->address_number;
-        $customer_cart_address->province_id = $address->province_id;
-        $customer_cart_address->amphures_id = $address->amphures_id;
-        $customer_cart_address->district_id = $address->district_id;
-        $customer_cart_address->zipcode = $address->zipcode;
-        $customer_cart_address->address_lat = $address->address_lat;
-        $customer_cart_address->address_long = $address->address_long;
-        $customer_cart_address->save();
+            $customer_cart_address->customer_cart_id = $cart->id;
+            $customer_cart_address->customer_address_id = $cart->customer_address_id;
+
+            $address = Customer_address::where('id',$cart->customer_address_id)->first();
+
+            $customer_cart_address->name = $address->name;
+            $customer_cart_address->tel = $address->tel;
+            $customer_cart_address->address_number = $address->address_number;
+            $customer_cart_address->province_id = $address->province_id;
+            $customer_cart_address->amphures_id = $address->amphures_id;
+            $customer_cart_address->district_id = $address->district_id;
+            $customer_cart_address->zipcode = $address->zipcode;
+            $customer_cart_address->address_lat = $address->address_lat;
+            $customer_cart_address->address_long = $address->address_long;
+            $customer_cart_address->save();
+
+        // }
+
 
         if($r->pay_other_cart_id_arr!=''){
             $pay_other_cart_id_arr = explode(',',$r->pay_other_cart_id_arr);
@@ -2005,6 +2011,7 @@ class API1Controller extends Controller
                 $cart_other->pay_other_cart_id = $cart->id;
                 // $cart_other->pay_status = 0;
                 $cart_other->save();
+
                   // บันทึกที่อยู่
                 $customer_cart_address_other = CustomerCartAddress::where('customer_cart_id',$cart_other->id)->first();
                 if(!$customer_cart_address_other){
@@ -2027,7 +2034,7 @@ class API1Controller extends Controller
                 $customer_cart_address_other->address_lat = $address->address_lat;
                 $customer_cart_address_other->address_long = $address->address_long;
                 $customer_cart_address_other->save();
-                    }
+            }
          }
 
                 return response()->json([
@@ -2819,6 +2826,7 @@ class API1Controller extends Controller
             'products_item.transfer_status',
             'products_item.shipping_date',
             'products_item.preorder_date_cut_off',
+            'products_item.preorder_date_bringme',
 
             'products_item.is_preorder as products_item_is_preorder',
             'products_item.shipping_date as products_item_shipping_date',
@@ -3076,6 +3084,7 @@ class API1Controller extends Controller
                     $products_item_pre->production_date = $r->production_date;
                     $products_item_pre->shipping_date = $r->shipping_date_pre;
                     $products_item_pre->preorder_date_cut_off = $r->preorder_date_cut_off;
+                    $products_item_pre->preorder_date_bringme = $r->preorder_date_bringme;
                     $products_item_pre->products_code = $products->products_code;
                     $products_item_pre->is_preorder = 1;
                     $products_item_pre->save();
@@ -3416,6 +3425,7 @@ class API1Controller extends Controller
                     $products_item_pre->products_code = $products->products_code;
                     $products_item_pre->is_preorder = 1;
                     $products_item_pre->preorder_date_cut_off = $r->preorder_date_cut_off;
+                    $products_item_pre->preorder_date_bringme = $r->preorder_date_bringme;
                     $products_item_pre->save();
                 }
 

@@ -478,6 +478,13 @@ class API2Controller extends  Controller
     {
         // barcode transfer_status districts
         $cart = CustomerCart::where('customer_cart.id',$r->cart_id)->first();
+
+        $shipping_type_name = '';
+        $shipping_type = DB::table('shipping_type')->where('id',$cart->shipping_type_id)->first();
+        if($shipping_type){
+            $shipping_type_name = $shipping_type->shipping_name;
+        }
+
         if($cart->pay_other_cart_id!=null){
             $cart_others = CustomerCart::select('customer_cart.*','dataset_pay_type.pay_type_name','shipping_type.name as delivery_type_name')
             ->join('dataset_pay_type','dataset_pay_type.id','customer_cart.pay_type')
@@ -590,6 +597,7 @@ class API2Controller extends  Controller
                     'tracking_no5' => $tracking_no5,
                     'cart_others' => $cart_others,
                     'claim_status_success' => $claim_status_success,
+                    'shipping_type_name' => $shipping_type_name,
                 ],
             ]);
         }else{
