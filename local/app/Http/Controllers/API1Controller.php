@@ -3847,7 +3847,7 @@ class API1Controller extends Controller
             {
 
                 if($r->type == 'new'){
-                    // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date));
+                    // $r->shipping_date = date('Y-m-d', strtotime($r->shipping_date)); is_preorder
 
                     $arr = explode(',',$r->arr_pro);
                     foreach($arr as $a){
@@ -3894,6 +3894,14 @@ class API1Controller extends Controller
                                 $products_item->transfer_status = 2;
                                 $products_item->shipping_date = $r->shipping_date;
                                 $products_item->save();
+
+                                if(isset($r->is_preorder)){
+                                    if($r->is_preorder==1){
+                                        StockLotPre::where('product_id',$products_item->product_id)->where('cut_off',0)->update([
+                                            'cut_off'=>1,
+                                        ]);
+                                    }
+                                }
 
                             }
                         }
