@@ -1563,7 +1563,7 @@ class API1Controller extends Controller
 
     public function api_get_product_detail(Request $r)
     {
-        // if(isset($r->user_id)){
+        // if(isset($r->user_id)){ stock_items_pre
         //     if(){
 
         //     }
@@ -1644,7 +1644,11 @@ class API1Controller extends Controller
                 $product_item_pe_arr = ProductsItem::select('id')->where('product_id',$r->product_id)->where('is_preorder',1)->where('transfer_status',1)->pluck('id')->toArray();
                 $stock_lot_pre = StockLotPre::select('id','lot_expired_date')->whereIn('products_item_id',$product_item_pe_arr)->where('product_id',$r->product_id)->where('lot_expired_date','>',date('Y-m-d'))->first();
                 if($stock_lot_pre){
-                    $stock_items_pre = StockItemsPre::select('stock_lot_pre.lot_expired_date','stock_items_pre.*')->join('stock_lot_pre','stock_lot_pre.id','stock_items_pre.stock_lot_id')->where('stock_items_pre.product_id',$r->product_id)->where('stock_items_pre.stock_lot_id',$stock_lot_pre->id)->get();
+                    $stock_items_pre = StockItemsPre::select('stock_lot_pre.lot_expired_date','stock_items_pre.*')
+                    // ->join('stock_lot_pre','stock_lot_pre.id','stock_items_pre.stock_lot_id')
+                    ->join('stock_lot_pre','stock_lot_pre.id','stock_items_pre.stock_lot_id')
+                    ->where('stock_items_pre.product_id',$r->product_id)
+                    ->where('stock_items_pre.stock_lot_id',$stock_lot_pre->id)->get();
                 }else{
                     $stock_items_pre = [];
                 }
@@ -3286,7 +3290,7 @@ class API1Controller extends Controller
                     $stock_lot_pre->products_item_id = $products_item_pre->id;
                     $stock_lot_pre->save();
 
-                    $products_option_2_items = ProductsOption2Items::where('product_id',$products->id)->get();
+                    $products_option_2_items = ProductsOption2Items::where('product_id',$products->id)->where('products_item_pre_id',$products_item_pre->id)->get();
                     foreach($products_option_2_items as $pro){
                         $stock_items_pre = new StockItemsPre();
                         $stock_items_pre->stock_lot_id = $stock_lot_pre->id;
@@ -3623,14 +3627,14 @@ class API1Controller extends Controller
                     $stock_lot_pre->date_in_stock = date('Y-m-d');
                     // $stock_lot_pre->lot_expired_date = '9999-'.date('m-d');
                     // $stock_lot_pre->lot_expired_date = $products->preorder_shipping_date;
-                    $stock_lot_pre->lot_expired_date = $products_item_pre->shipping_date;
+                    $stock_lot_pre->lot_expired_date = $products_item_pre->preorder_date_bringme;
                     $stock_lot_pre->lot_number = date('YmdHis');
                     $stock_lot_pre->qty = 0;
                     $stock_lot_pre->qty_booking = 0;
                     $stock_lot_pre->products_item_id = $products_item_pre->id;
                     $stock_lot_pre->save();
 
-                    $products_option_2_items = ProductsOption2Items::where('product_id',$products->id)->get();
+                    $products_option_2_items = ProductsOption2Items::where('product_id',$products->id)->where('products_item_pre_id',$products_item_pre->id)->get();
                     foreach($products_option_2_items as $pro){
                         $stock_items_pre = new StockItemsPre();
                         $stock_items_pre->stock_lot_id = $stock_lot_pre->id;
