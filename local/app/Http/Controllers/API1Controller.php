@@ -1910,21 +1910,36 @@ class API1Controller extends Controller
             $cart->status = 0;
             $cart->order_number = 'BM'.date('Ym').str_pad($cart->id, 5, '0', STR_PAD_LEFT);
             if ($r->shipping_date != '') {
-                if ($r->shipping_date <= date('Y-m-d')) {
+                $new_date = Carbon::createFromFormat('Y-m-d', $r->shipping_date);
+                $r->shipping_date = $new_date->format('Y-m-d');
+                if ($r->shipping_date == date('Y-m-d')) {
                     $shipping_period = \DB::table('shipping_period')->where('id', $r->period)->first();
-                    if ($shipping_period->time_end < date('H:i:s')) {
+                    $time_end = explode(':', $shipping_period->time_end);
+                    // if ($shipping_period->time_end < date('H:i:s')) {
+                    if (intval(date('H')) > intval($time_end[0])) { /* .. */
+                        // $cart->remark = '> H : '.intval(date('H')).'/End : '.intval($time_end[0]);
                         $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
                         $date = $date->addDays(1);
                         $cart->shipping_date = $date;
                     } else {
+                        // $cart->remark = '< H : '.intval(date('H')).'/End : '.intval($time_end[0]);
                         $cart->shipping_date = date('Y-m-d');
                     }
                 } else {
-                    $cart->shipping_date = $r->shipping_date;
+                    // $cart->remark = $r->shipping_date.' != '.date('Y-m-d');
+                    if ($r->shipping_date > date('Y-m-d')) {
+                        $cart->shipping_date = $r->shipping_date;
+                    } else {
+                        $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
+                        $date = $date->addDays(1);
+                        $cart->shipping_date = $date;
+                    }
                 }
             } else {
                 $shipping_period = \DB::table('shipping_period')->where('id', $r->period)->first();
-                if ($shipping_period->time_end < date('H:i:s')) {
+                $time_end = explode(':', $shipping_period->time_end);
+                // if ($shipping_period->time_end < date('H:i:s')) {
+                if (intval(date('H')) < intval($time_end[0])) { /* .. */
                     $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
                     $date = $date->addDays(1);
                     $cart->shipping_date = $date;

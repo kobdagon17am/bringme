@@ -362,7 +362,7 @@ class PaymentController extends Controller
         DB::beginTransaction();
         try
         {
-
+            // shipping_date
             $cart = CustomerCart::where('customer_id',$r->CustomerId)->where('status',0)->where('id',$r->OrderNo)->first();
             if($cart){
                 $customer = Customer::select('name')->where('id',$r->CustomerId)->first();
