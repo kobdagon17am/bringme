@@ -1821,7 +1821,7 @@ class API1Controller extends Controller
                 if ($r->shipping_type_id == 1 || $r->shipping_type_id == 2 || $r->shipping_type_id == 7 || $r->shipping_type_id == 8 || $r->shipping_type_id == 9 || $r->shipping_type_id == 10) {
                     $shipping_period = \DB::table('shipping_period')->where('makesend_pickup_time', '!=', 0)->where('shipping_other', 0)->where('status', 1)->get();
                 }
-                if ($r->shipping_type_id == 3 || $r->shipping_type_id == 4 || $r->shipping_type_id == 5 || $r->shipping_type_id == 6 || $r->shipping_type_id == 7 || $r->shipping_type_id == 8) {
+                if ($r->shipping_type_id == 3 || $r->shipping_type_id == 4 || $r->shipping_type_id == 5 || $r->shipping_type_id == 6) {
                     $shipping_period = \DB::table('shipping_period')->where('makesend_pickup_time', '==', 0)->where('shipping_other', 0)->where('status', 1)->get();
                 }
             }
