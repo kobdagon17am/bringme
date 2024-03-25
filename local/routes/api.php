@@ -109,7 +109,7 @@ Route::post('api_remove_customer', 'API3Controller@api_remove_customer');
 Route::post('api_get_search_products', 'API4Controller@api_get_search_products');
 Route::post('api_get_store_products_list', 'API4Controller@api_get_store_products_list');
 Route::post('api_approve_product_claim', 'API4Controller@api_approve_product_claim');
-
+Route::post('api_shipping_period_check', 'API4Controller@api_shipping_period_check');
 
 
 

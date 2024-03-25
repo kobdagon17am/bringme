@@ -41,6 +41,7 @@ use App\Models\Withdraw;
 use App\Models\CustomerCartClaim;
 use App\Models\MessageList;
 use App\Models\ShippingPeriod;
+use Carbon\Carbon;
 
 class API4Controller extends Controller
 {
@@ -284,6 +285,80 @@ class API4Controller extends Controller
                     // $cart->save();
                 }
 
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'success',
+                'status' => 1,
+                'data' => [
+                    // 'products' => $products,
+                    // 'url_img' => $url_img,
+                ],
+            ]);
+
+    }
+
+        catch (\Exception $e) {
+            DB::rollback();
+            // return $e->getMessage();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+        catch(\FatalThrowableError $e)
+        {
+            DB::rollback();
+            return response()->json([
+                'message' =>  $e->getMessage(),
+                'status' => 0,
+                'data' => '',
+            ]);
+        }
+
+     }
+
+     public function api_shipping_period_check(Request $r)
+     {
+        DB::beginTransaction();
+        try
+        {
+            if ($r->shipping_date != '') {
+                $new_date = Carbon::createFromFormat('Y-m-d', $r->shipping_date);
+                $r->shipping_date = $new_date->format('Y-m-d');
+                if ($r->shipping_date == date('Y-m-d')) {
+                    $shipping_period = \DB::table('shipping_period')->where('id', $r->period)->first();
+                    $time_end = explode(':', $shipping_period->time_end);
+                    // if ($shipping_period->time_end < date('H:i:s')) {
+                    if (intval(date('H')) > intval($time_end[0])) { /* .. */
+                        // $cart->remark = '> H : '.intval(date('H')).'/End : '.intval($time_end[0]);
+                        return response()->json([
+                            'message' => 'success',
+                            'status' => 0,
+                            'data' => [
+                                // 'products' => $products,
+                                // 'url_img' => $url_img,
+                            ],
+                        ]);
+                    }
+                }
+            }else{
+                $shipping_period = \DB::table('shipping_period')->where('id', $r->period)->first();
+                $time_end = explode(':', $shipping_period->time_end);
+                // if ($shipping_period->time_end < date('H:i:s')) {
+                if (intval(date('H')) > intval($time_end[0])) { /* .. */
+                    return response()->json([
+                        'message' => 'success',
+                        'status' => 0,
+                        'data' => [
+                            // 'products' => $products,
+                            // 'url_img' => $url_img,
+                        ],
+                    ]);
+                }
             }
 
             DB::commit();

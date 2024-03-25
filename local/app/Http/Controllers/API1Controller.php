@@ -1939,7 +1939,7 @@ class API1Controller extends Controller
                 $shipping_period = \DB::table('shipping_period')->where('id', $r->period)->first();
                 $time_end = explode(':', $shipping_period->time_end);
                 // if ($shipping_period->time_end < date('H:i:s')) {
-                if (intval(date('H')) < intval($time_end[0])) { /* .. */
+                if (intval(date('H')) > intval($time_end[0])) { /* .. */
                     $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d'));
                     $date = $date->addDays(1);
                     $cart->shipping_date = $date;
