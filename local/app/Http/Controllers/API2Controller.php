@@ -314,6 +314,14 @@ class API2Controller extends  Controller
                             $stock_items->price = $item->price;
                             $stock_items->qty = $item_qty;
                             $stock_items->qty_booking = $item_qty_booking;
+
+                            // เช็คว่าเติมสินค้ามีสินค้าเก่าอยู่ไหม
+                            if($item->ref_add_more!='' && $item->ref_add_more!=null){
+                                $ref_stock_items = DB::table('stock_items')->select('id')->where('products_option_2_items_id',$item->ref_add_more)->first();
+                                if($ref_stock_items){
+                                    $stock_items->ref_add_more_stock_item = $ref_stock_items->id;
+                                }
+                            }
                             $stock_items->save();
                             $qty += $item_qty;
 
