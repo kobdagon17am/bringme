@@ -317,9 +317,11 @@ class API2Controller extends  Controller
 
                             // เช็คว่าเติมสินค้ามีสินค้าเก่าอยู่ไหม
                             if($item->ref_add_more!='' && $item->ref_add_more!=null){
-                                $ref_stock_items = DB::table('stock_items')->select('id')->where('products_option_2_items_id',$item->ref_add_more)->first();
+                                $ref_stock_items = DB::table('stock_items')->select('id','price')->where('products_option_2_items_id',$item->ref_add_more)->first();
                                 if($ref_stock_items){
-                                    $stock_items->ref_add_more_stock_item = $ref_stock_items->id;
+                                    if($ref_stock_items->price == $item->price){
+                                        $stock_items->ref_add_more_stock_item = $ref_stock_items->id;
+                                    }
                                 }
                             }
                             $stock_items->save();

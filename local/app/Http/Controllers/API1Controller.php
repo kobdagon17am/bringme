@@ -1379,16 +1379,17 @@ class API1Controller extends Controller
             }
         }
 
-        $product_good_sale = Products::select('products.*', 'products_item.transfer_status', 'products_item.id as products_item_id',
+        $product_good_sale = Products::select('products.*',
+        // 'products_item.transfer_status', 'products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'products_gallery.name as gal_name',
             'store.logo_path', 'store.logo',
         )
-        ->join('products_item', 'products_item.product_id', 'products.id')
+        // ->join('products_item', 'products_item.product_id', 'products.id')
         ->join('products_gallery', 'products_gallery.product_id', 'products.id')
         ->join('store', 'store.id', 'products.store_id')
         ->where('products_gallery.use_profile', 1)
-        ->where('products_item.transfer_status', 3)
+        // ->where('products_item.transfer_status', 3)
         ->where('products.display_status', 1)
         ->whereNotIn('products.id', $p_arr_not)
         ->orderBy('products.sale_number', 'desc')
@@ -1399,15 +1400,16 @@ class API1Controller extends Controller
         // // ->orderBy('updated_at','desc')
         // ->inRandomOrder()->get();
 
-        $product_new = Products::select('products.*', 'products_item.transfer_status', 'products_item.id as products_item_id',
+        $product_new = Products::select('products.*',
+        //  'products_item.transfer_status', 'products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'store.logo_path', 'store.logo',
             'products_gallery.name as gal_name', )
-        ->join('products_item', 'products_item.product_id', 'products.id')
+        // ->join('products_item', 'products_item.product_id', 'products.id')
         ->join('products_gallery', 'products_gallery.product_id', 'products.id')
         ->join('store', 'store.id', 'products.store_id')
         ->where('products_gallery.use_profile', 1)
-        ->where('products_item.transfer_status', 3)
+        // ->where('products_item.transfer_status', 3)
         ->where('products.display_status', 1)
         ->whereNotIn('products.id', $p_arr_not)
         // ->orderBy('products.sale_number','desc')
@@ -1419,15 +1421,16 @@ class API1Controller extends Controller
         // ->where('id',0)
         // ->inRandomOrder()->get();
 
-        $product_pro = Products::select('products.*', 'products_item.transfer_status', 'products_item.id as products_item_id',
+        $product_pro = Products::select('products.*',
+        // 'products_item.transfer_status', 'products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'store.logo_path', 'store.logo',
             'products_gallery.name as gal_name', )
-        ->join('products_item', 'products_item.product_id', 'products.id')
+        // ->join('products_item', 'products_item.product_id', 'products.id')
         ->join('products_gallery', 'products_gallery.product_id', 'products.id')
         ->join('store', 'store.id', 'products.store_id')
         ->where('products_gallery.use_profile', 1)
-        ->where('products_item.transfer_status', 3)
+        // ->where('products_item.transfer_status', 3)
         ->where('products.display_status', 1)
         ->where('products.id', 0)
         ->orderBy('products.updated_at', 'desc')
@@ -1439,16 +1442,17 @@ class API1Controller extends Controller
         // // ->where('id',0)
         // ->inRandomOrder()->get();
 
-        $product_recome = Products::select('products.*', 'products_item.transfer_status', 'products_item.id as products_item_id',
+        $product_recome = Products::select('products.*',
+        //  'products_item.transfer_status', 'products_item.id as products_item_id',
             'products_gallery.path as gal_path',
             'store.logo_path', 'store.logo',
             'products_gallery.name as gal_name',
         )
-        ->join('products_item', 'products_item.product_id', 'products.id')
+        // ->join('products_item', 'products_item.product_id', 'products.id')
         ->join('products_gallery', 'products_gallery.product_id', 'products.id')
         ->join('store', 'store.id', 'products.store_id')
         ->where('products_gallery.use_profile', 1)
-        ->where('products_item.transfer_status', 3)
+        // ->where('products_item.transfer_status', 3)
         ->where('products.display_status', 1)
         ->whereNotIn('products.id', $p_arr_not)
         ->orderBy('products.updated_at', 'desc')
@@ -1541,7 +1545,7 @@ class API1Controller extends Controller
         //     }
         // }
         $product_detail = Products::where('id', $r->product_id)->first();
-        ++$product_detail->visitor_number;
+        $product_detail->visitor_number = $product_detail->visitor_number+1;
         $product_detail->save();
 
         if ($product_detail) {
@@ -1590,7 +1594,7 @@ class API1Controller extends Controller
             $stock_lot_all_arr = StockLot::select('id')->where('product_id', $r->product_id)->where('lot_expired_date', '>', date('Y-m-d'))->where('qty_booking', '>', 0)->orderBy('lot_expired_date', 'asc')->pluck('id')->toArray();
             $stock_items_sum = StockItems::select('qty_booking')->whereIn('stock_lot_id', $stock_lot_all_arr)->where('product_id', $r->product_id)->sum('qty_booking');
 
-            ++$store->visitor_number;
+            $store->visitor_number = $store->visitor_number+1;
             $store->save();
 
             if (isset($r->user_id)) {
@@ -1751,9 +1755,9 @@ class API1Controller extends Controller
             ->where('customer_cart_product.customer_cart_id', $cart->id)->where('customer_cart_product.customer_id', $r->user_id)->get();
             // เช็คจัดส่งเย็น
             foreach ($products as $pro) {
-                ++$product_qty_all;
+                $product_qty_all = $product_qty_all+1;
                 if ($pro->storage_method_id == 2) {
-                    ++$cold;
+                    $cold= $cold+1;
                 }
             }
 
