@@ -321,6 +321,9 @@ class API2Controller extends  Controller
                                 if($ref_stock_items){
                                     if($ref_stock_items->price == $item->price){
                                         $stock_items->ref_add_more_stock_item = $ref_stock_items->id;
+                                        DB::table('stock_items')->where('id',$ref_stock_items->id)->update([
+                                            'ref_add_more_stock_item' =>$ref_stock_items->id,
+                                        ]);
                                     }
                                 }
                             }
