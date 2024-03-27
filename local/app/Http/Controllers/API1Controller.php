@@ -1075,34 +1075,88 @@ class API1Controller extends Controller
                         }
                     }
                 }
-                // if($product_datail->preorder_active == 0){
-                $stock_lot = StockLot::where('product_id', $r->product_id)->where('lot_expired_date', '>', date('Y-m-d'))
-                ->where('qty_booking', '>', 0)->orderBy('lot_expired_date', 'asc')->first();
-                $qty_booking_sum = StockLot::where('product_id', $r->product_id)->where('lot_expired_date', '>', date('Y-m-d'))
-                ->where('qty_booking', '>', 0)->orderBy('lot_expired_date', 'asc')->sum('qty_booking');
-                // }else{
-                //     $stock_lot = StockLot::where('product_id',$r->product_id)->first();
-                //     $qty_booking_sum = StockLot::where('product_id',$r->product_id)->sum('qty_booking');
-                // }
 
-                // if($product_datail->preorder_active == 0){
+                $stock_items_select = StockItems::where('products_option_2_items_id',$r->products_option_2_items)->first();
+                if(!$stock_items_select){
+                    return response()->json([
+                        'message' => 'ไม่พบสินค้าที่เลือก',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+
+                if($stock_items_select->ref_add_more_stock_item != '' && $stock_items_select->ref_add_more_stock_item != null){
+                    $stock_items_all = StockItems::select('stock_lot_id')->where('ref_add_more_stock_item',$stock_items_select->ref_add_more_stock_item)->where('qty_booking','>',0)->pluck('stock_lot_id')->toArray();
+                    $stock_items_main = StockItems::select('stock_lot_id')->where('id',$stock_items_select->ref_add_more_stock_item)->where('qty_booking','>',0)->pluck('stock_lot_id')->toArray();
+                }else{
+                    $stock_items_all = StockItems::select('stock_lot_id')->where('ref_add_more_stock_item',$stock_items_select->id)->where('qty_booking','>',0)->pluck('stock_lot_id')->toArray();
+                    $stock_items_main = StockItems::select('stock_lot_id')->where('id',$stock_items_select->id)->where('qty_booking','>',0)->pluck('stock_lot_id')->toArray();
+                }
+                $arr_lot = [];
+                if(count($stock_items_all) > 0){
+                    foreach($stock_items_all as $l){
+                        $arr_lot[] = $l;
+                    }
+                }
+                if(count($stock_items_main) > 0){
+                    foreach($stock_items_main as $l){
+                        $arr_lot[] = $l;
+                    }
+                }
+
+                if(count($arr_lot) == 0){
+                    return response()->json([
+                        'message' => 'จำนวนสินค้าหมดแล้ว',
+                        'status' => 0,
+                        'data' => '',
+                    ]);
+                }
+
+                $stock_lot = StockLot::where('product_id', $r->product_id)
+                ->where('lot_expired_date', '>', date('Y-m-d'))
+                ->where('qty_booking', '>', 0)
+                ->whereIn('id',$arr_lot)
+                ->orderBy('lot_expired_date', 'asc')->first();
+
+                $qty_booking_sum = StockLot::where('product_id', $r->product_id)
+                ->where('lot_expired_date', '>', date('Y-m-d'))
+                ->where('qty_booking', '>', 0)
+                ->whereIn('id',$arr_lot)
+                ->orderBy('lot_expired_date', 'asc')
+                ->sum('qty_booking');
+
                 if (!$stock_lot) {
                     return response()->json([
                         'message' => 'จำนวนสินค้าหมดแล้ว',
                         'status' => 0,
                         'data' => '',
                     ]);
-                    // }else{
-                    //     if($qty_booking_sum<$r->qty){
-                    //         return response()->json([
-                    //             'message' =>  'จำนวนสินค้าไม่เพียงพอ',
-                    //             'status' => 0,
-                    //             'data' => '',
-                    //         ]);
-                    //     }
-                    // }
                 }
-                $stock_items = StockItems::where('product_id', $r->product_id)->where('stock_lot_id', $stock_lot->id)->first();
+
+                if($stock_items_select->ref_add_more_stock_item != '' && $stock_items_select->ref_add_more_stock_item != null){
+                    $stock_items = StockItems::where('product_id', $r->product_id)
+                    ->where('stock_lot_id', $stock_lot->id)
+                    ->where('ref_add_more_stock_item', $stock_items_select->ref_add_more_stock_item)
+                    ->first();
+                    if(!$stock_items){
+                        $stock_items = StockItems::where('product_id', $r->product_id)
+                        ->where('stock_lot_id', $stock_lot->id)
+                        ->where('id', $stock_items_select->ref_add_more_stock_item)
+                        ->first();
+                    }
+                }else{
+                    $stock_items = StockItems::where('product_id', $r->product_id)
+                    ->where('stock_lot_id', $stock_lot->id)
+                    ->where('ref_add_more_stock_item', $stock_items_select->id)
+                    ->first();
+                    if(!$stock_items){
+                        $stock_items = StockItems::where('product_id', $r->product_id)
+                        ->where('stock_lot_id', $stock_lot->id)
+                        ->where('id', $stock_items_select->id)
+                        ->first();
+                    }
+                }
+
                 if ($product) {
                     // ตรวจว่าในตะกร้าเกินหรือยัง
                     // if($product_datail->preorder_active == 0){
@@ -1612,13 +1666,35 @@ class API1Controller extends Controller
             $category = Category::where('id', $product_detail->category_id)->first();
             $storage_method = \DB::table('storage_method')->where('id', $product_detail->storage_method_id)->first();
 
-            $stock_items = StockItems::
+            // ดึงตัวเลือกสินค้า
+            $stock_items_arr = StockItems::
             // selectRaw('*')
             whereIn('stock_lot_id', $stock_lot_all_arr)
             ->where('product_id', $r->product_id)
             // ->where('ref_add_more_stock_item',null)
-            ->groupBy('ref_add_more_stock_item')
             ->get();
+
+            $stock_items_not_ref = [];
+            $stock_items_ref = [];
+            foreach($stock_items_arr as $si){
+                if($si->ref_add_more_stock_item == null || $si->ref_add_more_stock_item == ''){
+                    $stock_items_not_ref[] = $si;
+                }else{
+                    $stock_items_ref[] = $si;
+                }
+            }
+
+            $stock_items = [];
+            foreach($stock_items_not_ref as $si){
+                foreach($stock_items_ref as $si_ref){
+                    if($si_ref->ref_add_more_stock_item == $si->id){
+                        $si->qty_booking = $si->qty_booking+$si_ref->qty_booking;
+                    }
+                }
+                $stock_items[] = $si;
+            }
+
+
             $stock_items_pre = [];
             if ($product_detail->preorder_active == '1') {
                 // $stock_items_pre = StockItems::where('product_id',$r->product_id)->get();
