@@ -56,7 +56,8 @@
                             <div class="intro-y block sm:flex items-center h-10">
 
                                 <div class="flex items-center mt-3 sm:mt-0">
-                                    <button type="button" onclick="print_pdf();" class="ml-3 btn btn-primary flex items-center "> <svg
+                                    <button type="button" onclick="print_pdf();"
+                                        class="ml-3 btn btn-primary flex items-center "> <svg
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round" icon-name="file-text"
@@ -207,9 +208,25 @@
                                                         <td>
 
                                                             @if ($value->transfer_status == 2)
-                                                                <input type="text" class="form-control block mx-auto"
-                                                                    name="qty[{{ $value->id }}]"
-                                                                    value="{{ $value->qty }}">
+                                                                <?php
+                                                                if ($value->is_preorder == 0) {
+                                                                    $products_option_2_items = \DB::table('products_option_2_items')
+                                                                        ->where('products_item_id', $value->products_item_id)
+                                                                        ->get();
+                                                                } else {
+                                                                    $products_option_2_items = \DB::table('products_option_2_items')
+                                                                        ->where('products_item_pre_id', $value->products_item_id)
+                                                                        ->get();
+                                                                }
+
+                                                                ?>
+                                                                @foreach ($products_option_2_items as $i2)
+                                                                    <label>{{ $i2->name_th }}</label>
+                                                                    <input type="text"
+                                                                        class="form-control block mx-auto"
+                                                                        name="qty[{{ $value->id }}][{{ $i2->id }}]"
+                                                                        value="{{ $i2->qty }}">
+                                                                @endforeach
                                                             @else
                                                                 <input type="text" class="form-control block mx-auto"
                                                                     name="qty[{{ $value->id }}]"
@@ -232,15 +249,17 @@
 
                                                         <td>
                                                             @if ($value->transfer_status == 2)
-                                                                <input type="date" value="{{ date('Y-m-d', strtotime($value->production_date. ' + '.($value->shelf_lift-$value->stock_cut_off).' days')) }}"
+                                                                <input type="date"
+                                                                    value="{{ date('Y-m-d', strtotime($value->production_date . ' + ' . ($value->shelf_lift - $value->stock_cut_off) . ' days')) }}"
                                                                     class=" form-control block mx-auto"
-                                                                    name="lot_expired_date[{{ $value->id }}]" data-single-mode="true">
+                                                                    name="lot_expired_date[{{ $value->id }}]"
+                                                                    data-single-mode="true">
                                                             @else
                                                                 <input type="date"
                                                                     value="{{ $value->lot_expired_date }}"
                                                                     class=" form-control block mx-auto"
-                                                                    name="lot_expired_date[{{ $value->id }}]" data-single-mode="true"
-                                                                    disabled>
+                                                                    name="lot_expired_date[{{ $value->id }}]"
+                                                                    data-single-mode="true" disabled>
                                                             @endif
 
                                                         </td>
@@ -251,7 +270,7 @@
                                                             @if ($value->transfer_status == 2)
                                                                 <select name="shelf[{{ $value->id }}]"
                                                                     class="form-select form-select-lg sm:mt-2 sm:mr-2 w-56"
-                                                                    aria-label=".form-select-lg example" >
+                                                                    aria-label=".form-select-lg example">
                                                                     <option value=""> ------ เลือก Shelf -----
                                                                     </option>
                                                                     @foreach ($shelf as $shelf_value)
@@ -262,7 +281,7 @@
                                                                 <br>
                                                                 <select name="floor[{{ $value->id }}]"
                                                                     class="form-select form-select-lg sm:mt-2 sm:mr-2  w-56"
-                                                                    aria-label=".form-select-lg example" >
+                                                                    aria-label=".form-select-lg example">
                                                                     <option value=""> - เลือกชั้น -</option>
                                                                     <option value="1">1</option>
                                                                     <option value="2">2</option>

@@ -1630,11 +1630,11 @@ class API1Controller extends Controller
             $stock_items_count = count($stock_items);
             $stock_items_count_pre = count($stock_items_pre);
 
-            // $products_option_head1 = ProductsOptionHead::where('product_id',$r->product_id)->where('option_type',1)->first();
-            // $products_option_head2 = ProductsOptionHead::where('product_id',$r->product_id)->where('option_type',2)->first();
+            $products_option_head1 = ProductsOptionHead::where('product_id',$r->product_id)->where('option_type',1)->first();
+            $products_option_head2 = ProductsOptionHead::where('product_id',$r->product_id)->where('option_type',2)->first();
 
-            // $products_option_1 = ProductsOption1::where('product_id',$r->product_id)->get();
-            // $products_option_2 = ProductsOption2::where('product_id',$r->product_id)->get();
+            $products_option_1 = ProductsOption1::where('product_id',$r->product_id)->get();
+            $products_option_2 = ProductsOption2::where('product_id',$r->product_id)->get();
 
             // $products_option_2_items = ProductsOption2Items::where('product_id',$r->product_id)->
 
@@ -1663,10 +1663,10 @@ class API1Controller extends Controller
                     'category' => $category,
                     'storage_method' => $storage_method,
                     'product_expired_date' => $product_expired_date,
-                    // 'products_option_head1' => $products_option_head1,
-                    // 'products_option_head2' => $products_option_head2,
-                    // 'products_option_1' => $products_option_1,
-                    // 'products_option_2' => $products_option_2,
+                    'products_option_head1' => $products_option_head1,
+                    'products_option_head2' => $products_option_head2,
+                    'products_option_1' => $products_option_1,
+                    'products_option_2' => $products_option_2,
                 ],
             ]);
         } else {
@@ -3684,77 +3684,212 @@ class API1Controller extends Controller
             // $products_item->barcode = $products->barcode;
             $products_item->save();
 
-            $products_option_head1 = new ProductsOptionHead();
-            $products_option_head1->product_id = $products->id;
-            $products_option_head1->option_type = 1;
-            $products_option_head1->name_th = '';
-            $products_option_head1->name_en = '';
-            $products_option_head1->save();
 
-            $products_option_head2 = new ProductsOptionHead();
-            $products_option_head2->product_id = $products->id;
-            $products_option_head2->option_type = 2;
-            $products_option_head2->name_th = '';
-            $products_option_head2->name_en = '';
-            $products_option_head2->save();
+            $price_arr = [];
+            $qty_all = 0;
+            if ($r->yes_option == '1') {
+                $products_option_1_arr = json_decode($r->products_option_1);
 
-            $products_option_1 = new ProductsOption1();
-            $products_option_1->product_id = $products->id;
-            $products_option_1->name_th = '';
-            $products_option_1->name_en = '';
-            $products_option_1->save();
+                // $products_option_head1 = new ProductsOptionHead();
+                // $products_option_head1->product_id = $products->id;
+                // $products_option_head1->option_type = 1;
+                // $products_option_head1->name_th = $r->products_option_head1;
+                // $products_option_head1->name_en = $r->products_option_head1;
+                // $products_option_head1->save();
 
-            $products_option_2 = new ProductsOption2();
-            $products_option_2->product_id = $products->id;
-            $products_option_2->name_th = '';
-            $products_option_2->name_en = '';
-            $products_option_2->save();
+                // $products_option_head2 = new ProductsOptionHead();
+                // $products_option_head2->product_id = $products->id;
+                // $products_option_head2->option_type = 2;
+                // $products_option_head2->name_th = $r->products_option_head2;
+                // $products_option_head2->name_en = $r->products_option_head2;
+                // $products_option_head2->save();
 
-            $products_option_2_items = new ProductsOption2Items();
-            $products_option_2_items->product_id = $products->id;
-            $products_option_2_items->products_item_id = $products_item->id;
-            $products_option_2_items->option_1_id = $products_option_1->id;
-            $products_option_2_items->option_2_id = $products_option_2->id;
-            $products_option_2_items->price = $r->price;
-            $products_option_2_items->qty = $r->qty;
-            $products_option_2_items->name_th = '';
-            $products_option_2_items->name_en = '';
-            $products_option_2_items->save();
-
-            $new_barcode = $this->generateRandomString(10);
-            // $products_option_2_items->barcode = $products->barcode.$products_option_2_items->id;
-            $products_option_2_items->barcode = $new_barcode;
-
-            $products->min_price = $r->price;
-            $products->max_price = $r->price;
-            $products->save();
-
-            $gal = explode('|', $r->images);
-            foreach ($gal as $key => $img) {
-                if ($img != '') {
-                    $image_64 = $img;
-                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
-                    $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                    // find substring fro replace here eg: data:image/png;base64,
-                    $image = str_replace($replace, '', $image_64);
-                    $image = str_replace(' ', '+', $image);
-                    $imageName = time().rand(0, 10).rand(0, 10000).'.'.$extension;
-                    Storage::disk('public')->put('product/'.$products->customer_id.'/'.$products->id.'/'.$imageName, base64_decode($image));
-                    // Storage::delete('file_payment/' . $check->file_slip);
-
-                    $gal = new ProductsGallery();
-                    $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
-                    $gal->name = $imageName;
-                    $gal->product_id = $products->id;
-                    if ($key == 0) {
-                        $gal->use_profile = 1;
-                    } else {
-                        $gal->use_profile = 0;
+                // บันทึก ตัวเลือก 2
+                $products_option_2_arr = json_decode($r->products_option_2);
+                $arr_option2_id = [];
+                foreach ($products_option_2_arr as $pr2) {
+                    $products_option_2 = ProductsOption2::select('id')->where('product_id',$products->id)->where('name_th',$pr2->name_th)->first();
+                    if($products_option_2){
+                        array_push($arr_option2_id, $products_option_2->id);
                     }
-                    $gal->save();
-                    // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+                    // $products_option_2 = new ProductsOption2();
+                    // $products_option_2->product_id = $products->id;
+                    // $products_option_2->name_th = $pr2->name_th;
+                    // $products_option_2->name_en = $pr2->name_th;
+                    // $products_option_2->save();
+                    // array_push($arr_option2_id, $products_option_2->id);
                 }
+
+                // บันทึกตัวเลือก 1
+                foreach ($products_option_1_arr as $pr) {
+                    $products_option_1 = ProductsOption1::select('id')->where('product_id',$products->id)->where('name_th',$pr->name_th)->first();
+                    // $products_option_1 = new ProductsOption1();
+                    // $products_option_1->product_id = $products->id;
+                    // $products_option_1->name_th = $pr->name_th;
+                    // $products_option_1->name_en = $pr->name_th;
+                    // $products_option_1->save();
+
+                    // วน list
+                    if($products_option_1){
+                        foreach ($pr->product_option2_list as $pr_list) {
+                            $products_option_2_id = ProductsOption2::select('id')->whereIn('id', $arr_option2_id)->where('name_th', $pr_list->name_th)->first();
+
+                            $products_option_2_items_ref = ProductsOption2Items::select('id','price')->where('product_id',$products->id)
+                            ->where('name_th',$pr->name_th.' '.$pr_list->name_th)
+                            ->where('option_1_id',$products_option_1->id)
+                            ->where('option_2_id',$products_option_2_id->id)
+                            ->first();
+
+                            // สร้างจำนวนสินค้า
+                            $products_option_2_items = new ProductsOption2Items();
+                            $products_option_2_items->product_id = $products->id;
+
+                            // if ($products->normal_active == 1) {
+                                $products_option_2_items->products_item_id = $products_item->id;
+                            // }
+
+                            // if ($products->preorder_active == 1) {
+                            //     $products_option_2_items->products_item_pre_id = $products_item_pre->id;
+                            // }
+
+                            $products_option_2_items->option_1_id = $products_option_1->id;
+                            $products_option_2_items->option_2_id = $products_option_2_id->id;
+                            $products_option_2_items->price = $pr_list->price;
+                            $products_option_2_items->qty = $pr_list->qty;
+                            $products_option_2_items->name_th = $pr->name_th.' '.$pr_list->name_th;
+                            $products_option_2_items->name_en = $pr->name_th.' '.$pr_list->name_th;
+
+                            if($products_option_2_items_ref){
+                                if($products_option_2_items_ref->price==$pr_list->price){
+                                    $products_option_2_items->ref_add_more = $products_option_2_items_ref->id;
+                                }
+                            }
+
+                            $products_option_2_items->save();
+
+                            array_push($price_arr, $pr_list->price);
+                            $qty_all += $pr_list->qty;
+
+                            $new_barcode = $this->generateRandomString(10);
+                            $products_option_2_items->barcode = $new_barcode;
+                            $products_option_2_items->save();
+
+                        }
+                    }
+
+                }
+
+                if ($products->normal_active == 1) {
+                    $products_item->qty = $qty_all;
+                    $products_item->save();
+                }
+            } else {
+                // $products_option_head1 = new ProductsOptionHead();
+                // $products_option_head1->product_id = $products->id;
+                // $products_option_head1->option_type = 1;
+                // $products_option_head1->name_th = '';
+                // $products_option_head1->name_en = '';
+                // $products_option_head1->save();
+
+                // $products_option_head2 = new ProductsOptionHead();
+                // $products_option_head2->product_id = $products->id;
+                // $products_option_head2->option_type = 2;
+                // $products_option_head2->name_th = '';
+                // $products_option_head2->name_en = '';
+                // $products_option_head2->save();
+
+                $products_option_1 = ProductsOption1::select('id')->where('product_id',$products->id)->where('name_th','')->first();
+                // $products_option_1 = new ProductsOption1();
+                // $products_option_1->product_id = $products->id;
+                // $products_option_1->name_th = '';
+                // $products_option_1->name_en = '';
+                // $products_option_1->save();
+
+                $products_option_2 = ProductsOption2::select('id')->where('product_id',$products->id)->where('name_th','')->first();
+                // $products_option_2 = new ProductsOption2();
+                // $products_option_2->product_id = $products->id;
+                // $products_option_2->name_th = '';
+                // $products_option_2->name_en = '';
+                // $products_option_2->save();
+
+                $products_option_2_items_ref = ProductsOption2Items::select('id','price')->where('product_id',$products->id)
+                ->where('name_th','')
+                ->where('option_1_id',$products_option_1->id)
+                ->where('option_2_id',$products_option_2->id)
+                ->first();
+
+                $products_option_2_items = new ProductsOption2Items();
+                $products_option_2_items->product_id = $products->id;
+
+                // if ($products->normal_active == 1) {
+                    $products_option_2_items->products_item_id = $products_item->id;
+                // }
+
+                // if ($products->preorder_active == 1) {
+                //     $products_option_2_items->products_item_pre_id = $products_item_pre->id;
+                // }
+
+                $products_option_2_items->option_1_id = $products_option_1->id;
+                $products_option_2_items->option_2_id = $products_option_2->id;
+                $products_option_2_items->price = $r->price;
+                $products_option_2_items->qty = $r->qty;
+                $products_option_2_items->name_th = '';
+                $products_option_2_items->name_en = '';
+
+                if($products_option_2_items_ref){
+                    if($products_option_2_items_ref->price==$r->price){
+                        $products_option_2_items->ref_add_more = $products_option_2_items_ref->id;
+                    }
+                }
+
+                $products_option_2_items->save();
+
+                array_push($price_arr, $r->price);
+
+                $new_barcode = $this->generateRandomString(10);
+                $products_option_2_items->barcode = $new_barcode;
+                $products_option_2_items->save();
             }
+
+            // if (count($price_arr) > 1) {
+            //     $products->min_price = min($price_arr);
+            //     $products->max_price = max($price_arr);
+            // } elseif (count($price_arr) == 1) {
+            //     $products->min_price = $price_arr[0];
+            //     $products->max_price = $price_arr[0];
+            // } else {
+            //     $products->min_price = $r->price;
+            //     $products->max_price = $r->price;
+            // }
+
+            // $products->save();
+
+            // $gal = explode('|', $r->images);
+            // foreach ($gal as $key => $img) {
+            //     if ($img != '') {
+            //         $image_64 = $img;
+            //         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+            //         $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+            //         // find substring fro replace here eg: data:image/png;base64,
+            //         $image = str_replace($replace, '', $image_64);
+            //         $image = str_replace(' ', '+', $image);
+            //         $imageName = time().rand(0, 10).rand(0, 10000).'.'.$extension;
+            //         Storage::disk('public')->put('product/'.$products->customer_id.'/'.$products->id.'/'.$imageName, base64_decode($image));
+            //         // Storage::delete('file_payment/' . $check->file_slip);
+
+            //         $gal = new ProductsGallery();
+            //         $gal->path = 'product/'.$products->customer_id.'/'.$products->id.'/';
+            //         $gal->name = $imageName;
+            //         $gal->product_id = $products->id;
+            //         if ($key == 0) {
+            //             $gal->use_profile = 1;
+            //         } else {
+            //             $gal->use_profile = 0;
+            //         }
+            //         $gal->save();
+            //         // dd(Storage::disk('public')->url("{$gal->path}{$gal->name}"));
+            //     }
+            // }
 
             \DB::commit();
 

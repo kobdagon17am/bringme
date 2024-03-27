@@ -164,9 +164,11 @@ class ProductsController extends Controller
             ->select('products_item.*', 'products_item.id as item_id', 'customer.name as store_name', 'products_transfer.id as transfer_id', 'products.category_id', 'products.brands_id',
              'products.store_id as store_id', 'products.storage_method_id','products_transfer.shipping_type')
             ->where('products_item.id', $id)
+            ->where('products_item.approve_status', 0)
             ->leftJoin('customer', 'customer.id', '=', 'products_item.customer_id')
             ->leftJoin('products_transfer', 'products_transfer.products_item_id', '=', 'products_item.id')
             ->leftJoin('products', 'products.id', '=', 'products_item.product_id')
+            ->orderBy('products_item.created_at','desc')
             ->first();
 
         $data['gallery'] = DB::table('products_gallery')->where('product_id', $data['products_item']->product_id)->get();
@@ -177,7 +179,12 @@ class ProductsController extends Controller
         $data['products_option_head'] = DB::table('products_option_head')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_1'] = DB::table('products_option_1')->where('product_id', $data['products_item']->product_id)->get();
         $data['products_option_2'] = DB::table('products_option_2')->where('product_id', $data['products_item']->product_id)->get();
-        $data['products_option_2_items'] = DB::table('products_option_2_items')->where('product_id', $data['products_item']->product_id)->get();
+        if($data['products_item']->is_preorder == 0){
+            $data['products_option_2_items'] = DB::table('products_option_2_items')->where('products_item_id',$data['products_item']->id)->where('product_id', $data['products_item']->product_id)->get();
+        }else{
+            $data['products_option_2_items'] = DB::table('products_option_2_items')->where('products_item_pre_id',$data['products_item']->id)->where('product_id', $data['products_item']->product_id)->get();
+        }
+
         $data['storage_method'] = DB::table('storage_method')->get();
         $data['id'] = $id;
 

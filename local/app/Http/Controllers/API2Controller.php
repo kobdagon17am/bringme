@@ -262,16 +262,25 @@ class API2Controller extends  Controller
 
                         $products = Products::where('id',$products_item->product_id)->first();
                         $qty = 0;
+
                         foreach($products_option_2_items as $item){
 
                             $products_option_1 = ProductsOption1::where('id',$item->option_1_id)->first();
                             $products_option_2 = ProductsOption2::where('id',$item->option_2_id)->first();
 
                             $stock_items = new StockItems();
-
+                            // dd($qty_new);
                             if($products_transfer->is_preorder == 0){
-                                $item_qty = $qty_new;
-                                $item_qty_booking = $item->qty;
+                                // $item_qty = $qty_new;
+                                // $item_qty_booking = $item->qty;
+                                if(isset($r->qty[$products_transfer->id][$item->id])){
+                                    $item_qty = $r->qty[$products_transfer->id][$item->id];
+                                    $item_qty_booking = $r->qty[$products_transfer->id][$item->id];
+                                }else{
+                                    $item_qty = 0;
+                                    $item_qty_booking = 0;
+                                }
+
                             }else{
                                 $stock_items_pre = StockItemsPre::select('qty_booking','id')->where('product_id',$products_item->product_id)
                                 ->where('customer_id',$products_item->customer_id)
@@ -282,6 +291,10 @@ class API2Controller extends  Controller
                                 $item_qty = $stock_items_pre->qty_booking;
                                 $item_qty_booking = 0;
                             }
+
+                            DB::table('products_option_2_items')->where('id',$item->id)->update([
+                                'qty_customer' => $item_qty,
+                            ]);
 
                             $stock_items->stock_id = $stock->id;
                             $stock_items->stock_lot_id = $stock_lot->id;
@@ -345,8 +358,8 @@ class API2Controller extends  Controller
                         $products_item->save();
 
                         if($r->type == 'confirm_all'){
-                            $products_transfer->qty = $products_transfer->qty;
-                            $products_transfer->shipping_name = $products_transfer->shipping_name;
+                            $products_transfer->qty = $qty;
+                            // $products_transfer->shipping_name = $products_transfer->shipping_name;
                         }else{
                             $products_transfer->qty = $r->qty;
                             $products_transfer->shipping_name = $r->shipping_name;
@@ -354,7 +367,7 @@ class API2Controller extends  Controller
 
                         $products_transfer->shipping_remark = $r->shipping_remark;
                         $products_transfer->approve_status = 1;
-
+                        $products_transfer->real_qty =
                         $products_transfer->save();
 
 
@@ -580,6 +593,9 @@ class API2Controller extends  Controller
                 }
             }
 
+            $period = DB::table('shipping_period')->where('id',$cart->period)->first();
+            $period = $period->name;
+
             return response()->json([
                 'message' => 'สำเร็จ',
                 'status' => 1,
@@ -598,6 +614,7 @@ class API2Controller extends  Controller
                     'cart_others' => $cart_others,
                     'claim_status_success' => $claim_status_success,
                     'shipping_type_name' => $shipping_type_name,
+                    'period' => $period,
                 ],
             ]);
         }else{
