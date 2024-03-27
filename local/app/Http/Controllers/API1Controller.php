@@ -2757,16 +2757,18 @@ class API1Controller extends Controller
             //     ->inRandomOrder()->get();
             // }
 
-            $product_all = Products::select('products.*', 'products_item.transfer_status', 'products_item.id as products_item_id',
+            $product_all = Products::select('products.*',
+            // 'products_item.transfer_status',
+            // 'products_item.id as products_item_id',
                 'products_gallery.path as gal_path',
                 'store.logo_path', 'store.logo',
                 'products_gallery.name as gal_name', )
-            ->join('products_item', 'products_item.product_id', 'products.id')
+            // ->join('products_item', 'products_item.product_id', 'products.id')
             ->join('products_gallery', 'products_gallery.product_id', 'products.id')
-              ->join('store', 'store.id', 'products.store_id')
+            ->join('store', 'store.id', 'products.store_id')
             ->where('products_gallery.use_profile', 1)
             ->where('products.store_id', $store->id)
-            ->where('products_item.transfer_status', 3)
+            // ->where('products_item.transfer_status', 3)
             ->where('products.display_status', 1)
             ->orderBy('products.created_at', 'desc')
             ->get();

@@ -2628,12 +2628,13 @@ class API2Controller extends  Controller
             }
 
             if(count($arr_products)>0){
-                $product_list = Products::select('products.*','products_item.transfer_status',
-                'products_item.id as products_item_id',
+                $product_list = Products::select('products.*',
+                // ,'products_item.transfer_status',
+                // 'products_item.id as products_item_id',
                 'products_gallery.path as gal_path',
                 'products_gallery.name as gal_name',
                 )
-                ->join('products_item','products_item.product_id','products.id')
+                // ->join('products_item','products_item.product_id','products.id')
                 ->join('products_gallery','products_gallery.product_id','products.id')
                 ->where('products_gallery.use_profile',1)
                 ->where('products.store_id',$store->id)
@@ -2644,12 +2645,13 @@ class API2Controller extends  Controller
                 ->where('products.display_status',1)
                 ->get();
             }else{
-                $product_list = Products::select('products.*','products_item.transfer_status',
-                'products_item.id as products_item_id',
+                $product_list = Products::select('products.*',
+                // 'products_item.transfer_status',
+                // 'products_item.id as products_item_id',
                 'products_gallery.path as gal_path',
                 'products_gallery.name as gal_name',
                 )
-                ->join('products_item','products_item.product_id','products.id')
+                // ->join('products_item','products_item.product_id','products.id')
                 ->join('products_gallery','products_gallery.product_id','products.id')
                 ->where('products_gallery.use_profile',1)
                 ->where('products.store_id',$store->id)
