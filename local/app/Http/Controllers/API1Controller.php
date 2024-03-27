@@ -1612,7 +1612,9 @@ class API1Controller extends Controller
             $category = Category::where('id', $product_detail->category_id)->first();
             $storage_method = \DB::table('storage_method')->where('id', $product_detail->storage_method_id)->first();
 
-            $stock_items = StockItems::whereIn('stock_lot_id', $stock_lot_all_arr)
+            $stock_items = StockItems::
+            // selectRaw('*')
+            whereIn('stock_lot_id', $stock_lot_all_arr)
             ->where('product_id', $r->product_id)
             // ->where('ref_add_more_stock_item',null)
             ->groupBy('ref_add_more_stock_item')
