@@ -1028,6 +1028,7 @@ class API1Controller extends Controller
 
     public function api_add_cart(Request $r)
     {
+        // customer_cart_product_id
         \DB::beginTransaction();
         try {
             $cart = CustomerCart::where('customer_id', $r->user_id)->where('status', 0)->first();
@@ -1076,7 +1077,12 @@ class API1Controller extends Controller
                     }
                 }
 
-                $stock_items_select = StockItems::where('products_option_2_items_id',$r->products_option_2_items)->first();
+                if($product){
+                    $stock_items_select = StockItems::where('products_option_2_items_id',$product->products_option_2_items_id)->first();
+                }else{
+                    $stock_items_select = StockItems::where('products_option_2_items_id',$r->products_option_2_items)->first();
+                }
+
                 if(!$stock_items_select){
                     return response()->json([
                         'message' => 'ไม่พบสินค้าที่เลือก',
